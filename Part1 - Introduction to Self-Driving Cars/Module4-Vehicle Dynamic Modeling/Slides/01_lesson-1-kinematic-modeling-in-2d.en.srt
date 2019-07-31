@@ -1,0 +1,659 @@
+1
+00:00:18,860 --> 00:00:24,960
+In this module, we will cover kinematic and dynamic modeling of an autonomous car.
+
+2
+00:00:24,960 --> 00:00:29,805
+Creating a good vehicle model is essential for model-based control development.
+
+3
+00:00:29,805 --> 00:00:31,260
+We'll look at modeling,
+
+4
+00:00:31,260 --> 00:00:34,500
+both the evolution of the kinematics, that is,
+
+5
+00:00:34,500 --> 00:00:37,910
+positions and velocities, and the dynamics or
+
+6
+00:00:37,910 --> 00:00:41,720
+forces and torques of a car and how they connect.
+
+7
+00:00:41,720 --> 00:00:43,700
+Later on in the next modules,
+
+8
+00:00:43,700 --> 00:00:48,625
+we will use these vehicle models extensively for controller design.
+
+9
+00:00:48,625 --> 00:00:55,265
+In this module, you will study the basics of coordinate frames and kinematics,
+
+10
+00:00:55,265 --> 00:00:59,705
+develop a kinematic model for cars known as the bicycle model,
+
+11
+00:00:59,705 --> 00:01:03,115
+explore the basics of dynamic modeling,
+
+12
+00:01:03,115 --> 00:01:07,820
+develop a longitudinal and lateral vehicle dynamic mode,
+
+13
+00:01:07,820 --> 00:01:10,790
+create actuator models for steering,
+
+14
+00:01:10,790 --> 00:01:16,565
+throttle and break, and finally study tire slip and tire modeling.
+
+15
+00:01:16,565 --> 00:01:18,545
+So, let's get started.
+
+16
+00:01:18,545 --> 00:01:21,260
+Generally, vehicle motion can be modeled
+
+17
+00:01:21,260 --> 00:01:24,200
+either by considering the geometric constraint that
+
+18
+00:01:24,200 --> 00:01:29,980
+defines its motion or by considering all of the forces and moments acting on a vehicle.
+
+19
+00:01:29,980 --> 00:01:33,270
+The first case is known as Kinematic Modeling.
+
+20
+00:01:33,270 --> 00:01:37,355
+Especially at low speeds when the accelerations are not significant,
+
+21
+00:01:37,355 --> 00:01:41,870
+Kinematic Modeling is more than sufficient to capture the motion of a vehicle.
+
+22
+00:01:41,870 --> 00:01:46,595
+When we instead include knowledge of the forces and moments acting on the vehicle,
+
+23
+00:01:46,595 --> 00:01:49,010
+we're performing Dynamic Modeling.
+
+24
+00:01:49,010 --> 00:01:52,160
+Dynamic models can do a great job of estimating
+
+25
+00:01:52,160 --> 00:01:55,445
+vehicle motion throughout the vehicles operating range,
+
+26
+00:01:55,445 --> 00:01:59,310
+but are more involved to develop than kinematic models.
+
+27
+00:01:59,440 --> 00:02:02,720
+Before we start modeling vehicle motion,
+
+28
+00:02:02,720 --> 00:02:06,830
+it's important to review the concepts of Coordinate Frame Transformations.
+
+29
+00:02:06,830 --> 00:02:10,790
+We'll start with 2D transformations in this video and you'll see
+
+30
+00:02:10,790 --> 00:02:16,085
+more on 3D transformations in the second course on state estimation.
+
+31
+00:02:16,085 --> 00:02:20,920
+The coordinate frames we use are right-handed frames by convention,
+
+32
+00:02:20,920 --> 00:02:25,885
+and we'll use a few standard coordinate frames throughout the specialization.
+
+33
+00:02:25,885 --> 00:02:29,770
+The global world or inertial coordinate frame,
+
+34
+00:02:29,770 --> 00:02:32,780
+is a fixed reference frame attached to the earth.
+
+35
+00:02:32,780 --> 00:02:36,780
+Often, we'll represent this coordinate frame as East North Up,
+
+36
+00:02:36,780 --> 00:02:40,060
+ENU, relative to a reference point nearby.
+
+37
+00:02:40,060 --> 00:02:42,370
+Or Earth-Centered Earth Fixed,
+
+38
+00:02:42,370 --> 00:02:46,405
+ECEF, as is used in GNSS systems.
+
+39
+00:02:46,405 --> 00:02:49,690
+The next frame we'll talk about is the body frame,
+
+40
+00:02:49,690 --> 00:02:53,125
+which is placed in some key location on the body of the vehicle.
+
+41
+00:02:53,125 --> 00:02:58,715
+For example, the center of gravity of a vehicle or the center point of the rear axle.
+
+42
+00:02:58,715 --> 00:03:01,885
+This frame is moving and rotating with respect
+
+43
+00:03:01,885 --> 00:03:05,590
+to the fixed inertial frame as the vehicle moves about.
+
+44
+00:03:05,590 --> 00:03:10,075
+Finally, the sensor frame is a coordinate frame which attaches to
+
+45
+00:03:10,075 --> 00:03:14,935
+each sensor describing the coordinates used for the sensor output.
+
+46
+00:03:14,935 --> 00:03:17,695
+In many robotics applications,
+
+47
+00:03:17,695 --> 00:03:20,420
+we need to attach several coordinates to
+
+48
+00:03:20,420 --> 00:03:26,515
+a moving system and also represent elements from these frames in the inertial frame.
+
+49
+00:03:26,515 --> 00:03:31,615
+To do this, we need to transform variables from one coordinate frame to the other.
+
+50
+00:03:31,615 --> 00:03:35,435
+For example, from the body frame to the inertial.
+
+51
+00:03:35,435 --> 00:03:41,950
+Even a simple two wheeled robot with a single sensor has three such frames to consider,
+
+52
+00:03:41,950 --> 00:03:45,500
+while the self-driving car can have dozens.
+
+53
+00:03:45,500 --> 00:03:49,779
+To maintain a consistent representation of sensor data for perception,
+
+54
+00:03:49,779 --> 00:03:54,250
+we need to be able to transform information between coordinate frames.
+
+55
+00:03:54,250 --> 00:03:59,900
+Let's take a look at a simple transformation example for a velocity vector of a car.
+
+56
+00:03:59,900 --> 00:04:05,440
+Generally, kinematic variables such as velocity are represented in the form of a vector,
+
+57
+00:04:05,440 --> 00:04:08,320
+with both magnitude and direction.
+
+58
+00:04:08,320 --> 00:04:11,410
+In this figure, the vector v is presented with
+
+59
+00:04:11,410 --> 00:04:14,215
+a green arrow in a two-dimensional coordinate frame.
+
+60
+00:04:14,215 --> 00:04:16,885
+We have two coordinate frames displayed here.
+
+61
+00:04:16,885 --> 00:04:20,480
+The body frame, defined by axes b_1 and b_2,
+
+62
+00:04:20,480 --> 00:04:23,965
+and the inertial frame defined by axes e_1 and e_2,
+
+63
+00:04:23,965 --> 00:04:26,165
+both in the 2D plane.
+
+64
+00:04:26,165 --> 00:04:28,800
+Let's assume the two coordinate frames;
+
+65
+00:04:28,800 --> 00:04:30,530
+frame e and frame b,
+
+66
+00:04:30,530 --> 00:04:32,530
+have the same fixed origin.
+
+67
+00:04:32,530 --> 00:04:36,715
+But frame b is rotated by some angle Theta relative to frame
+
+68
+00:04:36,715 --> 00:04:41,649
+e. We can then define the rotational matrices C_EB,
+
+69
+00:04:41,649 --> 00:04:46,555
+which transforms vectors from the frame b to the frame e and
+
+70
+00:04:46,555 --> 00:04:53,135
+C_BE which projects the frame e onto frame b using the angle Theta as shown.
+
+71
+00:04:53,135 --> 00:04:57,440
+Now, let's extend our example to include a translation.
+
+72
+00:04:57,440 --> 00:05:01,550
+Here, we see a two-wheeled robot and we'd like to represent the position of
+
+73
+00:05:01,550 --> 00:05:06,270
+a point P observed by the robot in the robot body frame b,
+
+74
+00:05:06,270 --> 00:05:08,500
+with respect to the inertial frame e.
+
+75
+00:05:08,500 --> 00:05:13,790
+The position of the robot with respect to the inertial frame is x and y,
+
+76
+00:05:13,790 --> 00:05:17,485
+and the orientation of the robot once again is Theta.
+
+77
+00:05:17,485 --> 00:05:22,080
+The following equations relate the location of point P in
+
+78
+00:05:22,080 --> 00:05:26,890
+the body coordinates P_B and the inertial frame P_E.
+
+79
+00:05:27,140 --> 00:05:30,030
+Note that in general to transform
+
+80
+00:05:30,030 --> 00:05:33,260
+one point from one coordinate to the other coordinate frame,
+
+81
+00:05:33,260 --> 00:05:36,785
+body to inertial and vice versa, requires two terms.
+
+82
+00:05:36,785 --> 00:05:42,885
+The translation of the origin O_BE and O_EB in this case,
+
+83
+00:05:42,885 --> 00:05:48,550
+and the rotation of the axis C_EB and C_BE.
+
+84
+00:05:48,710 --> 00:05:52,250
+Finally, we can summarize the transformation between
+
+85
+00:05:52,250 --> 00:05:55,610
+two coordinate frames using homogeneous coordinates,
+
+86
+00:05:55,610 --> 00:06:00,470
+which lead to a compact matrix multiplication to apply the transformation.
+
+87
+00:06:00,470 --> 00:06:04,370
+We extend our location vector to include x, y,
+
+88
+00:06:04,370 --> 00:06:09,860
+and one and can then transform from body to inertial coordinates using P
+
+89
+00:06:09,860 --> 00:06:17,380
+inertial is C_EB and O_EB times P in the body frame.
+
+90
+00:06:17,540 --> 00:06:21,920
+We're now ready to start kinematic modeling of a simple robot.
+
+91
+00:06:21,920 --> 00:06:24,290
+The robot's motion is constrained to move
+
+92
+00:06:24,290 --> 00:06:26,900
+forward because its wheels point in this direction.
+
+93
+00:06:26,900 --> 00:06:30,334
+This constraint is called a nonholonomic constraint,
+
+94
+00:06:30,334 --> 00:06:34,825
+which means that it restricts the rate of change of the position of our robot.
+
+95
+00:06:34,825 --> 00:06:38,840
+So, our robot can roll forward and turn while rolling,
+
+96
+00:06:38,840 --> 00:06:41,255
+but cannot move sideways directly.
+
+97
+00:06:41,255 --> 00:06:46,200
+We'll use this constraint to define a kinematic model for our robot.
+
+98
+00:06:46,480 --> 00:06:51,935
+The velocity of the robot is defined by the tangent vector to its path.
+
+99
+00:06:51,935 --> 00:06:55,855
+Let's define the orientation angle of the robot as Theta.
+
+100
+00:06:55,855 --> 00:07:00,465
+Then the tan of Theta can be written as dy over dx.
+
+101
+00:07:00,465 --> 00:07:02,870
+The velocity of the robot in the y-direction
+
+102
+00:07:02,870 --> 00:07:06,160
+divided by the velocity of the robot in the x-direction.
+
+103
+00:07:06,160 --> 00:07:08,750
+By rearranging the above equation,
+
+104
+00:07:08,750 --> 00:07:14,030
+we can derive an expression for the nonholonomic constraint equation as follows.
+
+105
+00:07:14,030 --> 00:07:16,790
+We can then construct a pair of equations for
+
+106
+00:07:16,790 --> 00:07:20,500
+the motion of the robot by combining these equations.
+
+107
+00:07:20,500 --> 00:07:23,495
+The velocity of the robot in the x-direction,
+
+108
+00:07:23,495 --> 00:07:28,535
+is the magnitude of the velocity vector v multiplied by cosine of Theta.
+
+109
+00:07:28,535 --> 00:07:31,840
+In the y-direction is v sine of Theta.
+
+110
+00:07:31,840 --> 00:07:37,380
+Lastly, we can assume the direct control over the robots rate of change of heading.
+
+111
+00:07:37,600 --> 00:07:41,950
+We've now successfully built a kinematic model for our robot.
+
+112
+00:07:41,950 --> 00:07:45,350
+This model takes as input the forward velocity in
+
+113
+00:07:45,350 --> 00:07:50,165
+rotation rate and represents the robot using a vector of three states,
+
+114
+00:07:50,165 --> 00:07:53,620
+the x and y position of the robot and it's heading.
+
+115
+00:07:53,620 --> 00:07:57,755
+Throughout this course, we will work with state-based models.
+
+116
+00:07:57,755 --> 00:08:00,530
+Let's define what we mean by a state.
+
+117
+00:08:00,530 --> 00:08:04,220
+A state is a set of variables often arranged in the form of
+
+118
+00:08:04,220 --> 00:08:09,100
+a vector that fully describe the system at the current time.
+
+119
+00:08:09,100 --> 00:08:11,355
+Returning to our robot,
+
+120
+00:08:11,355 --> 00:08:16,735
+the input of the model are velocity v and rate of change of orientation Omega.
+
+121
+00:08:16,735 --> 00:08:19,645
+However, for the actual two-wheel robot,
+
+122
+00:08:19,645 --> 00:08:24,575
+it's also possible we need to directly command wheel velocities as inputs.
+
+123
+00:08:24,575 --> 00:08:27,830
+We'll now look at how to extend our model and relate
+
+124
+00:08:27,830 --> 00:08:31,230
+each wheel rotational velocity to forward velocity,
+
+125
+00:08:31,230 --> 00:08:33,595
+v, and rotation rate Omega.
+
+126
+00:08:33,595 --> 00:08:38,000
+We'll need a few more variables defined as follows.
+
+127
+00:08:38,000 --> 00:08:41,200
+P is the center of the robot,
+
+128
+00:08:41,200 --> 00:08:46,265
+L is the distance from the center of the robot to each of its wheels,
+
+129
+00:08:46,265 --> 00:08:49,714
+R is the radius of the wheels,
+
+130
+00:08:49,714 --> 00:08:55,295
+w_1 and w_2 are the left and right wheel angular speeds.
+
+131
+00:08:55,295 --> 00:08:58,790
+The velocity of the robot at each wheel is
+
+132
+00:08:58,790 --> 00:09:02,120
+the radius of the wheel times its rotational velocity.
+
+133
+00:09:02,120 --> 00:09:05,240
+So, v equals r times w_i.
+
+134
+00:09:05,240 --> 00:09:09,995
+We can do this by assuming no slip between the wheel and the surface.
+
+135
+00:09:09,995 --> 00:09:12,650
+The velocity of the robot can be computed as
+
+136
+00:09:12,650 --> 00:09:16,715
+the average velocity of both wheels as seen from this figure.
+
+137
+00:09:16,715 --> 00:09:19,730
+When the velocities of both wheels are the same,
+
+138
+00:09:19,730 --> 00:09:21,695
+the robot moves in a straight line.
+
+139
+00:09:21,695 --> 00:09:23,780
+If the wheel velocities are different,
+
+140
+00:09:23,780 --> 00:09:29,630
+the robot moves in a curved path about some instantaneous center of rotation or ICR.
+
+141
+00:09:29,630 --> 00:09:35,720
+We'll now use the notion of ICR to define the kinematic model for our two wheeled robot.
+
+142
+00:09:35,720 --> 00:09:38,740
+We again have that the rotation rate Omega,
+
+143
+00:09:38,740 --> 00:09:40,780
+is equal to v over r,
+
+144
+00:09:40,780 --> 00:09:44,570
+and can use similar triangles to define two expressions for
+
+145
+00:09:44,570 --> 00:09:49,000
+Omega in terms of v_2 and Rho, and v_1,
+
+146
+00:09:49,000 --> 00:09:55,190
+v_2 and L. Combining these equations with our expression for
+
+147
+00:09:55,190 --> 00:09:57,920
+velocities v_1 and v_2 in terms of
+
+148
+00:09:57,920 --> 00:10:00,260
+the wheel rotation speeds yields
+
+149
+00:10:00,260 --> 00:10:04,390
+the final form of the equation for the rotation rate of the robot.
+
+150
+00:10:04,390 --> 00:10:08,810
+We now return to our original robot model and substitute in
+
+151
+00:10:08,810 --> 00:10:13,505
+the new expressions for the velocity and rotation rate of the two wheeled robot.
+
+152
+00:10:13,505 --> 00:10:18,110
+We can see that the inputs of this model are w_1 and w_2,
+
+153
+00:10:18,110 --> 00:10:20,060
+which are the wheel's angular speeds.
+
+154
+00:10:20,060 --> 00:10:24,080
+The state remains the same for both robots.
+
+155
+00:10:24,080 --> 00:10:27,810
+Also by discretizing the continuous time equations,
+
+156
+00:10:27,810 --> 00:10:32,930
+we can convert our model from the differential form to a finite difference form.
+
+157
+00:10:32,930 --> 00:10:36,920
+This form is convenient for controller design as we'll see shortly,
+
+158
+00:10:36,920 --> 00:10:40,415
+as well as for simulation and state estimation purposes.
+
+159
+00:10:40,415 --> 00:10:45,730
+Note that the subscript k means the value of the variables at the current time step,
+
+160
+00:10:45,730 --> 00:10:51,780
+and the subscript k plus 1 will refer to values of the variables at the next time step.
+
+161
+00:10:52,420 --> 00:10:58,285
+To summarize, in this lesson we covered 2D coordinate frames and transformations.
+
+162
+00:10:58,285 --> 00:11:03,710
+We also covered continuous and discrete kinematic models for a two-wheeled robot.
+
+163
+00:11:03,710 --> 00:11:07,790
+In the next video, we'll develop a kinematic bicycle model,
+
+164
+00:11:07,790 --> 00:11:10,489
+a convenient and compact tool for representing
+
+165
+00:11:10,489 --> 00:11:14,200
+a self-driving car's motion. See you next time.

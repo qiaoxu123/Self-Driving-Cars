@@ -1,0 +1,155 @@
+1
+00:00:18,200 --> 00:00:24,915
+Welcome to the first course of the University of Toronto self-driving car specialization.
+
+2
+00:00:24,915 --> 00:00:29,085
+My name is Steven and I'll be your instructor throughout this course.
+
+3
+00:00:29,085 --> 00:00:32,190
+This course is designed to introduce you to the world of
+
+4
+00:00:32,190 --> 00:00:35,490
+autonomous vehicles or more simply self-driving cars.
+
+5
+00:00:35,490 --> 00:00:39,795
+We'll start off by identifying what we mean by the driving task,
+
+6
+00:00:39,795 --> 00:00:41,960
+and then list out elements of driving;
+
+7
+00:00:41,960 --> 00:00:45,290
+all those things that you do automatically when you're behind the steering wheel,
+
+8
+00:00:45,290 --> 00:00:49,805
+this includes many perception tasks, identifying road signs,
+
+9
+00:00:49,805 --> 00:00:51,695
+other vehicles and pedestrians,
+
+10
+00:00:51,695 --> 00:00:53,380
+and predicting their actions,
+
+11
+00:00:53,380 --> 00:00:57,800
+as well as making many kinds of decisions to maneuver safely through traffic.
+
+12
+00:00:57,800 --> 00:01:00,605
+Then, we'll go through the different ways to design
+
+13
+00:01:00,605 --> 00:01:03,920
+a basic self-driving car hardware configuration,
+
+14
+00:01:03,920 --> 00:01:06,320
+discuss a generic software stack to
+
+15
+00:01:06,320 --> 00:01:09,670
+decompose the driving task into manageable components,
+
+16
+00:01:09,670 --> 00:01:13,835
+and discuss how to represent the perceived environment for decision-making.
+
+17
+00:01:13,835 --> 00:01:17,570
+Next, we will study how to incorporate safety considerations
+
+18
+00:01:17,570 --> 00:01:21,735
+into autonomous vehicle design both in software and in hardware.
+
+19
+00:01:21,735 --> 00:01:25,850
+From there, we will move into vehicle modelling and control where we will
+
+20
+00:01:25,850 --> 00:01:30,215
+develop a vehicle model that captures longitudinal and lateral dynamics,
+
+21
+00:01:30,215 --> 00:01:33,775
+define a controller that regulates the speed of the vehicle,
+
+22
+00:01:33,775 --> 00:01:37,610
+define a path following controller to track a desired path,
+
+23
+00:01:37,610 --> 00:01:39,740
+and even look at state of the art model
+
+24
+00:01:39,740 --> 00:01:44,825
+predictive trajectory controllers for precisely executing challenging maneuvers.
+
+25
+00:01:44,825 --> 00:01:46,400
+At the end of this course,
+
+26
+00:01:46,400 --> 00:01:50,540
+you will work on a realistic project that will navigate a self-driving car around
+
+27
+00:01:50,540 --> 00:01:53,285
+a race track in the CARLA simulation environment
+
+28
+00:01:53,285 --> 00:01:55,940
+which I'll introduce to you later in this course.
+
+29
+00:01:55,940 --> 00:01:58,640
+You'll test the limits of your control design,
+
+30
+00:01:58,640 --> 00:02:03,425
+and learn the challenges inherent in driving at the limit of vehicle performance.
+
+31
+00:02:03,425 --> 00:02:05,600
+These topics should establish
+
+32
+00:02:05,600 --> 00:02:10,015
+the basic terminology for self-driving use throughout the specialization,
+
+33
+00:02:10,015 --> 00:02:14,120
+list out the most important requirements for building self-driving solutions,
+
+34
+00:02:14,120 --> 00:02:19,460
+and show how you can execute a dynamic driving maneuver in a self-driving car.
+
+35
+00:02:19,460 --> 00:02:22,910
+I'm very excited to be introducing you to these ideas.
+
+36
+00:02:22,910 --> 00:02:25,490
+I hope they will be useful for you as you go
+
+37
+00:02:25,490 --> 00:02:29,345
+forth to help make self-driving vehicles a part of our daily lives.
+
+38
+00:02:29,345 --> 00:02:30,865
+So, let's get started,
+
+39
+00:02:30,865 --> 00:02:34,510
+it's a great day to build self-driving cars.

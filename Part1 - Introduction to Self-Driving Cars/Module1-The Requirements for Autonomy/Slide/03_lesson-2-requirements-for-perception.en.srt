@@ -1,0 +1,543 @@
+1
+00:00:13,940 --> 00:00:17,315
+Welcome to the second lesson in this module.
+
+2
+00:00:17,315 --> 00:00:18,730
+In the previous lesson,
+
+3
+00:00:18,730 --> 00:00:21,125
+we learned how to classify automation
+
+4
+00:00:21,125 --> 00:00:24,755
+according to its capabilities and operational design domain.
+
+5
+00:00:24,755 --> 00:00:29,975
+In this lesson, we will start analyzing how a driving task is performed.
+
+6
+00:00:29,975 --> 00:00:34,565
+More specifically, we will go over the many processes of perception.
+
+7
+00:00:34,565 --> 00:00:37,910
+We will first define the perception task,
+
+8
+00:00:37,910 --> 00:00:40,790
+listing out the requirements for perceptions such as
+
+9
+00:00:40,790 --> 00:00:44,405
+what static and dynamic objects we need to identify,
+
+10
+00:00:44,405 --> 00:00:50,305
+and what needs we have for tracking the ego vehicles motion through the environment.
+
+11
+00:00:50,305 --> 00:00:53,270
+Finally, we will conclude with a discussion on
+
+12
+00:00:53,270 --> 00:00:57,500
+some challenges to robust perception. So let's dive in.
+
+13
+00:00:57,500 --> 00:01:02,810
+Very roughly speaking, any driving tasks can be broken down into two components.
+
+14
+00:01:02,810 --> 00:01:06,730
+First, we need to understand what's happening around us and where we are.
+
+15
+00:01:06,730 --> 00:01:09,745
+So, we need to perceive our surroundings.
+
+16
+00:01:09,745 --> 00:01:12,685
+Secondly, we need to make a driving decision.
+
+17
+00:01:12,685 --> 00:01:19,120
+For example, should we accelerate or stop before a pedestrian about to enter the roadway?
+
+18
+00:01:19,120 --> 00:01:22,240
+Recall from the previous lesson the concept of
+
+19
+00:01:22,240 --> 00:01:26,185
+OEDR or object and event detection and response.
+
+20
+00:01:26,185 --> 00:01:29,860
+Any driving task requires some kind of OEDR, that is,
+
+21
+00:01:29,860 --> 00:01:33,370
+we need some way of identifying objects around us,
+
+22
+00:01:33,370 --> 00:01:35,765
+recognizing events happening near us,
+
+23
+00:01:35,765 --> 00:01:37,705
+and then responding to it.
+
+24
+00:01:37,705 --> 00:01:41,330
+Recall that the classification of automated systems that we
+
+25
+00:01:41,330 --> 00:01:44,735
+discussed had OEDR as one of the criteria.
+
+26
+00:01:44,735 --> 00:01:47,630
+In other words, if we want to build a self-driving car,
+
+27
+00:01:47,630 --> 00:01:50,510
+we need to be able to perform OEDR.
+
+28
+00:01:50,510 --> 00:01:55,595
+Let's go further and analyze a crucial part of OEDR perception.
+
+29
+00:01:55,595 --> 00:01:57,590
+So, what is perception?
+
+30
+00:01:57,590 --> 00:02:00,620
+As we discussed, we want to be able to make sense of
+
+31
+00:02:00,620 --> 00:02:04,225
+the environment around us and the way we're moving within it.
+
+32
+00:02:04,225 --> 00:02:08,059
+In particular, for any agent or element on the road,
+
+33
+00:02:08,059 --> 00:02:10,790
+we need to first identify what it is;
+
+34
+00:02:10,790 --> 00:02:14,150
+a car, a cyclist, a bus, etc.
+
+35
+00:02:14,150 --> 00:02:17,685
+And second, we want to understand its motion;
+
+36
+00:02:17,685 --> 00:02:22,500
+has it been moving in a certain way that can tell us what it will do next.
+
+37
+00:02:22,780 --> 00:02:27,820
+As humans, we're really good at understanding patterns.
+
+38
+00:02:27,820 --> 00:02:31,459
+However, it's still difficult for computer systems to be able to recognize
+
+39
+00:02:31,459 --> 00:02:35,405
+these same patterns around us as quickly as we do.
+
+40
+00:02:35,405 --> 00:02:37,955
+We can point to a car going straight and say,
+
+41
+00:02:37,955 --> 00:02:41,855
+"Oh, it will be in this position in some amount of time in the future."
+
+42
+00:02:41,855 --> 00:02:44,390
+This is what makes driving possible for us.
+
+43
+00:02:44,390 --> 00:02:46,670
+So, this ability of predicting
+
+44
+00:02:46,670 --> 00:02:50,930
+the trajectory of a moving object is really important to perception.
+
+45
+00:02:50,930 --> 00:02:53,450
+If we can do this prediction correctly,
+
+46
+00:02:53,450 --> 00:02:55,340
+we can make informed decisions.
+
+47
+00:02:55,340 --> 00:02:59,135
+For example, if I know what the car in front of me is going to do next,
+
+48
+00:02:59,135 --> 00:03:04,550
+then I can decide what to do next in such a way that both of our goals are met.
+
+49
+00:03:04,550 --> 00:03:07,760
+Let's discuss the various elements we need to
+
+50
+00:03:07,760 --> 00:03:10,945
+be able to identify for the perception task.
+
+51
+00:03:10,945 --> 00:03:14,345
+First, we need to identify static elements.
+
+52
+00:03:14,345 --> 00:03:17,809
+These are elements like roads and lane markings,
+
+53
+00:03:17,809 --> 00:03:21,980
+things that segregate regions on the roads like zebra crossings,
+
+54
+00:03:21,980 --> 00:03:25,325
+and important messages such as school up ahead.
+
+55
+00:03:25,325 --> 00:03:28,625
+These are all on the road area.
+
+56
+00:03:28,625 --> 00:03:31,640
+Then there are off-road elements like curbs that
+
+57
+00:03:31,640 --> 00:03:34,795
+define the boundaries within which we can drive.
+
+58
+00:03:34,795 --> 00:03:38,090
+There are the on-road traffic signals that periodically
+
+59
+00:03:38,090 --> 00:03:41,180
+change and signal whether you are allowed to move forward,
+
+60
+00:03:41,180 --> 00:03:42,320
+or left, or right,
+
+61
+00:03:42,320 --> 00:03:43,990
+or just stay stopped.
+
+62
+00:03:43,990 --> 00:03:48,220
+Then there are all kinds of road signs like those telling you the speed limit,
+
+63
+00:03:48,220 --> 00:03:51,340
+indicating direction, whether there is a hospital coming up,
+
+64
+00:03:51,340 --> 00:03:53,395
+or a school coming up, and so on.
+
+65
+00:03:53,395 --> 00:03:55,970
+Again, these are off-road elements.
+
+66
+00:03:55,970 --> 00:03:58,305
+Finally, there are road obstructions.
+
+67
+00:03:58,305 --> 00:04:00,580
+So, the orange cones that tell you construction is
+
+68
+00:04:00,580 --> 00:04:03,490
+happening or that there is roadblock edge and so on.
+
+69
+00:04:03,490 --> 00:04:06,560
+Also, these are on road elements.
+
+70
+00:04:06,560 --> 00:04:12,205
+Second, let's discuss the dynamic elements that we need to identify for perception.
+
+71
+00:04:12,205 --> 00:04:14,860
+These are the elements whose motion we need to
+
+72
+00:04:14,860 --> 00:04:17,950
+predict to make informed driving decisions.
+
+73
+00:04:17,950 --> 00:04:21,460
+We need to identify other vehicles on the road,
+
+74
+00:04:21,460 --> 00:04:25,340
+so four wheelers like trucks, buses, cars,
+
+75
+00:04:25,340 --> 00:04:31,255
+and so on, and then we also need to identify and predict the motion of two wheelers,
+
+76
+00:04:31,255 --> 00:04:34,480
+like motorcycles, bicycles, and so forth.
+
+77
+00:04:34,480 --> 00:04:38,860
+These are all moving systems with more freedom than four wheelers,
+
+78
+00:04:38,860 --> 00:04:41,335
+and so they are harder to predict.
+
+79
+00:04:41,335 --> 00:04:44,500
+Finally, we should also be able to identify and
+
+80
+00:04:44,500 --> 00:04:47,160
+predict the motion of pedestrians around us.
+
+81
+00:04:47,160 --> 00:04:49,600
+How pedestrians behave is very different from
+
+82
+00:04:49,600 --> 00:04:52,330
+vehicles as pedestrians are known to be much more
+
+83
+00:04:52,330 --> 00:04:55,150
+erratic than vehicles in their motion because of
+
+84
+00:04:55,150 --> 00:04:59,090
+the inherent freedom that humans have in the way they move.
+
+85
+00:04:59,190 --> 00:05:04,180
+Another crucial goal for perception is ego localization.
+
+86
+00:05:04,180 --> 00:05:09,620
+We need to be able to estimate where we are and how we are moving at any point in time.
+
+87
+00:05:09,620 --> 00:05:13,115
+Knowing our position and how we are moving in the environment
+
+88
+00:05:13,115 --> 00:05:17,000
+is crucial to making informed and safe driving decisions.
+
+89
+00:05:17,000 --> 00:05:21,725
+The data used for ego motion estimation comes from GPS, IMU,
+
+90
+00:05:21,725 --> 00:05:24,200
+and odometry sensors, and needs to be
+
+91
+00:05:24,200 --> 00:05:28,250
+combined together to generate a coherent picture of our position.
+
+92
+00:05:28,250 --> 00:05:31,700
+The second and third courses of this specialization
+
+93
+00:05:31,700 --> 00:05:34,985
+will dive deeply into these essential perception tasks,
+
+94
+00:05:34,985 --> 00:05:38,240
+starting with ego localization in course two,
+
+95
+00:05:38,240 --> 00:05:42,970
+and followed by on and off road object detection and tracking in course three.
+
+96
+00:05:42,970 --> 00:05:46,235
+Now that we've discussed the main goals for perception,
+
+97
+00:05:46,235 --> 00:05:51,995
+let's conclude this discussion by going over why perception is also a difficult problem.
+
+98
+00:05:51,995 --> 00:05:56,665
+First, performing robust perception is a huge challenge.
+
+99
+00:05:56,665 --> 00:06:01,639
+Detection and segmentation can be approached with modern machine learning methods,
+
+100
+00:06:01,639 --> 00:06:04,400
+but there is much ongoing research to improve
+
+101
+00:06:04,400 --> 00:06:08,960
+the reliability and performance to achieve human level capability.
+
+102
+00:06:08,960 --> 00:06:12,785
+Access to large datasets is critical to this effort.
+
+103
+00:06:12,785 --> 00:06:14,500
+With more training data,
+
+104
+00:06:14,500 --> 00:06:19,285
+our segmentation and detection models perform better and more robustly,
+
+105
+00:06:19,285 --> 00:06:22,850
+but collecting and labeling data for all possible vehicle types,
+
+106
+00:06:22,850 --> 00:06:28,790
+weather conditions, and road surfaces is a very expensive and time-consuming process.
+
+107
+00:06:28,790 --> 00:06:33,200
+Second, perception is not immune to censor uncertainty.
+
+108
+00:06:33,200 --> 00:06:36,319
+There are many times that visibility can be challenging,
+
+109
+00:06:36,319 --> 00:06:38,585
+or GPS measurements get corrupted,
+
+110
+00:06:38,585 --> 00:06:43,385
+or LIDAR and Radar returns are noisy in terms of their position value.
+
+111
+00:06:43,385 --> 00:06:45,740
+Every subsystem that relies on
+
+112
+00:06:45,740 --> 00:06:49,580
+these sensors must take uncertain measurements into account.
+
+113
+00:06:49,580 --> 00:06:54,230
+This is why it is absolutely crucial to design subsystems that can
+
+114
+00:06:54,230 --> 00:06:59,945
+accommodate sensor uncertainty and corrupted measurements in every perception task.
+
+115
+00:06:59,945 --> 00:07:05,410
+Then there are effects such as occlusion and reflection in camera or LIDAR data.
+
+116
+00:07:05,410 --> 00:07:09,350
+These can confuse perception methods with ambiguous information that
+
+117
+00:07:09,350 --> 00:07:13,760
+is challenging to resolve into accurate estimates of object locations.
+
+118
+00:07:13,760 --> 00:07:18,955
+There are also effects such as drastic illumination changes and lens flare,
+
+119
+00:07:18,955 --> 00:07:21,920
+or GPS outages and tunnels which makes
+
+120
+00:07:21,920 --> 00:07:25,310
+some sensor data completely unusable or unavailable.
+
+121
+00:07:25,310 --> 00:07:28,730
+Perception methods need multiple redundant sources of
+
+122
+00:07:28,730 --> 00:07:32,620
+information to overcome sensor data loss.
+
+123
+00:07:32,620 --> 00:07:36,230
+Finally, there's weather and precipitation that can
+
+124
+00:07:36,230 --> 00:07:39,260
+adversely affect the quality of input data from sensors.
+
+125
+00:07:39,260 --> 00:07:40,970
+So, it is crucial to have
+
+126
+00:07:40,970 --> 00:07:44,540
+at least some sensors that are immune to different weather conditions,
+
+127
+00:07:44,540 --> 00:07:46,235
+for example radar.
+
+128
+00:07:46,235 --> 00:07:48,250
+Let's summarize.
+
+129
+00:07:48,250 --> 00:07:52,625
+In this video, we briefly went through the main tasks for perception.
+
+130
+00:07:52,625 --> 00:07:56,390
+The task of detecting and assessing various types of
+
+131
+00:07:56,390 --> 00:08:00,670
+static and dynamic objects and agents in the environment,
+
+132
+00:08:00,670 --> 00:08:06,305
+and the task of making sense of how the ego vehicle is moving through the environment.
+
+133
+00:08:06,305 --> 00:08:11,435
+Finally, we concluded with a discussion of why perception is a hard problem.
+
+134
+00:08:11,435 --> 00:08:13,130
+That's it for this video.
+
+135
+00:08:13,130 --> 00:08:15,170
+See you in the next video where we will be
+
+136
+00:08:15,170 --> 00:08:19,230
+discussing the decision-making aspects of autonomous driving.

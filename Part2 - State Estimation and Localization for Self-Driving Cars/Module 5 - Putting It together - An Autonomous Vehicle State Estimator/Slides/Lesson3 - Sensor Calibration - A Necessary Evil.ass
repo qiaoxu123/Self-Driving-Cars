@@ -1,0 +1,1423 @@
+WEBVTT
+
+1
+00:00:14.210 --> 00:00:16.710
+Now that we've seen
+how we can combine
+
+2
+00:00:16.710 --> 00:00:18.360
+multiple sources
+of sensor data
+
+3
+00:00:18.360 --> 00:00:19.905
+to estimate
+the vehicle state,
+
+4
+00:00:19.905 --> 00:00:21.900
+it's time to address
+a topic that we've
+
+5
+00:00:21.900 --> 00:00:24.165
+so far been sweeping
+under the rug.
+
+6
+00:00:24.165 --> 00:00:26.385
+That topic is
+Sensor Calibration,
+
+7
+00:00:26.385 --> 00:00:27.660
+and it's one of
+those things that
+
+8
+00:00:27.660 --> 00:00:29.010
+engineers don't
+really like
+
+9
+00:00:29.010 --> 00:00:31.020
+talking about but
+it's absolutely
+
+10
+00:00:31.020 --> 00:00:32.190
+essential for doing state
+
+11
+00:00:32.190 --> 00:00:33.330
+estimation properly.
+
+12
+00:00:33.330 --> 00:00:34.890
+Personally, calibration
+
+13
+00:00:34.890 --> 00:00:36.000
+is near and dear
+to me since
+
+14
+00:00:36.000 --> 00:00:37.890
+my doctoral
+research focused on
+
+15
+00:00:37.890 --> 00:00:40.065
+calibration for
+cameras and IMUs,
+
+16
+00:00:40.065 --> 00:00:41.570
+and it's a topic
+that my students are
+
+17
+00:00:41.570 --> 00:00:43.235
+continuing to
+research today.
+
+18
+00:00:43.235 --> 00:00:45.050
+In this video,
+we'll discuss
+
+19
+00:00:45.050 --> 00:00:47.239
+the three main types
+of sensor calibration
+
+20
+00:00:47.239 --> 00:00:48.260
+and why we need to
+
+21
+00:00:48.260 --> 00:00:49.370
+think about
+them when we're
+
+22
+00:00:49.370 --> 00:00:50.750
+designing
+a state estimator
+
+23
+00:00:50.750 --> 00:00:51.880
+for a self-driving car.
+
+24
+00:00:51.880 --> 00:00:53.900
+The three main types
+of calibration will
+
+25
+00:00:53.900 --> 00:00:56.000
+talk about are
+intrinsic calibration,
+
+26
+00:00:56.000 --> 00:00:56.540
+which deals with
+
+27
+00:00:56.540 --> 00:00:58.400
+sensors specific
+parameters,
+
+28
+00:00:58.400 --> 00:00:59.990
+extrinsic calibration,
+
+29
+00:00:59.990 --> 00:01:01.700
+which deals with
+how the sensors are
+
+30
+00:01:01.700 --> 00:01:04.045
+positioned and oriented
+on the vehicle,
+
+31
+00:01:04.045 --> 00:01:06.530
+and temporal calibration,
+which deals with
+
+32
+00:01:06.530 --> 00:01:07.760
+the time offset between
+
+33
+00:01:07.760 --> 00:01:09.605
+different sensor
+measurements.
+
+34
+00:01:09.605 --> 00:01:12.845
+Let's look at intrinsic
+calibration first.
+
+35
+00:01:12.845 --> 00:01:15.095
+In intrinsic calibration,
+
+36
+00:01:15.095 --> 00:01:15.980
+we want to determine
+
+37
+00:01:15.980 --> 00:01:18.590
+the fixed parameters
+of our sensor models,
+
+38
+00:01:18.590 --> 00:01:19.670
+so that we can use them in
+
+39
+00:01:19.670 --> 00:01:20.420
+an estimator like
+
+40
+00:01:20.420 --> 00:01:22.565
+an extended Kalman filter.
+
+41
+00:01:22.565 --> 00:01:24.950
+Every sensor
+has parameters
+
+42
+00:01:24.950 --> 00:01:26.090
+associated with
+it that are
+
+43
+00:01:26.090 --> 00:01:28.100
+unique to that
+specific sensor and
+
+44
+00:01:28.100 --> 00:01:30.515
+are typically expected
+to be constant.
+
+45
+00:01:30.515 --> 00:01:32.090
+For example, we might have
+
+46
+00:01:32.090 --> 00:01:33.740
+an encoder attached
+to one axle of
+
+47
+00:01:33.740 --> 00:01:34.940
+the car that measures
+
+48
+00:01:34.940 --> 00:01:37.250
+the wheel rotation
+rate omega.
+
+49
+00:01:37.250 --> 00:01:39.560
+If we want to use
+omega to estimate
+
+50
+00:01:39.560 --> 00:01:41.750
+the forward velocity
+v of the wheel,
+
+51
+00:01:41.750 --> 00:01:42.560
+we would need to know
+
+52
+00:01:42.560 --> 00:01:44.300
+the radius R of the wheel,
+
+53
+00:01:44.300 --> 00:01:46.460
+so that we can use
+this in the equation v
+
+54
+00:01:46.460 --> 00:01:49.370
+equals omega times
+R. In this case,
+
+55
+00:01:49.370 --> 00:01:50.570
+R is a parameter of
+
+56
+00:01:50.570 --> 00:01:52.010
+the sensor model
+that is specific
+
+57
+00:01:52.010 --> 00:01:53.060
+to the wheel the encoder
+
+58
+00:01:53.060 --> 00:01:54.830
+is attached to
+and we might
+
+59
+00:01:54.830 --> 00:01:57.230
+have a different R for
+a different wheel.
+
+60
+00:01:57.230 --> 00:01:58.790
+Another example of an
+
+61
+00:01:58.790 --> 00:02:00.170
+intrinsic sensor
+parameter is
+
+62
+00:02:00.170 --> 00:02:01.310
+the elevation angle of
+
+63
+00:02:01.310 --> 00:02:02.450
+a scan line in
+
+64
+00:02:02.450 --> 00:02:04.715
+a LiDAR sensor
+like the Velodyne.
+
+65
+00:02:04.715 --> 00:02:06.590
+The elevation angle
+is a fixed
+
+66
+00:02:06.590 --> 00:02:07.910
+quantity but we
+need to know it
+
+67
+00:02:07.910 --> 00:02:08.930
+ahead of time
+so that we can
+
+68
+00:02:08.930 --> 00:02:11.425
+properly interpret
+each scan.
+
+69
+00:02:11.425 --> 00:02:12.950
+So, how do we determine
+
+70
+00:02:12.950 --> 00:02:14.645
+intrinsic parameters
+like these?
+
+71
+00:02:14.645 --> 00:02:16.070
+Well, there are
+a few practical
+
+72
+00:02:16.070 --> 00:02:17.990
+strategies for doing this.
+
+73
+00:02:17.990 --> 00:02:19.910
+The easiest one
+is just let
+
+74
+00:02:19.910 --> 00:02:21.950
+the manufacturer
+do it for you.
+
+75
+00:02:21.950 --> 00:02:24.320
+Often, sensors
+are calibrated
+
+76
+00:02:24.320 --> 00:02:26.465
+in the factory and
+come with a spec sheet
+
+77
+00:02:26.465 --> 00:02:27.800
+that tells you
+all the numbers
+
+78
+00:02:27.800 --> 00:02:28.520
+you need to plug into
+
+79
+00:02:28.520 --> 00:02:29.390
+your model to make
+
+80
+00:02:29.390 --> 00:02:31.030
+sense of the measurements.
+
+81
+00:02:31.030 --> 00:02:33.155
+This is usually
+a good starting point
+
+82
+00:02:33.155 --> 00:02:34.670
+but it won't always
+be good enough
+
+83
+00:02:34.670 --> 00:02:37.010
+to do really accurate
+state estimation
+
+84
+00:02:37.010 --> 00:02:38.690
+because no two sensors are
+
+85
+00:02:38.690 --> 00:02:40.310
+exactly alike
+and there'll be
+
+86
+00:02:40.310 --> 00:02:41.540
+some variation in the true
+
+87
+00:02:41.540 --> 00:02:43.860
+values of the parameters.
+
+88
+00:02:43.900 --> 00:02:46.430
+Another easy strategy
+that involves
+
+89
+00:02:46.430 --> 00:02:47.840
+a little more work
+is to try
+
+90
+00:02:47.840 --> 00:02:50.195
+measuring these
+parameters by hand.
+
+91
+00:02:50.195 --> 00:02:51.890
+This is pretty
+straightforward
+
+92
+00:02:51.890 --> 00:02:53.150
+for something like a tire,
+
+93
+00:02:53.150 --> 00:02:54.405
+but not so straightforward
+
+94
+00:02:54.405 --> 00:02:55.949
+for something like a LiDAR
+
+95
+00:02:55.949 --> 00:02:57.740
+where it's not exactly
+practical to poke
+
+96
+00:02:57.740 --> 00:03:01.265
+around with a protractor
+inside the sensor.
+
+97
+00:03:01.265 --> 00:03:03.350
+A more sophisticated
+approach
+
+98
+00:03:03.350 --> 00:03:04.730
+involves estimating
+
+99
+00:03:04.730 --> 00:03:05.930
+the intrinsic
+parameters as
+
+100
+00:03:05.930 --> 00:03:07.520
+part of the vehicle state,
+
+101
+00:03:07.520 --> 00:03:09.650
+either on the fly
+or more commonly as
+
+102
+00:03:09.650 --> 00:03:11.135
+a special calibration step
+
+103
+00:03:11.135 --> 00:03:14.110
+before putting the
+sensors into operation.
+
+104
+00:03:14.110 --> 00:03:15.700
+This approach has
+
+105
+00:03:15.700 --> 00:03:16.600
+the advantage of producing
+
+106
+00:03:16.600 --> 00:03:18.340
+an accurate
+calibration that's
+
+107
+00:03:18.340 --> 00:03:20.395
+specific to
+the particular sensor
+
+108
+00:03:20.395 --> 00:03:21.760
+and can also be
+formulated in
+
+109
+00:03:21.760 --> 00:03:23.380
+a way that can handle
+the parameters
+
+110
+00:03:23.380 --> 00:03:26.180
+varying slowly over time.
+
+111
+00:03:26.180 --> 00:03:28.600
+For example, if
+you continually
+
+112
+00:03:28.600 --> 00:03:30.550
+estimate the radius
+of your tires,
+
+113
+00:03:30.550 --> 00:03:31.540
+this could be
+a good way of
+
+114
+00:03:31.540 --> 00:03:33.800
+detecting when
+you have a flat.
+
+115
+00:03:34.040 --> 00:03:35.225
+Now,
+
+116
+00:03:35.225 --> 00:03:36.790
+because the estimators
+we've talked about
+
+117
+00:03:36.790 --> 00:03:38.980
+in this course are
+general purpose,
+
+118
+00:03:38.980 --> 00:03:40.600
+we already have
+the tools to do
+
+119
+00:03:40.600 --> 00:03:42.850
+this kind of
+automatic calibration.
+
+120
+00:03:42.850 --> 00:03:44.950
+To see how this works,
+let's come back to
+
+121
+00:03:44.950 --> 00:03:45.910
+our example of a car
+
+122
+00:03:45.910 --> 00:03:47.420
+moving in one dimension.
+
+123
+00:03:47.420 --> 00:03:49.090
+So, we've attached
+an encoder to
+
+124
+00:03:49.090 --> 00:03:50.290
+the back wheel to
+
+125
+00:03:50.290 --> 00:03:52.330
+measure the wheel
+rotation rate.
+
+126
+00:03:52.330 --> 00:03:53.950
+If we want to estimate
+
+127
+00:03:53.950 --> 00:03:55.120
+the wheel radius along
+
+128
+00:03:55.120 --> 00:03:56.599
+with position
+and velocity,
+
+129
+00:03:56.599 --> 00:03:58.070
+all we need to
+do is add it to
+
+130
+00:03:58.070 --> 00:03:59.360
+the state vector and
+
+131
+00:03:59.360 --> 00:04:00.680
+work out what
+the new motion and
+
+132
+00:04:00.680 --> 00:04:03.005
+observation model
+should be.
+
+133
+00:04:03.005 --> 00:04:05.420
+For the motion model,
+everything is the
+
+134
+00:04:05.420 --> 00:04:06.890
+same as before except
+
+135
+00:04:06.890 --> 00:04:08.210
+now there's
+an extra row and
+
+136
+00:04:08.210 --> 00:04:09.620
+column in the matrix
+that says that
+
+137
+00:04:09.620 --> 00:04:11.330
+the wheel radius
+should stay
+
+138
+00:04:11.330 --> 00:04:14.165
+constant from one
+time step to the next.
+
+139
+00:04:14.165 --> 00:04:15.875
+For the observation model,
+
+140
+00:04:15.875 --> 00:04:17.240
+we're still
+observing position
+
+141
+00:04:17.240 --> 00:04:18.935
+directly through GPS
+
+142
+00:04:18.935 --> 00:04:20.600
+but now we're
+also observing
+
+143
+00:04:20.600 --> 00:04:21.680
+the wheel rotation rate
+
+144
+00:04:21.680 --> 00:04:22.780
+through the encoder.
+
+145
+00:04:22.780 --> 00:04:24.140
+So, we include the extra
+
+146
+00:04:24.140 --> 00:04:26.810
+non-linear observation
+in the model.
+
+147
+00:04:26.810 --> 00:04:28.580
+From here, we can use
+
+148
+00:04:28.580 --> 00:04:30.620
+the extended or
+unscented Kalman filter
+
+149
+00:04:30.620 --> 00:04:32.330
+to estimate
+the wheel radius along
+
+150
+00:04:32.330 --> 00:04:32.960
+with the position and
+
+151
+00:04:32.960 --> 00:04:34.555
+velocity of the vehicle.
+
+152
+00:04:34.555 --> 00:04:36.350
+So, intrinsic calibration
+
+153
+00:04:36.350 --> 00:04:37.490
+is essential for doing
+
+154
+00:04:37.490 --> 00:04:40.520
+state estimation with
+even a single sensor.
+
+155
+00:04:40.520 --> 00:04:42.080
+But extrinsic calibration
+
+156
+00:04:42.080 --> 00:04:43.220
+is equally important for
+
+157
+00:04:43.220 --> 00:04:46.705
+fusing information
+from multiple sensors.
+
+158
+00:04:46.705 --> 00:04:49.074
+In extrinsic calibration,
+
+159
+00:04:49.074 --> 00:04:49.790
+we're interested in
+
+160
+00:04:49.790 --> 00:04:51.740
+determining the relative
+poses of all of
+
+161
+00:04:51.740 --> 00:04:53.360
+the sensors usually with
+
+162
+00:04:53.360 --> 00:04:55.295
+respect to
+the vehicle frame.
+
+163
+00:04:55.295 --> 00:04:57.440
+For example, we
+need to know
+
+164
+00:04:57.440 --> 00:04:59.945
+the relative pose of
+the IMU and the LiDAR.
+
+165
+00:04:59.945 --> 00:05:01.400
+So, the rates reported by
+
+166
+00:05:01.400 --> 00:05:02.750
+the IMU are expressed in
+
+167
+00:05:02.750 --> 00:05:04.415
+the same coordinate system
+
+168
+00:05:04.415 --> 00:05:06.500
+as the LiDAR point clouds.
+
+169
+00:05:06.500 --> 00:05:08.750
+Just like with
+intrinsic calibration,
+
+170
+00:05:08.750 --> 00:05:09.890
+there are different
+techniques
+
+171
+00:05:09.890 --> 00:05:12.070
+for doing extrinsic
+calibration.
+
+172
+00:05:12.070 --> 00:05:14.360
+If you're lucky, you
+might have access to
+
+173
+00:05:14.360 --> 00:05:15.500
+an accurate CAD model of
+
+174
+00:05:15.500 --> 00:05:16.720
+the vehicle like this one,
+
+175
+00:05:16.720 --> 00:05:18.140
+where all of
+the sensor frames
+
+176
+00:05:18.140 --> 00:05:20.570
+have been nicely
+laid out for you.
+
+177
+00:05:20.570 --> 00:05:22.900
+If you're less
+lucky, you might be
+
+178
+00:05:22.900 --> 00:05:24.815
+tempted to try
+measuring by hand.
+
+179
+00:05:24.815 --> 00:05:26.455
+Unfortunately,
+this is often
+
+180
+00:05:26.455 --> 00:05:27.880
+difficult or
+impossible to do
+
+181
+00:05:27.880 --> 00:05:30.100
+accurately since
+many sensors have
+
+182
+00:05:30.100 --> 00:05:31.615
+the origin of
+their coordinate system
+
+183
+00:05:31.615 --> 00:05:33.260
+inside the sensor itself,
+
+184
+00:05:33.260 --> 00:05:34.840
+and you probably don't
+want to dismantle
+
+185
+00:05:34.840 --> 00:05:37.075
+your car and all
+of the sensors.
+
+186
+00:05:37.075 --> 00:05:38.920
+Fortunately, we can use
+
+187
+00:05:38.920 --> 00:05:40.000
+a similar trick
+to estimate
+
+188
+00:05:40.000 --> 00:05:41.560
+the extrinsic
+parameters by
+
+189
+00:05:41.560 --> 00:05:43.045
+including them
+in our state.
+
+190
+00:05:43.045 --> 00:05:44.950
+This can become a
+bit complicated
+
+191
+00:05:44.950 --> 00:05:47.095
+for arbitrary sensor
+configurations,
+
+192
+00:05:47.095 --> 00:05:47.830
+and there is still
+
+193
+00:05:47.830 --> 00:05:49.300
+a lot of research
+being done
+
+194
+00:05:49.300 --> 00:05:50.410
+into different techniques
+
+195
+00:05:50.410 --> 00:05:52.580
+for doing this reliably.
+
+196
+00:05:52.580 --> 00:05:55.330
+Finally, an
+often overlooked
+
+197
+00:05:55.330 --> 00:05:56.200
+but still important type
+
+198
+00:05:56.200 --> 00:05:58.945
+of calibration is
+temporal calibration.
+
+199
+00:05:58.945 --> 00:06:00.280
+In all of
+our discussion of
+
+200
+00:06:00.280 --> 00:06:01.510
+multisensory fusion,
+
+201
+00:06:01.510 --> 00:06:03.175
+we've been
+implicitly assuming
+
+202
+00:06:03.175 --> 00:06:04.430
+that all of the
+measurements we've
+
+203
+00:06:04.430 --> 00:06:05.960
+combined are captured
+
+204
+00:06:05.960 --> 00:06:07.310
+exactly the same moment in
+
+205
+00:06:07.310 --> 00:06:09.050
+time or at least
+
+206
+00:06:09.050 --> 00:06:11.690
+close enough for a given
+level of accuracy.
+
+207
+00:06:11.690 --> 00:06:12.560
+But how do we
+
+208
+00:06:12.560 --> 00:06:13.985
+decide whether
+two measurements
+
+209
+00:06:13.985 --> 00:06:14.870
+are close enough to be
+
+210
+00:06:14.870 --> 00:06:16.895
+considered synchronized?
+
+211
+00:06:16.895 --> 00:06:18.740
+Well, the obvious
+thing to do
+
+212
+00:06:18.740 --> 00:06:20.015
+would just be to timestamp
+
+213
+00:06:20.015 --> 00:06:21.380
+each measurement
+when the on-board
+
+214
+00:06:21.380 --> 00:06:22.760
+computer receives it,
+
+215
+00:06:22.760 --> 00:06:23.930
+and match up the
+measurements
+
+216
+00:06:23.930 --> 00:06:25.535
+that are closest
+to each other.
+
+217
+00:06:25.535 --> 00:06:28.040
+For example, if we
+get LiDAR scans at
+
+218
+00:06:28.040 --> 00:06:30.815
+15 hertz and IMU
+readings at 200 hertz,
+
+219
+00:06:30.815 --> 00:06:33.260
+we might want to pair
+each LiDAR scan with
+
+220
+00:06:33.260 --> 00:06:34.955
+the IMU reading
+whose timestamp
+
+221
+00:06:34.955 --> 00:06:36.485
+is the closest match.
+
+222
+00:06:36.485 --> 00:06:38.210
+But in reality, there's
+
+223
+00:06:38.210 --> 00:06:40.010
+an unknown delay
+between when the LiDAR
+
+224
+00:06:40.010 --> 00:06:41.660
+or IMU actually records
+
+225
+00:06:41.660 --> 00:06:43.040
+an observation and when
+
+226
+00:06:43.040 --> 00:06:45.095
+it arrives at
+the computer.
+
+227
+00:06:45.095 --> 00:06:47.080
+These delays can be caused
+
+228
+00:06:47.080 --> 00:06:48.130
+by the time it takes for
+
+229
+00:06:48.130 --> 00:06:49.060
+the sensor data to be
+
+230
+00:06:49.060 --> 00:06:50.900
+transmitted to
+the host computer,
+
+231
+00:06:50.900 --> 00:06:52.440
+or by pre-processing steps
+
+232
+00:06:52.440 --> 00:06:54.360
+performed by
+the sensor circuitry,
+
+233
+00:06:54.360 --> 00:06:55.810
+and the delay
+can be different
+
+234
+00:06:55.810 --> 00:06:57.715
+for different sensors.
+
+235
+00:06:57.715 --> 00:06:59.365
+So, if we want to get
+
+236
+00:06:59.365 --> 00:07:01.630
+a really accurate
+state estimate,
+
+237
+00:07:01.630 --> 00:07:03.220
+we need to think
+about how well
+
+238
+00:07:03.220 --> 00:07:05.300
+our sensors are
+actually synchronized,
+
+239
+00:07:05.300 --> 00:07:06.730
+and there are
+different ways
+
+240
+00:07:06.730 --> 00:07:08.725
+to approach this.
+
+241
+00:07:08.725 --> 00:07:11.410
+The simplest and most
+common thing to do
+
+242
+00:07:11.410 --> 00:07:13.705
+is just to assume
+the delay is zero.
+
+243
+00:07:13.705 --> 00:07:14.740
+You can still get
+
+244
+00:07:14.740 --> 00:07:16.180
+a working estimator
+this way,
+
+245
+00:07:16.180 --> 00:07:17.140
+but the results may be
+
+246
+00:07:17.140 --> 00:07:18.400
+less accurate than
+what you would
+
+247
+00:07:18.400 --> 00:07:21.800
+get with a better
+temporal calibration.
+
+248
+00:07:21.960 --> 00:07:24.760
+Another common
+strategy is to use
+
+249
+00:07:24.760 --> 00:07:26.140
+hardware timing signals
+
+250
+00:07:26.140 --> 00:07:27.820
+to synchronize
+the sensors,
+
+251
+00:07:27.820 --> 00:07:29.630
+but this is often
+an option only for
+
+252
+00:07:29.630 --> 00:07:32.075
+more expensive
+sensor setups.
+
+253
+00:07:32.075 --> 00:07:33.905
+As you may have guessed,
+
+254
+00:07:33.905 --> 00:07:36.170
+it's also possible
+to try estimating
+
+255
+00:07:36.170 --> 00:07:37.490
+these time delays as
+
+256
+00:07:37.490 --> 00:07:38.960
+part of the vehicle state,
+
+257
+00:07:38.960 --> 00:07:40.700
+but this can get
+complicated.
+
+258
+00:07:40.700 --> 00:07:42.590
+In fact, an
+entire chapter of
+
+259
+00:07:42.590 --> 00:07:44.450
+my PhD dissertation
+was dedicated to
+
+260
+00:07:44.450 --> 00:07:46.985
+solving this temporal
+calibration problem
+
+261
+00:07:46.985 --> 00:07:49.315
+for a camera IMU pair.
+
+262
+00:07:49.315 --> 00:07:51.530
+So, we have seen
+the different types of
+
+263
+00:07:51.530 --> 00:07:52.970
+calibration we
+should be thinking
+
+264
+00:07:52.970 --> 00:07:54.830
+about when designing
+an estimator
+
+265
+00:07:54.830 --> 00:07:56.330
+for a self-driving car,
+
+266
+00:07:56.330 --> 00:07:57.830
+but how much of
+a difference does
+
+267
+00:07:57.830 --> 00:08:01.285
+good calibration really
+make in practice?
+
+268
+00:08:01.285 --> 00:08:04.055
+Here's a video comparing
+the results of
+
+269
+00:08:04.055 --> 00:08:06.635
+good calibration
+and bad calibration
+
+270
+00:08:06.635 --> 00:08:08.885
+for a LiDAR mapping task.
+
+271
+00:08:08.885 --> 00:08:11.105
+You'll notice in
+the video that
+
+272
+00:08:11.105 --> 00:08:13.400
+the point cloud in
+the calibrated case is
+
+273
+00:08:13.400 --> 00:08:15.230
+much more crisp than
+
+274
+00:08:15.230 --> 00:08:17.660
+the point cloud in
+the uncalibrated case.
+
+275
+00:08:17.660 --> 00:08:19.280
+In the uncalibrated case,
+
+276
+00:08:19.280 --> 00:08:20.885
+the point cloud is fuzzy,
+
+277
+00:08:20.885 --> 00:08:22.280
+it's smeared and you
+
+278
+00:08:22.280 --> 00:08:23.930
+may see objects that are
+
+279
+00:08:23.930 --> 00:08:25.640
+repeated or objects that
+
+280
+00:08:25.640 --> 00:08:27.205
+are in fact
+entirely missed,
+
+281
+00:08:27.205 --> 00:08:30.320
+because the LiDAR is
+not correctly aligned
+
+282
+00:08:30.320 --> 00:08:31.805
+with the inertial sensor.
+
+283
+00:08:31.805 --> 00:08:34.370
+To summarize,
+sensor fusion
+
+284
+00:08:34.370 --> 00:08:37.140
+is impossible
+without calibration.
+
+285
+00:08:37.140 --> 00:08:39.250
+In this video, you
+
+286
+00:08:39.250 --> 00:08:41.715
+learned about
+intrinsic calibration,
+
+287
+00:08:41.715 --> 00:08:42.920
+which deals with
+calibrating
+
+288
+00:08:42.920 --> 00:08:45.305
+the parameters of
+our sensor models.
+
+289
+00:08:45.305 --> 00:08:47.450
+Extrinsic calibration,
+which gives
+
+290
+00:08:47.450 --> 00:08:49.130
+us the coordinate
+transformations we
+
+291
+00:08:49.130 --> 00:08:51.305
+need to transform
+sensor measurements
+
+292
+00:08:51.305 --> 00:08:53.530
+into a common
+reference frame.
+
+293
+00:08:53.530 --> 00:08:55.255
+Temporal calibration,
+
+294
+00:08:55.255 --> 00:08:56.569
+which deals with
+synchronizing
+
+295
+00:08:56.569 --> 00:08:58.490
+measurements to
+ensure they all
+
+296
+00:08:58.490 --> 00:09:01.595
+correspond to
+the same vehicle state.
+
+297
+00:09:01.595 --> 00:09:02.510
+While there are
+
+298
+00:09:02.510 --> 00:09:03.860
+some standard
+techniques for
+
+299
+00:09:03.860 --> 00:09:05.570
+solving all of
+these problems,
+
+300
+00:09:05.570 --> 00:09:06.890
+calibration is still very
+
+301
+00:09:06.890 --> 00:09:08.675
+much an active area
+of research.
+
+302
+00:09:08.675 --> 00:09:09.980
+In the next video, we'll
+
+303
+00:09:09.980 --> 00:09:11.000
+take a look at
+what happens
+
+304
+00:09:11.000 --> 00:09:13.310
+when one or more of
+our sensors fails,
+
+305
+00:09:13.310 --> 00:09:14.300
+and how we can ensure that
+
+306
+00:09:14.300 --> 00:09:15.590
+a self-driving car is
+
+307
+00:09:15.590 --> 00:09:16.880
+able to continue
+to operate
+
+308
+00:09:16.880 --> 00:09:19.170
+safely in these cases.

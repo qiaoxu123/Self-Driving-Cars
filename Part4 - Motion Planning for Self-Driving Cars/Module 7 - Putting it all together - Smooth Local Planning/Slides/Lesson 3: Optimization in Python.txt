@@ -1,0 +1,85 @@
+Hello everyone. In this lesson, we're going to go
+over the basics of optimization in Python to help cement some of the
+optimization concepts we've discussed in the previous
+lessons of this module, and in fact, throughout
+this specialization. In particular, we're
+going to go through some of the functions
+required to solve a generic non-linear
+optimization problem using the SciPy optimize library. By the end of this video, you should know how
+to set up and call a constrained optimization
+problem using this library. In particular, you
+should know how to pass Jacobians to the optimizer, as well as any required
+parameter bounds defined in the
+optimization problem. So let's get started. The field of optimization is
+a wonderfully rich area of study which we cannot explore in detail in
+this specialization. The SciPy optimized library
+covers a handful of some of the most popular
+optimization algorithms making them easily accessible and ensuring reasonable efficiency in
+their implementation. Many of the implemented
+optimization methods have a similar structure in terms of what type of parameters
+they require. So to abstract this away
+into a simple interface, the SciPy optimized library contains a generic
+minimize function. Some examples of the available
+optimization methods include conjugate gradient, Nelder-Mead, dogleg, and BFGS. For more details
+on these methods, see the links in
+the supplemental materials. The specific
+optimization algorithm run by the library will depend on the method parameter that you pass to this function. The method parameter
+will also determine which additional parameters the optimization
+algorithm requires. For example, in the L-BFGS-B
+algorithm that we'll use, we require not only
+the model to minimize, but also the models Jacobian
+and variable bounds. In the case where the model is a single scalar valued function, the Jacobian reduces
+to the gradient. This Jacobian is passed to
+the minimize function through the jac parameter as shown
+in this function call. The actual function
+we wish to minimize is the first argument to
+the minimize function. The constraints are
+passed to the constraints variable as a list of constraint
+dictionaries or objects. In addition, there is also the optional options
+parameter which advanced users can use to customize things like what
+is output by the optimizer. These optimization
+algorithms also require an initial guess for the optimization variables for the model or objective function, and this is given by x
+naught in the function call. Let's look at
+the BFGS algorithm for a concrete example of how to implement an
+optimization with SciPy. Essentially for
+the BFGS algorithm, we are required to pass in the function pointer to the actual objective
+function we wish to minimize as well as
+a function pointer to a function that evaluates the Jacobian of
+the objective function. These functions will
+take in a vector of all of the
+optimization variables in order to evaluate the objective function and the Jacobian at a specific point. Once the optimization
+is complete, the minimize function will
+return a result variable. The member variable of the results denoted
+by x will return the final vector of optimization variables where the local minima
+has been achieved. As we mentioned earlier, we can also specify constraints for
+our optimization problems. For most algorithms,
+these constraints are given in the form of
+lists or dictionaries. The simplest type
+of constraints are inequality constraints on the objective variables
+called bounds. Bounds are specified by the L-BFGS-B algorithm
+as a list of lists, where each sub-list is of
+length two and contains the upper and lower bound for
+each optimization variable. In other words,
+the first sub-list corresponds to
+the bounds for x 0, and the second sub-list
+for x 1 etc. These bounds are then passed to the constraints
+optional parameter of the minimize function. Linear and non-linear constraints can also be passed
+to the optimizer, but for now we will
+focus on using bounds for optimization
+constraints. For more details, you
+can take a look at the SciPy optimization
+documentation online. You can also combine multiple types of
+constraints by passing in a Python list of
+each constraint object that you would like to use
+in the optimizer function. To summarize, in this video
+we introduced how to set up an optimization problem using the SciPy optimization library. In particular, we
+discussed how to pass in user-defined objective
+functions in Jacobian's as well as parameter
+bounds to the optimizer. You should now have
+a good idea of how to solve general optimization problems
+using a Python library. For more information,
+you can consult the SciPy optimization
+library documentation. After this lesson, we have a programming assignment
+to give you a chance to practice the concepts
+we've discussed here and to prepare you for
+the end of module project.

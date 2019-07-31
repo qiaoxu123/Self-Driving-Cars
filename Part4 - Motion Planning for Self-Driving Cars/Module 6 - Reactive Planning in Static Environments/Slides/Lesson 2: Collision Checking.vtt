@@ -1,0 +1,1336 @@
+WEBVTT
+
+1
+00:00:14.180 --> 00:00:16.770
+Hello everyone and welcome to
+
+2
+00:00:16.770 --> 00:00:18.060
+our second lesson in
+
+3
+00:00:18.060 --> 00:00:20.505
+our module on reactive
+motion planning.
+
+4
+00:00:20.505 --> 00:00:23.000
+In this video, we'll
+discuss the methods that
+
+5
+00:00:23.000 --> 00:00:25.340
+we can use to ensure
+our motion plans
+
+6
+00:00:25.340 --> 00:00:26.960
+don't collide with obstacles in
+
+7
+00:00:26.960 --> 00:00:28.250
+the environment while we're
+
+8
+00:00:28.250 --> 00:00:30.305
+making progress towards our goal.
+
+9
+00:00:30.305 --> 00:00:32.510
+This step is clearly crucial in
+
+10
+00:00:32.510 --> 00:00:33.680
+maintaining the safety of
+
+11
+00:00:33.680 --> 00:00:35.975
+our autonomous car
+while it's driving.
+
+12
+00:00:35.975 --> 00:00:39.050
+Specifically by
+the end of this video,
+
+13
+00:00:39.050 --> 00:00:40.370
+you should understand some of
+
+14
+00:00:40.370 --> 00:00:43.235
+the challenges of online
+collision checking.
+
+15
+00:00:43.235 --> 00:00:46.295
+You should also understand
+to collision checking methods,
+
+16
+00:00:46.295 --> 00:00:48.035
+swath-based collision checking,
+
+17
+00:00:48.035 --> 00:00:50.110
+and circle-based
+collision checking.
+
+18
+00:00:50.110 --> 00:00:53.570
+Finally, you should understand
+some of the hazards posed
+
+19
+00:00:53.570 --> 00:00:57.020
+by imperfect information
+and discretization errors,
+
+20
+00:00:57.020 --> 00:00:58.610
+and understand how
+we can mitigate
+
+21
+00:00:58.610 --> 00:01:01.310
+these issues with
+conservative approximations.
+
+22
+00:01:01.310 --> 00:01:04.685
+So let's get started.
+At its core,
+
+23
+00:01:04.685 --> 00:01:06.550
+collision checking
+in the context of
+
+24
+00:01:06.550 --> 00:01:08.470
+motion planning is the process
+
+25
+00:01:08.470 --> 00:01:10.509
+of ensuring a given trajectory
+
+26
+00:01:10.509 --> 00:01:12.820
+or planned path when traversed by
+
+27
+00:01:12.820 --> 00:01:14.350
+an object does not
+
+28
+00:01:14.350 --> 00:01:17.020
+collide with any obstacles
+along the way.
+
+29
+00:01:17.020 --> 00:01:19.270
+An important aspect to note about
+
+30
+00:01:19.270 --> 00:01:21.639
+collision checking is
+that it is a challenging,
+
+31
+00:01:21.639 --> 00:01:23.200
+computationally intensive
+
+32
+00:01:23.200 --> 00:01:25.405
+problem present in many domains,
+
+33
+00:01:25.405 --> 00:01:26.980
+including autonomous driving and
+
+34
+00:01:26.980 --> 00:01:28.735
+other robotic applications,
+
+35
+00:01:28.735 --> 00:01:32.745
+gaming, 3D animation,
+and engineering design.
+
+36
+00:01:32.745 --> 00:01:36.565
+Guaranteeing a safe
+collision-free optimal path
+
+37
+00:01:36.565 --> 00:01:37.750
+not only requires
+
+38
+00:01:37.750 --> 00:01:40.130
+perfect information
+about the environment,
+
+39
+00:01:40.130 --> 00:01:42.610
+it also requires
+a prohibitive amount
+
+40
+00:01:42.610 --> 00:01:45.010
+of computation power
+to compute in
+
+41
+00:01:45.010 --> 00:01:47.240
+exact form especially for
+
+42
+00:01:47.240 --> 00:01:50.195
+complex shapes and
+detailed environments.
+
+43
+00:01:50.195 --> 00:01:53.815
+For autonomous driving which
+requires real-time planning,
+
+44
+00:01:53.815 --> 00:01:56.285
+we have neither of
+these available to us.
+
+45
+00:01:56.285 --> 00:01:58.520
+As you can recall
+from module two,
+
+46
+00:01:58.520 --> 00:02:00.110
+the information given to us by
+
+47
+00:02:00.110 --> 00:02:03.190
+the occupancy grid is
+an imperfect estimate,
+
+48
+00:02:03.190 --> 00:02:05.600
+which means that we
+need to add buffers to
+
+49
+00:02:05.600 --> 00:02:07.250
+our collision checking algorithms
+
+50
+00:02:07.250 --> 00:02:09.575
+to make them more error tolerant.
+
+51
+00:02:09.575 --> 00:02:13.550
+In exact form, collision
+checking amounts to rotating and
+
+52
+00:02:13.550 --> 00:02:15.350
+translating the footprint of
+
+53
+00:02:15.350 --> 00:02:18.620
+a vehicle along every point
+of a given path.
+
+54
+00:02:18.620 --> 00:02:22.175
+Each point in the footprint
+is rotated by the heading at
+
+55
+00:02:22.175 --> 00:02:24.290
+each path point and translated
+
+56
+00:02:24.290 --> 00:02:26.795
+by the position of
+that same path point.
+
+57
+00:02:26.795 --> 00:02:29.960
+This approach is
+summarized by the set S,
+
+58
+00:02:29.960 --> 00:02:32.090
+where p is a path composed of
+
+59
+00:02:32.090 --> 00:02:34.910
+a set of points p and F denotes
+
+60
+00:02:34.910 --> 00:02:37.100
+a function that
+returns the set points
+
+61
+00:02:37.100 --> 00:02:40.475
+contained in a footprint
+rotated by theta,
+
+62
+00:02:40.475 --> 00:02:42.700
+and translated by x and y.
+
+63
+00:02:42.700 --> 00:02:45.560
+For example, suppose I
+have a path point at
+
+64
+00:02:45.560 --> 00:02:48.500
+one minus one and
+minus pi over two.
+
+65
+00:02:48.500 --> 00:02:50.620
+To get the footprint
+at this point,
+
+66
+00:02:50.620 --> 00:02:52.340
+I have to rotate the footprint
+
+67
+00:02:52.340 --> 00:02:54.050
+by minus pi over two and then
+
+68
+00:02:54.050 --> 00:02:55.580
+translate the base link of
+
+69
+00:02:55.580 --> 00:02:58.655
+our car footprint by
+one and minus one.
+
+70
+00:02:58.655 --> 00:03:02.530
+After performing this for
+every point along the path,
+
+71
+00:03:02.530 --> 00:03:05.990
+the resulting swath of the car
+along the path is given
+
+72
+00:03:05.990 --> 00:03:09.725
+by the union of each rotated
+and translated footprint.
+
+73
+00:03:09.725 --> 00:03:12.215
+We then check this entire set
+
+74
+00:03:12.215 --> 00:03:14.630
+to see if there are
+any obstacles inside it.
+
+75
+00:03:14.630 --> 00:03:16.640
+If there are, the path contains
+
+76
+00:03:16.640 --> 00:03:19.865
+a collision and otherwise
+it's collision-free.
+
+77
+00:03:19.865 --> 00:03:21.740
+We now need to take
+
+78
+00:03:21.740 --> 00:03:24.510
+the swath computation
+in its abstract form,
+
+79
+00:03:24.510 --> 00:03:25.910
+and convert it to
+
+80
+00:03:25.910 --> 00:03:27.320
+a discrete formulation that can
+
+81
+00:03:27.320 --> 00:03:29.255
+be calculated by a computer.
+
+82
+00:03:29.255 --> 00:03:31.940
+Suppose we have
+a discrete representation of
+
+83
+00:03:31.940 --> 00:03:33.350
+the cars footprint and
+
+84
+00:03:33.350 --> 00:03:35.870
+the path in terms of
+the occupancy grid,
+
+85
+00:03:35.870 --> 00:03:38.765
+which was discussed
+in module two.
+
+86
+00:03:38.765 --> 00:03:41.210
+The cars footprint contains
+
+87
+00:03:41.210 --> 00:03:44.545
+K points and the path
+is endpoints long.
+
+88
+00:03:44.545 --> 00:03:47.870
+Algorithmically, computing
+the swath requires us to
+
+89
+00:03:47.870 --> 00:03:51.635
+rotate and translate all K
+points in the cars footprint,
+
+90
+00:03:51.635 --> 00:03:55.670
+and times one for
+each point in the path.
+
+91
+00:03:55.670 --> 00:03:58.370
+Let's look at
+a concrete example of
+
+92
+00:03:58.370 --> 00:04:01.850
+a rotation and translation
+using our occupancy grid.
+
+93
+00:04:01.850 --> 00:04:04.730
+Suppose our occupancy grid
+has a resolution of
+
+94
+00:04:04.730 --> 00:04:06.530
+one meter and our footprint
+
+95
+00:04:06.530 --> 00:04:09.040
+occupies the following
+three grid points;
+
+96
+00:04:09.040 --> 00:04:11.785
+zero, zero, one,
+zero, and two, zero.
+
+97
+00:04:11.785 --> 00:04:14.480
+Suppose we have a path point
+that we would like to
+
+98
+00:04:14.480 --> 00:04:16.805
+rotate and translate to at one,
+
+99
+00:04:16.805 --> 00:04:18.910
+two and pi over 2.
+
+100
+00:04:18.910 --> 00:04:21.740
+First, we should
+rotate each point in
+
+101
+00:04:21.740 --> 00:04:24.905
+the footprint about
+the origin by pi over two.
+
+102
+00:04:24.905 --> 00:04:27.650
+Doing so, gives us
+new grid points at zero,
+
+103
+00:04:27.650 --> 00:04:30.425
+zero, zero, one, and zero, two.
+
+104
+00:04:30.425 --> 00:04:33.035
+To complete the footprint
+transformation,
+
+105
+00:04:33.035 --> 00:04:35.630
+we then translate
+it by one and two.
+
+106
+00:04:35.630 --> 00:04:38.105
+Doing so, gives us
+the final grid points;
+
+107
+00:04:38.105 --> 00:04:41.360
+one, two, one, three,
+and one, four.
+
+108
+00:04:41.360 --> 00:04:42.920
+Recall that the order of
+
+109
+00:04:42.920 --> 00:04:45.140
+the steps in this
+transformation matters.
+
+110
+00:04:45.140 --> 00:04:46.880
+If we first translated and
+
+111
+00:04:46.880 --> 00:04:48.620
+then rotate it about the origin,
+
+112
+00:04:48.620 --> 00:04:50.404
+we would get
+an incorrect location
+
+113
+00:04:50.404 --> 00:04:52.265
+for the transformed points.
+
+114
+00:04:52.265 --> 00:04:55.460
+To get the actual
+occupancy grid index,
+
+115
+00:04:55.460 --> 00:04:59.959
+we offset the x and y points
+by the capital x and y,
+
+116
+00:04:59.959 --> 00:05:01.670
+which are the sizes of the x and
+
+117
+00:05:01.670 --> 00:05:04.580
+y dimensions of the
+occupancy grid respectively.
+
+118
+00:05:04.580 --> 00:05:08.090
+We can then divide this by
+the grid resolution delta
+
+119
+00:05:08.090 --> 00:05:11.660
+to get the associated indices
+in the occupancy grid.
+
+120
+00:05:11.660 --> 00:05:15.395
+We then add each of these points
+to a set data structure.
+
+121
+00:05:15.395 --> 00:05:17.075
+Since we are maintaining a set,
+
+122
+00:05:17.075 --> 00:05:18.350
+we are ensuring that there are
+
+123
+00:05:18.350 --> 00:05:20.675
+no duplicate points in our swath.
+
+124
+00:05:20.675 --> 00:05:21.980
+As you can imagine,
+
+125
+00:05:21.980 --> 00:05:23.570
+this computation becomes quite
+
+126
+00:05:23.570 --> 00:05:25.730
+expensive as the problem scales,
+
+127
+00:05:25.730 --> 00:05:26.870
+which makes it difficult to
+
+128
+00:05:26.870 --> 00:05:29.245
+use when performing
+real-time planning.
+
+129
+00:05:29.245 --> 00:05:32.300
+In addition, using
+the exact footprint when
+
+130
+00:05:32.300 --> 00:05:33.860
+calculating the swath can be
+
+131
+00:05:33.860 --> 00:05:36.575
+dangerous due to
+our imperfect information,
+
+132
+00:05:36.575 --> 00:05:40.685
+as there is no buffer for
+errors in obstacle positions.
+
+133
+00:05:40.685 --> 00:05:42.890
+Because this swath-based method
+
+134
+00:05:42.890 --> 00:05:45.125
+is often computationally
+expensive,
+
+135
+00:05:45.125 --> 00:05:46.880
+it is often useful when we are
+
+136
+00:05:46.880 --> 00:05:49.190
+exploiting a lot of repetition
+
+137
+00:05:49.190 --> 00:05:50.870
+in our motion planning algorithm
+
+138
+00:05:50.870 --> 00:05:54.065
+as in the case in
+lattice planners.
+
+139
+00:05:54.065 --> 00:05:57.110
+Since we are constrained
+to a small set of
+
+140
+00:05:57.110 --> 00:05:59.860
+control actions each step
+of a lattice planner,
+
+141
+00:05:59.860 --> 00:06:03.200
+we are also constrained
+to a small set of swaths,
+
+142
+00:06:03.200 --> 00:06:06.245
+so their union can be
+pre-computed offline.
+
+143
+00:06:06.245 --> 00:06:08.959
+When performing collision
+checking online,
+
+144
+00:06:08.959 --> 00:06:12.395
+the problem reduces to
+multiple array lookups.
+
+145
+00:06:12.395 --> 00:06:15.265
+To help mitigate
+both the challenge of
+
+146
+00:06:15.265 --> 00:06:16.900
+imperfect information and
+
+147
+00:06:16.900 --> 00:06:19.055
+extensive computation
+requirements,
+
+148
+00:06:19.055 --> 00:06:21.790
+we often use conservative
+approximations
+
+149
+00:06:21.790 --> 00:06:22.945
+to collision checking,
+
+150
+00:06:22.945 --> 00:06:27.220
+sacrificing optimality to
+improve speed and robustness.
+
+151
+00:06:27.220 --> 00:06:30.190
+In this context,
+optimality is defined by
+
+152
+00:06:30.190 --> 00:06:33.215
+your selection of an
+appropriate objective function,
+
+153
+00:06:33.215 --> 00:06:37.040
+some of which we discussed
+earlier in this course.
+
+154
+00:06:37.260 --> 00:06:39.820
+Since we switched to approximate
+
+155
+00:06:39.820 --> 00:06:42.370
+collision checking to gain
+computing performance,
+
+156
+00:06:42.370 --> 00:06:46.180
+we must use approximations
+that are overly conservative.
+
+157
+00:06:46.180 --> 00:06:47.815
+The goal in selecting
+
+158
+00:06:47.815 --> 00:06:50.350
+a particular approximation
+is to find one
+
+159
+00:06:50.350 --> 00:06:51.820
+that offers great algorithmic
+
+160
+00:06:51.820 --> 00:06:54.325
+speed-up without
+compromising safety,
+
+161
+00:06:54.325 --> 00:06:56.630
+but also minimizing the degree to
+
+162
+00:06:56.630 --> 00:06:59.435
+which our trajectories
+become sub-optimal.
+
+163
+00:06:59.435 --> 00:07:02.300
+What do we mean by
+conservative approximation
+
+164
+00:07:02.300 --> 00:07:03.560
+to collision checking?
+
+165
+00:07:03.560 --> 00:07:05.015
+In this context,
+
+166
+00:07:05.015 --> 00:07:06.680
+a conservative approximation
+
+167
+00:07:06.680 --> 00:07:07.910
+to collision checking would be
+
+168
+00:07:07.910 --> 00:07:09.965
+one that may report a collision
+
+169
+00:07:09.965 --> 00:07:12.410
+along a path even
+if there isn't one,
+
+170
+00:07:12.410 --> 00:07:14.600
+but will never report
+no collision along
+
+171
+00:07:14.600 --> 00:07:17.480
+a path if one does
+actually occur.
+
+172
+00:07:17.480 --> 00:07:19.190
+For a concrete example,
+
+173
+00:07:19.190 --> 00:07:21.845
+suppose we have
+a car as shown here.
+
+174
+00:07:21.845 --> 00:07:23.600
+Now suppose we replaced
+
+175
+00:07:23.600 --> 00:07:26.890
+the cars footprint with
+overlapping circles.
+
+176
+00:07:26.890 --> 00:07:29.240
+The overlapping
+circles completely
+
+177
+00:07:29.240 --> 00:07:32.330
+encompass the footprint of
+the cars rectangular body,
+
+178
+00:07:32.330 --> 00:07:34.550
+which means the
+footprint of the car is
+
+179
+00:07:34.550 --> 00:07:38.135
+a subset of the footprint of
+all three circles combined.
+
+180
+00:07:38.135 --> 00:07:40.750
+No matter what
+trajectory we follow,
+
+181
+00:07:40.750 --> 00:07:43.490
+the swath generated by
+the rectangle will be
+
+182
+00:07:43.490 --> 00:07:44.915
+a subset of the swath
+
+183
+00:07:44.915 --> 00:07:47.450
+generated by
+the overlapping circles.
+
+184
+00:07:47.450 --> 00:07:49.370
+Why is this conservative?
+
+185
+00:07:49.370 --> 00:07:52.160
+Suppose we have
+an obstacle inside
+
+186
+00:07:52.160 --> 00:07:55.870
+the circle footprints but not
+inside the car footprint,
+
+187
+00:07:55.870 --> 00:07:59.090
+this would result in
+a location being reported
+
+188
+00:07:59.090 --> 00:08:00.425
+by the collision checker
+
+189
+00:08:00.425 --> 00:08:02.810
+even though one wouldn't
+actually occur.
+
+190
+00:08:02.810 --> 00:08:06.410
+However, if an obstacle lies
+outside of the circles,
+
+191
+00:08:06.410 --> 00:08:09.310
+no collision will be detected
+and none will occur.
+
+192
+00:08:09.310 --> 00:08:11.390
+This means that
+the collision checker may
+
+193
+00:08:11.390 --> 00:08:13.864
+contain some false
+positive collisions,
+
+194
+00:08:13.864 --> 00:08:16.685
+but will not contain
+a false negative.
+
+195
+00:08:16.685 --> 00:08:18.830
+This results in a nice buffer
+
+196
+00:08:18.830 --> 00:08:20.570
+for our car that helps alleviate
+
+197
+00:08:20.570 --> 00:08:21.950
+the issues presented by
+
+198
+00:08:21.950 --> 00:08:25.080
+the imperfect information
+provided to us.
+
+199
+00:08:25.270 --> 00:08:29.509
+This circle approximation is
+useful for some algorithms
+
+200
+00:08:29.509 --> 00:08:31.700
+because it is
+computationally cheap to
+
+201
+00:08:31.700 --> 00:08:34.100
+check if a point lies
+within a circle.
+
+202
+00:08:34.100 --> 00:08:35.870
+All we need to do is check if
+
+203
+00:08:35.870 --> 00:08:38.060
+the distance between
+any of the points of
+
+204
+00:08:38.060 --> 00:08:39.860
+the obstacle and the center of
+
+205
+00:08:39.860 --> 00:08:43.190
+the circle is less than
+the radius of the circle.
+
+206
+00:08:43.190 --> 00:08:46.340
+For example, the position
+of this pylon
+
+207
+00:08:46.340 --> 00:08:47.870
+from the center of the circle is
+
+208
+00:08:47.870 --> 00:08:49.565
+less than the radius
+of the circle,
+
+209
+00:08:49.565 --> 00:08:51.595
+so collision would be reported.
+
+210
+00:08:51.595 --> 00:08:54.030
+However, for the second circle,
+
+211
+00:08:54.030 --> 00:08:56.930
+the pylon lies outside
+the radius of the circle,
+
+212
+00:08:56.930 --> 00:08:59.330
+which would result in
+this particular section of
+
+213
+00:08:59.330 --> 00:09:02.435
+the path of the car being
+free from collision.
+
+214
+00:09:02.435 --> 00:09:05.750
+If the occupancy grid is
+implemented such that it can
+
+215
+00:09:05.750 --> 00:09:07.130
+provide the distance to
+
+216
+00:09:07.130 --> 00:09:09.620
+the nearest object
+at each grid point,
+
+217
+00:09:09.620 --> 00:09:11.330
+this can be a simple lookup in
+
+218
+00:09:11.330 --> 00:09:13.130
+an array which is extremely
+
+219
+00:09:13.130 --> 00:09:14.600
+efficient relative to checking
+
+220
+00:09:14.600 --> 00:09:17.600
+for arbitrary polygon
+intersections.
+
+221
+00:09:17.600 --> 00:09:21.080
+One thing to realize about
+conservative approximations,
+
+222
+00:09:21.080 --> 00:09:22.624
+is that they may eliminate
+
+223
+00:09:22.624 --> 00:09:25.760
+all feasible collision-free
+paths from a problem
+
+224
+00:09:25.760 --> 00:09:28.445
+even though a path exists or
+
+225
+00:09:28.445 --> 00:09:31.480
+eliminate safe passages
+through narrow openings.
+
+226
+00:09:31.480 --> 00:09:33.320
+This can cause the planner to get
+
+227
+00:09:33.320 --> 00:09:35.630
+stuck when it
+shouldn't or can cause
+
+228
+00:09:35.630 --> 00:09:36.845
+the planner to compute
+
+229
+00:09:36.845 --> 00:09:40.130
+a much more circuitous route
+than is necessary.
+
+230
+00:09:40.130 --> 00:09:42.890
+Depending on which motion
+planning algorithm you
+
+231
+00:09:42.890 --> 00:09:45.760
+use and the structure
+of your occupancy grid,
+
+232
+00:09:45.760 --> 00:09:47.600
+different collision
+checking algorithms
+
+233
+00:09:47.600 --> 00:09:49.505
+will be more efficient
+than others.
+
+234
+00:09:49.505 --> 00:09:52.580
+It will be up to you as
+an autonomous driving engineer
+
+235
+00:09:52.580 --> 00:09:56.510
+to decide which algorithm
+best suits your application.
+
+236
+00:09:56.510 --> 00:09:58.760
+One thing to note in all of
+
+237
+00:09:58.760 --> 00:10:00.980
+these calculations is
+that they are all in
+
+238
+00:10:00.980 --> 00:10:02.630
+discrete form since we are
+
+239
+00:10:02.630 --> 00:10:05.180
+performing these
+computations on a computer.
+
+240
+00:10:05.180 --> 00:10:08.615
+Therefore, our collision
+checking accuracy is also
+
+241
+00:10:08.615 --> 00:10:10.880
+influenced by
+the resolution that we
+
+242
+00:10:10.880 --> 00:10:13.970
+choose when performing
+our discretizations.
+
+243
+00:10:13.970 --> 00:10:16.460
+To illustrate this,
+suppose we have
+
+244
+00:10:16.460 --> 00:10:18.650
+this same path and footprint
+
+245
+00:10:18.650 --> 00:10:20.450
+but suppose one swath is
+
+246
+00:10:20.450 --> 00:10:23.540
+computed with much coarser
+resolution than the other.
+
+247
+00:10:23.540 --> 00:10:26.720
+We can see that
+the coarser resolution results
+
+248
+00:10:26.720 --> 00:10:29.000
+in large gaps in our swath,
+
+249
+00:10:29.000 --> 00:10:30.635
+which can result in
+errors if there are
+
+250
+00:10:30.635 --> 00:10:32.515
+obstacles at those positions.
+
+251
+00:10:32.515 --> 00:10:34.310
+The finer the resolution we
+
+252
+00:10:34.310 --> 00:10:36.260
+choose for our
+collision checking,
+
+253
+00:10:36.260 --> 00:10:38.240
+the more accurate it will be.
+
+254
+00:10:38.240 --> 00:10:40.700
+However, higher resolution also
+
+255
+00:10:40.700 --> 00:10:42.650
+incurs a computational cost.
+
+256
+00:10:42.650 --> 00:10:43.850
+So you again, as
+
+257
+00:10:43.850 --> 00:10:46.160
+an autonomous driving engineer
+will need to strike
+
+258
+00:10:46.160 --> 00:10:47.495
+the right balance between
+
+259
+00:10:47.495 --> 00:10:50.090
+accuracy and computational speed.
+
+260
+00:10:50.090 --> 00:10:51.650
+Rest assured, there are
+
+261
+00:10:51.650 --> 00:10:54.560
+many excellent collision
+checking libraries available and
+
+262
+00:10:54.560 --> 00:10:56.750
+we've included
+some useful links for you
+
+263
+00:10:56.750 --> 00:10:59.965
+to use in the
+supplemental materials.
+
+264
+00:10:59.965 --> 00:11:02.305
+To summarize in this video,
+
+265
+00:11:02.305 --> 00:11:04.220
+we discussed how we can use
+
+266
+00:11:04.220 --> 00:11:06.410
+the occupancy grid
+developed in module
+
+267
+00:11:06.410 --> 00:11:09.290
+two to solve the collision
+checking problem
+
+268
+00:11:09.290 --> 00:11:11.965
+using swath-based
+collision checking.
+
+269
+00:11:11.965 --> 00:11:14.015
+As well that we described
+
+270
+00:11:14.015 --> 00:11:16.040
+the circle based collision
+checking method.
+
+271
+00:11:16.040 --> 00:11:17.840
+We went over some examples to
+
+272
+00:11:17.840 --> 00:11:19.700
+illustrate these algorithms and
+
+273
+00:11:19.700 --> 00:11:21.620
+discussed in what situations
+
+274
+00:11:21.620 --> 00:11:24.580
+each type of collision
+checking should be used.
+
+275
+00:11:24.580 --> 00:11:27.920
+Hopefully, this video has
+given you some insight into
+
+276
+00:11:27.920 --> 00:11:29.600
+how collision checking is done
+
+277
+00:11:29.600 --> 00:11:31.780
+in an autonomous driving context.
+
+278
+00:11:31.780 --> 00:11:33.680
+Performing quick and efficient
+
+279
+00:11:33.680 --> 00:11:35.420
+collision checking
+especially with
+
+280
+00:11:35.420 --> 00:11:37.460
+dynamic obstacles is currently
+
+281
+00:11:37.460 --> 00:11:39.380
+an area of active research,
+
+282
+00:11:39.380 --> 00:11:41.780
+and we hope that you too
+will help contribute
+
+283
+00:11:41.780 --> 00:11:44.815
+to solving these challenging
+and interesting problems.
+
+284
+00:11:44.815 --> 00:11:46.700
+In the next video, we will
+
+285
+00:11:46.700 --> 00:11:49.070
+introduce a reactive
+planning algorithm for
+
+286
+00:11:49.070 --> 00:11:50.720
+this module which is
+
+287
+00:11:50.720 --> 00:11:53.420
+called the Trajectory
+Rollout algorithm.
+
+288
+00:11:53.420 --> 00:11:55.400
+It will combine
+the collision checking
+
+289
+00:11:55.400 --> 00:11:57.320
+approach we've
+developed here with
+
+290
+00:11:57.320 --> 00:11:58.490
+the concepts covered in
+
+291
+00:11:58.490 --> 00:12:02.280
+the trajectory propagation
+lesson. See you then.

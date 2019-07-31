@@ -1,0 +1,1031 @@
+WEBVTT
+
+1
+00:00:14.120 --> 00:00:17.460
+Hi everyone, and welcome
+to lesson three.
+
+2
+00:00:17.460 --> 00:00:19.320
+In this video, we will explore
+
+3
+00:00:19.320 --> 00:00:21.270
+some of the objective
+functions most
+
+4
+00:00:21.270 --> 00:00:22.710
+commonly used in
+
+5
+00:00:22.710 --> 00:00:24.060
+the autonomous driving motion
+
+6
+00:00:24.060 --> 00:00:25.725
+planning problem formulation.
+
+7
+00:00:25.725 --> 00:00:28.410
+In this context, the
+objective function of
+
+8
+00:00:28.410 --> 00:00:30.450
+our motion planning
+problem gives us
+
+9
+00:00:30.450 --> 00:00:32.910
+a way of scoring
+our current motion plan,
+
+10
+00:00:32.910 --> 00:00:34.740
+and allows us to optimize
+
+11
+00:00:34.740 --> 00:00:36.090
+the motion plans such that
+
+12
+00:00:36.090 --> 00:00:38.535
+it has desirable characteristics.
+
+13
+00:00:38.535 --> 00:00:40.450
+After completing this lesson,
+
+14
+00:00:40.450 --> 00:00:41.810
+you'll be able to list
+
+15
+00:00:41.810 --> 00:00:43.760
+some useful objective
+functions that
+
+16
+00:00:43.760 --> 00:00:47.330
+can be used in motion planning
+for autonomous driving.
+
+17
+00:00:47.330 --> 00:00:49.895
+You will also understand
+the benefits that
+
+18
+00:00:49.895 --> 00:00:51.620
+each objective function offers
+
+19
+00:00:51.620 --> 00:00:53.225
+to the motion planning process.
+
+20
+00:00:53.225 --> 00:00:55.180
+So let's get started.
+
+21
+00:00:55.180 --> 00:00:57.640
+When performing path planning,
+
+22
+00:00:57.640 --> 00:01:00.530
+the simplest and most intuitive
+goal is that we would
+
+23
+00:01:00.530 --> 00:01:03.830
+like to reach our destination
+as efficiently as possible.
+
+24
+00:01:03.830 --> 00:01:06.140
+In the path planning
+context this,
+
+25
+00:01:06.140 --> 00:01:08.179
+often translates to minimizing
+
+26
+00:01:08.179 --> 00:01:10.985
+the arc length of the
+path that we're planning.
+
+27
+00:01:10.985 --> 00:01:12.495
+What is the arc length?
+
+28
+00:01:12.495 --> 00:01:15.200
+Intuitively, the
+arc length of the path is
+
+29
+00:01:15.200 --> 00:01:17.120
+the total accumulated distance
+
+30
+00:01:17.120 --> 00:01:20.410
+the car will travel as
+it traverses the path.
+
+31
+00:01:20.410 --> 00:01:22.310
+In many cases, the path will be
+
+32
+00:01:22.310 --> 00:01:24.035
+parameterized by arc length.
+
+33
+00:01:24.035 --> 00:01:25.700
+So this can be formulated as
+
+34
+00:01:25.700 --> 00:01:28.820
+a penalty term proportional
+to the arc length.
+
+35
+00:01:28.820 --> 00:01:31.295
+In other cases, we
+will have to solve an
+
+36
+00:01:31.295 --> 00:01:33.320
+integral numerically to calculate
+
+37
+00:01:33.320 --> 00:01:34.865
+the arc length of a path.
+
+38
+00:01:34.865 --> 00:01:36.470
+The general arc length
+
+39
+00:01:36.470 --> 00:01:38.850
+integral is shown here
+in the first equation,
+
+40
+00:01:38.850 --> 00:01:42.410
+where Sf is the total
+accumulated arc length,
+
+41
+00:01:42.410 --> 00:01:45.470
+Xi is the starting x
+coordinate of the path,
+
+42
+00:01:45.470 --> 00:01:49.055
+and Xf is the end x
+coordinate of the path.
+
+43
+00:01:49.055 --> 00:01:50.980
+By minimizing arc length,
+
+44
+00:01:50.980 --> 00:01:52.970
+we are computing
+the shortest path
+
+45
+00:01:52.970 --> 00:01:54.380
+from our current location,
+
+46
+00:01:54.380 --> 00:01:56.705
+through our required destination.
+
+47
+00:01:56.705 --> 00:01:59.700
+When optimizing a
+velocity profile,
+
+48
+00:01:59.700 --> 00:02:01.460
+time to destination is
+
+49
+00:02:01.460 --> 00:02:03.935
+often the objective we
+would like to minimize.
+
+50
+00:02:03.935 --> 00:02:05.510
+In terms of arc length,
+
+51
+00:02:05.510 --> 00:02:08.210
+this is the same as
+integrating the inverse of
+
+52
+00:02:08.210 --> 00:02:10.370
+the longitudinal velocity over
+
+53
+00:02:10.370 --> 00:02:12.890
+the path as a function
+of arc length.
+
+54
+00:02:12.890 --> 00:02:16.100
+Intuitively, this is
+equivalent to dividing
+
+55
+00:02:16.100 --> 00:02:17.750
+the total distance by
+
+56
+00:02:17.750 --> 00:02:21.170
+the velocity traveled along
+the curve at each point.
+
+57
+00:02:21.170 --> 00:02:24.800
+Except since the velocity
+changes along the path,
+
+58
+00:02:24.800 --> 00:02:26.930
+we formulate it as an integral.
+
+59
+00:02:26.930 --> 00:02:30.380
+This integral is given
+in the second equation,
+
+60
+00:02:30.380 --> 00:02:33.545
+where Tf is the total time
+of the profile.
+
+61
+00:02:33.545 --> 00:02:35.480
+By minimizing this integral,
+
+62
+00:02:35.480 --> 00:02:37.640
+we are minimizing
+the time to reach
+
+63
+00:02:37.640 --> 00:02:41.685
+the destination while following
+a given planned path.
+
+64
+00:02:41.685 --> 00:02:43.900
+As an example, let's look at
+
+65
+00:02:43.900 --> 00:02:45.370
+two possible paths between
+
+66
+00:02:45.370 --> 00:02:47.890
+the same start and end locations.
+
+67
+00:02:47.890 --> 00:02:49.930
+The first path clearly has
+
+68
+00:02:49.930 --> 00:02:52.300
+a longer arc length
+than the second path,
+
+69
+00:02:52.300 --> 00:02:53.890
+and is therefore
+less efficient at
+
+70
+00:02:53.890 --> 00:02:56.245
+the task of reaching
+its destination.
+
+71
+00:02:56.245 --> 00:02:58.390
+We can see that even
+though they have
+
+72
+00:02:58.390 --> 00:03:00.970
+the same initial
+and final states,
+
+73
+00:03:00.970 --> 00:03:02.770
+the second path will result in
+
+74
+00:03:02.770 --> 00:03:05.890
+a lower value of the arc length
+objective function,
+
+75
+00:03:05.890 --> 00:03:08.755
+which suits are driving
+task more favorably.
+
+76
+00:03:08.755 --> 00:03:12.010
+Now, in path planning
+for autonomous driving,
+
+77
+00:03:12.010 --> 00:03:15.190
+we may be given a reference path
+we'd like to follow.
+
+78
+00:03:15.190 --> 00:03:17.980
+In many cases, this
+will be given to us by
+
+79
+00:03:17.980 --> 00:03:20.980
+our mapping module as
+the center line of a length,
+
+80
+00:03:20.980 --> 00:03:24.440
+or the required path for
+a turn in an intersection.
+
+81
+00:03:24.440 --> 00:03:25.880
+To ensure that we follow
+
+82
+00:03:25.880 --> 00:03:28.249
+the reference path as
+closely as possible,
+
+83
+00:03:28.249 --> 00:03:29.990
+we include what is known as
+
+84
+00:03:29.990 --> 00:03:31.805
+an integral of difference term,
+
+85
+00:03:31.805 --> 00:03:33.580
+or IOD for short.
+
+86
+00:03:33.580 --> 00:03:36.710
+Essentially, it
+penalizes deviations
+
+87
+00:03:36.710 --> 00:03:39.515
+from the input
+reference path Xref,
+
+88
+00:03:39.515 --> 00:03:41.810
+as we traverse
+are calculated path
+
+89
+00:03:41.810 --> 00:03:44.260
+as shown in the first equation.
+
+90
+00:03:44.260 --> 00:03:48.350
+Similarly, when performing
+velocity profile optimization,
+
+91
+00:03:48.350 --> 00:03:49.880
+we often want to minimize
+
+92
+00:03:49.880 --> 00:03:52.160
+the difference between
+our velocity profiles
+
+93
+00:03:52.160 --> 00:03:56.540
+speed throughout the path with
+some reference speed Vref,
+
+94
+00:03:56.540 --> 00:03:58.195
+whether it will be
+the speed limit
+
+95
+00:03:58.195 --> 00:04:00.060
+or determined otherwise.
+
+96
+00:04:00.060 --> 00:04:02.735
+This is shown in
+the second equation.
+
+97
+00:04:02.735 --> 00:04:04.910
+While this can be formulated as
+
+98
+00:04:04.910 --> 00:04:06.815
+an absolute difference penalty,
+
+99
+00:04:06.815 --> 00:04:09.770
+it is often the case
+that we want to penalize
+
+100
+00:04:09.770 --> 00:04:11.390
+exceeding speed limits more
+
+101
+00:04:11.390 --> 00:04:13.865
+harshly than staying
+below the speed limit.
+
+102
+00:04:13.865 --> 00:04:16.520
+So we may add what is
+called a hinge loss
+
+103
+00:04:16.520 --> 00:04:20.210
+term to our objective shown
+in the third equation.
+
+104
+00:04:20.210 --> 00:04:23.180
+Essentially, this term is only
+
+105
+00:04:23.180 --> 00:04:26.640
+active when the velocity profile
+exceeds the speed limit,
+
+106
+00:04:26.640 --> 00:04:28.640
+that is when
+the difference between
+
+107
+00:04:28.640 --> 00:04:31.400
+our speed and the speed
+limit is positive,
+
+108
+00:04:31.400 --> 00:04:33.665
+otherwise this term is zero.
+
+109
+00:04:33.665 --> 00:04:35.360
+This allows us to penalize
+
+110
+00:04:35.360 --> 00:04:38.510
+speed limit violations more
+harshly while still allowing
+
+111
+00:04:38.510 --> 00:04:40.790
+us to encourage
+the autonomous vehicle
+
+112
+00:04:40.790 --> 00:04:44.345
+to reach its required
+reference velocity.
+
+113
+00:04:44.345 --> 00:04:46.730
+The next objective we'd like to
+
+114
+00:04:46.730 --> 00:04:49.000
+tackle is rides smoothness.
+
+115
+00:04:49.000 --> 00:04:51.410
+Recall from the previous lesson
+that in order to
+
+116
+00:04:51.410 --> 00:04:53.660
+maintain stability and comfort,
+
+117
+00:04:53.660 --> 00:04:57.050
+we constrained our maximum
+acceleration magnitude.
+
+118
+00:04:57.050 --> 00:04:59.210
+When optimizing comfort in
+
+119
+00:04:59.210 --> 00:05:01.765
+the objective function
+of our velocity profile,
+
+120
+00:05:01.765 --> 00:05:03.800
+we instead turn our focus to
+
+121
+00:05:03.800 --> 00:05:06.950
+minimizing the jerk
+along our trajectory.
+
+122
+00:05:06.950 --> 00:05:09.560
+What is jerk? We're
+not referring to
+
+123
+00:05:09.560 --> 00:05:12.140
+that of noxious driver
+that you just cut off.
+
+124
+00:05:12.140 --> 00:05:14.300
+Jerk is the rate of change of
+
+125
+00:05:14.300 --> 00:05:16.310
+acceleration with
+respect to time,
+
+126
+00:05:16.310 --> 00:05:19.070
+or the third derivative
+of position.
+
+127
+00:05:19.070 --> 00:05:22.160
+The jerk along the car's
+trajectory greatly
+
+128
+00:05:22.160 --> 00:05:25.340
+impacts the user's comfort
+while in the car.
+
+129
+00:05:25.340 --> 00:05:27.500
+So when planning
+our velocity profile,
+
+130
+00:05:27.500 --> 00:05:30.460
+we would like to keep
+the accumulated absolute value
+
+131
+00:05:30.460 --> 00:05:32.615
+of jerk as small as possible,
+
+132
+00:05:32.615 --> 00:05:35.275
+shown here by this integral.
+
+133
+00:05:35.275 --> 00:05:37.550
+Let's look at an example of
+
+134
+00:05:37.550 --> 00:05:39.560
+two different velocity profiles.
+
+135
+00:05:39.560 --> 00:05:42.350
+On the left is
+a linear ramp profile
+
+136
+00:05:42.350 --> 00:05:46.025
+which maximizes jerk at the
+start and end of the profile.
+
+137
+00:05:46.025 --> 00:05:48.350
+This is shown in
+the large spikes in
+
+138
+00:05:48.350 --> 00:05:50.990
+the jerk at the start
+and end of our plot.
+
+139
+00:05:50.990 --> 00:05:54.260
+For passengers, this can
+be quite uncomfortable.
+
+140
+00:05:54.260 --> 00:05:55.880
+If we compare this with
+
+141
+00:05:55.880 --> 00:05:59.270
+a bi quadratic profile
+as seen on the right,
+
+142
+00:05:59.270 --> 00:06:02.030
+We can see that there are
+no jerk spikes which will
+
+143
+00:06:02.030 --> 00:06:05.480
+result in a much smoother
+ride for the passengers.
+
+144
+00:06:05.480 --> 00:06:07.640
+Because of this
+difference in comfort,
+
+145
+00:06:07.640 --> 00:06:09.920
+it is important to
+choose profiles that
+
+146
+00:06:09.920 --> 00:06:13.055
+reduce jerk that passengers
+feel when possible.
+
+147
+00:06:13.055 --> 00:06:15.410
+Now, when planning paths,
+
+148
+00:06:15.410 --> 00:06:18.305
+we have to be mindful that
+the structure of our path
+
+149
+00:06:18.305 --> 00:06:22.220
+will impact the comfort of
+our velocity profile as well.
+
+150
+00:06:22.220 --> 00:06:24.620
+Recall from the
+previous lesson that
+
+151
+00:06:24.620 --> 00:06:26.870
+paths with high
+curvature constrained
+
+152
+00:06:26.870 --> 00:06:29.510
+the maximum velocity
+along the path to
+
+153
+00:06:29.510 --> 00:06:31.250
+a low value in order to
+
+154
+00:06:31.250 --> 00:06:34.070
+remain within the friction
+ellipse of the vehicle.
+
+155
+00:06:34.070 --> 00:06:36.260
+To ensure that we avoid points
+
+156
+00:06:36.260 --> 00:06:38.420
+of high curvature along our path,
+
+157
+00:06:38.420 --> 00:06:39.680
+we need to formulate
+
+158
+00:06:39.680 --> 00:06:43.655
+some penalty for
+large absolute curvature values,
+
+159
+00:06:43.655 --> 00:06:46.940
+and objective function that
+is commonly used to represent
+
+160
+00:06:46.940 --> 00:06:51.080
+this penalty is known as
+the bending energy of the path.
+
+161
+00:06:51.080 --> 00:06:54.410
+Essentially, it is
+the square curvature
+
+162
+00:06:54.410 --> 00:06:56.180
+integrated along the path,
+
+163
+00:06:56.180 --> 00:06:59.090
+where once again Kappa
+denotes the curvature.
+
+164
+00:06:59.090 --> 00:07:02.060
+This objective
+distributes the curvature
+
+165
+00:07:02.060 --> 00:07:03.875
+more evenly along the path,
+
+166
+00:07:03.875 --> 00:07:06.320
+preventing any one
+along the path from
+
+167
+00:07:06.320 --> 00:07:09.200
+reaching too high a
+total curvature value.
+
+168
+00:07:09.200 --> 00:07:11.600
+As an example, in this path,
+
+169
+00:07:11.600 --> 00:07:13.930
+we have a path planned
+for a left turn
+
+170
+00:07:13.930 --> 00:07:17.360
+with quite a harsh bend before
+reaching the goal state.
+
+171
+00:07:17.360 --> 00:07:20.330
+According to our bending
+energy objective,
+
+172
+00:07:20.330 --> 00:07:22.670
+this will be highly
+penalized as there is
+
+173
+00:07:22.670 --> 00:07:25.265
+a point of peaks
+curvature along the path.
+
+174
+00:07:25.265 --> 00:07:28.430
+If we were to plan a
+velocity profile for this path,
+
+175
+00:07:28.430 --> 00:07:30.140
+we would need to decelerate
+
+176
+00:07:30.140 --> 00:07:32.915
+greatly by the time we reached
+the bend in the curve.
+
+177
+00:07:32.915 --> 00:07:35.180
+Otherwise we would
+sacrifice comfort of
+
+178
+00:07:35.180 --> 00:07:39.360
+our passengers and potentially
+even vehicle stability.
+
+179
+00:07:39.640 --> 00:07:43.460
+If we instead look at
+the path on the right,
+
+180
+00:07:43.460 --> 00:07:46.010
+we have a path for
+a left turn with
+
+181
+00:07:46.010 --> 00:07:49.325
+a more widely distributed
+lower overall curvature.
+
+182
+00:07:49.325 --> 00:07:52.740
+This will result in a smoother
+more comfortable term,
+
+183
+00:07:52.740 --> 00:07:54.500
+and will allow us to maintain
+
+184
+00:07:54.500 --> 00:07:56.300
+a reasonable speed while still
+
+185
+00:07:56.300 --> 00:07:58.355
+staying within
+the comfort rectangle
+
+186
+00:07:58.355 --> 00:08:01.325
+when optimizing
+our velocity profile.
+
+187
+00:08:01.325 --> 00:08:03.830
+Now that we've gone
+through a variety of
+
+188
+00:08:03.830 --> 00:08:05.770
+objective functions
+for motion planning,
+
+189
+00:08:05.770 --> 00:08:07.010
+let's take some time to
+
+190
+00:08:07.010 --> 00:08:09.515
+summarize what we've
+discussed in this video.
+
+191
+00:08:09.515 --> 00:08:11.030
+We first discussed
+
+192
+00:08:11.030 --> 00:08:13.865
+objective functions
+related to efficiency,
+
+193
+00:08:13.865 --> 00:08:15.410
+and also discussed how they
+
+194
+00:08:15.410 --> 00:08:18.755
+reduce path length
+and transit time.
+
+195
+00:08:18.755 --> 00:08:21.830
+We discussed how to
+encourage trajectories
+
+196
+00:08:21.830 --> 00:08:24.845
+to track reference paths
+and velocity profiles,
+
+197
+00:08:24.845 --> 00:08:27.560
+as well as how to
+improve comfort along
+
+198
+00:08:27.560 --> 00:08:29.090
+a given trajectory by
+
+199
+00:08:29.090 --> 00:08:32.045
+penalizing high-path
+curvature and jerk.
+
+200
+00:08:32.045 --> 00:08:35.780
+By now, you should have
+a general idea of some types of
+
+201
+00:08:35.780 --> 00:08:37.550
+objective functions
+you will need to
+
+202
+00:08:37.550 --> 00:08:41.030
+consider when optimizing paths
+and trajectories.
+
+203
+00:08:41.030 --> 00:08:44.450
+When designing an over-arching
+objective function,
+
+204
+00:08:44.450 --> 00:08:45.950
+each of these terms will need to
+
+205
+00:08:45.950 --> 00:08:47.870
+be combined into one function,
+
+206
+00:08:47.870 --> 00:08:49.745
+often as a weighted sum.
+
+207
+00:08:49.745 --> 00:08:52.010
+The particular
+combination of weights
+
+208
+00:08:52.010 --> 00:08:54.140
+you choose is
+an engineering decision,
+
+209
+00:08:54.140 --> 00:08:56.345
+and you will need to
+fine tune your choice
+
+210
+00:08:56.345 --> 00:08:58.880
+depending on
+a specific application.
+
+211
+00:08:58.880 --> 00:09:01.880
+Of course, we have only
+scratched the surface on
+
+212
+00:09:01.880 --> 00:09:02.930
+a rich topic of
+
+213
+00:09:02.930 --> 00:09:06.185
+optimization objectives for
+path and trajectory planning.
+
+214
+00:09:06.185 --> 00:09:07.640
+As you progress as
+
+215
+00:09:07.640 --> 00:09:09.560
+an autonomy engineer I'm
+sure you'll be able to
+
+216
+00:09:09.560 --> 00:09:11.960
+come up with interesting
+and useful objectives
+
+217
+00:09:11.960 --> 00:09:13.130
+functions yourself.
+
+218
+00:09:13.130 --> 00:09:14.600
+In our next video,
+
+219
+00:09:14.600 --> 00:09:16.670
+we will discuss ways to decouple
+
+220
+00:09:16.670 --> 00:09:18.410
+the motion planning problem into
+
+221
+00:09:18.410 --> 00:09:20.440
+simpler and smaller sub-problems,
+
+222
+00:09:20.440 --> 00:09:22.940
+as well as outline
+different approaches to
+
+223
+00:09:22.940 --> 00:09:26.450
+solving each sub-problem.
+See you there.

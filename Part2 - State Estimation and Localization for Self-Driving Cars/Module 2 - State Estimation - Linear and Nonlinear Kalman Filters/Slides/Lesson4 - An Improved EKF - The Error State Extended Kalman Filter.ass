@@ -1,0 +1,948 @@
+WEBVTT
+
+1
+00:00:13.640 --> 00:00:15.870
+In the last video, we
+
+2
+00:00:15.870 --> 00:00:17.835
+introduced the Extended
+Kalman Filter,
+
+3
+00:00:17.835 --> 00:00:20.115
+which uses
+local linearization
+
+4
+00:00:20.115 --> 00:00:21.540
+as a way to allow us to
+
+5
+00:00:21.540 --> 00:00:23.640
+apply the Kalman
+filter equations
+
+6
+00:00:23.640 --> 00:00:25.395
+to non-linear systems.
+
+7
+00:00:25.395 --> 00:00:26.820
+In this video, we're
+
+8
+00:00:26.820 --> 00:00:27.960
+going to look
+at a variant of
+
+9
+00:00:27.960 --> 00:00:29.355
+the EKF called the
+
+10
+00:00:29.355 --> 00:00:31.290
+Error-State Extended
+Kalman Filter,
+
+11
+00:00:31.290 --> 00:00:34.280
+or ES-EKF, which
+has a couple of
+
+12
+00:00:34.280 --> 00:00:35.630
+nice properties that will
+
+13
+00:00:35.630 --> 00:00:37.370
+come in handy later
+in the course.
+
+14
+00:00:37.370 --> 00:00:38.615
+By the end of this video,
+
+15
+00:00:38.615 --> 00:00:40.350
+you'll be able to describe
+
+16
+00:00:40.350 --> 00:00:41.700
+the error state
+formulation
+
+17
+00:00:41.700 --> 00:00:42.890
+of the Extended
+Kalman Filter,
+
+18
+00:00:42.890 --> 00:00:45.470
+and describe the
+advantages of
+
+19
+00:00:45.470 --> 00:00:47.540
+the error state EKF
+over the vanilla
+
+20
+00:00:47.540 --> 00:00:49.070
+EKF that you learned
+
+21
+00:00:49.070 --> 00:00:50.980
+about in the
+previous video.
+
+22
+00:00:50.980 --> 00:00:53.740
+The idea behind
+the error state EKF
+
+23
+00:00:53.740 --> 00:00:55.145
+is really very simple.
+
+24
+00:00:55.145 --> 00:00:56.240
+We're going to
+start thinking
+
+25
+00:00:56.240 --> 00:00:57.210
+about our vehicle state,
+
+26
+00:00:57.210 --> 00:00:59.600
+x, as being composed
+of two parts;
+
+27
+00:00:59.600 --> 00:01:00.830
+a large part called
+
+28
+00:01:00.830 --> 00:01:02.900
+the nominal state, x hat,
+
+29
+00:01:02.900 --> 00:01:04.490
+and a small part called
+
+30
+00:01:04.490 --> 00:01:07.055
+the error state, Delta x.
+
+31
+00:01:07.055 --> 00:01:08.990
+We can think of
+a simple example of
+
+32
+00:01:08.990 --> 00:01:11.345
+tracking the position
+of a car over time.
+
+33
+00:01:11.345 --> 00:01:12.650
+The green line shows
+
+34
+00:01:12.650 --> 00:01:13.830
+the true position
+of the car,
+
+35
+00:01:13.830 --> 00:01:14.915
+which is the quantity
+
+36
+00:01:14.915 --> 00:01:16.565
+we're trying to estimate.
+
+37
+00:01:16.565 --> 00:01:19.640
+The red line is
+the nominal state,
+
+38
+00:01:19.640 --> 00:01:21.110
+or our best guess what
+
+39
+00:01:21.110 --> 00:01:23.270
+the true state could
+be based on what
+
+40
+00:01:23.270 --> 00:01:25.010
+we know about the
+car's motion model and
+
+41
+00:01:25.010 --> 00:01:27.410
+acceleration and
+breaking inputs.
+
+42
+00:01:27.410 --> 00:01:29.435
+Of course,
+our motion model
+
+43
+00:01:29.435 --> 00:01:30.665
+is never perfect,
+
+44
+00:01:30.665 --> 00:01:31.610
+and there is always
+
+45
+00:01:31.610 --> 00:01:33.340
+some random process noise.
+
+46
+00:01:33.340 --> 00:01:34.920
+These errors build up over
+
+47
+00:01:34.920 --> 00:01:37.035
+time as we integrate
+the motion model.
+
+48
+00:01:37.035 --> 00:01:38.840
+We can think of
+the error state
+
+49
+00:01:38.840 --> 00:01:39.950
+as the place where all of
+
+50
+00:01:39.950 --> 00:01:41.210
+these modelling errors and
+
+51
+00:01:41.210 --> 00:01:44.110
+process noise
+accumulate over time,
+
+52
+00:01:44.110 --> 00:01:45.530
+so that the error state
+
+53
+00:01:45.530 --> 00:01:46.700
+is just the
+difference between
+
+54
+00:01:46.700 --> 00:01:48.170
+the nominal state and
+
+55
+00:01:48.170 --> 00:01:50.390
+the true state at
+any given time.
+
+56
+00:01:50.390 --> 00:01:51.650
+If we can figure out what
+
+57
+00:01:51.650 --> 00:01:52.970
+the error state is,
+
+58
+00:01:52.970 --> 00:01:54.980
+we can actually use
+it as a correction to
+
+59
+00:01:54.980 --> 00:01:56.420
+the nominal state to bring
+
+60
+00:01:56.420 --> 00:01:58.705
+us closer to
+the true state.
+
+61
+00:01:58.705 --> 00:02:01.270
+So, in the error
+state EKF,
+
+62
+00:02:01.270 --> 00:02:03.200
+instead of doing
+Kalman filtering on
+
+63
+00:02:03.200 --> 00:02:05.060
+the full state
+which might have
+
+64
+00:02:05.060 --> 00:02:07.720
+lots of complicated
+non-linear behaviors,
+
+65
+00:02:07.720 --> 00:02:09.380
+we're going to
+use the EKF to
+
+66
+00:02:09.380 --> 00:02:11.645
+estimate the error
+state instead,
+
+67
+00:02:11.645 --> 00:02:13.250
+and then use
+the estimate of
+
+68
+00:02:13.250 --> 00:02:14.420
+the error state as
+
+69
+00:02:14.420 --> 00:02:16.400
+a correction to
+the nominal state.
+
+70
+00:02:16.400 --> 00:02:18.320
+What this means
+mathematically
+
+71
+00:02:18.320 --> 00:02:19.040
+is that we're going to
+
+72
+00:02:19.040 --> 00:02:20.810
+rearrange our
+linearized motion
+
+73
+00:02:20.810 --> 00:02:22.310
+model so that we now
+
+74
+00:02:22.310 --> 00:02:23.900
+have an equation
+that can tell us how
+
+75
+00:02:23.900 --> 00:02:24.770
+the difference between
+
+76
+00:02:24.770 --> 00:02:25.850
+the true state at time,
+
+77
+00:02:25.850 --> 00:02:28.910
+k, and our predicted
+state at time, k,
+
+78
+00:02:28.910 --> 00:02:31.040
+is related to
+the same difference
+
+79
+00:02:31.040 --> 00:02:32.870
+at time, k minus one.
+
+80
+00:02:32.870 --> 00:02:34.730
+These differences
+are exactly
+
+81
+00:02:34.730 --> 00:02:37.265
+the error states we
+just talked about;
+
+82
+00:02:37.265 --> 00:02:41.225
+Delta x sub k and
+Delta x sub k minus one,
+
+83
+00:02:41.225 --> 00:02:43.340
+and the equations
+relating them are
+
+84
+00:02:43.340 --> 00:02:45.845
+called the error
+state kinematics.
+
+85
+00:02:45.845 --> 00:02:47.494
+We can also re-express
+
+86
+00:02:47.494 --> 00:02:49.220
+our linearized
+measurement model in
+
+87
+00:02:49.220 --> 00:02:51.380
+terms of the error
+state directly.
+
+88
+00:02:51.380 --> 00:02:53.900
+We can use this error
+state formulation of
+
+89
+00:02:53.900 --> 00:02:56.195
+the EKF in
+a very similar way
+
+90
+00:02:56.195 --> 00:02:57.800
+to the vanilla EKF.
+
+91
+00:02:57.800 --> 00:02:59.330
+We start off by updating
+
+92
+00:02:59.330 --> 00:03:00.890
+the nominal state using
+
+93
+00:03:00.890 --> 00:03:02.480
+the non-linear
+motion model
+
+94
+00:03:02.480 --> 00:03:04.760
+and our current best
+estimate of the state.
+
+95
+00:03:04.760 --> 00:03:05.840
+We could do this a bunch
+
+96
+00:03:05.840 --> 00:03:06.860
+of times before ever
+
+97
+00:03:06.860 --> 00:03:07.805
+getting a measurement
+
+98
+00:03:07.805 --> 00:03:08.840
+for the correction step.
+
+99
+00:03:08.840 --> 00:03:10.700
+So, the current
+best estimate
+
+100
+00:03:10.700 --> 00:03:13.625
+might be x check or x hat.
+
+101
+00:03:13.625 --> 00:03:15.170
+We also need to keep track
+
+102
+00:03:15.170 --> 00:03:16.640
+of the state covariance,
+
+103
+00:03:16.640 --> 00:03:18.200
+which grows as
+we integrate
+
+104
+00:03:18.200 --> 00:03:19.895
+more and more
+process noise
+
+105
+00:03:19.895 --> 00:03:21.275
+from the motion model.
+
+106
+00:03:21.275 --> 00:03:22.610
+Note that again,
+
+107
+00:03:22.610 --> 00:03:24.230
+the previous
+covariance estimate
+
+108
+00:03:24.230 --> 00:03:25.495
+could be P check
+
+109
+00:03:25.495 --> 00:03:27.590
+or P hat depending
+on whether we
+
+110
+00:03:27.590 --> 00:03:29.690
+used a measurement to
+do a correction step.
+
+111
+00:03:29.690 --> 00:03:31.115
+We can repeat the loop
+
+112
+00:03:31.115 --> 00:03:32.510
+updating the
+nominal state and
+
+113
+00:03:32.510 --> 00:03:33.710
+the error state covariance
+
+114
+00:03:33.710 --> 00:03:34.790
+for as long as we like
+
+115
+00:03:34.790 --> 00:03:36.275
+until we receive
+the measurement
+
+116
+00:03:36.275 --> 00:03:38.215
+and want to do
+a correction.
+
+117
+00:03:38.215 --> 00:03:40.010
+When this happens,
+we can compute
+
+118
+00:03:40.010 --> 00:03:41.915
+the Kalman gain as usual,
+
+119
+00:03:41.915 --> 00:03:44.030
+and then compute
+the best estimate of
+
+120
+00:03:44.030 --> 00:03:46.415
+the error state using
+the Kalman gain,
+
+121
+00:03:46.415 --> 00:03:47.720
+the measurement, and
+
+122
+00:03:47.720 --> 00:03:49.520
+our nonlinear
+measurement model.
+
+123
+00:03:49.520 --> 00:03:50.120
+Now,
+
+124
+00:03:50.120 --> 00:03:52.370
+here's where things
+are little different.
+
+125
+00:03:52.370 --> 00:03:53.840
+Once we have
+an estimate for
+
+126
+00:03:53.840 --> 00:03:55.320
+the mean of
+the error state,
+
+127
+00:03:55.320 --> 00:03:57.380
+we want to use
+this to update
+
+128
+00:03:57.380 --> 00:04:00.095
+the nominal state and
+correct the error.
+
+129
+00:04:00.095 --> 00:04:01.775
+We can do that by just
+
+130
+00:04:01.775 --> 00:04:03.530
+adding our estimate
+of the error state to
+
+131
+00:04:03.530 --> 00:04:05.030
+the nominal state to get
+
+132
+00:04:05.030 --> 00:04:06.200
+the correct state estimate
+
+133
+00:04:06.200 --> 00:04:07.555
+for the full state.
+
+134
+00:04:07.555 --> 00:04:09.470
+Finally, we can update
+
+135
+00:04:09.470 --> 00:04:10.820
+the state covariance using
+
+136
+00:04:10.820 --> 00:04:14.390
+the usual equations.
+That's it.
+
+137
+00:04:14.390 --> 00:04:16.200
+This process
+goes on forever,
+
+138
+00:04:16.200 --> 00:04:16.870
+or at least until
+
+139
+00:04:16.870 --> 00:04:18.455
+the vehicle runs
+out of gas.
+
+140
+00:04:18.455 --> 00:04:20.800
+So, why would we
+actually want to use
+
+141
+00:04:20.800 --> 00:04:23.215
+the error state EKF
+in practice?
+
+142
+00:04:23.215 --> 00:04:25.540
+Well, there are two
+good reasons to use it.
+
+143
+00:04:25.540 --> 00:04:27.700
+One reason is that
+it can often work
+
+144
+00:04:27.700 --> 00:04:29.530
+better than the
+vanilla EKF because
+
+145
+00:04:29.530 --> 00:04:31.660
+the small error
+state is more
+
+146
+00:04:31.660 --> 00:04:33.710
+amenable to
+linear filtering
+
+147
+00:04:33.710 --> 00:04:35.525
+than the large
+nominal state,
+
+148
+00:04:35.525 --> 00:04:38.410
+which we can integrate
+non-linearly.
+
+149
+00:04:38.410 --> 00:04:40.150
+The other reason is that
+
+150
+00:04:40.150 --> 00:04:42.085
+the error state
+formulation makes it much
+
+151
+00:04:42.085 --> 00:04:44.425
+easier to work with
+constrained quantities
+
+152
+00:04:44.425 --> 00:04:47.020
+like rotations, which
+will come in handy a
+
+153
+00:04:47.020 --> 00:04:48.700
+bit later in the course.
+
+154
+00:04:48.700 --> 00:04:50.440
+The reason for
+this is that we
+
+155
+00:04:50.440 --> 00:04:51.970
+don't necessarily
+have to use
+
+156
+00:04:51.970 --> 00:04:53.980
+plane vector addition to
+
+157
+00:04:53.980 --> 00:04:55.430
+break down the state.
+
+158
+00:04:55.430 --> 00:04:57.260
+In fact, we could use
+
+159
+00:04:57.260 --> 00:04:59.320
+any generalized
+composition operation
+
+160
+00:04:59.320 --> 00:05:00.770
+we like as long as it
+
+161
+00:05:00.770 --> 00:05:02.870
+gives us a consistent way
+of incorporating
+
+162
+00:05:02.870 --> 00:05:06.755
+small perturbations
+into the nominal state.
+
+163
+00:05:06.755 --> 00:05:08.840
+If this all sounds
+a bit abstract
+
+164
+00:05:08.840 --> 00:05:10.285
+right now, don't worry.
+
+165
+00:05:10.285 --> 00:05:11.820
+Later in the
+course, we'll use
+
+166
+00:05:11.820 --> 00:05:13.760
+the error state
+EKF to help
+
+167
+00:05:13.760 --> 00:05:16.175
+us deal with rotations
+in 3D space,
+
+168
+00:05:16.175 --> 00:05:17.915
+which are
+a very common type
+
+169
+00:05:17.915 --> 00:05:19.475
+of constraint quantity.
+
+170
+00:05:19.475 --> 00:05:22.880
+Let's recap. The error
+state formulation
+
+171
+00:05:22.880 --> 00:05:24.140
+of the EKF separates
+
+172
+00:05:24.140 --> 00:05:25.550
+the vehicle state into
+
+173
+00:05:25.550 --> 00:05:27.215
+a large nominal state
+
+174
+00:05:27.215 --> 00:05:29.240
+and a small error state.
+
+175
+00:05:29.240 --> 00:05:31.370
+The nominal state
+keeps track of what
+
+176
+00:05:31.370 --> 00:05:32.615
+the motion model predicts
+
+177
+00:05:32.615 --> 00:05:33.895
+the states should be,
+
+178
+00:05:33.895 --> 00:05:35.060
+while the error state
+
+179
+00:05:35.060 --> 00:05:36.620
+captures the
+modelling errors and
+
+180
+00:05:36.620 --> 00:05:39.560
+process noise that
+accumulate over time.
+
+181
+00:05:39.560 --> 00:05:41.075
+In the error state EKF,
+
+182
+00:05:41.075 --> 00:05:43.055
+we estimate
+this small error state
+
+183
+00:05:43.055 --> 00:05:43.760
+and use it as
+
+184
+00:05:43.760 --> 00:05:45.620
+a correction to
+the nominal state.
+
+185
+00:05:45.620 --> 00:05:47.360
+This is the main
+difference between
+
+186
+00:05:47.360 --> 00:05:50.225
+the error state EKF
+and the vanilla EKF,
+
+187
+00:05:50.225 --> 00:05:52.235
+which estimates
+the full state.
+
+188
+00:05:52.235 --> 00:05:54.410
+Keep in mind that
+both formulations
+
+189
+00:05:54.410 --> 00:05:57.385
+still rely on
+local linearization.
+
+190
+00:05:57.385 --> 00:05:59.480
+The error state
+EKF has a couple
+
+191
+00:05:59.480 --> 00:06:01.550
+of advantages over
+the vanilla EKF.
+
+192
+00:06:01.550 --> 00:06:03.320
+The first is that
+it simply performs
+
+193
+00:06:03.320 --> 00:06:04.610
+better because
+the evolution
+
+194
+00:06:04.610 --> 00:06:06.170
+of the error state tends
+
+195
+00:06:06.170 --> 00:06:07.895
+to be closer to linear.
+
+196
+00:06:07.895 --> 00:06:09.050
+The other is that
+
+197
+00:06:09.050 --> 00:06:10.190
+the error state
+formulation
+
+198
+00:06:10.190 --> 00:06:11.330
+makes it easier to handle
+
+199
+00:06:11.330 --> 00:06:13.775
+special quantities
+like 3D rotations
+
+200
+00:06:13.775 --> 00:06:15.515
+as we'll see later
+in the course.
+
+201
+00:06:15.515 --> 00:06:16.850
+In the next video,
+
+202
+00:06:16.850 --> 00:06:17.990
+we'll discuss some of
+
+203
+00:06:17.990 --> 00:06:20.075
+the shortcomings
+of the EKF,
+
+204
+00:06:20.075 --> 00:06:21.680
+and how local
+linearization
+
+205
+00:06:21.680 --> 00:06:23.240
+can break down creating
+
+206
+00:06:23.240 --> 00:06:25.100
+a potentially
+dangerous situation
+
+207
+00:06:25.100 --> 00:06:27.210
+for a self-driving car.

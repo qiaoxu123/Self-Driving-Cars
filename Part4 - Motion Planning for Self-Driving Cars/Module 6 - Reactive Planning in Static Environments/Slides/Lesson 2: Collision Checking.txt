@@ -1,0 +1,172 @@
+Hello everyone and welcome to our second lesson in our module on reactive
+motion planning. In this video, we'll
+discuss the methods that we can use to ensure
+our motion plans don't collide with obstacles in the environment while we're making progress towards our goal. This step is clearly crucial in maintaining the safety of our autonomous car
+while it's driving. Specifically by
+the end of this video, you should understand some of the challenges of online
+collision checking. You should also understand
+to collision checking methods, swath-based collision checking, and circle-based
+collision checking. Finally, you should understand
+some of the hazards posed by imperfect information
+and discretization errors, and understand how
+we can mitigate these issues with
+conservative approximations. So let's get started.
+At its core, collision checking
+in the context of motion planning is the process of ensuring a given trajectory or planned path when traversed by an object does not collide with any obstacles
+along the way. An important aspect to note about collision checking is
+that it is a challenging, computationally intensive problem present in many domains, including autonomous driving and other robotic applications, gaming, 3D animation,
+and engineering design. Guaranteeing a safe
+collision-free optimal path not only requires perfect information
+about the environment, it also requires
+a prohibitive amount of computation power
+to compute in exact form especially for complex shapes and
+detailed environments. For autonomous driving which
+requires real-time planning, we have neither of
+these available to us. As you can recall
+from module two, the information given to us by the occupancy grid is
+an imperfect estimate, which means that we
+need to add buffers to our collision checking algorithms to make them more error tolerant. In exact form, collision
+checking amounts to rotating and translating the footprint of a vehicle along every point
+of a given path. Each point in the footprint
+is rotated by the heading at each path point and translated by the position of
+that same path point. This approach is
+summarized by the set S, where p is a path composed of a set of points p and F denotes a function that
+returns the set points contained in a footprint
+rotated by theta, and translated by x and y. For example, suppose I
+have a path point at one minus one and
+minus pi over two. To get the footprint
+at this point, I have to rotate the footprint by minus pi over two and then translate the base link of our car footprint by
+one and minus one. After performing this for
+every point along the path, the resulting swath of the car
+along the path is given by the union of each rotated
+and translated footprint. We then check this entire set to see if there are
+any obstacles inside it. If there are, the path contains a collision and otherwise
+it's collision-free. We now need to take the swath computation
+in its abstract form, and convert it to a discrete formulation that can be calculated by a computer. Suppose we have
+a discrete representation of the cars footprint and the path in terms of
+the occupancy grid, which was discussed
+in module two. The cars footprint contains K points and the path
+is endpoints long. Algorithmically, computing
+the swath requires us to rotate and translate all K
+points in the cars footprint, and times one for
+each point in the path. Let's look at
+a concrete example of a rotation and translation
+using our occupancy grid. Suppose our occupancy grid
+has a resolution of one meter and our footprint occupies the following
+three grid points; zero, zero, one,
+zero, and two, zero. Suppose we have a path point
+that we would like to rotate and translate to at one, two and pi over 2. First, we should
+rotate each point in the footprint about
+the origin by pi over two. Doing so, gives us
+new grid points at zero, zero, zero, one, and zero, two. To complete the footprint
+transformation, we then translate
+it by one and two. Doing so, gives us
+the final grid points; one, two, one, three,
+and one, four. Recall that the order of the steps in this
+transformation matters. If we first translated and then rotate it about the origin, we would get
+an incorrect location for the transformed points. To get the actual
+occupancy grid index, we offset the x and y points
+by the capital x and y, which are the sizes of the x and y dimensions of the
+occupancy grid respectively. We can then divide this by
+the grid resolution delta to get the associated indices
+in the occupancy grid. We then add each of these points
+to a set data structure. Since we are maintaining a set, we are ensuring that there are no duplicate points in our swath. As you can imagine, this computation becomes quite expensive as the problem scales, which makes it difficult to use when performing
+real-time planning. In addition, using
+the exact footprint when calculating the swath can be dangerous due to
+our imperfect information, as there is no buffer for
+errors in obstacle positions. Because this swath-based method is often computationally
+expensive, it is often useful when we are exploiting a lot of repetition in our motion planning algorithm as in the case in
+lattice planners. Since we are constrained
+to a small set of control actions each step
+of a lattice planner, we are also constrained
+to a small set of swaths, so their union can be
+pre-computed offline. When performing collision
+checking online, the problem reduces to
+multiple array lookups. To help mitigate
+both the challenge of imperfect information and extensive computation
+requirements, we often use conservative
+approximations to collision checking, sacrificing optimality to
+improve speed and robustness. In this context,
+optimality is defined by your selection of an
+appropriate objective function, some of which we discussed
+earlier in this course. Since we switched to approximate collision checking to gain
+computing performance, we must use approximations
+that are overly conservative. The goal in selecting a particular approximation
+is to find one that offers great algorithmic speed-up without
+compromising safety, but also minimizing the degree to which our trajectories
+become sub-optimal. What do we mean by
+conservative approximation to collision checking? In this context, a conservative approximation to collision checking would be one that may report a collision along a path even
+if there isn't one, but will never report
+no collision along a path if one does
+actually occur. For a concrete example, suppose we have
+a car as shown here. Now suppose we replaced the cars footprint with
+overlapping circles. The overlapping
+circles completely encompass the footprint of
+the cars rectangular body, which means the
+footprint of the car is a subset of the footprint of
+all three circles combined. No matter what
+trajectory we follow, the swath generated by
+the rectangle will be a subset of the swath generated by
+the overlapping circles. Why is this conservative? Suppose we have
+an obstacle inside the circle footprints but not
+inside the car footprint, this would result in
+a location being reported by the collision checker even though one wouldn't
+actually occur. However, if an obstacle lies
+outside of the circles, no collision will be detected
+and none will occur. This means that
+the collision checker may contain some false
+positive collisions, but will not contain
+a false negative. This results in a nice buffer for our car that helps alleviate the issues presented by the imperfect information
+provided to us. This circle approximation is
+useful for some algorithms because it is
+computationally cheap to check if a point lies
+within a circle. All we need to do is check if the distance between
+any of the points of the obstacle and the center of the circle is less than
+the radius of the circle. For example, the position
+of this pylon from the center of the circle is less than the radius
+of the circle, so collision would be reported. However, for the second circle, the pylon lies outside
+the radius of the circle, which would result in
+this particular section of the path of the car being
+free from collision. If the occupancy grid is
+implemented such that it can provide the distance to the nearest object
+at each grid point, this can be a simple lookup in an array which is extremely efficient relative to checking for arbitrary polygon
+intersections. One thing to realize about
+conservative approximations, is that they may eliminate all feasible collision-free
+paths from a problem even though a path exists or eliminate safe passages
+through narrow openings. This can cause the planner to get stuck when it
+shouldn't or can cause the planner to compute a much more circuitous route
+than is necessary. Depending on which motion
+planning algorithm you use and the structure
+of your occupancy grid, different collision
+checking algorithms will be more efficient
+than others. It will be up to you as
+an autonomous driving engineer to decide which algorithm
+best suits your application. One thing to note in all of these calculations is
+that they are all in discrete form since we are performing these
+computations on a computer. Therefore, our collision
+checking accuracy is also influenced by
+the resolution that we choose when performing
+our discretizations. To illustrate this,
+suppose we have this same path and footprint but suppose one swath is computed with much coarser
+resolution than the other. We can see that
+the coarser resolution results in large gaps in our swath, which can result in
+errors if there are obstacles at those positions. The finer the resolution we choose for our
+collision checking, the more accurate it will be. However, higher resolution also incurs a computational cost. So you again, as an autonomous driving engineer
+will need to strike the right balance between accuracy and computational speed. Rest assured, there are many excellent collision
+checking libraries available and we've included
+some useful links for you to use in the
+supplemental materials. To summarize in this video, we discussed how we can use the occupancy grid
+developed in module two to solve the collision
+checking problem using swath-based
+collision checking. As well that we described the circle based collision
+checking method. We went over some examples to illustrate these algorithms and discussed in what situations each type of collision
+checking should be used. Hopefully, this video has
+given you some insight into how collision checking is done in an autonomous driving context. Performing quick and efficient collision checking
+especially with dynamic obstacles is currently an area of active research, and we hope that you too
+will help contribute to solving these challenging
+and interesting problems. In the next video, we will introduce a reactive
+planning algorithm for this module which is called the Trajectory
+Rollout algorithm. It will combine
+the collision checking approach we've
+developed here with the concepts covered in the trajectory propagation
+lesson. See you then.

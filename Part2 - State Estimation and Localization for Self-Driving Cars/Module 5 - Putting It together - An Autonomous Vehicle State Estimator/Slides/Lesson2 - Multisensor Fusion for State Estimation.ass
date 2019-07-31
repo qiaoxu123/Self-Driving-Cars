@@ -1,0 +1,1164 @@
+WEBVTT
+
+1
+00:00:13.880 --> 00:00:17.270
+Welcome back. Now
+that we've discussed
+
+2
+00:00:17.270 --> 00:00:18.770
+the basic hardware
+and software
+
+3
+00:00:18.770 --> 00:00:20.330
+that we'll need
+for localization,
+
+4
+00:00:20.330 --> 00:00:22.340
+let's put everything
+together.
+
+5
+00:00:22.340 --> 00:00:23.990
+In this lesson,
+we will derive
+
+6
+00:00:23.990 --> 00:00:25.070
+an error state extended
+
+7
+00:00:25.070 --> 00:00:27.584
+Kalman Filter that
+estimates position,
+
+8
+00:00:27.584 --> 00:00:28.400
+velocity,
+
+9
+00:00:28.400 --> 00:00:30.455
+and orientation of
+a self-driving car
+
+10
+00:00:30.455 --> 00:00:32.644
+using an IMU,
+
+11
+00:00:32.644 --> 00:00:36.370
+a GNSS receiver,
+and a LIDAR.
+
+12
+00:00:36.370 --> 00:00:38.690
+Although we'll make
+some simplifications,
+
+13
+00:00:38.690 --> 00:00:40.910
+the basic structure
+of our pipeline will
+
+14
+00:00:40.910 --> 00:00:41.960
+resemble one used in
+
+15
+00:00:41.960 --> 00:00:44.165
+modern self-driving
+vehicles.
+
+16
+00:00:44.165 --> 00:00:46.970
+Before we dive into
+the algorithm details,
+
+17
+00:00:46.970 --> 00:00:48.440
+it's always useful
+to take a step
+
+18
+00:00:48.440 --> 00:00:50.060
+back and ask, "Why
+
+19
+00:00:50.060 --> 00:00:51.770
+use these sensors and
+
+20
+00:00:51.770 --> 00:00:54.155
+can we do something
+more simple?"
+
+21
+00:00:54.155 --> 00:00:56.920
+In our case, we'll
+be using an IMU with
+
+22
+00:00:56.920 --> 00:00:58.750
+a GNSS receiver and
+
+23
+00:00:58.750 --> 00:01:01.060
+a LIDAR for
+several reasons.
+
+24
+00:01:01.060 --> 00:01:03.010
+First, whenever we fuse
+
+25
+00:01:03.010 --> 00:01:04.120
+information for
+the purpose
+
+26
+00:01:04.120 --> 00:01:05.350
+of state estimation,
+
+27
+00:01:05.350 --> 00:01:07.690
+one important factor
+to consider is
+
+28
+00:01:07.690 --> 00:01:09.430
+whether or not the
+errors from
+
+29
+00:01:09.430 --> 00:01:11.815
+different sensors
+will be correlated.
+
+30
+00:01:11.815 --> 00:01:14.230
+In other words,
+if one fails is
+
+31
+00:01:14.230 --> 00:01:16.780
+the other likely
+to fail as well.
+
+32
+00:01:16.780 --> 00:01:19.930
+In this case, all three
+of our sensors use
+
+33
+00:01:19.930 --> 00:01:21.670
+different measurement
+methods and are
+
+34
+00:01:21.670 --> 00:01:24.445
+unlikely to fail for
+the same reason.
+
+35
+00:01:24.445 --> 00:01:27.280
+Second, we should
+try our best to
+
+36
+00:01:27.280 --> 00:01:28.270
+choose sensors that are
+
+37
+00:01:28.270 --> 00:01:29.995
+complimentary in nature.
+
+38
+00:01:29.995 --> 00:01:32.320
+In our case,
+the IMU acts as
+
+39
+00:01:32.320 --> 00:01:34.345
+a high-rate
+smoother of GPS
+
+40
+00:01:34.345 --> 00:01:36.985
+or GNSS position
+estimates.
+
+41
+00:01:36.985 --> 00:01:39.290
+GNSS data can mitigate
+
+42
+00:01:39.290 --> 00:01:42.275
+errors that are
+due to IMU drift.
+
+43
+00:01:42.275 --> 00:01:44.000
+It's also possible to use
+
+44
+00:01:44.000 --> 00:01:45.875
+wheel odometry
+for this purpose.
+
+45
+00:01:45.875 --> 00:01:47.630
+In this lecture,
+we'll stick to
+
+46
+00:01:47.630 --> 00:01:49.490
+IMUs as they can provide
+
+47
+00:01:49.490 --> 00:01:50.900
+full position
+and orientation
+
+48
+00:01:50.900 --> 00:01:53.300
+information in
+three-dimensions,
+
+49
+00:01:53.300 --> 00:01:54.800
+whereas wheel odometry is
+
+50
+00:01:54.800 --> 00:01:57.190
+limited to two dimensions.
+
+51
+00:01:57.190 --> 00:02:00.260
+Finally, LIDAR
+can compliment
+
+52
+00:02:00.260 --> 00:02:02.480
+GNSS information
+by providing
+
+53
+00:02:02.480 --> 00:02:04.760
+very accurate position
+estimates within
+
+54
+00:02:04.760 --> 00:02:06.200
+a known map and
+
+55
+00:02:06.200 --> 00:02:08.705
+in sky obstructed
+locations.
+
+56
+00:02:08.705 --> 00:02:11.240
+Conversely, GNSS can tell
+
+57
+00:02:11.240 --> 00:02:14.360
+LIDAR which map to
+use when localizing.
+
+58
+00:02:14.360 --> 00:02:17.870
+For the purposes of
+EKF state estimation,
+
+59
+00:02:17.870 --> 00:02:19.070
+we can implement either
+
+60
+00:02:19.070 --> 00:02:20.240
+what's called a loosely
+
+61
+00:02:20.240 --> 00:02:23.710
+coupled estimator or a
+tightly coupled one.
+
+62
+00:02:23.710 --> 00:02:26.145
+In a tightly coupled EKF,
+
+63
+00:02:26.145 --> 00:02:27.440
+we use the raw pseudo
+
+64
+00:02:27.440 --> 00:02:29.090
+range and point cloud
+measurements from
+
+65
+00:02:29.090 --> 00:02:32.870
+our GNSS and LIDAR
+as observations.
+
+66
+00:02:32.870 --> 00:02:35.215
+In a loosely
+coupled system,
+
+67
+00:02:35.215 --> 00:02:36.980
+we assume that this data
+has already been
+
+68
+00:02:36.980 --> 00:02:38.360
+preprocessed to
+
+69
+00:02:38.360 --> 00:02:40.925
+produce a noisy
+position estimate.
+
+70
+00:02:40.925 --> 00:02:43.220
+Although the tightly
+coupled approach can
+
+71
+00:02:43.220 --> 00:02:45.125
+lead to more accurate
+localization,
+
+72
+00:02:45.125 --> 00:02:46.910
+it's often tedious
+to implement
+
+73
+00:02:46.910 --> 00:02:49.105
+and requires
+a lot of tuning.
+
+74
+00:02:49.105 --> 00:02:50.915
+For this reason,
+we'll implement
+
+75
+00:02:50.915 --> 00:02:53.030
+a loosely coupled
+EKF here.
+
+76
+00:02:53.030 --> 00:02:54.740
+Here you can
+see a graphical
+
+77
+00:02:54.740 --> 00:02:57.210
+representation
+of our system.
+
+78
+00:02:57.250 --> 00:03:00.080
+We'll use the IMU
+measurements as
+
+79
+00:03:00.080 --> 00:03:02.360
+noisy inputs to
+our motion model.
+
+80
+00:03:02.360 --> 00:03:03.350
+This will give us
+
+81
+00:03:03.350 --> 00:03:04.805
+our predicted state
+which will
+
+82
+00:03:04.805 --> 00:03:06.200
+update every time we
+
+83
+00:03:06.200 --> 00:03:07.445
+have an IMU measurement,
+
+84
+00:03:07.445 --> 00:03:10.295
+this can happen hundreds
+of times a second.
+
+85
+00:03:10.295 --> 00:03:12.185
+At a much slower rate,
+
+86
+00:03:12.185 --> 00:03:13.670
+we'll incorporate GNSS
+
+87
+00:03:13.670 --> 00:03:14.765
+and LIDAR measurements
+
+88
+00:03:14.765 --> 00:03:16.510
+whenever they
+become available,
+
+89
+00:03:16.510 --> 00:03:18.415
+say once a second
+or slower,
+
+90
+00:03:18.415 --> 00:03:19.370
+and use them to
+
+91
+00:03:19.370 --> 00:03:21.660
+correct our
+predicted state.
+
+92
+00:03:22.180 --> 00:03:26.645
+So, what is our state?
+For our purposes,
+
+93
+00:03:26.645 --> 00:03:28.820
+we'll use a ten-dimensional
+state vector
+
+94
+00:03:28.820 --> 00:03:30.744
+that includes
+a 3D position,
+
+95
+00:03:30.744 --> 00:03:32.365
+a 3D velocity,
+
+96
+00:03:32.365 --> 00:03:34.640
+any 4D unit
+quaternion that will
+
+97
+00:03:34.640 --> 00:03:35.990
+represent
+the orientation of
+
+98
+00:03:35.990 --> 00:03:37.610
+our vehicle with respect
+
+99
+00:03:37.610 --> 00:03:39.785
+to a navigation frame.
+
+100
+00:03:39.785 --> 00:03:42.230
+We'll assume
+that IMU outputs
+
+101
+00:03:42.230 --> 00:03:44.450
+specific forces and
+rotational rates in
+
+102
+00:03:44.450 --> 00:03:46.370
+the sensor frame
+and combine them
+
+103
+00:03:46.370 --> 00:03:49.160
+into a single
+input vector u.
+
+104
+00:03:49.160 --> 00:03:50.840
+It's also important to
+
+105
+00:03:50.840 --> 00:03:52.190
+point out that
+we're not going
+
+106
+00:03:52.190 --> 00:03:55.235
+to track accelerometer
+or gyroscope biases.
+
+107
+00:03:55.235 --> 00:03:57.560
+These are often put
+into the state vector,
+
+108
+00:03:57.560 --> 00:03:59.670
+estimated, and
+then subtracted
+
+109
+00:03:59.670 --> 00:04:01.305
+off of the our IMU
+measurements.
+
+110
+00:04:01.305 --> 00:04:03.710
+For clarity, we'll
+emit them here
+
+111
+00:04:03.710 --> 00:04:04.160
+and assume
+
+112
+00:04:04.160 --> 00:04:07.045
+our IMU measurements
+are unbiased.
+
+113
+00:04:07.045 --> 00:04:09.525
+Our motion model
+for the position,
+
+114
+00:04:09.525 --> 00:04:10.170
+velocity,
+
+115
+00:04:10.170 --> 00:04:11.990
+and orientation
+will integrate
+
+116
+00:04:11.990 --> 00:04:13.370
+the proper
+accelerations and
+
+117
+00:04:13.370 --> 00:04:15.500
+rotational rates
+from our IMU.
+
+118
+00:04:15.500 --> 00:04:18.740
+The position updates
+look like this.
+
+119
+00:04:18.740 --> 00:04:21.775
+Next is the
+velocity update,
+
+120
+00:04:21.775 --> 00:04:25.515
+and finally,
+the quaternion update.
+
+121
+00:04:25.515 --> 00:04:27.950
+We'll need to use
+a bunch of definitions
+
+122
+00:04:27.950 --> 00:04:29.600
+as shown below.
+
+123
+00:04:29.600 --> 00:04:31.550
+Remember that
+our quaternion
+
+124
+00:04:31.550 --> 00:04:33.050
+will keep track of
+the orientation
+
+125
+00:04:33.050 --> 00:04:34.790
+of our sensor frame S
+
+126
+00:04:34.790 --> 00:04:36.665
+with respect to
+our navigation frame
+
+127
+00:04:36.665 --> 00:04:40.790
+n. Because of the
+orientation parameters,
+
+128
+00:04:40.790 --> 00:04:42.845
+which we express as
+a rotation matrix,
+
+129
+00:04:42.845 --> 00:04:45.025
+our motion model
+is not linear.
+
+130
+00:04:45.025 --> 00:04:46.400
+To use it in our EKF,
+
+131
+00:04:46.400 --> 00:04:48.410
+we'll need to linearize
+it with respect to
+
+132
+00:04:48.410 --> 00:04:50.210
+some small error or
+
+133
+00:04:50.210 --> 00:04:53.000
+perturbation about
+the predicted state.
+
+134
+00:04:53.000 --> 00:04:54.800
+To do this, we'll define
+
+135
+00:04:54.800 --> 00:04:57.575
+an error state that
+consists of Delta P,
+
+136
+00:04:57.575 --> 00:05:00.020
+Delta V, and
+Delta phi where
+
+137
+00:05:00.020 --> 00:05:01.040
+Delta phi is a three
+
+138
+00:05:01.040 --> 00:05:03.720
+by one orientation error.
+
+139
+00:05:04.030 --> 00:05:06.635
+Using this state,
+we can derive
+
+140
+00:05:06.635 --> 00:05:07.730
+aerodynamics with the
+
+141
+00:05:07.730 --> 00:05:09.920
+appropriate Jacobians.
+
+142
+00:05:09.920 --> 00:05:11.930
+For our measurement model,
+
+143
+00:05:11.930 --> 00:05:13.760
+we'll use a very
+simple observation of
+
+144
+00:05:13.760 --> 00:05:14.930
+the position plus
+
+145
+00:05:14.930 --> 00:05:17.390
+some additive
+Gaussian noise.
+
+146
+00:05:17.390 --> 00:05:21.380
+We'll define
+a covariance R sub GNSS,
+
+147
+00:05:21.380 --> 00:05:23.710
+for the GNSS
+position noise,
+
+148
+00:05:23.710 --> 00:05:25.770
+and R sub LIDAR,
+
+149
+00:05:25.770 --> 00:05:28.720
+for our LIDAR position
+measurement noise.
+
+150
+00:05:29.140 --> 00:05:31.550
+It's important here
+to note that we have
+
+151
+00:05:31.550 --> 00:05:33.020
+assumed that our LIDAR and
+
+152
+00:05:33.020 --> 00:05:35.645
+GNSS will supply
+position measurements
+
+153
+00:05:35.645 --> 00:05:38.170
+in the same
+coordinate frame.
+
+154
+00:05:38.170 --> 00:05:40.550
+In a realistic
+implementation,
+
+155
+00:05:40.550 --> 00:05:42.425
+the GNSS position
+estimates
+
+156
+00:05:42.425 --> 00:05:43.550
+may serve as a way to
+
+157
+00:05:43.550 --> 00:05:45.080
+select a known map
+
+158
+00:05:45.080 --> 00:05:46.430
+against which
+the LIDAR data
+
+159
+00:05:46.430 --> 00:05:47.960
+can then be compared.
+
+160
+00:05:47.960 --> 00:05:49.760
+With these
+definitions in mind,
+
+161
+00:05:49.760 --> 00:05:50.930
+we can now describe
+
+162
+00:05:50.930 --> 00:05:53.105
+our extended
+Kalman filter.
+
+163
+00:05:53.105 --> 00:05:55.160
+Our filter will loop every
+
+164
+00:05:55.160 --> 00:05:57.485
+time an IMU
+measurement occurs.
+
+165
+00:05:57.485 --> 00:05:59.900
+We'll first use the
+motion model to predict
+
+166
+00:05:59.900 --> 00:06:02.360
+a new state based
+on our last state.
+
+167
+00:06:02.360 --> 00:06:03.950
+The last state may be
+
+168
+00:06:03.950 --> 00:06:05.360
+a fully corrected state
+
+169
+00:06:05.360 --> 00:06:07.160
+or one that was
+also propagated
+
+170
+00:06:07.160 --> 00:06:08.990
+using the motion
+model only
+
+171
+00:06:08.990 --> 00:06:10.520
+depending on
+whether or not we
+
+172
+00:06:10.520 --> 00:06:12.935
+received a GNSS or
+LIDAR measurement
+
+173
+00:06:12.935 --> 00:06:15.270
+at the last time step.
+
+174
+00:06:15.470 --> 00:06:18.320
+Next, we'll propagate
+the state uncertainty
+
+175
+00:06:18.320 --> 00:06:20.345
+through our linearized
+motion model.
+
+176
+00:06:20.345 --> 00:06:22.415
+Again, accounting
+for whether or not
+
+177
+00:06:22.415 --> 00:06:23.690
+our previous state was
+
+178
+00:06:23.690 --> 00:06:25.855
+corrected or uncorrected.
+
+179
+00:06:25.855 --> 00:06:27.900
+At this point,
+if we don't have
+
+180
+00:06:27.900 --> 00:06:30.465
+any GNSS or LIDAR
+measurements available,
+
+181
+00:06:30.465 --> 00:06:32.790
+we can repeat
+steps one and two.
+
+182
+00:06:32.790 --> 00:06:34.700
+If we do, we'll
+first compute
+
+183
+00:06:34.700 --> 00:06:36.380
+the Kalman gain
+that is appropriate
+
+184
+00:06:36.380 --> 00:06:38.110
+for the given observation,
+
+185
+00:06:38.110 --> 00:06:40.250
+we'll then compute
+an error state that we
+
+186
+00:06:40.250 --> 00:06:42.560
+will use to correct
+our predicted state.
+
+187
+00:06:42.560 --> 00:06:44.420
+This error state
+is based on
+
+188
+00:06:44.420 --> 00:06:46.220
+the product of
+the Kalman gain and
+
+189
+00:06:46.220 --> 00:06:47.540
+the difference between the
+
+190
+00:06:47.540 --> 00:06:49.715
+predicted and
+observed position.
+
+191
+00:06:49.715 --> 00:06:51.155
+We will then correct
+
+192
+00:06:51.155 --> 00:06:54.095
+our predicted state
+using our error state.
+
+193
+00:06:54.095 --> 00:06:56.195
+This correction is
+straightforward
+
+194
+00:06:56.195 --> 00:06:57.950
+for position and velocity,
+
+195
+00:06:57.950 --> 00:06:59.780
+but some more
+complicated algebra is
+
+196
+00:06:59.780 --> 00:07:02.050
+required to correct
+the quaternion.
+
+197
+00:07:02.050 --> 00:07:04.130
+We'll need
+this special update
+
+198
+00:07:04.130 --> 00:07:05.390
+because the quaternion is
+
+199
+00:07:05.390 --> 00:07:07.160
+a constrained
+quantity that
+
+200
+00:07:07.160 --> 00:07:09.510
+is not a simple vector.
+
+201
+00:07:09.520 --> 00:07:11.660
+Finally, we'll update
+
+202
+00:07:11.660 --> 00:07:13.850
+our state covariants
+in the usual way.
+
+203
+00:07:13.850 --> 00:07:15.730
+That's it. There
+you have it.
+
+204
+00:07:15.730 --> 00:07:18.590
+Your very own
+localization pipeline.
+
+205
+00:07:18.590 --> 00:07:20.360
+If you followed everything
+
+206
+00:07:20.360 --> 00:07:22.490
+up until now,
+congratulations!
+
+207
+00:07:22.490 --> 00:07:23.900
+You're well on your way to
+
+208
+00:07:23.900 --> 00:07:26.150
+becoming a
+localization guru.
+
+209
+00:07:26.150 --> 00:07:27.740
+Before we end this lesson,
+
+210
+00:07:27.740 --> 00:07:29.330
+let's review a few of
+the assumptions we've
+
+211
+00:07:29.330 --> 00:07:32.270
+made when putting
+our pipeline together.
+
+212
+00:07:32.270 --> 00:07:34.460
+We used a loosely-coupled
+
+213
+00:07:34.460 --> 00:07:36.155
+extended Kalman
+Filter framework
+
+214
+00:07:36.155 --> 00:07:37.610
+to fuse inertial
+measurements
+
+215
+00:07:37.610 --> 00:07:39.350
+from an IMU together with
+
+216
+00:07:39.350 --> 00:07:40.880
+position measurements
+from a GNSS
+
+217
+00:07:40.880 --> 00:07:43.350
+receiver and LIDAR.
+
+218
+00:07:43.400 --> 00:07:45.719
+We assume that the GNSS
+
+219
+00:07:45.719 --> 00:07:46.940
+and LIDAR provided us with
+
+220
+00:07:46.940 --> 00:07:48.050
+position estimates in
+
+221
+00:07:48.050 --> 00:07:49.610
+the same coordinate frame
+
+222
+00:07:49.610 --> 00:07:51.335
+which requires
+some preprocessing,
+
+223
+00:07:51.335 --> 00:07:52.520
+but is possible to do
+
+224
+00:07:52.520 --> 00:07:54.565
+in a realistic
+implementation.
+
+225
+00:07:54.565 --> 00:07:56.840
+Second, we did
+not account for
+
+226
+00:07:56.840 --> 00:07:58.909
+accelerometer or
+gyroscope biases
+
+227
+00:07:58.909 --> 00:08:00.410
+in our IMU measurements.
+
+228
+00:08:00.410 --> 00:08:02.300
+This simplified
+our algebra
+
+229
+00:08:02.300 --> 00:08:04.520
+but is not a
+realistic assumption.
+
+230
+00:08:04.520 --> 00:08:06.320
+Luckily, if you follow
+
+231
+00:08:06.320 --> 00:08:07.850
+along with what
+we've done here,
+
+232
+00:08:07.850 --> 00:08:11.015
+adding biases is not
+insignificant leap.
+
+233
+00:08:11.015 --> 00:08:13.205
+Next, we didn't discuss
+
+234
+00:08:13.205 --> 00:08:15.260
+Filter State
+initialization.
+
+235
+00:08:15.260 --> 00:08:17.750
+This is often taken to
+be some known state
+
+236
+00:08:17.750 --> 00:08:20.910
+at the start of
+the localization process.
+
+237
+00:08:20.950 --> 00:08:22.970
+Finally, we also
+
+238
+00:08:22.970 --> 00:08:24.050
+assumed that our
+sensors were
+
+239
+00:08:24.050 --> 00:08:27.445
+all spatially and
+temporally aligned.
+
+240
+00:08:27.445 --> 00:08:29.370
+We assumed that
+our sensors were
+
+241
+00:08:29.370 --> 00:08:31.310
+calibrated in the sense
+that we didn't
+
+242
+00:08:31.310 --> 00:08:32.360
+worry about varying time
+
+243
+00:08:32.360 --> 00:08:33.710
+steps or how we can get
+
+244
+00:08:33.710 --> 00:08:35.120
+several sets of
+measurements all
+
+245
+00:08:35.120 --> 00:08:37.420
+aligned into
+one coordinate frame.
+
+246
+00:08:37.420 --> 00:08:39.470
+Performing
+this latter step is
+
+247
+00:08:39.470 --> 00:08:40.820
+a very important part of
+
+248
+00:08:40.820 --> 00:08:41.900
+constructing an accurate
+
+249
+00:08:41.900 --> 00:08:43.310
+localization pipeline.
+
+250
+00:08:43.310 --> 00:08:45.600
+We'll discuss it next.

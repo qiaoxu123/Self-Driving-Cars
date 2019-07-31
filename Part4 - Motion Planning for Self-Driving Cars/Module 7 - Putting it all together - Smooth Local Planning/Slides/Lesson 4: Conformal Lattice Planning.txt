@@ -1,0 +1,167 @@
+Hi everyone. In this lesson, we'll use the
+optimization techniques we've developed in
+the previous lessons, to derive a full-fledged
+path planner known as the conformal
+lattice planner. By the end of this video, you should be able to implement a conformal lattice planner, to solve our path
+planning problem. You should understand how to sample points along the road, and how to plan paths
+to each point using the optimization formulation
+we developed in lesson two. You should also be able to determine if paths
+are collision free, and select the path
+that best tracks the road we need to
+follow. Let's get started. As an introduction, let's go over the high level objective and structure of the conformal
+lattice planner. As with all path planners, the goal is to plan a feasible collision-free path from the autonomous cars
+current position, to a given goal state. The conformal lattice planner exploits the structured
+nature of roads, to speed up the planning process while avoiding obstacles. By focusing on only those
+smooth path options that swerve slightly to the left or right
+of the goal path, the conformal lattice
+planner produces plans that closely
+resemble human driving. When planning paths
+over roadways, a car should typically never
+consider leaving the road, unless there is
+an emergency stop scenario. Because of this, the conformal
+lattice planner chooses a central goal state as well as a sequence of
+alternate goal states, that are formed by laterally offsetting from
+the central goal state, with respect to the
+heading of the road. This is illustrated here in this example of
+a conformal lattice. Where the end point
+of each path is laterally offset from
+the central path, which corresponds to
+a goal point on the road. This goal point is
+highlighted in gold. We can do this
+because in general, the car is supposed to make forward progress
+along the ego lane. We don't care as much
+about a path that wouldn't result in
+forward progress, so we can greatly
+reduce our search space keeping the conformal lattice planner computationally
+tractable. So how do we select
+this goal state? In general, there's
+a key trade off when selecting your goal state
+for path planning. If you choose
+a goal state that is close to the current
+ego vehicle position, you reduce the computational time required to find a path
+to the goal point. However, you also
+reduce the ability of the planner to avoid obstacles
+farther down a path, in a smooth and
+comfortable manner. This can be problematic at
+higher speeds where the car will cover more distance in
+between planning cycles. Usually, the goal
+horizon that we use in our plan is
+dynamically calculated, based upon factors such as the car speed and
+the weather conditions. For simplicity in
+this module however, we will use a fixed goal horizon. We will take the goal point as the point along
+the center line of the lane, that is a distance ahead of
+us equal to our goal horizon. This is illustrated here
+along this path with the gold point corresponding to the selected goal location. The blue points correspond to the laterally offset goal points, which will be used as alternate endpoint
+constraints for each spiral in the lattice. The black portion of
+the lane central line has arc length equal to
+our selected goal horizon. At each planning step, we will recompute our goal point based on this same horizon, and we will make forward
+progress along the lane. Once these goals states
+have been found, we can then calculate the spirals required to
+reach each one of them. At this point, we
+don't worry about whether the paths
+are collision free, we just want kinematically
+feasible paths to each of our goal states. We can therefore use the optimization formulation
+we developed in lesson two, to solve for a cubic spiral, from our current location, to each end location. If any of the spirals
+are kinematically infeasible or are unable to reach the required goal state, we discard those spiral
+so that they are no longer considered
+as potential paths. Note that once an optimization
+problem is solved, we only have the resulting parameter vector p. We then have to undo the transformation
+we initially performed on the spiral
+coefficients, in order to retrieve
+them from the p vector. Once we have
+our spiral coefficients, we can then sample
+the points along the spiral to get a discrete representation
+of the entire path. Since we don't have a closed form solution of
+the position along the spiral, we again need to perform
+numerical integration. However, since this time, we are evaluating
+the integral and numerous points along the entire spiral, a more efficient method is needed to solve these integrals. Here we apply a linear
+interpolation approach. The trapezoid rule. The trapezoid rule is
+significantly more efficient than Simpson's rule
+in this context, because each subsequent point
+along the curve, can be constructed
+from the previous one. So we only have to
+do one sweep through the spiral to get all
+of the required points. Simpson's rule, on
+the other hand, would require us to solve an integral approximation
+for each point, which is much less efficient. In Python, we can
+do this by using the cumulative
+trapezoid function. Once the trapezoid
+rule is applied, we now have a discrete
+representation of each spiral for
+each goal point. It will be important that we
+keep track of the curvature of each point along with
+the position and heading, as this will help us with our velocity profile
+planning later on. We have closed form solutions for the curvature and heading, so no numerical
+integration is required. After using the trapezoid rule, we now have our generated set of paths for each goal
+states shown here. Now that we have
+a full set of paths, we need to see which ones
+are collision free. To do this, we can use either of the collision checking techniques we discussed in module four. Most generally, we can use
+a binary occupancy grid that contains one if a cell is
+occupied, and zero otherwise. We can then take
+our cars footprint in terms of the cells of
+the occupancy grid, and sweep the footprint
+out across each point in the spiral to generate
+the swath of the path. If the occupancy grid
+at a cell in the swath contains an obstacle, the path in question will
+collide with the obstacle, and should be marked
+as having a collision. If this never occurs for any of the cells in the swath
+along the entire path, the path is considered
+collision-free. Alternatively, we can
+use circle checks if both the ego vehicle and
+each obstacle in the ego lane, can be enclosed in
+a circle approximation. Then we place the circles for the ego vehicle at
+each point along the path, and check for collisions with each obstacle that falls
+within the ego lane. To illustrate the results
+of collision checking, we've added a parked vehicle to our path that we now
+need to plan around. After sweeping the swath
+out across each spiral, similar to how we did
+it in module four, we have marked the
+collision-free paths as green, and the paths that collide
+with the obstacles as red. At this point, we have a set of feasible and
+collision-free paths, but we need a method of selecting
+the best one to follow. The selection process is
+largely a design choice. As there may be
+multiple criteria that are useful for a given
+planning application. For example, we
+may want to choose paths that are as far from
+obstacles as possible. So we may add a penalty term for paths that come too
+close to obstacles, in the occupancy grid. We may also want to
+penalize terms that deviate too far from
+the nearest lane center line, as we do not want
+to split lanes for too long while performing
+a lane change. For now, we're going to use
+a simple metric where we bias the planner to select
+paths from the path set, that are as close to the
+center goal state as possible. The actual penalty
+function doesn't matter as long as the
+penalty increases, the farther you get
+from the central goal. By biasing toward
+the center path, we are encouraging our planner to follow the reference path, and only letting it deviate from the reference when the reference
+path is infeasible, or if it collides
+with an obstacle. For simplicity, we can take this function to be
+the displacement from the center goal state to the goal state of
+the path we are checking. We can then iterate over
+every path in the path set, find the one that minimizes this penalty and select it to
+publish as our final path. In our example, the selected
+path is highlighted in blue. If we now repeat this process for multiple time steps as
+the car moves along the path, our planner is able
+to plan a path that converges to the goal state, while also avoiding
+the obstacles. Similar to the reactive planner we developed in module four, this planner proceeds in a receding horizon fashion towards the goal at
+the end of the lane. We now have all the pieces
+necessary to form smooth, collision-free paths
+through the environment, that favor forward
+progress in the lane. To summarize in this video, we first define the conformal state
+lattice planner approach, which selects points
+laterally offset from some goal point ahead
+of us along the road. We then planned paths to each of these points using
+our spiral optimization methods, developed in lesson two. Next, we discussed how to
+prune this set of paths to be collision-free,and how to select the best remaining path. Finally, we integrated
+a receding horizon approach to complete our path planner. Now that you've
+had an overview of the entire path
+planning algorithm, we hope that you're
+able to see how many of the lessons in this course
+have culminated, in a method that efficiently solves the path planning problem. In our next video, we'll discuss how to take an input path as calculated
+by our path planner, and generate a velocity profile
+for the car to follow, as it moves along the path. We'll then have a complete set of reference signals to pass to
+our controller to execute, completing all three stages of the hierarchical motion
+planning process.

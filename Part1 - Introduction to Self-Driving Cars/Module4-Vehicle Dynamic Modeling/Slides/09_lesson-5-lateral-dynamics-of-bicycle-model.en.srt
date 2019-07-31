@@ -1,0 +1,483 @@
+1
+00:00:14,000 --> 00:00:16,020
+In the previous video,
+
+2
+00:00:16,020 --> 00:00:19,545
+we covered longitudinal dynamics for the vehicle.
+
+3
+00:00:19,545 --> 00:00:22,440
+In this lesson, we will cover the dynamic modeling of
+
+4
+00:00:22,440 --> 00:00:26,325
+a four-wheel car based on the bicycle modeling approach.
+
+5
+00:00:26,325 --> 00:00:28,035
+By the end of this video,
+
+6
+00:00:28,035 --> 00:00:29,670
+you will be able to;
+
+7
+00:00:29,670 --> 00:00:34,995
+build a dynamic model of a car using the kinematic bicycle model as a starting point,
+
+8
+00:00:34,995 --> 00:00:40,800
+and represent it in a standard state-space form suitable for lateral control design.
+
+9
+00:00:40,800 --> 00:00:46,460
+Let's get started. We would like to extend our kinematic bicycle model
+
+10
+00:00:46,460 --> 00:00:52,310
+to a dynamic model by relaxing the no slip condition and force for the kinematic model.
+
+11
+00:00:52,310 --> 00:00:55,190
+Recall that in the full dynamic bicycle model,
+
+12
+00:00:55,190 --> 00:00:58,430
+we maintain two components of the motion: the first
+
+13
+00:00:58,430 --> 00:01:01,820
+in the longitudinal direction in the direction of the heading,
+
+14
+00:01:01,820 --> 00:01:05,600
+and the second in the lateral direction perpendicular to the heading.
+
+15
+00:01:05,600 --> 00:01:08,375
+Specifically, for the lateral vehicle model,
+
+16
+00:01:08,375 --> 00:01:10,970
+we are interested in modeling the rotation rate of
+
+17
+00:01:10,970 --> 00:01:15,390
+the vehicle based on the moments that affect the vehicle while moving.
+
+18
+00:01:15,390 --> 00:01:18,890
+To start modeling the lateral dynamics of the bicycle model,
+
+19
+00:01:18,890 --> 00:01:22,970
+the following assumptions will be made: first,
+
+20
+00:01:22,970 --> 00:01:26,375
+the forward longitudinal velocity is assumed constant.
+
+21
+00:01:26,375 --> 00:01:30,530
+This is done to decouple our lateral and longitudinal dynamic models,
+
+22
+00:01:30,530 --> 00:01:32,855
+which simplifies our modeling task greatly,
+
+23
+00:01:32,855 --> 00:01:38,585
+but does lead to modeling inaccuracies when accelerating or decelerating out of curves.
+
+24
+00:01:38,585 --> 00:01:42,320
+Second, as with the kinematic bicycle model,
+
+25
+00:01:42,320 --> 00:01:44,030
+the left and right wheels for
+
+26
+00:01:44,030 --> 00:01:48,050
+both front and rear axles are lumped into a single wheel each.
+
+27
+00:01:48,050 --> 00:01:53,280
+So, this assumption converts the four wheels to two wheels bicycle model.
+
+28
+00:01:53,420 --> 00:01:58,265
+Finally, other nonlinear effects such as suspension movement,
+
+29
+00:01:58,265 --> 00:02:03,080
+road inclination, and aerodynamic forces are assumed to be negligible.
+
+30
+00:02:03,080 --> 00:02:08,275
+In practice, these effects can have a significant impact on the tire forces that occur.
+
+31
+00:02:08,275 --> 00:02:09,530
+So, this is again,
+
+32
+00:02:09,530 --> 00:02:11,720
+a limiting assumption in some cases,
+
+33
+00:02:11,720 --> 00:02:14,015
+but it's sufficient for our purposes.
+
+34
+00:02:14,015 --> 00:02:18,560
+We will use the vehicle center of gravity as the reference point for
+
+35
+00:02:18,560 --> 00:02:24,065
+the dynamic model as it simplifies the application of Newton's second law.
+
+36
+00:02:24,065 --> 00:02:29,030
+We can define the total acceleration in the inertial frame as a_y,
+
+37
+00:02:29,030 --> 00:02:33,545
+and this includes the lateral acceleration in the body frame y double dot,
+
+38
+00:02:33,545 --> 00:02:36,785
+and the centripetal acceleration from rotation of the vehicle,
+
+39
+00:02:36,785 --> 00:02:39,980
+omega squared R. These expressions can be
+
+40
+00:02:39,980 --> 00:02:43,805
+rewritten in terms of the slip angle rate of change, beta dot,
+
+41
+00:02:43,805 --> 00:02:45,260
+and the heading rate of change,
+
+42
+00:02:45,260 --> 00:02:51,510
+psi dot using the definition of the slip angle and the fact that V equals omega R,
+
+43
+00:02:51,510 --> 00:02:55,150
+and omega is equal to psi dot respectively.
+
+44
+00:02:55,150 --> 00:03:00,440
+The model formulation for lateral dynamics can now be formed with the only two
+
+45
+00:03:00,440 --> 00:03:05,780
+forces affecting the dynamics being the lateral forces on the front and rear tires.
+
+46
+00:03:05,780 --> 00:03:10,640
+The vehicle longitudinal velocity is defined by V as before and
+
+47
+00:03:10,640 --> 00:03:15,885
+the mass is m. For the angular accelerations, psi double dot,
+
+48
+00:03:15,885 --> 00:03:18,815
+the moments produced by the tire forces act in
+
+49
+00:03:18,815 --> 00:03:22,265
+opposite directions and combine with the inertial term,
+
+50
+00:03:22,265 --> 00:03:26,830
+I_z times psi double dot to form this second-order equation.
+
+51
+00:03:26,830 --> 00:03:33,440
+The parameters, L_f and L_r define the distances to each tire from the cg.
+
+52
+00:03:33,440 --> 00:03:38,960
+One of the most important components in vehicle dynamics modeling or the tires.
+
+53
+00:03:38,960 --> 00:03:42,425
+Tire forces are generally hard to predict exactly,
+
+54
+00:03:42,425 --> 00:03:46,670
+and tire models tend to be nonlinear and empirically identified.
+
+55
+00:03:46,670 --> 00:03:48,380
+We'll explore some of
+
+56
+00:03:48,380 --> 00:03:53,110
+the more common tire models in detail in the final video in this module.
+
+57
+00:03:53,110 --> 00:03:56,324
+Fortunately however, for normal driving conditions,
+
+58
+00:03:56,324 --> 00:04:01,085
+a simple linear approximation can be used to model tire force generation.
+
+59
+00:04:01,085 --> 00:04:05,155
+This approximation is really only valid for small slip angles,
+
+60
+00:04:05,155 --> 00:04:10,160
+and the tire forces are modeled as varying linearly with slip angles specifically.
+
+61
+00:04:10,160 --> 00:04:13,690
+As we use the linear tire model in our control design,
+
+62
+00:04:13,690 --> 00:04:15,800
+we must make sure to not exceed
+
+63
+00:04:15,800 --> 00:04:21,035
+this small angle assumption by sticking to non-aggressive driving maneuvers.
+
+64
+00:04:21,035 --> 00:04:23,900
+In order to use these linear tire models,
+
+65
+00:04:23,900 --> 00:04:27,430
+we need to define the front and rear side slip angles,
+
+66
+00:04:27,430 --> 00:04:30,710
+alpha f and alpha r. They are defined
+
+67
+00:04:30,710 --> 00:04:34,325
+in exactly the same way as the vehicle slip angle beta,
+
+68
+00:04:34,325 --> 00:04:36,950
+but are defined relative to the direction of
+
+69
+00:04:36,950 --> 00:04:41,370
+the wheel and the vehicle velocity at the wheel center.
+
+70
+00:04:41,990 --> 00:04:45,800
+The cornering stiffness of a tire is defined by
+
+71
+00:04:45,800 --> 00:04:49,850
+its ability to resist deformation while the vehicle corners.
+
+72
+00:04:49,850 --> 00:04:52,400
+This diagram shows the relationship between
+
+73
+00:04:52,400 --> 00:04:56,035
+the lateral tire force and the tire slip angle.
+
+74
+00:04:56,035 --> 00:05:01,700
+The slope of the line at zero is known as the cornering stiffness coefficients, C_y.
+
+75
+00:05:01,700 --> 00:05:05,405
+As can be seen in the plot for small slip angles,
+
+76
+00:05:05,405 --> 00:05:07,410
+typically less than eight degrees,
+
+77
+00:05:07,410 --> 00:05:11,105
+the relation is almost a linear relation.
+
+78
+00:05:11,105 --> 00:05:15,170
+We can introduce C_f and C_r as linearized
+
+79
+00:05:15,170 --> 00:05:19,280
+cornering stiffness of the front and rear wheels for the bicycle model.
+
+80
+00:05:19,280 --> 00:05:23,240
+Therefore, the relation between the lateral forces acting on
+
+81
+00:05:23,240 --> 00:05:27,004
+the front and rear wheels will be the product of the cornering stiffness,
+
+82
+00:05:27,004 --> 00:05:28,940
+C_y, and the slip angle,
+
+83
+00:05:28,940 --> 00:05:30,680
+alpha for each tire.
+
+84
+00:05:30,680 --> 00:05:35,930
+We can rewrite the tire slip angles in terms of the vehicle slip angle beta,
+
+85
+00:05:35,930 --> 00:05:37,805
+the steering angle delta,
+
+86
+00:05:37,805 --> 00:05:39,935
+the longitudinal velocity V,
+
+87
+00:05:39,935 --> 00:05:41,495
+and the yaw rate.
+
+88
+00:05:41,495 --> 00:05:46,040
+The previously derived dynamic equations for the lateral bicycle model can
+
+89
+00:05:46,040 --> 00:05:51,005
+now be modified by substituting in the tire force slip equations.
+
+90
+00:05:51,005 --> 00:05:53,780
+This leads to the following pair of
+
+91
+00:05:53,780 --> 00:05:56,510
+coupled ordinary differential equations that
+
+92
+00:05:56,510 --> 00:06:00,035
+govern the dynamics of the vehicle in the lateral direction.
+
+93
+00:06:00,035 --> 00:06:03,920
+Note that the left-hand side variables represent the rate of change of
+
+94
+00:06:03,920 --> 00:06:07,915
+the vehicle slip angle and the rate of change of the yaw rate.
+
+95
+00:06:07,915 --> 00:06:10,160
+Conveniently and because of
+
+96
+00:06:10,160 --> 00:06:13,610
+the approximations and assumptions made throughout this derivation,
+
+97
+00:06:13,610 --> 00:06:17,420
+the resulting dynamic lateral vehicle model is linear.
+
+98
+00:06:17,420 --> 00:06:19,665
+We can define a state vector,
+
+99
+00:06:19,665 --> 00:06:22,980
+X_lat that includes the lateral position;
+
+100
+00:06:22,980 --> 00:06:25,620
+y, the slip angle; beta,
+
+101
+00:06:25,620 --> 00:06:27,435
+the yaw angle; psi,
+
+102
+00:06:27,435 --> 00:06:29,730
+and the yaw rates; psi dot.
+
+103
+00:06:29,730 --> 00:06:35,119
+The system can now be expressed in standard state-space form as follows;
+
+104
+00:06:35,119 --> 00:06:38,495
+X dot lat equals A_lat times,
+
+105
+00:06:38,495 --> 00:06:41,630
+X_lat, plus B_lat times delta.
+
+106
+00:06:41,630 --> 00:06:45,565
+The system dynamics matrices are A_lat and B_lat
+
+107
+00:06:45,565 --> 00:06:49,835
+which are time-invariant if the forward speed V is kept constant.
+
+108
+00:06:49,835 --> 00:06:54,760
+The main input to the system is the driver steering angle command, delta.
+
+109
+00:06:54,760 --> 00:06:58,820
+This state space representation is very useful when we are designing
+
+110
+00:06:58,820 --> 00:07:04,340
+different control strategies such as PID or MPC for lateral control.
+
+111
+00:07:04,340 --> 00:07:06,740
+The linearity of this model also makes it
+
+112
+00:07:06,740 --> 00:07:09,650
+suitable for state estimation with Kalman filters,
+
+113
+00:07:09,650 --> 00:07:12,545
+which you'll learn more about in course two.
+
+114
+00:07:12,545 --> 00:07:15,020
+Let's summarize this video.
+
+115
+00:07:15,020 --> 00:07:17,030
+We first learned how to extend
+
+116
+00:07:17,030 --> 00:07:21,370
+our kinematic bicycle model to become a dynamic bicycle model,
+
+117
+00:07:21,370 --> 00:07:24,440
+and then we derived a lateral dynamics of
+
+118
+00:07:24,440 --> 00:07:27,740
+the bicycle model and expressed it in state space form.
+
+119
+00:07:27,740 --> 00:07:29,820
+In the next video,
+
+120
+00:07:29,820 --> 00:07:35,330
+we'll explore and build models for the vehicle actuation system including a throttle,
+
+121
+00:07:35,330 --> 00:07:38,640
+break, and steering. See you there.

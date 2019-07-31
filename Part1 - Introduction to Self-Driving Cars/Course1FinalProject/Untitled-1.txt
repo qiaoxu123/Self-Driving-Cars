@@ -1,0 +1,193 @@
+#802.11p default parameters
+# - Define PHY --> According Orinoco cards and Antenna
+Phy/WirelessPhyExt set CSThresh_                3.162e-12   ;#-85 dBm Wireless interface sensitivity (sensitivity defined in the standard)
+Phy/WirelessPhyExt set Pt_                      0.001         
+Phy/WirelessPhyExt set freq_                    5.9e+9
+Phy/WirelessPhyExt set noise_floor_             1.26e-13    ;#-99 dBm for 10MHz bandwidth
+Phy/WirelessPhyExt set L_                       1.0         ;#default radio circuit gain/loss
+Phy/WirelessPhyExt set PowerMonitorThresh_      6.310e-14   ;#-102dBm power monitor  sensitivity
+Phy/WirelessPhyExt set HeaderDuration_          0.000040    ;#40 us
+Phy/WirelessPhyExt set BasicModulationScheme_   0
+Phy/WirelessPhyExt set PreambleCaptureSwitch_   1
+Phy/WirelessPhyExt set DataCaptureSwitch_       0
+Phy/WirelessPhyExt set SINR_PreambleCapture_    2.5118;     ;# 4 dB
+Phy/WirelessPhyExt set SINR_DataCapture_        100.0;      ;# 10 dB
+Phy/WirelessPhyExt set trace_dist_              1e6         ;# PHY trace until distance of 1 Mio. km ("infinty")
+Phy/WirelessPhyExt set PHY_DBG_                 0
+
+Mac/802_11Ext set CWMin_                        15
+Mac/802_11Ext set CWMax_                        63
+Mac/802_11Ext set SlotTime_                     0.000013
+Mac/802_11Ext set SIFS_                         0.000032
+Mac/802_11Ext set ShortRetryLimit_              7
+Mac/802_11Ext set LongRetryLimit_               4
+Mac/802_11Ext set HeaderDuration_               0.000040
+Mac/802_11Ext set SymbolDuration_               0.000008
+Mac/802_11Ext set BasicModulationScheme_        0
+Mac/802_11Ext set use_802_11a_flag_             true
+Mac/802_11Ext set RTSThreshold_                 2346
+Mac/802_11Ext set MAC_DBG                       0
+
+Propagation/Nakagami set use_nakagami_dist_ true
+Propagation/Nakagami set gamma0_ 1.9
+Propagation/Nakagami set gamma1_ 3.8
+Propagation/Nakagami set gamma2_ 3.8
+Propagation/Nakagami set d0_gamma_ 200
+Propagation/Nakagami set d1_gamma_ 500
+Propagation/Nakagami set m0_ 1.5
+Propagation/Nakagami set m1_ 0.75
+Propagation/Nakagami set m2_ 0.75
+Propagation/Nakagami set d0_m_ 80
+Propagation/Nakagami set d1_m_ 200
+
+#Simulation parameters setup
+set val(chan)   Channel/WirelessChannel    ;# channel type
+set val(prop)   Propagation/Nakagami   ;# radio-propagation model
+set val(netif)  Phy/WirelessPhyExt         ;# network interface type
+set val(mac)    Mac/802_11Ext              ;# MAC type
+set val(ifq)    Queue/DropTail/PriQueue    ;# interface queue type
+set val(ll)     LL                         ;# link layer type
+set val(ant)    Antenna/OmniAntenna        ;# antenna model
+set val(ifqlen) 50                         ;# max packet in ifq
+set val(nn)     200                         ;# number of mobilenodes
+set val(rp)     AODV                       ;# routing protocol
+set val(x)      1000                      ;# X dimension of topography
+set val(y)      500                      ;# Y dimension of topography
+set val(stop)   180.0                         ;# time of simulation end
+
+#Initialization
+set ns [new Simulator]
+set topo       [new Topography]
+$topo load_flatgrid $val(x) $val(y)
+create-god $val(nn)
+set tracefile [open 802_11p.tr w]
+$ns trace-all $tracefile
+set namfile [open 802_11p.nam w]
+$ns namtrace-all $namfile
+$ns namtrace-all-wireless $namfile $val(x) $val(y)
+
+#Mobile node parameter setup
+set chan [new $val(chan)]
+$ns node-config -adhocRouting  $val(rp) \
+                -llType        $val(ll) \
+                -macType       $val(mac) \
+                -ifqType       $val(ifq) \
+                -ifqLen        $val(ifqlen) \
+                -antType       $val(ant) \
+                -propType      $val(prop) \
+                -phyType       $val(netif) \
+                -channel       $chan \
+                -topoInstance  $topo \
+                -agentTrace    ON \
+                -routerTrace   ON \
+                -macTrace      ON \
+                -movementTrace ON
+
+#Nodes Definition
+for {set i 1} {$i <= $val(nn)} {incr i} {
+	set n($i) [$ns node]
+	$n($i) random-motion 0
+}
+
+for {set i 1} {$i <= 50} {incr i} {
+	$n($i) set X_ 0.0
+	$n($i) set Y_ 0.0
+	$n($i) set Z_ 0.0
+	$n($i) color red
+	$ns initial_node_pos $n($i) 20
+}
+for {set i 51} {$i <= 100} {incr i} {
+	$n($i) set X_ 100
+	$n($i) set Y_ 3.75
+	$n($i) set Z_ 0.0
+	$n($i) color yellow
+	$ns initial_node_pos $n($i) 20
+}
+for {set i 101} {$i <= 150} {incr i} {
+	$n($i) set X_ 1000.0
+	$n($i) set Y_ 7.5
+	$n($i) set Z_ 0.0
+	$n($i) color blue
+	$ns initial_node_pos $n($i) 20
+}
+for {set i 151} {$i <= 200} {incr i} {
+	$n($i) set X_ 1000.0
+	$n($i) set Y_ 11.25
+	$n($i) set Z_ 0.0
+	$n($i) color black
+	$ns initial_node_pos $n($i) 20
+}
+
+for {set i 1} {$i <= 200} {incr i} {
+	set udp($i) [new Agent/UDP]
+	set null($i) [new Agent/Null]
+	$ns attach-agent $n($i) $udp($i)
+	$ns attach-agent $n($i) $null($i)
+	set udp($i) packetSize_ 1500	
+
+	set cbr($i) [new Application/Traffic/CBR]
+	$cbr($i) attach-agent $udp($i)
+	$cbr($i) set packetSize_ 1000
+	$cbr($i) set rate_ 1.0Mb
+	$cbr($i) set random_ null
+}
+for {set i 1} {$i <= 200} {incr i} {
+	for {set j 1} {$j <= 200} {incr j}
+		if ($i == $j) {
+			puts "$i == $j , invalid!"
+		} else {
+			$ns connect $udp($i) $null($j)
+		}	
+}
+
+#random valuse
+set rng [new RNG]
+$rng seed 0
+
+set RVstart [new RandomVariable/Uniform]
+$RVstart set min_ 0.0
+$RVstart set max_ 180.0
+$RVstart use-rng $rng
+
+#Node startTime
+for {set i 1} {$i <= 50} {incr i} {
+	set startT($i) [expr [$RVstart value]]
+	$ns at $startT($i) "$n($i) setdest 1000.0 0.0 25.0"
+	$ns at $startT($i) "$cbr($i) start"
+	$ns at [expr ($startT($i)+40)] "$cbr($i) stop"
+}
+for {set i 51} {$i <= 100} {incr i} {
+	set startT($i) [expr [$RVstart value]]
+	$ns at $startT($i) "$n($i) setdest 1000.0 3.75 25.0"
+	$ns at $startT($i) "$cbr($i) start"
+	$ns at [expr ($startT($i)+40)] "$cbr($i) stop"
+}
+for {set i 101} {$i <= 150} {incr i} {
+	set startT($i) [expr [$RVstart value]]
+	$ns at $startT($i) "$n($i) setdest 0.0 7.5 25.0"
+	$ns at $startT($i) "$cbr($i) start"
+	$ns at [expr ($startT($i)+40)] "$cbr($i) stop"
+}
+for {set i 151} {$i <= 200} {incr i} {
+	set startT($i) [expr [$RVstart value]]
+	$ns at $startT($i) "$n($i) setdest 0.0 11.25 25.0"
+	$ns at $startT($i) "$cbr($i) start"
+	$ns at [expr ($startT($i)+40)] "$cbr($i) stop"
+}
+
+#Define a 'finish' procedure
+proc finish {} {
+    global ns tracefile namfile
+    $ns flush-trace
+    close $tracefile
+    close $namfile
+    exec nam 802_11p.nam &
+    exit 0
+}
+for {set i 0} {$i < $val(nn) } { incr i } {
+    $ns at $val(stop) "\$n$i reset"
+}
+$ns at $val(stop) "$ns nam-end-wireless $val(stop)"
+$ns at $val(stop) "finish"
+$ns at $val(stop) "puts \"done\" ; $ns halt"
+$ns run

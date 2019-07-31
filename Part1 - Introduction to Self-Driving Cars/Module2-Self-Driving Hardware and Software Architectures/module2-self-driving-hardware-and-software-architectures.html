@@ -1,0 +1,636 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Module2：Self-Driving Hardware and Software Architectures · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html" />
+    
+    
+    <link rel="prev" href="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Part1: Introduction to Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                <a href="../Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                    
+                    Module 0：Welcome to the self-driving cars specialization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                <a href="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                    
+                    Module 1：The Requirements for Autonomy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.3" data-path="module2-self-driving-hardware-and-software-architectures.html">
+            
+                <a href="module2-self-driving-hardware-and-software-architectures.html">
+            
+                    
+                    Module2：Self-Driving Hardware and Software Architectures
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                <a href="../Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                    
+                    Module3：Safety Assurance for Autonomous Vehicles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.5" data-path="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                <a href="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                    
+                    Module4：Vehicle Dynamic Modeling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.6" data-path="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                <a href="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                    
+                    Module 5：Vehicle Longitudinal Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.7" data-path="../Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                <a href="../Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                    
+                    Module 6：Vehicle Lateral Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.8" data-path="../Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                <a href="../Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                    
+                    Module 7：Putting it all together
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/">
+            
+                    
+                    Part2：State Estimation and Localization for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                    
+                    Module 1：Least Squares
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                    
+                    Module 2 - State Estimation - Linear and Nonlinear Kalman Filters
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                    
+                    Module 3 - GNSSINS Sensing for Pose Estimation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                    
+                    Module 4 - LIDAR Sensing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                    
+                    Module 5 - Putting It together - An Autonomous Vehicle State Estimator
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                <a href="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                    
+                    Part3：Visual Perception for Self-Driving Cars
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                    
+                    Part4：Motion Planning for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                    
+                    Module 1 - The Planning Problem
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                    
+                    Module 2 - Mapping for Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 3 - Mission Planning in Driving Environments/Module 3 - Mission Planning in Driving Environments.md">
+            
+                <span>
+            
+                    
+                    Module 3 - Mission Planning in Driving Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 4 - Dynamic Object Interactions/Module 4 - Dynamic Object Interactions.md">
+            
+                <span>
+            
+                    
+                    Module 4 - Dynamic Object Interactions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 5 - Principles of Behaviour Planning/Module 5 - Principles of Behaviour Planning.md">
+            
+                <span>
+            
+                    
+                    Module 5 - Principles of Behaviour Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 6 - Reactive Planning in Static Environments/Module 6 - Reactive Planning in Static Environments.md">
+            
+                <span>
+            
+                    
+                    Module 6 - Reactive Planning in Static Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 7 - Putting it all together - Smooth Local Planning/Module 7 - Putting it all together - Smooth Local Planning.md">
+            
+                <span>
+            
+                    
+                    Module 7 - Putting it all together - Smooth Local Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Module2：Self-Driving Hardware and Software Architectures</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="module2&#xFF1A;self-driving-hardware-and-software-architectures">Module2&#xFF1A;Self-Driving Hardware and Software Architectures</h1>
+<blockquote>
+<p>System architectures for self-driving vehicles are extremely diverse, as no standardized solution has yet emerged. This module describes both the hardware and software architectures commonly used and some of the tradeoffs in terms of cost, reliability, performance and complexity that constrain autonomous vehicle design.</p>
+</blockquote>
+<h3 id="&#x5B66;&#x4E60;&#x76EE;&#x6807;">&#x5B66;&#x4E60;&#x76EE;&#x6807;</h3>
+<ul>
+<li>Design an omni-directional multi-sensor system for an autonomous vehicle</li>
+<li>Describe the basic architecture of a typical self-driving software system</li>
+<li>Break down the mapping requirements for self-driving cars based on their intended uses.</li>
+</ul>
+<h2 id="lesson-1-sensors-and-computing-hardware">Lesson 1: Sensors and Computing Hardware</h2>
+<p>Welcome to the first lesson of week two. This week we will discuss many details about the hardware and software architecture used in today&apos;s self-driving cars. In particular, we will cover the various sensors that can be used for perception. The computing platforms available today. The basics of designing sensor configurations for self-driving cars. The components of a typical autonomy software stack. And finally, we will conclude by discussing the various ways which we can represent the environment for self-driving. Hopefully by the end of this week you will have a broad understanding of the equipment and software ideas that go into making a self-driving car.</p>
+<p>Let&apos;s begin this video. In this video, we will define sensors, and discuss the various types of sensors available for the task of perception. And we will then discuss the self-driving car hardware available nowadays. Let&apos;s begin by talking about sensors.</p>
+<h3 id="1-sensors">1. Sensors</h3>
+<blockquote>
+<p>Categorization:</p>
+<ul>
+<li>exteroceptive:extero = surroundings</li>
+<li>proprioceptive: proprio = internal</li>
+</ul>
+</blockquote>
+<p>Even the best perception algorithms are limited by the quality of their sensor data. And careful selection of sensors can go a long way to simplifying the self-driving perception task. So what is a sensor? <strong>A sensor is any device that measures or detects some property of the environment, or changes to that property over time.</strong> Sensors are broadly categorized into two types, depending on what property they record. If they record a property of the environment they are exteroceptive. Extero means outside, or from the surroundings. On the other hand, if the sensors record a property of the ego vehicle, they are proprioceptive. Proprios means internal, or one&apos;s own. Let&apos;s start by discussing common exteroceptive sensors.</p>
+<h3 id="2-sensors-for-perception--camera">2. Sensors for perception : Camera</h3>
+<p>We start with the most common and widely used sensor in autonomous driving, the camera. Cameras are a passive, light-collecting sensor that are great at capturing rich, detailed information about a scene. In fact, some groups believe that the camera is the only sensor truly required for self-driving. But state of the art performance is not yet possible with vision alone. While talking about cameras, we usually tend to talk about three important comparison metrics. We select cameras in terms of their resolution. The resolution is the number of pixels that create the image. So it&apos;s a way of specifying the quality of the image. We can also select cameras on the basis of field of view. The field of view is defined by the horizontal and vertical angular extent that is visible to the camera, and can be varied through lens selection and zoom.</p>
+<p>Another important metric is the dynamic range. The dynamic range of the camera is the difference between the darkest and the lightest tones in an image. High dynamic range is critical for self-driving vehicles due to the highly variable lighting conditions encountered while driving especially at night. There is an important trade off cameras and lens selection, that lies between the choice of field of view and resolution. Wider field of view permit a lager viewing region in the environment. But fewer pixels that absorb light from one particular object. As the field of view increases, we need to increase resolution to still be able to perceive with the same quality, the various kinds of information we may encounter. Other properties of cameras that affect perception exist as well, such as focal length, depth of field and frame rate. We&apos;ll go into much more detail on cameras and computer vision in course three on visual perception.</p>
+<p><img src="../../.gitbook/assets/1555052504792.png" alt="1555052504792"></p>
+<p>The combination of two cameras with overlapping fields of view and aligned image planes is called the stereo camera. <strong>Stereo cameras allow depth estimation from synchronized image pairs.</strong> Pixel values from image can be matched to the other image producing a disparity map of the scene. This disparity can then be used to estimate depth at each pixel. Next we have LIDAR which stands for light detection and ranging sensor.</p>
+<h3 id="3-sensors-for-perception--lidar">3. Sensors for perception : LIDAR</h3>
+<blockquote>
+<p>Comparison metrics :</p>
+<ul>
+<li>Number of beams</li>
+<li>Points per second</li>
+<li>Rotation rate</li>
+<li>Field of view</li>
+</ul>
+</blockquote>
+<p>LIDAR sensing involves shooting light beams into the environment and measuring the reflected return. By measuring the amount of returned light and time of flight of the beam. Both in intensity in range to the reflecting object can be estimated. LIDAR usually include a spinning element with multiple stacked light sources. And output a three dimensional point cloud map, which is great for assessing scene geometry. Because it is an active sensor with it&apos;s own light sources, LIDAR are not effected by the environments lighting. So LIDAR do not face the same challenges as cameras when operating in poor or variable lighting conditions.</p>
+<p><img src="../../.gitbook/assets/1555052660677.png" alt="1555052660677"></p>
+<p>Let&apos;s discuss the important comparison metrics for selecting LIDAR. The first is the number of sources it contains with 8, 16, 32, and 64 being common sizes. And the second is the points per second it can collect. The faster the point collection, the more detailed the 3D point cloud can be. Another characteristic is the rotation rate. The higher this rate, the faster the 3D point clouds are updated. Detection range is also important, and is dictated by the power output of the light source. And finally, we have the field of view, which once again, is the angular extent visible to the LIDAR sensor. Finally, we should also mention the new LIDAR types that are currently emerging. High-resolution, solid-state LIDAR. Without a rotational component of the typical LIDARs, these sensors stand to become extremely low-cost and reliable. Thanks to being implemented entirely in silicon. HD solid-state LIDAR are still a work in progress. But definitely something exciting for the future of affordable self-driving. Our next sensor is RADAR, which stands for radio detection and ranging.</p>
+<h3 id="4-sensors-for-perception--radar">4. Sensors for perception : RADAR</h3>
+<blockquote>
+<p>Comparison metrics</p>
+<ul>
+<li>range</li>
+<li>field of view</li>
+<li>position and speed accuracy</li>
+</ul>
+</blockquote>
+<p>RADAR sensors have been around longer than LIDAR and robustly detect large objects in the environment. They are particularly useful in adverse weather as they are mostly unaffected by precipitation. Let&apos;s discuss some of the comparison metrics for selecting RADAR. RADAR are selected based on detection range, field of view, and the position and speed measurement accuracy.</p>
+<p><img src="../../.gitbook/assets/1555052858494.png" alt="1555052858494"></p>
+<p>RADAR are also typically available as either having a wide angular field of view but short range. Or having a narrow filed of view but a longer range. The next sensor we are going to discuss are ultrasonics or sonars. Originally so named for sound navigation and ranging. Which measure range using sound waves.</p>
+<h3 id="5-sensors-for-perception--ultrasoncis">5. Sensors for perception : Ultrasoncis</h3>
+<p>Sonar are sensors that are short range in inexpensive ranging devices. This makes them good for parking scenarios, where the ego-vehicle needs to make movements very close to other cars.</p>
+<p><img src="../../.gitbook/assets/1555053021439.png" alt="1555053021439">Another great thing about sonar is that they are low-cost. Moreover, just like RADAR and LIDAR, they are unaffected by lighting and precipitation conditions. Sonar is selected based on a few key metrics. The maximum range they can measure, the detection field of view, and their cost.</p>
+<h3 id="6-sensors-for-perception--gnssimu">6. Sensors for perception : GNSS/IMU</h3>
+<blockquote>
+<p>Direct measure of ego vehicle states</p>
+<ul>
+<li>position,velocity(GNSS)<ul>
+<li>Varying accuracies : RTK,PPP,DGPS</li>
+</ul>
+</li>
+<li>angular rotation rate(IMU)</li>
+<li>acceleration(IMU)</li>
+<li>heading(IMU,GPS)</li>
+</ul>
+</blockquote>
+<p>Now let&apos;s discuss the proprioceptive sensors, the sensors that sense ego properties. The most common ones here are Global Navigation Satellite Systems, GNSS for short, such as GPS or Galileo. An inertial measurement units or IMU&apos;s. GNSS receivers are used to measure ego vehicle position, velocity, and sometimes heading. The accuracy depends a lot on the actual positioning methods and the corrections used. Apart from these, the IMU also measures the angular rotation rate, accelerations of the ego vehicle, and the combined measurements can be used to estimate the 3D orientation of the vehicle. Where heading is the most important for vehicle control. And finally we have wheel odometry sensors. This sensor tracks the wheel rates of rotation, and uses these to estimate the speed and heading rate of change of the ego car. This is the same sensor that tracks the mileage on your vehicle.</p>
+<p>So, to summarize, the major sensors used nowadays for autonomous driving perception include cameras, RADAR, LIDAR, sonar, GNSS, IMUs, and wheel odometry modules. These sensors have many characteristics that can vary wildly, including resolution, detection range, and field-of-view. Selecting an appropriate sensor configuration for a self-driving car is not trivial. Here&apos;s a simple graphic that shows each of the sensors and where they usually go on a car.</p>
+<p><img src="../../.gitbook/assets/1555053366229.png" alt="1555053366229"></p>
+<p>We will revisit this chart again in the next video, when we discuss how to select sensor configurations to achieve a particular operational design domain.</p>
+<h3 id="7-computing-hardware">7. Computing Hardware</h3>
+<p>Finally, let&apos;s discuss a little bit about the computing hardware most commonly used in today&apos;s self-driving cars. The most crucial part is the computing brain, the main decision making unit of the car. It takes in all sensor data and outputs the commands needed to drive the vehicle. Most companies prefer to design their own computing systems that match the specific requirements of their sensors and algorithms. Some hardware options exist, however, that can handle self-driving computing loads out of the box. The most common examples would be Nvidia&apos;s Drive PX and Intel &amp; Mobileye&apos;s EyeQ.</p>
+<p><img src="../../.gitbook/assets/1555053472138.png" alt="1555053472138"></p>
+<p>Any computing brain for self-driving needs both serial and parallel compute modules. Particularly for image and LIDAR processing to do segmentation, object detection, and mapping. For these we employ GPUs, FPGAs and custom ASICs, which are specialized hardware to do a specific type of computation. For example; the drive PX units include multiple GPUs. And the EyeQs have FPGAs both to accelerate parallalizable compute tasks, such as image processing or neural network inference. And finally, a quick comment about synchronization. Because we want to make driving decisions based on a coherent picture of the road scene. It is essential to correctly synchronize the different modules in the system, and serve a common clock. Fortunately, GPS relies on extremely accurate timing to function, and as such can act as an appropriate reference clock when available. Regardless, sensor measurements must be timestamped with consistent times for sensor fusion to function correctly.</p>
+<p>Let&apos;s summarize. In this video, we learned about sensors and their different types based on what they measure. We covered the major sensors used in self-driving hardware systems, and discussed the advantages and comparison metrics. And then we briefly discussed the self-driving computing hardware available today. Hopefully, this solidifies some of the concepts we learned last week for doing autonomous perception. In the next lesson, we&apos;ll take a step further and look at how to select an appropriate sensor configuration for your self-driving car. See you in the next video.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html" class="navigation navigation-prev " aria-label="Previous page: Module 1：The Requirements for Autonomy">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html" class="navigation navigation-next " aria-label="Next page: Module3：Safety Assurance for Autonomous Vehicles">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Module2：Self-Driving Hardware and Software Architectures","level":"1.2.3","depth":2,"next":{"title":"Module3：Safety Assurance for Autonomous Vehicles","level":"1.2.4","depth":2,"path":"Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.md","ref":"Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.md","articles":[]},"previous":{"title":"Module 1：The Requirements for Autonomy","level":"1.2.2","depth":2,"path":"Part1 - Introduction to Self-Driving Cars/Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.md","ref":"Part1 - Introduction to Self-Driving Cars/Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.md","mtime":"2019-07-31T02:26:16.428Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T02:26:51.944Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

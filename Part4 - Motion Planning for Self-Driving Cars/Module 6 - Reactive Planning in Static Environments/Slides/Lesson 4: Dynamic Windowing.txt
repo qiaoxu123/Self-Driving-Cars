@@ -1,0 +1,91 @@
+Hello everyone, and welcome to our final lesson in module six. In this video, we'll
+discuss how to augment the trajectory
+rollout algorithm we developed in the previous lesson with a technique known
+as dynamic windowing. Dynamic windowing will allow
+us to place linear and angular acceleration constraints on the vehicle's trajectory, in order to promote comfort as the vehicle progresses
+between planning cycles. Specifically, by
+the end of this video, you should be able to add acceleration constraints
+to the bicycle model derived in course one, and you should be able to modify the trajectory
+rollout algorithm to accommodate these new constraints using dynamic windowing. Let's get started.
+First, let's revisit lesson one where we discussed the kinematic equations
+for a bicycle model. Essentially, the two inputs to the bicycle model are the linear velocity in the steering angle, which change the position and heading of the robot over time. One thing to notice
+with this entire set of kinematic equations
+is that there is no consideration of
+higher-order terms, such as acceleration or jerk. These higher-order terms are what cause discomfort for
+passengers in the car, so we should try to address
+this in our kinematic model. Even without incorporating
+the full dynamic models discussed in course one into the trajectory
+planning process, we can restrict
+the selected inputs to consider the effects of
+rapid changes on ride comfort. We can do this by adding
+a constraint for the range of linear and angular accelerations permitted for our bicycle model. This will limit
+the extent to which passengers in our vehicle
+will experience forces and torques while our vehicle traverses
+its planned trajectory. However, this comes
+with a trade-off. Our motion planner will lose some maneuverability at
+each planning iteration. Specifically, after adding this angular
+acceleration constraint, we may not be able to move to every possible steering angle
+in our steering angle set, because they may induce too high of an angular acceleration. In addition, we may
+not be able to ramp our velocity up or down as quickly between
+planning iterations. Let's focus on the angular
+acceleration constraint and derive the resulting
+steering angle restriction. Recall that the
+angular velocity for the bicycle model is given
+by vtandelta over L. The magnitude of
+the angular acceleration is therefore
+approximately given by the absolute difference between
+the angular velocities of our start and ending steering angles divided by
+the time step we're using. Rearranging the terms
+using the fact that v and L are always
+positive for our planner, we have the requirement that the absolute value of the tan
+of delta at time two minus the tan of delta at time one must be less than
+or equal to theta double-dot max times L over v. To help solidify how
+this impacts our planner, let's analyze a concrete example. Suppose our bicycle
+model is moving at a constant linear
+velocity of one meter per second across
+all candidate trajectories, and has a current steering angle
+of pi over eight. Suppose the maximum and
+minimum steering angle for this robot or pi over four and minus pi over
+four respectively, and that our steering angle
+step size is pi over eight. In addition, suppose our
+trajectories are sampled at a time resolution
+of 0.1 seconds, and that our bicycle model robot has a length of one meter. Finally, let's constrain
+our angular acceleration to 0.6 radians per
+second squared. Let's apply our derived
+steering angle constraints to this example problem. We have that our current
+steering angle delta one is pi over eight. By substituting
+each potential steering angle into our steering angle set, we see that the angular
+acceleration constraint is violated if we were to change
+our steering angle to minus pi over eight or
+minus pi over four. However, changing
+it to pi over four zero or keeping it the
+same at pi over eight, are all valid selections according to our new constraints. To illustrate this,
+we have colored the disallowed trajectories red. The remaining
+trajectories colored in green are still available to the subsequent step of the reactive planner that we developed in the previous lesson. This illustrates that in general, the added constraints will reduce the maneuverability of
+the robot to a certain extent, while promoting
+more comfortable trajectories. The more restrictive
+the set of constraints, the less maneuverable
+the robot will be. We can also apply
+similar logic to the case of a linear acceleration
+constraint and a range of linear velocity
+inputs available to us, or even have both constraints applied to the robot
+at the same time. In general, the dynamic
+window approach allows us to incorporate more restrictions on how the trajectory evolves
+during planning, resulting in motion
+that better satisfies a broad set of objectives
+simultaneously. To summarize this lesson, we first introduced additional
+acceleration constraints to our bicycle model. We then derive the process of dynamic windowing to restrict
+our trajectory set at each time step in
+order to satisfy these new constraints for our trajectory rollout algorithm. Congratulations, you've now reached
+the end of this module. Let's review what we've covered. We first developed the concept of trajectory propagation
+in order to generate trajectories for
+a given motion model. We then moved on to
+collision checking, which is necessary for developing collision-free motion plans
+for our autonomous vehicle. Then, we combined
+these two concepts into the trajectory rollout planner
+and augmented it using dynamic windowing to handle acceleration constraints. By now, you should have
+a strong foundation in reactive planning centered on the trajectory rollout algorithm. This is a compact and effective general motion planning strategy suitable for a wide range
+of planning tasks, with a wide variety of
+objectives and constraints. In the next module, we will start our discussion of dynamic environments and use
+trajectory propagation and collision detection to
+predict the motion of other objects and determine whether a collision might occur. See you there.

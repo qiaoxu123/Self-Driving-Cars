@@ -1,0 +1,1338 @@
+WEBVTT
+
+1
+00:00:19.490 --> 00:00:23.565
+Welcome to the fifth week of
+the motion planning course.
+
+2
+00:00:23.565 --> 00:00:25.710
+In this module, we
+will be discussing
+
+3
+00:00:25.710 --> 00:00:26.940
+a very important part of
+
+4
+00:00:26.940 --> 00:00:29.700
+our motion planning
+architecture, behavior planning.
+
+5
+00:00:29.700 --> 00:00:31.545
+We will start this module off by
+
+6
+00:00:31.545 --> 00:00:34.095
+introducing the concept
+of behavior planning,
+
+7
+00:00:34.095 --> 00:00:36.000
+and how to construct
+the behavior plan
+
+8
+00:00:36.000 --> 00:00:37.640
+or using a state machine.
+
+9
+00:00:37.640 --> 00:00:39.875
+Then, throughout
+the rest of the module,
+
+10
+00:00:39.875 --> 00:00:41.690
+we will go through the process of
+
+11
+00:00:41.690 --> 00:00:44.090
+creating a state machine-based
+behavior planner,
+
+12
+00:00:44.090 --> 00:00:46.660
+able to handle
+multiple scenarios.
+
+13
+00:00:46.660 --> 00:00:49.715
+Finally, we will finish off
+this module by looking at
+
+14
+00:00:49.715 --> 00:00:52.910
+alternative approaches to the
+behavior planning problem,
+
+15
+00:00:52.910 --> 00:00:56.015
+to understand their relative
+strengths and weaknesses.
+
+16
+00:00:56.015 --> 00:00:57.695
+In this lesson, we will,
+
+17
+00:00:57.695 --> 00:01:01.015
+define the requirements for
+a behavior planning system,
+
+18
+00:01:01.015 --> 00:01:03.920
+explore the typical
+inputs and outputs
+
+19
+00:01:03.920 --> 00:01:06.650
+to a behavior planning
+module, and finally,
+
+20
+00:01:06.650 --> 00:01:09.320
+introduce the concept of
+finite state machines,
+
+21
+00:01:09.320 --> 00:01:10.520
+and how they can be used to
+
+22
+00:01:10.520 --> 00:01:12.395
+create a behavior
+planning system.
+
+23
+00:01:12.395 --> 00:01:16.130
+Let's begin. A behavior
+planning system,
+
+24
+00:01:16.130 --> 00:01:19.010
+plans the set of high level
+driving actions,
+
+25
+00:01:19.010 --> 00:01:21.080
+or maneuvers to safely achieve
+
+26
+00:01:21.080 --> 00:01:24.980
+the driving mission under
+various driving situations.
+
+27
+00:01:24.980 --> 00:01:26.760
+The set of maneuvers which are
+
+28
+00:01:26.760 --> 00:01:28.795
+planned should take into account,
+
+29
+00:01:28.795 --> 00:01:30.730
+the rules of the road,
+
+30
+00:01:30.730 --> 00:01:32.630
+and the interactions with
+
+31
+00:01:32.630 --> 00:01:36.620
+all static and dynamic objects
+in the environment.
+
+32
+00:01:36.620 --> 00:01:40.310
+The set of high level decisions
+made by the planner must
+
+33
+00:01:40.310 --> 00:01:41.960
+ensure vehicle safety and
+
+34
+00:01:41.960 --> 00:01:44.180
+efficient motion through
+the environment.
+
+35
+00:01:44.180 --> 00:01:46.160
+We discussed many
+of these concepts
+
+36
+00:01:46.160 --> 00:01:48.740
+already in course one
+of this specialization,
+
+37
+00:01:48.740 --> 00:01:51.230
+and it is the behavior
+planner that needs to make
+
+38
+00:01:51.230 --> 00:01:52.790
+the right decisions to keep us
+
+39
+00:01:52.790 --> 00:01:55.390
+moving safely towards our goal.
+
+40
+00:01:55.390 --> 00:01:58.680
+As an example of the role
+of the behavior planner,
+
+41
+00:01:58.680 --> 00:02:00.560
+let's suppose
+the autonomous vehicle
+
+42
+00:02:00.560 --> 00:02:02.585
+arrives at a busy intersection.
+
+43
+00:02:02.585 --> 00:02:05.960
+The behavior planner must
+plan when and where to stop,
+
+44
+00:02:05.960 --> 00:02:08.000
+how long to stay stopped for,
+
+45
+00:02:08.000 --> 00:02:10.640
+and when to proceed
+through the intersection.
+
+46
+00:02:10.640 --> 00:02:13.340
+The behavior planner has
+to perform this type of
+
+47
+00:02:13.340 --> 00:02:16.579
+decision-making in a
+computationally efficient manner,
+
+48
+00:02:16.579 --> 00:02:18.200
+so that it can react quickly to
+
+49
+00:02:18.200 --> 00:02:19.970
+changes in the environment,
+
+50
+00:02:19.970 --> 00:02:23.430
+and be deployed on
+an autonomous vehicle hardware.
+
+51
+00:02:23.680 --> 00:02:26.840
+The behavior planners
+should also be able to
+
+52
+00:02:26.840 --> 00:02:29.420
+deal with inputs that
+are both inaccurate,
+
+53
+00:02:29.420 --> 00:02:32.495
+corrupted by measurement
+noise, and incorrect,
+
+54
+00:02:32.495 --> 00:02:34.640
+affected by perception
+errors such as
+
+55
+00:02:34.640 --> 00:02:38.340
+false positive detections and
+false negative detections.
+
+56
+00:02:38.340 --> 00:02:40.159
+Now that we have the definition
+
+57
+00:02:40.159 --> 00:02:41.975
+for the role of the
+behavior planner,
+
+58
+00:02:41.975 --> 00:02:43.430
+let's build a list of
+
+59
+00:02:43.430 --> 00:02:44.810
+basic behaviors that we'll
+
+60
+00:02:44.810 --> 00:02:47.255
+work with for the rest
+of this module.
+
+61
+00:02:47.255 --> 00:02:49.340
+We've described most of these
+
+62
+00:02:49.340 --> 00:02:50.970
+in an earlier video
+in this course,
+
+63
+00:02:50.970 --> 00:02:52.610
+and we'll use this list as
+
+64
+00:02:52.610 --> 00:02:54.290
+a representation of the set of
+
+65
+00:02:54.290 --> 00:02:56.000
+likely maneuvers or driving
+
+66
+00:02:56.000 --> 00:02:59.195
+behaviors encountered
+throughout regular driving
+
+67
+00:02:59.195 --> 00:03:01.915
+that an autonomous vehicle
+may need to execute.
+
+68
+00:03:01.915 --> 00:03:05.150
+In all, we'll consider
+five behaviors.
+
+69
+00:03:05.150 --> 00:03:07.730
+The first is track speed.
+
+70
+00:03:07.730 --> 00:03:09.335
+This behavior amounts to
+
+71
+00:03:09.335 --> 00:03:11.900
+unconstrained driving
+on open road,
+
+72
+00:03:11.900 --> 00:03:13.730
+meaning that
+the only restriction on
+
+73
+00:03:13.730 --> 00:03:15.290
+forward progress is that
+
+74
+00:03:15.290 --> 00:03:17.405
+the speed limit
+should be respected.
+
+75
+00:03:17.405 --> 00:03:20.435
+Next, is follow lead vehicle.
+
+76
+00:03:20.435 --> 00:03:22.040
+The speed of the vehicle in
+
+77
+00:03:22.040 --> 00:03:23.660
+front of the ego
+vehicle should be
+
+78
+00:03:23.660 --> 00:03:24.860
+matched and a safe
+
+79
+00:03:24.860 --> 00:03:27.110
+following distance
+should be maintained.
+
+80
+00:03:27.110 --> 00:03:29.975
+The third is decelerate to stop.
+
+81
+00:03:29.975 --> 00:03:31.700
+A stop point exists in
+
+82
+00:03:31.700 --> 00:03:34.610
+the ego vehicle's lane
+within the planning horizon,
+
+83
+00:03:34.610 --> 00:03:36.620
+and the vehicle
+should decelerate to
+
+84
+00:03:36.620 --> 00:03:39.020
+a standstill at that stop point.
+
+85
+00:03:39.020 --> 00:03:41.180
+Every regulatory element that
+
+86
+00:03:41.180 --> 00:03:44.545
+requires a complete stop
+triggers this behavior.
+
+87
+00:03:44.545 --> 00:03:47.250
+Next, we have stay stopped.
+
+88
+00:03:47.250 --> 00:03:49.250
+The vehicle should
+continue to stay
+
+89
+00:03:49.250 --> 00:03:51.665
+stationary for
+a fixed amount of time.
+
+90
+00:03:51.665 --> 00:03:54.980
+As an example, when the vehicle
+stops at a stop sign,
+
+91
+00:03:54.980 --> 00:03:58.105
+it should stay stopped for
+at least three seconds.
+
+92
+00:03:58.105 --> 00:04:00.695
+Finally, we have
+the merge behavior.
+
+93
+00:04:00.695 --> 00:04:02.690
+The vehicle should
+either merge into
+
+94
+00:04:02.690 --> 00:04:05.240
+the left or right lane
+at this time.
+
+95
+00:04:05.240 --> 00:04:08.150
+This basic list of
+maneuvers will serve us
+
+96
+00:04:08.150 --> 00:04:10.585
+well in developing the
+principles of behavior planning.
+
+97
+00:04:10.585 --> 00:04:12.575
+However, many more behaviors
+
+98
+00:04:12.575 --> 00:04:14.330
+should be considered in practice,
+
+99
+00:04:14.330 --> 00:04:15.890
+and the overall complexity of
+
+100
+00:04:15.890 --> 00:04:18.785
+the behavior planner
+will grow as a result.
+
+101
+00:04:18.785 --> 00:04:21.680
+The primary output of
+the behavior planner is
+
+102
+00:04:21.680 --> 00:04:23.090
+a driving maneuver to be
+
+103
+00:04:23.090 --> 00:04:25.580
+performed in
+the current environment.
+
+104
+00:04:25.580 --> 00:04:27.620
+Along with the driving maneuver,
+
+105
+00:04:27.620 --> 00:04:31.100
+the behavior planner also
+outputs a set of constraints,
+
+106
+00:04:31.100 --> 00:04:33.710
+which constrain the local
+planning problem.
+
+107
+00:04:33.710 --> 00:04:35.990
+The constraints which
+we will use and
+
+108
+00:04:35.990 --> 00:04:38.885
+populate throughout
+this module include,
+
+109
+00:04:38.885 --> 00:04:40.730
+the default path from
+
+110
+00:04:40.730 --> 00:04:41.870
+the current location of
+
+111
+00:04:41.870 --> 00:04:44.095
+the vehicle to
+the goal destination,
+
+112
+00:04:44.095 --> 00:04:45.770
+for many behaviors, this is
+
+113
+00:04:45.770 --> 00:04:48.860
+the center line of
+the ego vehicle's current lane.
+
+114
+00:04:48.860 --> 00:04:52.415
+The speed limit along
+the default path.
+
+115
+00:04:52.415 --> 00:04:55.370
+The lane boundaries of
+the current lane that should be
+
+116
+00:04:55.370 --> 00:04:58.265
+maintained under
+nominal driving conditions.
+
+117
+00:04:58.265 --> 00:05:00.680
+Any future stop locations
+
+118
+00:05:00.680 --> 00:05:02.810
+which the vehicle
+needs to arrive at,
+
+119
+00:05:02.810 --> 00:05:04.370
+and this constraint is only
+
+120
+00:05:04.370 --> 00:05:07.645
+populated if the relevant
+maneuver is selected.
+
+121
+00:05:07.645 --> 00:05:10.670
+Finally, the set of
+dynamic objects of
+
+122
+00:05:10.670 --> 00:05:13.910
+high interest which the local
+planner should attend to.
+
+123
+00:05:13.910 --> 00:05:16.760
+These dynamic objects
+may be important due
+
+124
+00:05:16.760 --> 00:05:20.140
+to proximity or
+estimated future path.
+
+125
+00:05:20.140 --> 00:05:22.370
+In order for the
+behavior planner to be
+
+126
+00:05:22.370 --> 00:05:24.485
+able to produce
+the required output,
+
+127
+00:05:24.485 --> 00:05:26.750
+it needs a large amount
+of information from
+
+128
+00:05:26.750 --> 00:05:30.010
+many other software systems
+in our autonomy stack.
+
+129
+00:05:30.010 --> 00:05:32.300
+First, the behavior
+planner relies on
+
+130
+00:05:32.300 --> 00:05:35.285
+full knowledge of the road
+network near the vehicle.
+
+131
+00:05:35.285 --> 00:05:38.930
+This knowledge comes from
+the high definition road map.
+
+132
+00:05:38.930 --> 00:05:41.510
+Next, the behavior
+planner must know
+
+133
+00:05:41.510 --> 00:05:44.960
+which roadways to follow
+to get to a goal location.
+
+134
+00:05:44.960 --> 00:05:46.435
+This comes in the form of
+
+135
+00:05:46.435 --> 00:05:49.410
+a mission path over
+the road network graph.
+
+136
+00:05:49.410 --> 00:05:51.770
+Further, the location
+of the vehicle
+
+137
+00:05:51.770 --> 00:05:53.810
+is also vital to be
+able to correctly
+
+138
+00:05:53.810 --> 00:05:55.850
+position HD roadmap elements
+
+139
+00:05:55.850 --> 00:05:58.325
+in the local environment
+around the vehicle.
+
+140
+00:05:58.325 --> 00:06:01.100
+Accurate localization
+information is also
+
+141
+00:06:01.100 --> 00:06:04.175
+needed from the localization
+system as a result.
+
+142
+00:06:04.175 --> 00:06:06.440
+Finally, the behavior planner
+
+143
+00:06:06.440 --> 00:06:09.260
+requires all relevant
+perception information,
+
+144
+00:06:09.260 --> 00:06:10.790
+in order to fully understand
+
+145
+00:06:10.790 --> 00:06:12.560
+the actions that
+need to be taken,
+
+146
+00:06:12.560 --> 00:06:14.690
+to safely activate the mission.
+
+147
+00:06:14.690 --> 00:06:17.480
+This information includes, all
+
+148
+00:06:17.480 --> 00:06:19.970
+observed dynamic objects
+in the environment,
+
+149
+00:06:19.970 --> 00:06:22.940
+such as cars,
+pedestrians, or bicycles.
+
+150
+00:06:22.940 --> 00:06:26.025
+For each dynamic object,
+its current state,
+
+151
+00:06:26.025 --> 00:06:28.575
+predicted paths,
+collision points,
+
+152
+00:06:28.575 --> 00:06:31.260
+and time to collision,
+are all required.
+
+153
+00:06:31.260 --> 00:06:33.710
+It also includes, all observed
+
+154
+00:06:33.710 --> 00:06:36.310
+static objects in
+their respective states,
+
+155
+00:06:36.310 --> 00:06:38.760
+such as parked vehicles,
+construction cones,
+
+156
+00:06:38.760 --> 00:06:42.275
+and traffic lights, with
+an indication of their state.
+
+157
+00:06:42.275 --> 00:06:45.665
+Finally, it includes
+a local occupancy grid map
+
+158
+00:06:45.665 --> 00:06:49.205
+defining the safe areas
+to execute maneuvers.
+
+159
+00:06:49.205 --> 00:06:52.250
+With all the necessary
+information available to it,
+
+160
+00:06:52.250 --> 00:06:53.390
+the behavior planner must
+
+161
+00:06:53.390 --> 00:06:55.520
+select the appropriate behavior,
+
+162
+00:06:55.520 --> 00:06:58.715
+and define the necessary
+accompanying constraints
+
+163
+00:06:58.715 --> 00:07:01.645
+to keep the vehicle safe
+and moving efficiently.
+
+164
+00:07:01.645 --> 00:07:03.980
+To do so, we will
+construct a set of
+
+165
+00:07:03.980 --> 00:07:06.650
+rules either explicitly
+or implicitly
+
+166
+00:07:06.650 --> 00:07:09.170
+that consider all of
+the rules of the road
+
+167
+00:07:09.170 --> 00:07:12.800
+and all of the interactions
+with other dynamic objects.
+
+168
+00:07:12.800 --> 00:07:15.140
+One approach traditionally used
+
+169
+00:07:15.140 --> 00:07:16.670
+to represent the set of rules
+
+170
+00:07:16.670 --> 00:07:18.920
+required to solve
+behavior selection
+
+171
+00:07:18.920 --> 00:07:20.950
+is a finite state machine.
+
+172
+00:07:20.950 --> 00:07:23.330
+Throughout this module,
+we will go through
+
+173
+00:07:23.330 --> 00:07:25.729
+a step-by-step process
+of constructing
+
+174
+00:07:25.729 --> 00:07:28.535
+a finite state machine-based
+behavior planner.
+
+175
+00:07:28.535 --> 00:07:32.020
+We'll discuss some of the
+limitations of this approach.
+
+176
+00:07:32.020 --> 00:07:35.010
+To better understand the finite
+state machine approach,
+
+177
+00:07:35.010 --> 00:07:37.010
+let's walk through
+a simple example of
+
+178
+00:07:37.010 --> 00:07:39.650
+a finite-state machine
+for a single scenario,
+
+179
+00:07:39.650 --> 00:07:43.900
+handling a stop sign
+intersection with no traffic.
+
+180
+00:07:43.900 --> 00:07:47.535
+The first set of components
+of a finite state machine,
+
+181
+00:07:47.535 --> 00:07:49.425
+is the set of states.
+
+182
+00:07:49.425 --> 00:07:51.160
+For behavior planning system,
+
+183
+00:07:51.160 --> 00:07:52.880
+the states will represent each
+
+184
+00:07:52.880 --> 00:07:54.770
+of the possible
+driving maneuvers,
+
+185
+00:07:54.770 --> 00:07:56.525
+which can be encountered.
+
+186
+00:07:56.525 --> 00:07:58.845
+In our example, we will only need
+
+187
+00:07:58.845 --> 00:08:01.049
+two possible maneuvers or states,
+
+188
+00:08:01.049 --> 00:08:04.345
+track speed and
+decelerate to stop.
+
+189
+00:08:04.345 --> 00:08:06.770
+The maneuver decision defined by
+
+190
+00:08:06.770 --> 00:08:08.390
+the behavior planner is set by
+
+191
+00:08:08.390 --> 00:08:11.300
+the state of the finite
+state machine.
+
+192
+00:08:11.300 --> 00:08:15.440
+Each state has associated
+with it an entry action,
+
+193
+00:08:15.440 --> 00:08:16.910
+which is the action that is to be
+
+194
+00:08:16.910 --> 00:08:19.025
+taken when a state
+is first entered.
+
+195
+00:08:19.025 --> 00:08:20.525
+For our behavior planner,
+
+196
+00:08:20.525 --> 00:08:22.670
+these entry actions
+involve setting
+
+197
+00:08:22.670 --> 00:08:24.605
+the necessary constraint outputs
+
+198
+00:08:24.605 --> 00:08:26.835
+to accompany the
+behavior decision.
+
+199
+00:08:26.835 --> 00:08:29.270
+For instance, as soon as we enter
+
+200
+00:08:29.270 --> 00:08:31.490
+the decelerate to stop state,
+
+201
+00:08:31.490 --> 00:08:34.865
+we must also define the
+stopping point along the path.
+
+202
+00:08:34.865 --> 00:08:39.140
+Similarly, the entry condition
+for the track speed state,
+
+203
+00:08:39.140 --> 00:08:41.915
+sets the speed limit to track.
+
+204
+00:08:41.915 --> 00:08:45.475
+The second set of components
+of the finite state machine,
+
+205
+00:08:45.475 --> 00:08:47.330
+are the transitions, which
+
+206
+00:08:47.330 --> 00:08:50.300
+define the movement from
+one state to another.
+
+207
+00:08:50.300 --> 00:08:52.020
+In our two-state example,
+
+208
+00:08:52.020 --> 00:08:55.680
+we can transition from track
+speed to decelerate to stop,
+
+209
+00:08:55.680 --> 00:08:58.745
+and from decelerate to
+stop back to track speed.
+
+210
+00:08:58.745 --> 00:09:00.890
+Note that there can
+also be transitions
+
+211
+00:09:00.890 --> 00:09:02.960
+which return us to
+the current state,
+
+212
+00:09:02.960 --> 00:09:06.545
+triggering the entry action
+to repeat for that state.
+
+213
+00:09:06.545 --> 00:09:09.500
+Each transition is
+accompanied with a set of
+
+214
+00:09:09.500 --> 00:09:11.720
+transition conditions
+that need to
+
+215
+00:09:11.720 --> 00:09:14.465
+be met before changing
+to the next state.
+
+216
+00:09:14.465 --> 00:09:17.600
+These transition conditions
+are monitored while
+
+217
+00:09:17.600 --> 00:09:20.735
+in a state to determine when
+a transition should occur.
+
+218
+00:09:20.735 --> 00:09:22.940
+For our simple example,
+
+219
+00:09:22.940 --> 00:09:24.890
+the transition
+conditions going from
+
+220
+00:09:24.890 --> 00:09:27.215
+track speed to decelerate to stop
+
+221
+00:09:27.215 --> 00:09:29.510
+involved checking
+if a stop point is
+
+222
+00:09:29.510 --> 00:09:32.480
+within a threshold distance
+in our current lane.
+
+223
+00:09:32.480 --> 00:09:34.250
+Similarly, if we have
+
+224
+00:09:34.250 --> 00:09:36.545
+reached zero velocity
+at the stop point,
+
+225
+00:09:36.545 --> 00:09:38.600
+we can transition from decelerate
+
+226
+00:09:38.600 --> 00:09:41.030
+to stop back to track speed.
+
+227
+00:09:41.030 --> 00:09:43.280
+These two-state
+example highlights
+
+228
+00:09:43.280 --> 00:09:44.630
+the most important aspects of
+
+229
+00:09:44.630 --> 00:09:47.215
+the finite state machine-based
+behavior planner.
+
+230
+00:09:47.215 --> 00:09:50.690
+As the number of scenarios
+and behaviors increases,
+
+231
+00:09:50.690 --> 00:09:52.610
+the finite state
+machine that is needed
+
+232
+00:09:52.610 --> 00:09:54.875
+becomes significantly
+more complex,
+
+233
+00:09:54.875 --> 00:09:58.810
+with many more states and
+conditions for transition.
+
+234
+00:09:58.810 --> 00:10:01.130
+Finite state machines can be
+
+235
+00:10:01.130 --> 00:10:04.175
+a very simple and effective tool
+for behavior planning.
+
+236
+00:10:04.175 --> 00:10:05.600
+We can think of them as
+
+237
+00:10:05.600 --> 00:10:07.280
+a direct implementation of
+
+238
+00:10:07.280 --> 00:10:09.560
+the definition of
+behavior planning,
+
+239
+00:10:09.560 --> 00:10:13.129
+which requires us to define
+maneuvers or states,
+
+240
+00:10:13.129 --> 00:10:15.185
+and local planning constraints or
+
+241
+00:10:15.185 --> 00:10:18.680
+entry actions that satisfy
+the rules of the road and
+
+242
+00:10:18.680 --> 00:10:20.195
+check safe interaction with
+
+243
+00:10:20.195 --> 00:10:22.220
+other dynamic and
+static objects in
+
+244
+00:10:22.220 --> 00:10:25.280
+the environment or
+transition conditions.
+
+245
+00:10:25.280 --> 00:10:26.750
+By keeping track of
+
+246
+00:10:26.750 --> 00:10:27.830
+the current maneuver and
+
+247
+00:10:27.830 --> 00:10:29.690
+state of the driving environment,
+
+248
+00:10:29.690 --> 00:10:31.910
+only relevant transitions out of
+
+249
+00:10:31.910 --> 00:10:33.980
+the current state need
+to be considered,
+
+250
+00:10:33.980 --> 00:10:35.600
+greatly reducing the number of
+
+251
+00:10:35.600 --> 00:10:38.180
+conditions to check
+at each iteration.
+
+252
+00:10:38.180 --> 00:10:40.760
+As a result of
+the decomposition of
+
+253
+00:10:40.760 --> 00:10:42.560
+behavior planning into a set of
+
+254
+00:10:42.560 --> 00:10:44.810
+states with transitions
+between them,
+
+255
+00:10:44.810 --> 00:10:48.770
+the individual rules required
+remain relatively simple.
+
+256
+00:10:48.770 --> 00:10:51.500
+This leads to straightforward
+implementations
+
+257
+00:10:51.500 --> 00:10:54.590
+with clear divisions
+between separate behaviors.
+
+258
+00:10:54.590 --> 00:10:57.320
+However, as the number
+of states increases,
+
+259
+00:10:57.320 --> 00:10:58.835
+the complexity of defining
+
+260
+00:10:58.835 --> 00:11:02.470
+all possible transitions and
+their conditions explodes.
+
+261
+00:11:02.470 --> 00:11:05.090
+There is also
+no explicit way to handle
+
+262
+00:11:05.090 --> 00:11:07.850
+uncertainty and errors
+in the input data.
+
+263
+00:11:07.850 --> 00:11:09.470
+These challenges mean that
+
+264
+00:11:09.470 --> 00:11:10.970
+the finite-state machine approach
+
+265
+00:11:10.970 --> 00:11:12.890
+tends to run into difficulties,
+
+266
+00:11:12.890 --> 00:11:15.560
+as we approach full level
+five autonomy.
+
+267
+00:11:15.560 --> 00:11:17.900
+But it is an excellent
+starting point for
+
+268
+00:11:17.900 --> 00:11:20.960
+systems with restricted
+operational design domains,
+
+269
+00:11:20.960 --> 00:11:23.645
+permitting a manageable
+number of states.
+
+270
+00:11:23.645 --> 00:11:25.580
+We'll look into these limitations
+
+271
+00:11:25.580 --> 00:11:26.900
+and alternative approaches to
+
+272
+00:11:26.900 --> 00:11:30.290
+behavior planning in
+the final video in this module.
+
+273
+00:11:30.290 --> 00:11:33.515
+This concludes our introduction
+to behavior planning.
+
+274
+00:11:33.515 --> 00:11:37.040
+In this video, we formulated
+a clear definition of
+
+275
+00:11:37.040 --> 00:11:38.900
+the behavior planning problem and
+
+276
+00:11:38.900 --> 00:11:41.980
+its role within the overall
+motion planning system.
+
+277
+00:11:41.980 --> 00:11:44.420
+We discussed the standard inputs
+
+278
+00:11:44.420 --> 00:11:46.970
+and outputs of the
+behavior planning module.
+
+279
+00:11:46.970 --> 00:11:49.655
+We introduced the finite
+state machine
+
+280
+00:11:49.655 --> 00:11:50.960
+and its components,
+
+281
+00:11:50.960 --> 00:11:54.610
+and applied it to a two-state
+behavior planning problem.
+
+282
+00:11:54.610 --> 00:11:56.600
+From here, we'll start to add
+
+283
+00:11:56.600 --> 00:11:57.680
+more capabilities to
+
+284
+00:11:57.680 --> 00:11:59.840
+our finite-state machine
+behavior planner.
+
+285
+00:11:59.840 --> 00:12:01.730
+In the next lesson,
+we will learn how to
+
+286
+00:12:01.730 --> 00:12:03.830
+handle all the rules
+associated with
+
+287
+00:12:03.830 --> 00:12:06.020
+an intersection scenario without
+
+288
+00:12:06.020 --> 00:12:09.450
+any dynamic objects.
+Well, see you there.

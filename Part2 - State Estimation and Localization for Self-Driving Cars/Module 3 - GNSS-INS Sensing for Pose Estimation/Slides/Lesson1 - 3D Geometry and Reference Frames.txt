@@ -1,0 +1,99 @@
+Welcome to module three of
+our state estimation course. In this module, we're
+going to introduce you to two sensors that you can use to
+help localize our self-driving car. To do this, we'll first review some 3D kinematics and several
+important reference frames, then discuss some details about
+how we can represent rotations, and finally, we'll present the inertial measurement unit and
+Global Navigation Satellite Systems. But first, it's useful to
+review a bit of 3D geometry. To track how our car moves, we'll need to know how we can express that motion using
+mathematical tools and notation. In this lesson, we'll review how reference frames
+affect vector coordinates, compare and contrast different
+rotation representations, and present several
+reference frames that'll be important in our next lesson on sensors. Recall that a vector is a geometric object that has
+a magnitude and a direction. Often, we treat the concept of a vector interchangeably with the concept
+of vector coordinates, or the set of numbers that represent
+the vector's direction and magnitude. This however is not necessarily correct. If we imagine that the vector
+is fixed in space, then its coordinates will change depending on the way in
+which we observe it. More precisely, the same
+vector quantity will have different coordinates depending on which coordinate
+frame or reference frame we choose to express it in. We will use the following
+notation: In frame a, the vector r has notation r sub a. Likewise in frame b, it has the coordinates r sub b. To convert from one set of
+coordinates to another, we will require a rotation
+matrix that tells us exactly how one frame is rotated
+with respect to the other. For this, we will use the notation
+bold capital C with the subscripts indicating the initial and final
+reference frames from right to left. Often, it will also be useful for
+us to discuss how the coordinates of points change as we move from
+one reference frame to another. For example, we may know the position
+of a building in some frame, and now we'd like to know its position
+in our current vehicle frame. To compute this, we use vector addition making sure to express all of the
+coordinates in the same reference frame. We will use superscripts
+on the coordinates to indicate the start and
+end point of a 3D vector, again from right to left, and a subscript to indicate
+the frame in which this is expressed just as before. We can manipulate this expression
+to solve for the coordinates in the vehicle frame or an appropriate
+inertial frame, for example. A critical component of tracking
+reference frames is tracking their orientation or rotation with
+respect to some base reference frame. Rotations are particularly tricky
+mathematical objects and they can be the source of major bugs if not
+dealt with carefully and diligently. There are many different ways
+to represent rotations. The most common is to use a three by three rotation matrix
+as we've done before. This matrix defines
+the relationship between the basis vectors of two reference
+frames in terms of dot products. For this reason, it's often called
+the direction cosine matrix. An important property to
+remember is that the inverse of a rotation matrix
+is just its transpose. A second way to represent rotations is to use something called unit quaternions. Quaternions are an interesting
+mathematical topic in their own right, but for us, it's sufficient to note
+that a unit quaternion can be represented as
+a four-dimensional vector of unit length that parameterizes a rotation about an axis
+defined by the vector u, and an angle phi about that vector. We can convert a quaternion
+to a rotation matrix by using this somewhat tedious but
+straightforward algebraic expression. Why would we ever want
+to use quaternions? Well, they don't suffer from singularities and they only need
+four parameters instead of nine. Finally, another way of representing a rotation is using three numbers
+called Euler angles. These angles represent an arbitrary
+rotation as the composition of three separate rotations about
+different principal axes. Euler angles are attractive in part because they are
+a parsimonious representation requiring only three parameters instead
+of nine for a full rotation matrix. Unfortunately,
+Euler angle representations are subject to what are
+called singularities. Singularities complicate
+state estimation because they represent particular rotations from which to
+Euler angles are indistinguishable. Neither quaternions nor
+rotation matrices suffer from this problem at the expense
+of using more parameters. So, which of these representations do
+self-driving vehicle engineers use? Well, it depends. Each has advantages and disadvantages. A rotation matrix can
+represent any rotation but requires nine parameters
+and had six constraints. A unit quaternion can also be
+used to represent any rotation, but it also has a constraint. To use a unit quaternion to
+actually rotate a vector, we also require some additional algebra beyond simple matrix multiplication. Finally, Euler angles are unconstrained, intuitive to visualize and
+use only three parameters, but are subject to singularities. Finally, let's look at four important reference frames that
+we'll use when localizing our vehicle. The first frame is the Earth-Centered
+Inertial Frame or ECIF. This frame has its origin
+at the center of the earth, the z axis points true north, and the x and y axis are fixed with
+respect to the very distant stars. This means that although the earth
+rotates about the z axis, the x and y axes do not move. Next, the Earth-Eentered
+Earth-Fixed Frame, or ECEF is just like ECIF except that it's x axis is aligned with the Prime
+Meridian and spins with the earth. The y-axis is determined
+by the right-hand rule. Here, you can see an animation that
+shows the difference between the ECEF, which is fixed to the earth, and the ECIF, which is fixed with
+respect to the distance stars. Although ECEF and ECIF are useful when we discuss satellites and
+inertial sensing onboard aircraft, for practical car applications, we'll usually want to use a frame that
+is fixed with respect to the ground. For this, we'll use what we referred
+to as the navigation frame. A very common navigation frame
+is one that is attached to some germane starting point and
+aligned with north, east, and down. Finally, we also often
+need to think about a sensor frame that is rigidly
+attached to a sensor like a LIDAR, a GPS receiver, or
+an inertial measurement unit. This frame will typically be distinct
+from the general vehicle frame, which can be placed anywhere on
+the vehicle that is convenient, at the center of mass for example. For localization, we will often
+ignore the distinction between the vehicle and sensor frame and assume
+that if we can track the sensor, we should be able to track any point on the vehicle given proper calibration, a topic we investigate later. To summarize, vector quantities can be expressed in different reference frames
+through rotations and translations. Rotations can be parameterized
+by rotation matrices, quaternions, or Euler angles, each of which has advantages
+and disadvantages. The Earth-Centered Earth-Fixed,
+Earth-Centered Inertial, and navigation frames are important
+reference frames for localization. In the next video, we'll discuss how we can use the tools we learned about in this lesson to track motion by
+using an inertial measurement unit.

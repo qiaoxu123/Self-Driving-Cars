@@ -1,0 +1,732 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Module 5 - Putting It together - An Autonomous Vehicle State Estimator · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../../Part3 - Visual Perception for Self-Driving Cars/" />
+    
+    
+    <link rel="prev" href="../Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../Part1 - Introduction to Self-Driving Cars/">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/">
+            
+                    
+                    Part1: Introduction to Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../Part1 - Introduction to Self-Driving Cars/Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                    
+                    Module 0：Welcome to the self-driving cars specialization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../Part1 - Introduction to Self-Driving Cars/Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                    
+                    Module 1：The Requirements for Autonomy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../../Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                    
+                    Module2：Self-Driving Hardware and Software Architectures
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../../Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                    
+                    Module3：Safety Assurance for Autonomous Vehicles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.5" data-path="../../Part1 - Introduction to Self-Driving Cars/Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                    
+                    Module4：Vehicle Dynamic Modeling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.6" data-path="../../Part1 - Introduction to Self-Driving Cars/Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                    
+                    Module 5：Vehicle Longitudinal Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.7" data-path="../../Part1 - Introduction to Self-Driving Cars/Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                    
+                    Module 6：Vehicle Lateral Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.8" data-path="../../Part1 - Introduction to Self-Driving Cars/Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                    
+                    Module 7：Putting it all together
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Part2：State Estimation and Localization for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                <a href="../Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                    
+                    Module 1：Least Squares
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                <a href="../Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                    
+                    Module 2 - State Estimation - Linear and Nonlinear Kalman Filters
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                <a href="../Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                    
+                    Module 3 - GNSSINS Sensing for Pose Estimation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                <a href="../Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                    
+                    Module 4 - LIDAR Sensing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.5" data-path="Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                <a href="Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                    
+                    Module 5 - Putting It together - An Autonomous Vehicle State Estimator
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                <a href="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                    
+                    Part3：Visual Perception for Self-Driving Cars
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                    
+                    Part4：Motion Planning for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                    
+                    Module 1 - The Planning Problem
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                    
+                    Module 2 - Mapping for Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 3 - Mission Planning in Driving Environments/Module 3 - Mission Planning in Driving Environments.md">
+            
+                <span>
+            
+                    
+                    Module 3 - Mission Planning in Driving Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 4 - Dynamic Object Interactions/Module 4 - Dynamic Object Interactions.md">
+            
+                <span>
+            
+                    
+                    Module 4 - Dynamic Object Interactions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 5 - Principles of Behaviour Planning/Module 5 - Principles of Behaviour Planning.md">
+            
+                <span>
+            
+                    
+                    Module 5 - Principles of Behaviour Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 6 - Reactive Planning in Static Environments/Module 6 - Reactive Planning in Static Environments.md">
+            
+                <span>
+            
+                    
+                    Module 6 - Reactive Planning in Static Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 7 - Putting it all together - Smooth Local Planning/Module 7 - Putting it all together - Smooth Local Planning.md">
+            
+                <span>
+            
+                    
+                    Module 7 - Putting it all together - Smooth Local Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Module 5 - Putting It together - An Autonomous Vehicle State Estimator</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="module-5-putting-it-together---an-autonomous-vehicle-state-estimator">Module 5: Putting It together - An Autonomous Vehicle State Estimator</h1>
+<p>This module combines materials from Modules 1-4 together, with the goal of developing a full vehicle state estimator. Learners will build, using data from the CARLA simulator, an error-state extended Kalman filter-based estimator that incorporates GPS, IMU, and LIDAR measurements to determine the vehicle position and orientation on the road at a high update rate. There will be an opportunity to observe what happens to the quality of the state estimate when one or more of the sensors either &apos;drop out&apos; or are disabled.</p>
+<h3 id="&#x5B66;&#x4E60;&#x76EE;&#x6807;">&#x5B66;&#x4E60;&#x76EE;&#x6807;</h3>
+<ul>
+<li>Apply filtering-based state estimation to determine the pose of a vehicle on the roadway</li>
+<li>Use LIDAR scan registration (to an existing map) to improve state estimates</li>
+<li>Test the effects of the loss of one or more sensors on the vehicle pose estimate</li>
+</ul>
+<hr>
+<h2 id="lesson-1-state-estimation-in-practice">Lesson 1: State Estimation in Practice</h2>
+<p>Now, that you&apos;ve learned the basics of estimation theory, 3D geometry, and some common sensing modalities, it&apos;s time to put it into practice and think about how we can use all of these tools together to build an estimator we can use on a real self-driving car. A real self-driving car like the autonomous will be equipped with many different kinds of sensors. For example, the autonomous is equipped with five cameras, a 3D LiDAR, an IMU, four radar units, a GPS or GNSS receiver, and a wheel encoder. </p>
+<p>All of these sensors give us different types of data at different rates. For example, the IMU might report accelerations and angular velocities 200 times per second, while the LiDAR completes a full scan only 20 times per second. <strong>So, in this module, we&apos;re going to talk about how we can combine all the different information to get the best possible estimate of the vehicle state.</strong> </p>
+<p>This process is called <strong>sensor fusion</strong> and it&apos;s one of the most important techniques for self-driving cars. But in order to do sensor fusion, we also need to calibrate our sensors to ensure that the sensor models are accurate and so that we know how the reference frames of all of the sensors are related to each other. We&apos;ll also discuss what happens when one or more sensors fails and give you an overview of the final project where you&apos;ll have an opportunity to implement a full vehicle state estimator using sensors in the Carlo simulator. In this first video, we&apos;ll give you a bird&apos;s-eye view of some practical considerations you should take into account when designing systems for self-driving cars. What kind of considerations? </p>
+<p>Well, we&apos;ve already touched on sensor fusion and calibration, but we&apos;ll also need to think about speed and accuracy requirements as well as localization failures and how to cope with parts of the environment that are moving and changing around us. Let&apos;s start with sensor fusion. </p>
+<hr>
+<h3 id="1-state-estimation-with-multiple-sensors">1. State Estimation with Multiple Sensors</h3>
+<p>If we have a car like the autonomous that&apos;s equipped with a number of different sensors, what we would like to do is figure out how to combine all of this different information to get the best possible estimate of the vehicle state. It might seem like a daunting task to fuse all of this data, but in fact, we already have the tools to do this. In lesson two of this module, we&apos;ll discuss exactly how we can use the familiar tools like the extended Kalman filter to combine all of the sensor data into a single consistent estimate of the vehicle state. But in order to do sensor fusion, we first need to know some things about our sensors and how they&apos;re configured on board the vehicle. </p>
+<p><img src="assets/1557366753482.png" alt="1557366753482"></p>
+<p>For one thing, our sensor models might depend on parameters that are specific to the car or to the sensor itself. A good example of this is using wheel encoders to measure the forward speed of the car. A wheel encoder measures the angular velocity of the axle. But if we want to use that to get the forward velocity of the vehicle, we also need to know the radius of a tire. Another thing we need to know about the vehicle is the pose or position and orientation of each sensor relative to the vehicle reference frame. Because we&apos;re combining information from sensors located in different places, we need to know how to transform all of the measurements so they&apos;re expressed in a common reference frame. Finally, we need to think about how well our sensor measurements are synchronized so that we can fuse them all properly. </p>
+<p>Intuitively, you might expect that directly combining a LiDAR scan you just received with a GPS measurement you received, say, five seconds ago, won&apos;t produce as good of a result as if the LiDAR scan and the GPS measurement were taken at the same time. So, the more accurately you can synchronize your sensors, the better your state estimate will be. A part of this involves determining the time offset between when the sensor records a measurement and when the estimator receives it for processing. All of these factors are critical forms of calibration which we&apos;ll discuss in more detail in lesson three. </p>
+<hr>
+<h3 id="2-accuracy-requirements">2. Accuracy Requirements</h3>
+<p>How accurate does a estimator need to be for a self-driving car to drive safely on the road? Well, it depends on the size of the car, the width of the lanes, and the density of traffic, but to get a ballpark estimate, you might consider the margin of error available for a task leak lane keeping. </p>
+<p><img src="assets/1557366896981.png" alt="1557366896981"></p>
+<p>A typical car is about 1.8 meters wide, an average highway lane might be about three meters wide, give or take. So, our estimator would need to be good enough to position the car within 60 centimeters or so on either side of the lane. That&apos;s assuming we know exactly where the lanes are and that there&apos;s no traffic. For comparison, an optimistic range for GPS accuracy is between one and five meters depending on the specific hardware, the number of satellites that are visible, and other factors. So, clearly, GPS alone is not enough even for lane keeping. This is one important reason why we&apos;ll need to combine information from many different sensors. </p>
+<p>What about speed? How fast we need to update the vehicles states whether the car can react to rapidly changing environments or unexpected events? Well, this all depends on what kind of environment the car is operating in. Imagine that you&apos;re driving a car with your eyes closed, and you open your eyes exactly once every second to take a look at what&apos;s around you and make some adjustments. This corresponds to an update rate of one hertz. For driving down a street country road with no traffic in sight, maybe you&apos;ll feel relatively safe doing this. But what if you&apos;re driving through a busy city intersection with dozens of other cars, and buses, and cyclists, and pedestrians around you? You would probably feel much less safe opening your eyes once a second. As a rule of thumb, an update rate of 15 hertz to 30 hertz is a reasonable target for self-driving. </p>
+<p>But of course, there&apos;s a trade-off to think about here. A self-driving car will only have so much on-board computing power available and the computer will need to juggle many different processes like control and path planning and perception in addition to state estimation. What&apos;s more, the total amount of compute power available on board may be limited by restrictions on how much power the computer is actually allowed to consume. Produce state estimation with fixed computational resources, there&apos;s a trade-off between how complicated our algorithms can be and the amount of time are allowed to spend computing a solution. It&apos;s up to you as a self-driving car engineer to decide where your car is going to be on this trade off curve. Even if we had a fast and accurate estimation algorithm, there are going to be cases where our localization might fail. How could this happen? </p>
+<blockquote>
+<ul>
+<li><strong>Sensors fail or provide bad data (e.g.., GPS in a tunnel)</strong></li>
+<li><strong>Estimation error (e.g., linearization error in the EKF)</strong></li>
+<li><strong>Large state uncertainty (e.g., relying on IMU for too long)</strong></li>
+</ul>
+</blockquote>
+<p>Well, for one thing, we might have one or more of our sensors report bad data or maybe even fail entirely. A good example of this is GPS which doesn&apos;t work at all in tunnels and which can have a difficult time coping with reflected signals in cities with a lot of tall buildings. We might also encounter errors in our state estimation algorithm itself. For example, if we&apos;re using an extended common filter with a highly nonlinear sensor model, we might find that the inherent linearization error in the estimator means that we can lose accuracy in our state estimate even though the estimator is pretty confident in its output. Or maybe, our estimator is not very confident at all. </p>
+<p>Thinking back to the Kalman filter equations, you might remember that the uncertainty in our state grows as we propagate forward through the motion model and it only shrinks once we incorporate outside observations from LiDAR or GPS for example. If our LiDAR is broken and we&apos;re driving in a tunnel without GPS, how long can we rely on an IMU and a motion model before our estate uncertainty grows too large and it&apos;s no longer safe to drive? We&apos;ll talk about strategies for detecting and coping with localization failures like these in lesson four. Finally, we need to think about the world the car lives in. For the most part, we&apos;ve developed our models for sensors like LiDAR under the assumption that the world is static and unchanging. But of course, in reality, the world is always moving and changing. </p>
+<p>For example, other cars, pedestrians, and cyclists are probably moving. Lighting changes over the course of a day and even the geometry of the world can change with the seasons. One of the big challenges for self-driving cars is finding ways to account for these kinds of changes, whether by modeling them or by finding ways of identifying and ignoring objects that violate our assumptions. In fact, this is still a very active area of research. </p>
+<hr>
+<h3 id="3-summary">3. Summary</h3>
+<p>So, to summarize this video, state estimation in practice will typically rely on sensor fusion to combine information from many different kinds of sensors, like IMUs, LiDAR, cameras, and GPS or GNSS receivers. In order for sensor fusion to work as intended, we need to calibrate the sensors by determining the parameters of our sensor models. The relative positions and orientations of all of the sensors and any differences in polling times. We also need to consider trade-offs between speed and accuracy in our algorithms which may be different depending on the type of self-driving car you&apos;re working on. Ask yourself, how accurately do I need to know the vehicle state and how often do I need to update it for my particular use case? Finally, we need to think about how to safely cope with localization failures and aspects of the world that do not conform to our assumptions such as moving objects. In the next three videos, we&apos;ll dig into some of these topics in more detail starting with multi-sensory fusion in the next video.</p>
+<hr>
+<h2 id="lesson-2-multisensor-fusion-for-state-estimation">Lesson 2: Multisensor Fusion for State Estimation</h2>
+<p>Welcome back. Now that we&apos;ve discussed the basic hardware and software that we&apos;ll need for localization, let&apos;s put everything together. In this lesson, we will derive an error state extended Kalman Filter that estimates position, velocity, and orientation of a self-driving car using an IMU, a GNSS receiver, and a LIDAR. </p>
+<hr>
+<h3 id="1-why-use-gnss-with-imu--lidar">1. Why use GNSS with IMU &amp; LIDAR?</h3>
+<p>Although we&apos;ll make some simplifications, the basic structure of our pipeline will resemble one used in modern self-driving vehicles. Before we dive into the algorithm details, it&apos;s always useful to take a step back and ask, &quot;Why use these sensors and can we do something more simple?&quot; In our case, we&apos;ll be using an IMU with a GNSS receiver and a LIDAR for several reasons. </p>
+<p><img src="assets/1557367518842.png" alt="1557367518842"></p>
+<p>First, whenever we fuse information for the purpose of state estimation, one important factor to consider is whether or not the errors from different sensors will be correlated. In other words, if one fails is the other likely to fail as well. In this case, all three
+of our sensors use different measurement methods and are unlikely to fail for the same reason. </p>
+<p>Second, we should try our best to choose sensors that are complimentary in nature. In our case, the IMU acts as a high-rate smoother of GPS or GNSS position estimates. GNSS data can mitigate errors that are due to IMU drift. It&apos;s also possible to use wheel odometry for this purpose. In this lecture, we&apos;ll stick to IMUs as they can provide full position and orientation information in three-dimensions, whereas wheel odometry is limited to two dimensions. </p>
+<p>Finally, LIDAR can compliment GNSS information by providing very accurate position estimates within a known map and in sky obstructed locations. Conversely, GNSS can tell LIDAR which map to use when localizing. </p>
+<hr>
+<p>For the purposes of EKF state estimation, we can implement either what&apos;s called a loosely coupled estimator or a tightly coupled one. In a tightly coupled EKF, we use the raw pseudo range and point cloud measurements from our GNSS and LIDAR as observations. </p>
+<p><img src="assets/1557367551669.png" alt="1557367551669"></p>
+<p>In a loosely coupled system, we assume that this data has already been preprocessed to produce a noisy position estimate. Although the tightly coupled approach can lead to more accurate localization, it&apos;s often tedious to implement and requires a lot of tuning. For this reason, we&apos;ll implement a loosely coupled EKF here. </p>
+<hr>
+<h3 id="2-extended-kalman-filter--imu--gnss--lidar">2. Extended Kalman Filter | IMU + GNSS + LIDAR</h3>
+<p>Here you can see a graphical representation of our system. </p>
+<p><img src="assets/1557383567405.png" alt="1557383567405"></p>
+<p>We&apos;ll use the IMU measurements as noisy inputs to our motion model. This will give us our predicted state which will update every time we have an IMU measurement, this can happen hundreds of times a second. At a much slower rate, we&apos;ll incorporate GNSS and LIDAR measurements whenever they become available, say once a second or slower, and use them to correct our predicted state. So, what is our state? </p>
+<p>For our purposes, we&apos;ll use a ten-dimensional state vector that includes a 3D position, a 3D velocity, any 4D unit quaternion that will represent the orientation of our vehicle with respect to a navigation frame. </p>
+<p>$$
+\mathbf{x}<em>{k}=\left[ \begin{array}{c}{\mathbf{p}</em>{k}} \ {\mathbf{v}<em>{k}} \ {\mathbf{q}</em>{k}}\end{array}\right] \in R^{10}</p>
+<p>$$
+We&apos;ll assume that IMU outputs specific forces and rotational rates in the sensor frame and combine them into a single input vector u. It&apos;s also important to point out that we&apos;re not going to track accelerometer or gyroscope biases. These are often put into the state vector, estimated, and then subtracted off of the our IMU measurements. </p>
+<p><img src="assets/1557383710622.png" alt="1557383710622"></p>
+<p>For clarity, we&apos;ll emit them here and assume our IMU measurements are unbiased. </p>
+<hr>
+<h3 id="3-motion-model">3. Motion Model</h3>
+<p>Our motion model for the position, velocity, and orientation will integrate the proper accelerations and rotational rates from our IMU. The position updates look like this. Next is the velocity update, and finally, the quaternion update. We&apos;ll need to use a bunch of definitions as shown below. Remember that our quaternion will keep track of the orientation of our sensor frame S with respect to our navigation frame n. </p>
+<p><img src="assets/1557383847594.png" alt="1557383847594"></p>
+<p>Because of the orientation parameters, which we express as a rotation matrix, our motion model is not linear. To use it in our EKF, we&apos;ll need to linearize it with respect to some small error or perturbation about the predicted state. To do this, we&apos;ll define an error state that consists of Delta P, Delta V, and Delta phi where Delta phi is a three by one orientation error. </p>
+<p><img src="assets/1557383882438.png" alt="1557383882438"></p>
+<p>Using this state, we can derive aerodynamics with the appropriate Jacobians. </p>
+<hr>
+<h3 id="4-measurement-model--gnss">4. Measurement Model | GNSS</h3>
+<p>For our measurement model, we&apos;ll use a very simple observation of the position plus some additive Gaussian noise. We&apos;ll define a covariance R sub GNSS, for the GNSS position noise, and R sub LIDAR, for our LIDAR position measurement noise. It&apos;s important here to note that we have assumed that our LIDAR and GNSS will supply position measurements in the same coordinate frame. </p>
+<p><img src="assets/1557384035098.png" alt="1557384035098"></p>
+<p><img src="assets/1557384016162.png" alt="1557384016162"></p>
+<p>In a realistic implementation, the GNSS position estimates may serve as a way to select a known map against which the LIDAR data can then be compared. With these definitions in mind, we can now describe our extended Kalman filter. </p>
+<hr>
+<h3 id="5-ekf--imu--gnss--lidar">5. EKF | IMU + GNSS + LIDAR</h3>
+<p>Our filter will loop every time an IMU measurement occurs. We&apos;ll first use the motion model to predict a new state based on our last state. </p>
+<p><img src="assets/1557384108509.png" alt="1557384108509"></p>
+<p>The last state may be a fully corrected state or one that was also propagated using the motion model only depending on whether or not we received a GNSS or LIDAR measurement at the last time step. Next, we&apos;ll propagate the state uncertainty through our linearized motion model. </p>
+<p><img src="assets/1557384177301.png" alt="1557384177301"></p>
+<p>Again, accounting for whether or not our previous state was corrected or uncorrected. At this point, if we don&apos;t have any GNSS or LIDAR measurements available, we can repeat steps one and two. If we do, we&apos;ll first compute the Kalman gain that is appropriate for the given observation, we&apos;ll then compute an error state that we will use to correct our predicted state. </p>
+<p><img src="assets/1557384159832.png" alt="1557384159832"></p>
+<p>This error state is based on the product of the Kalman gain and the difference between the predicted and observed position. We will then correct our predicted state using our error state. </p>
+<p><img src="assets/1557384209756.png" alt="1557384209756"></p>
+<p>This correction is straightforward for position and velocity, but some more complicated algebra is required to correct the quaternion. </p>
+<p><img src="assets/1557384225969.png" alt="1557384225969"></p>
+<p>We&apos;ll need this special update because the quaternion is a constrained quantity that is not a simple vector. Finally, we&apos;ll update our state covariants in the usual way. </p>
+<p><img src="assets/1557384239847.png" alt="1557384239847"></p>
+<p>That&apos;s it. There you have it. Your very own localization pipeline. If you followed everything up until now, congratulations! You&apos;re well on your way to becoming a localization guru. Before we end this lesson, let&apos;s review a few of the assumptions we&apos;ve made when putting our pipeline together. </p>
+<hr>
+<h3 id="6-summary">6. Summary</h3>
+<blockquote>
+<p>Assumptions:</p>
+<ol>
+<li><strong>LIDAR provides positions in the same reference frame as GNSS (possible)</strong></li>
+<li><strong>IMU has no biases (not realistic!)</strong></li>
+<li><strong>State initialization is provided (realistic)</strong></li>
+<li><strong>Our sensors are spatially and temporally aligned (somewhat realistic)</strong></li>
+</ol>
+</blockquote>
+<p>We used a loosely-coupled extended Kalman Filter framework to fuse inertial measurements from an IMU together with position measurements from a GNSS receiver and LIDAR. We assume that the GNSS and LIDAR provided us with position estimates in the same coordinate frame which requires some preprocessing, but is possible to do in a realistic implementation. </p>
+<p>Second, we did not account for accelerometer or gyroscope biases in our IMU measurements. This simplified our algebra but is not a realistic assumption. Luckily, if you follow along with what we&apos;ve done here, adding biases is not insignificant leap. </p>
+<p>Next, we didn&apos;t discuss Filter State initialization. This is often taken to be some known state at the start of the localization process. Finally, we also assumed that our sensors were all spatially and temporally aligned. We assumed that our sensors were calibrated in the sense that we didn&apos;t worry about varying time steps or how we can get several sets of measurements all aligned into one coordinate frame. Performing this latter step is a very important part of constructing an accurate localization pipeline. We&apos;ll discuss it next.</p>
+<hr>
+<h2 id="lesson-3-sensor-calibration---a-necessary-evil">Lesson 3: Sensor Calibration - A Necessary Evil</h2>
+<p>Now that we&apos;ve seen how we can combine multiple sources of sensor data to estimate the vehicle state, it&apos;s time to address a topic that we&apos;ve so far been sweeping under the rug. That topic is Sensor Calibration, and it&apos;s one of those things that engineers don&apos;t really like talking about but it&apos;s absolutely essential for doing state estimation properly. Personally, calibration is near and dear to me since my doctoral research focused on calibration for cameras and IMUs, and it&apos;s a topic that my students are continuing to research today. </p>
+<p>In this video, we&apos;ll discuss the three main types of sensor calibration and why we need to think about them when we&apos;re designing a state estimator for a self-driving car. </p>
+<p><img src="assets/1557384509315.png" alt="1557384509315"></p>
+<p>The three main types of calibration will talk about are intrinsic calibration, which deals with sensors specific parameters, extrinsic calibration, which deals with how the sensors are positioned and oriented on the vehicle, and temporal calibration, which deals with the time offset between different sensor measurements. </p>
+<hr>
+<h3 id="1-intrinsic-sensor-calibration">1. Intrinsic Sensor Calibration</h3>
+<p>Let&apos;s look at intrinsic calibration first. In intrinsic calibration, we want to determine the fixed parameters of our sensor models, so that we can use them in an estimator like an extended Kalman filter. </p>
+<p><img src="assets/1557384535466.png" alt="1557384535466"></p>
+<p>Every sensor has parameters associated with it that are unique to that specific sensor and are typically expected to be constant. For example, we might have an encoder attached to one axle of the car that measures the wheel rotation rate omega. If we want to use omega to estimate the forward velocity v of the wheel, we would need to know the radius R of the wheel, so that we can use this in the equation v equals omega times R. In this case, R is a parameter of the sensor model that is specific to the wheel the encoder is attached to and we might have a different R for a different wheel. Another example of an intrinsic sensor parameter is the elevation angle of a scan line in a LiDAR sensor like the Velodyne. The elevation angle is a fixed quantity but we need to know it ahead of time so that we can properly interpret each scan. So, how do we determine intrinsic parameters like these? Well, there are a few practical strategies for doing this. </p>
+<p>The easiest one is just let the manufacturer do it for you. Often, sensors are calibrated in the factory and come with a spec sheet that tells you all the numbers you need to plug into your model to make sense of the measurements. This is usually a good starting point but it won&apos;t always be good enough to do really accurate state estimation because no two sensors are exactly alike and there&apos;ll be some variation in the true values of the parameters. Another easy strategy that involves a little more work is to try measuring these parameters by hand. This is pretty straightforward for something like a tire, but not so straightforward for something like a LiDAR where it&apos;s not exactly practical to poke around with a protractor inside the sensor. </p>
+<p>A more sophisticated approach involves estimating the intrinsic parameters as part of the vehicle state, either on the fly or more commonly as a special calibration step before putting the sensors into operation. This approach has the advantage of producing an accurate calibration that&apos;s specific to the particular sensor and can also be formulated in a way that can handle the parameters varying slowly over time. For example, if you continually estimate the radius of your tires, this could be a good way of detecting when you have a flat. </p>
+<hr>
+<h3 id="2-calibration-by-estimation">2. Calibration by Estimation</h3>
+<p>Now, because the estimators we&apos;ve talked about in this course are general purpose, we already have the tools to do this kind of automatic calibration. To see how this works, let&apos;s come back to our example of a car moving in one dimension. So, we&apos;ve attached an encoder to the back wheel to measure the wheel rotation rate. </p>
+<p><img src="assets/1557384690881.png" alt="1557384690881"></p>
+<p>If we want to estimate the wheel radius along with position and velocity, all we need to do is add it to the state vector and work out what the new motion and observation model should be. For the motion model, everything is the same as before except now there&apos;s an extra row and column in the matrix that says that the wheel radius should stay constant from one time step to the next. For the observation model, we&apos;re still observing position directly through GPS but now we&apos;re also observing the wheel rotation rate through the encoder. So, we include the extra non-linear observation in the model. From here, we can use the extended or unscented Kalman filter to estimate the wheel radius along with the position and velocity of the vehicle. </p>
+<hr>
+<h3 id="3-extrinsic-sensor-calibration">3. Extrinsic Sensor Calibration</h3>
+<p>So, intrinsic calibration is essential for doing state estimation with even a single sensor. But extrinsic calibration is equally important for fusing information from multiple sensors. In extrinsic calibration, we&apos;re interested in determining the relative poses of all of the sensors usually with respect to the vehicle frame. For example, we need to know the relative pose of the IMU and the LiDAR. So, the rates reported by the IMU are expressed in the same coordinate system as the LiDAR point clouds. </p>
+<p><img src="assets/1557388340812.png" alt="1557388340812"></p>
+<p>Just like with intrinsic calibration, there are different techniques for doing extrinsic calibration. If you&apos;re lucky, you might have access to an accurate CAD model of the vehicle like this one, where all of the sensor frames have been nicely laid out for you. If you&apos;re less lucky, you might be tempted to try measuring by hand. Unfortunately, this is often difficult or impossible to do accurately since many sensors have the origin of their coordinate system inside the sensor itself, and you probably don&apos;t want to dismantle your car and all of the sensors. Fortunately, we can use a similar trick to estimate the extrinsic parameters by including them in our state. This can become a bit complicated for arbitrary sensor configurations, and there is still a lot of research being done into different techniques for doing this reliably. Finally, an often overlooked but still important type of calibration is temporal calibration.</p>
+<hr>
+<h3 id="4-temporal-calibration">4. Temporal Calibration</h3>
+<p>In all of our discussion of multisensory fusion, we&apos;ve been implicitly assuming that all of the measurements we&apos;ve combined are captured exactly the same moment in time or at least close enough for a given level of accuracy. </p>
+<p><img src="assets/1557388426747.png" alt="1557388426747"></p>
+<p>But how do we decide whether two measurements are close enough to be considered synchronized? Well, the obvious thing to do would just be to timestamp each measurement when the on-board computer receives it, and match up the measurements that are closest to each other. For example, if we get LiDAR scans at 15 hertz and IMU readings at 200 hertz, we might want to pair each LiDAR scan with the IMU reading whose timestamp is the closest match. But in reality, there&apos;s an unknown delay between when the LiDAR or IMU actually records an observation and when it arrives at the computer. These delays can be caused by the time it takes for the sensor data to be transmitted to the host computer, or by pre-processing steps performed by the sensor circuitry, and the delay can be different for different sensors. </p>
+<p>So, if we want to get a really accurate state estimate, we need to think about how well our sensors are actually synchronized, and there are different ways to approach this. The simplest and most common thing to do is just to assume the delay is zero. You can still get a working estimator this way, but the results may be less accurate than what you would get with a better temporal calibration. Another common strategy is to use hardware timing signals to synchronize the sensors, but this is often an option only for more expensive sensor setups. As you may have guessed, it&apos;s also possible to try estimating these time delays as part of the vehicle state, but this can get complicated. In fact, an entire chapter of my PhD dissertation was dedicated to solving this temporal calibration problem for a camera IMU pair. </p>
+<p>So, we have seen the different types of calibration we should be thinking about when designing an estimator for a self-driving car, but how much of a difference does good calibration really make in practice? Here&apos;s a video comparing the results of good calibration and bad calibration for a LiDAR mapping task. You&apos;ll notice in the video that the point cloud in the calibrated case is much more crisp than the point cloud in the uncalibrated case. In the uncalibrated case, the point cloud is fuzzy, it&apos;s smeared and you may see objects that are repeated or objects that are in fact entirely missed, because the LiDAR is not correctly aligned with the inertial sensor. </p>
+<hr>
+<h3 id="5-summary">5. Summary</h3>
+<p>To summarize, sensor fusion is impossible without calibration. In this video, you learned about intrinsic calibration, which deals with calibrating the parameters of our sensor models. Extrinsic calibration, which gives us the coordinate transformations we need to transform sensor measurements into a common reference frame. Temporal calibration, which deals with synchronizing measurements to ensure they all correspond to the same vehicle state. While there are some standard techniques for solving all of these problems, calibration is still very much an active area of research. In the next video, we&apos;ll take a look at what happens when one or more of our sensors fails, and how we can ensure that a self-driving car is able to continue to operate safely in these cases.</p>
+<hr>
+<h2 id="lesson-4-loss-of-one-or-more-sensors">Lesson 4: Loss of One or More Sensors</h2>
+<p>If you&apos;ve ever had to create any sort of moving robotics platform, you&apos;ll probably recall how finicky any piece of hardware can be. Sensing hardware is no different. In long-term autonomy applications like self-driving vehicles, sensors can malfunction or dropout for a number of different reasons, like weather damage, firmware failures, or something as simple as a loose wire. We&apos;ve seen in this module that even if all of our sensors are working normally, it&apos;s still beneficial to have multiple complimentary sensors to provide robust accurate localization estimates. But what happens if one of the sensors fails? </p>
+<p>So far, we&apos;ve discussed GNSS receivers, IMUs, and Lidars, but most modern autonomous vehicles also includes sensors like wheel encoders, radar, sonar, and multiple cameras. In order to build a safe vehicle, it&apos;s crucial to understand and characterize what happens when one or more sensors malfunctions, and the minimal sensing we need to maintain safe operation. </p>
+<p>In this lesson, we&apos;ll discuss the importance of sensor redundancy for robust localization and explore several examples of sensing failures in localization. One important consideration for this type of analysis is sensor range and operating limitations. </p>
+<hr>
+<h3 id="1-multiple-sensors-are-essential">1. Multiple Sensors are Essential</h3>
+<p>A GNSS receiver will not work under a bridge and may have reduced accuracy between tall buildings. An IMU may be sensitive to temperature and may require periodic recalibration. </p>
+<p><img src="assets/1557388851891.png" alt="1557388851891"></p>
+<p><img src="assets/1557388920097.png" alt="1557388920097"></p>
+<p>What&apos;s more, for sensors that observe the external world like Lidars, sonar, cameras, or radars, their sensing range plays a very important role in safe operation. </p>
+<p><img src="assets/1557388980903.png" alt="1557388980903"></p>
+<p>Most cars have long, medium, and short range sensing. If one of these malfunctions, it&apos;s often important to restrict movement so the malfunction doesn&apos;t affect safety. For example, in localization, we may use short range sensors for parking and to ensure we&apos;re not colliding with nearby vehicles. Medium range sensors may help in pedestrian and cyclist detection and in lane keeping. Longer range sensors can help us detect and predict the motion of approaching distant obstacles. If one of these fails, we have to take appropriate action to ensure that the safety of the car occupants or the people around us is not compromised. This means that a self-driving car engineer will have to consider the minimal allowable sensing equipment necessary to perform each of these steps. </p>
+<hr>
+<h3 id="2-redundant-systems">2. Redundant Systems</h3>
+<p>For this type of redundant system design, we can look at examples from an industry known for its rigorous safety standards, commercial aviation. As an example of a redundant system, consider the primary flight computer of the Boeing 777. </p>
+<p><img src="assets/1557389069291.png" alt="1557389069291"></p>
+<p>The 777 operates on a triple redundancy principle. All major systems, including this flight computer, have two backups, each with independent power and separate programming and specifications. Here you can see that each of the flight computers has a different processor to ensure that a bug in the architecture itself doesn&apos;t affect all three computers. If one of the computers fails or malfunctions, the 777 uses a consensus algorithm to seamlessly switch to another one. </p>
+<p>Although self-driving technology has come a long way, we&apos;re still only a decade beyond some of the first self-driving challenges, like the 2007 DARPA Urban Challenge. </p>
+<h4 id="21-redundancy-is-crucial--obstacle-avoidance-i">2.1 Redundancy is Crucial | Obstacle avoidance (I)</h4>
+<p><img src="assets/1557389133388.png" alt="1557389133388"></p>
+<p>Here you can see how a lack of safety redundancy leads the MIT and Cornell teams to crash into each other. If this crash occurred at higher speeds, the results may have been much worse. Taking a more recent example, here&apos;s a car from the 2015 International Driver&apos;s Vehicle Conference that fails to apply its autonomous breaking appropriately and crashes into a blown-up kangaroo. </p>
+<h4 id="21-redundancy-is-crucial--obstacle-avoidance-ii">2.1 Redundancy is Crucial | Obstacle avoidance (II)</h4>
+<p><img src="assets/1557389218335.png" alt="1557389218335"></p>
+<p>Finally, consider this now infamous recording of a Tesla Model S driving almost straight into a dividing barrier on a freeway in California. </p>
+<h4 id="23-redundancy-is-crucial--lane-keeping">2.3 Redundancy is Crucial | Lane keeping</h4>
+<p><img src="assets/1557389265720.png" alt="1557389265720"></p>
+<p>This was a sobering reminder that it is crucial for the engineers and architects who design self-driving vehicles, to carefully consider and characterize the different failure modes of the different sensing paradigms used in order to assure that one malfunctioning component doesn&apos;t cause tragedy. </p>
+<hr>
+<h3 id="3-summary">3. Summary</h3>
+<p>To summarize, it&apos;s always important to consider the limitations of any set of sensors and use multiple complimentary sensors for robust localization. That&apos;s it for this module. Next, you&apos;ll start your course project, where you&apos;ll use everything you&apos;ve learned in this course to implement a realistic state-estimation system.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html" class="navigation navigation-prev " aria-label="Previous page: Module 4 - LIDAR Sensing">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../../Part3 - Visual Perception for Self-Driving Cars/" class="navigation navigation-next " aria-label="Next page: Part3：Visual Perception for Self-Driving Cars">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Module 5 - Putting It together - An Autonomous Vehicle State Estimator","level":"1.3.5","depth":2,"next":{"title":"Part3：Visual Perception for Self-Driving Cars","level":"1.4","depth":1,"path":"Part3 - Visual Perception for Self-Driving Cars/README.md","ref":"Part3 - Visual Perception for Self-Driving Cars/README.md","articles":[]},"previous":{"title":"Module 4 - LIDAR Sensing","level":"1.3.4","depth":2,"path":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.md","ref":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.md","mtime":"2019-07-31T02:26:24.044Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T02:26:51.944Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

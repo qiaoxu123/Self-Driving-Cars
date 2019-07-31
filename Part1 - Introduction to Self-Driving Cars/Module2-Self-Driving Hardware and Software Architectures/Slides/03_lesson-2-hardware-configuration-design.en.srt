@@ -1,0 +1,679 @@
+1
+00:00:13,370 --> 00:00:16,800
+Welcome to the second video of this week.
+
+2
+00:00:16,800 --> 00:00:19,770
+We started out this week by covering the various kinds of
+
+3
+00:00:19,770 --> 00:00:22,500
+sensors most commonly used for perception.
+
+4
+00:00:22,500 --> 00:00:24,450
+Now, let's learn how to place
+
+5
+00:00:24,450 --> 00:00:28,305
+these sensors to aggregate a complete view of the environment.
+
+6
+00:00:28,305 --> 00:00:30,330
+In this video, we will cover
+
+7
+00:00:30,330 --> 00:00:35,720
+the configuration design to meet sensor coverage needs for an autonomous driving car.
+
+8
+00:00:35,720 --> 00:00:39,110
+We will do this by going through two common scenarios,
+
+9
+00:00:39,110 --> 00:00:42,740
+driving on a highway and driving in an urban environment.
+
+10
+00:00:42,740 --> 00:00:44,960
+After analyzing these scenarios,
+
+11
+00:00:44,960 --> 00:00:47,795
+we will lay out the overall coverage requirements
+
+12
+00:00:47,795 --> 00:00:50,480
+and discuss some issues with the design.
+
+13
+00:00:50,480 --> 00:00:55,325
+Let's begin by recalling the most commonly available sensors from our last video.
+
+14
+00:00:55,325 --> 00:00:58,040
+These are the camera for appearance input.
+
+15
+00:00:58,040 --> 00:01:00,750
+The stereo camera for depth information,
+
+16
+00:01:00,750 --> 00:01:03,735
+lidar for all whether 3D input,
+
+17
+00:01:03,735 --> 00:01:06,240
+radar for object detection,
+
+18
+00:01:06,240 --> 00:01:09,990
+ultrasonic for short-range 3D input and
+
+19
+00:01:09,990 --> 00:01:14,875
+GNSS/IMU data and wheel odometry for ego state estimation.
+
+20
+00:01:14,875 --> 00:01:18,170
+Also, remember that all of these sensors come in
+
+21
+00:01:18,170 --> 00:01:20,180
+different configurations and have
+
+22
+00:01:20,180 --> 00:01:23,950
+different ranges in fields of view over which they can sense.
+
+23
+00:01:23,950 --> 00:01:29,690
+They have some resolution that depends on the instrument specifics and field of view.
+
+24
+00:01:29,690 --> 00:01:32,165
+Before we move to discussing coverage,
+
+25
+00:01:32,165 --> 00:01:35,360
+let's define the deceleration rates we're willing to accept for
+
+26
+00:01:35,360 --> 00:01:39,905
+driving which will drive the detection ranges needed for our sensors.
+
+27
+00:01:39,905 --> 00:01:45,020
+Aggressive deceleration are set at five meters per second squared which is roughly
+
+28
+00:01:45,020 --> 00:01:48,020
+the deceleration you experience when you slam the brakes hard
+
+29
+00:01:48,020 --> 00:01:51,410
+and try to stop abruptly in case of an emergency.
+
+30
+00:01:51,410 --> 00:01:55,320
+Normal decelerations are set to two meters per second squared,
+
+31
+00:01:55,320 --> 00:02:00,310
+which is reasonably comfortable while still allowing the car to come to a stop quickly.
+
+32
+00:02:00,310 --> 00:02:06,125
+Given a constant deceleration our braking distance d can be computed as follows.
+
+33
+00:02:06,125 --> 00:02:09,230
+D is equal to v squared over 2a,
+
+34
+00:02:09,230 --> 00:02:13,910
+where V is the vehicle velocity and a is its rate of deceleration.
+
+35
+00:02:13,910 --> 00:02:19,640
+We can also factor in reaction time of the system and road surface friction limits,
+
+36
+00:02:19,640 --> 00:02:22,115
+but we'll keep things simple in this discussion.
+
+37
+00:02:22,115 --> 00:02:24,425
+Let's talk about coverage now.
+
+38
+00:02:24,425 --> 00:02:27,800
+The question we want to answer is where should we place
+
+39
+00:02:27,800 --> 00:02:32,630
+our sensors so that we have sufficient input for our driving task?
+
+40
+00:02:32,630 --> 00:02:36,440
+Practically speaking, we want our sensors to capture the ODD we
+
+41
+00:02:36,440 --> 00:02:40,415
+have in mind or the ODD our system can produce decisions for.
+
+42
+00:02:40,415 --> 00:02:45,065
+We should be able to provide all of the decisions with sufficient input.
+
+43
+00:02:45,065 --> 00:02:49,400
+There can be so many possible scenarios in driving but we'll look at
+
+44
+00:02:49,400 --> 00:02:54,545
+just two common scenarios to see how the requirements drive our sensor selection.
+
+45
+00:02:54,545 --> 00:02:57,560
+Will look at highway and urban driving.
+
+46
+00:02:57,560 --> 00:03:00,425
+Let's think about these two situations briefly.
+
+47
+00:03:00,425 --> 00:03:01,985
+For a divided highway,
+
+48
+00:03:01,985 --> 00:03:05,225
+we have fast moving traffic, usually high volume,
+
+49
+00:03:05,225 --> 00:03:07,415
+and quite a few lanes to monitor,
+
+50
+00:03:07,415 --> 00:03:10,670
+but all vehicles are moving in the same direction.
+
+51
+00:03:10,670 --> 00:03:14,000
+The other highlight of driving on a highway setting is that there are
+
+52
+00:03:14,000 --> 00:03:19,435
+fewer and gradual curves and we have exits and merges to consider as well.
+
+53
+00:03:19,435 --> 00:03:22,990
+On the other hand, in the urban situation we'll consider,
+
+54
+00:03:22,990 --> 00:03:26,180
+we have moderate volume and moderate speed traffic with
+
+55
+00:03:26,180 --> 00:03:31,520
+fewer lanes but with traffic moving in all directions especially through intersections.
+
+56
+00:03:31,520 --> 00:03:34,115
+Let's start with the highway setting.
+
+57
+00:03:34,115 --> 00:03:39,035
+We can break down the highway setting into three basic maneuver needs.
+
+58
+00:03:39,035 --> 00:03:43,250
+We may need to hit the brakes hard if there's an emergency situation.
+
+59
+00:03:43,250 --> 00:03:47,060
+We need to maintain a steady speed matching the flow of traffic
+
+60
+00:03:47,060 --> 00:03:51,105
+around us and we might need to change lanes.
+
+61
+00:03:51,105 --> 00:03:53,150
+In the case of an emergency stop,
+
+62
+00:03:53,150 --> 00:03:55,670
+if there is a blockage on our road we want to stop in time.
+
+63
+00:03:55,670 --> 00:03:58,925
+So, applying our stopping distance equation longitudinally,
+
+64
+00:03:58,925 --> 00:04:03,710
+we need to be able to sense about a 110 meters in front of us assuming
+
+65
+00:04:03,710 --> 00:04:08,915
+a highway speed of a 120 kilometers and aggressive deceleration.
+
+66
+00:04:08,915 --> 00:04:12,485
+Most self-driving systems aim for sensing ranges of
+
+67
+00:04:12,485 --> 00:04:16,315
+a 150 to 200 meters in front of the vehicle as a result.
+
+68
+00:04:16,315 --> 00:04:19,430
+Similarly, to avoid lateral collision or to
+
+69
+00:04:19,430 --> 00:04:23,030
+change lanes to avoid hitting an obstacle in our lane,
+
+70
+00:04:23,030 --> 00:04:26,360
+we need to be able to sense at least our adjacent lanes,
+
+71
+00:04:26,360 --> 00:04:28,900
+which are 3.7 meters wide in North America.
+
+72
+00:04:28,900 --> 00:04:31,280
+To maintain speed during vehicle following,
+
+73
+00:04:31,280 --> 00:04:33,950
+we need to sense the vehicle in our own lane.
+
+74
+00:04:33,950 --> 00:04:36,980
+Both their relative position and the speed are
+
+75
+00:04:36,980 --> 00:04:40,265
+important to maintain a safe following distance.
+
+76
+00:04:40,265 --> 00:04:42,980
+This is usually defined in units of time for
+
+77
+00:04:42,980 --> 00:04:47,480
+human drivers and set to two seconds in nominal conditions.
+
+78
+00:04:47,480 --> 00:04:50,960
+It can also be assessed using aggressive deceleration of
+
+79
+00:04:50,960 --> 00:04:54,835
+the lead vehicle and the reaction time from our ego vehicle.
+
+80
+00:04:54,835 --> 00:04:57,560
+So, at a 120 kilometers per hour,
+
+81
+00:04:57,560 --> 00:05:00,350
+relative position and speed measurements to a range of
+
+82
+00:05:00,350 --> 00:05:05,540
+165 meters are needed and typical systems use 100 meters for this requirement.
+
+83
+00:05:05,540 --> 00:05:10,280
+Laterally, we need to know what's happening anywhere in our adjacent lanes in case
+
+84
+00:05:10,280 --> 00:05:15,035
+another vehicles seeks to merge into our lane or we need to merge with other traffic.
+
+85
+00:05:15,035 --> 00:05:19,670
+A wide 160 to 180 degree field of view is required to track
+
+86
+00:05:19,670 --> 00:05:25,550
+adjacent lanes and a range of 40 to 60 meters is needed to find space between vehicles.
+
+87
+00:05:25,550 --> 00:05:30,980
+Finally, let's discuss the lane change maneuver and consider the following scenario.
+
+88
+00:05:30,980 --> 00:05:34,010
+Suppose we want to move to the adjacent lane,
+
+89
+00:05:34,010 --> 00:05:36,900
+longitudinally we need to look forward,
+
+90
+00:05:36,900 --> 00:05:41,720
+so we are a safe distance from the leading vehicle and we also need to look behind just
+
+91
+00:05:41,720 --> 00:05:46,955
+to see what the rear vehicles are doing and laterally it's a bit more complicated.
+
+92
+00:05:46,955 --> 00:05:50,195
+We may need to look beyond just the adjacent lanes.
+
+93
+00:05:50,195 --> 00:05:53,330
+For example, what if a vehicle attempts
+
+94
+00:05:53,330 --> 00:05:57,395
+to maneuver into the adjacent lane at the same time as we do?
+
+95
+00:05:57,395 --> 00:06:02,030
+We'll need to coordinate our lane change room maneuvers so we don't crash.
+
+96
+00:06:02,030 --> 00:06:04,880
+The sensor requirements for lane changes are roughly
+
+97
+00:06:04,880 --> 00:06:07,910
+equivalent to those in the maintain speed scenario.
+
+98
+00:06:07,910 --> 00:06:11,030
+As both need to manage vehicles in front of and
+
+99
+00:06:11,030 --> 00:06:14,980
+behind the ego vehicle as well as to each side.
+
+100
+00:06:14,980 --> 00:06:17,720
+Overall, this gives us the picture for
+
+101
+00:06:17,720 --> 00:06:20,600
+coverage requirements for the highway driving scenario.
+
+102
+00:06:20,600 --> 00:06:24,260
+We need longitudinal sensors and lateral sensors and
+
+103
+00:06:24,260 --> 00:06:29,365
+both wide field of view and narrow field of view sensors to do these three maneuvers,
+
+104
+00:06:29,365 --> 00:06:33,620
+the emergency stop, maintaining speed and changing lanes.
+
+105
+00:06:33,620 --> 00:06:37,220
+Already from this small set of ODD requirements we
+
+106
+00:06:37,220 --> 00:06:40,615
+see a large variety of sensor requirements that arise.
+
+107
+00:06:40,615 --> 00:06:43,325
+Let's discuss the urban scenario next.
+
+108
+00:06:43,325 --> 00:06:46,850
+The urban scenario as we discussed before is a moderate volume,
+
+109
+00:06:46,850 --> 00:06:50,210
+moderate traffic scenario with fewer lanes on
+
+110
+00:06:50,210 --> 00:06:54,350
+the highway case but with the added complexity of pedestrians.
+
+111
+00:06:54,350 --> 00:06:57,530
+There are six types of basic maneuvers here.
+
+112
+00:06:57,530 --> 00:07:01,100
+Obviously, we can still perform emergency stop,
+
+113
+00:07:01,100 --> 00:07:04,220
+maintain speed and lane changes but we
+
+114
+00:07:04,220 --> 00:07:08,270
+also have scenarios such as overtaking a parked car,
+
+115
+00:07:08,270 --> 00:07:10,970
+left and right turns at intersections and
+
+116
+00:07:10,970 --> 00:07:14,585
+more complex maneuvers through intersections such as roundabouts.
+
+117
+00:07:14,585 --> 00:07:17,660
+In fact, for the first three basic maneuvers,
+
+118
+00:07:17,660 --> 00:07:20,210
+the coverage analysis is pretty much the same as
+
+119
+00:07:20,210 --> 00:07:23,630
+the highway analysis but since we are not moving as quickly,
+
+120
+00:07:23,630 --> 00:07:27,175
+we don't need the same extent for our long-range sensing.
+
+121
+00:07:27,175 --> 00:07:30,275
+Let's discuss the overtake maneuver next.
+
+122
+00:07:30,275 --> 00:07:35,225
+More specifically, consider a case where you have to overtake a parked car.
+
+123
+00:07:35,225 --> 00:07:38,780
+Longitudinally, we definitely need to sense
+
+124
+00:07:38,780 --> 00:07:42,250
+the parked car as well as look for oncoming traffic.
+
+125
+00:07:42,250 --> 00:07:43,810
+So, we need both sensors,
+
+126
+00:07:43,810 --> 00:07:47,420
+wide short-range sensors to detect the parked car and
+
+127
+00:07:47,420 --> 00:07:52,030
+narrow long-range sensors to identify if oncoming traffic is approaching.
+
+128
+00:07:52,030 --> 00:07:54,590
+And laterally, we'll need to observe beyond
+
+129
+00:07:54,590 --> 00:07:58,550
+the adjacent lanes for merging vehicles as we did in the highway case.
+
+130
+00:07:58,550 --> 00:08:01,325
+For intersections, we need to have near
+
+131
+00:08:01,325 --> 00:08:05,000
+omni-directional sensing for all kinds of movements that can occur.
+
+132
+00:08:05,000 --> 00:08:08,280
+Approaching vehicles, nearby pedestrians,
+
+133
+00:08:08,280 --> 00:08:10,410
+doing turns and much more.
+
+134
+00:08:10,410 --> 00:08:12,780
+Finally, for roundabouts we need
+
+135
+00:08:12,780 --> 00:08:17,525
+a wide-range, short distance sensor laterally since the traffic is slow
+
+136
+00:08:17,525 --> 00:08:20,660
+but we also need a wide-range short distance sensor
+
+137
+00:08:20,660 --> 00:08:24,905
+longitudinally because of how movement around the roundabout occurs.
+
+138
+00:08:24,905 --> 00:08:28,040
+We need to sense all of the incoming traffic
+
+139
+00:08:28,040 --> 00:08:31,660
+flowing through the roundabout to make proper decisions.
+
+140
+00:08:31,660 --> 00:08:35,855
+And so we end up with this overall coverage diagram for the urban case.
+
+141
+00:08:35,855 --> 00:08:37,610
+The main difference with respect to
+
+142
+00:08:37,610 --> 00:08:41,240
+highway coverage is because of the sensing we require for
+
+143
+00:08:41,240 --> 00:08:47,300
+movement at intersections and at roundabouts and for the overtaking maneuver.
+
+144
+00:08:47,300 --> 00:08:52,250
+In fact, the highway case is almost entirely covered by the urban requirements.
+
+145
+00:08:52,250 --> 00:08:55,250
+Let's summarize the coverage analysis.
+
+146
+00:08:55,250 --> 00:08:57,150
+For all of the maneuvers we do,
+
+147
+00:08:57,150 --> 00:09:01,835
+we need long range sensors which typically have shorter angular field of view
+
+148
+00:09:01,835 --> 00:09:04,580
+and wide angular field of view sensors which
+
+149
+00:09:04,580 --> 00:09:07,985
+typically have medium to short-range sensing.
+
+150
+00:09:07,985 --> 00:09:10,700
+As the scenarios become more complex,
+
+151
+00:09:10,700 --> 00:09:14,600
+we saw the need for full 360 degrees sensor coverage on
+
+152
+00:09:14,600 --> 00:09:16,430
+the short scale out to
+
+153
+00:09:16,430 --> 00:09:21,745
+about 50 meters and much longer range requirements in the longitudinal direction.
+
+154
+00:09:21,745 --> 00:09:27,200
+We can also add even shorter range sensors like sonar which are useful in
+
+155
+00:09:27,200 --> 00:09:29,930
+parking scenarios and so in
+
+156
+00:09:29,930 --> 00:09:33,620
+the end our sensor configuration looks something like this diagram.
+
+157
+00:09:33,620 --> 00:09:37,250
+To summarize, our choice of sensors should be driven by
+
+158
+00:09:37,250 --> 00:09:41,210
+the requirements of the maneuvers we want to execute and
+
+159
+00:09:41,210 --> 00:09:43,490
+it should include both long-range sensors for
+
+160
+00:09:43,490 --> 00:09:49,190
+longitudinal dangers and wide field of view sensors for omnidirectional perception.
+
+161
+00:09:49,190 --> 00:09:51,970
+The final choice of configurations also
+
+162
+00:09:51,970 --> 00:09:55,030
+depends on our requirements for operating conditions,
+
+163
+00:09:55,030 --> 00:09:58,765
+sensor redundancy due to failures and on budget.
+
+164
+00:09:58,765 --> 00:10:03,395
+There is no single answer to which sensors are needed for a self-driving car.
+
+165
+00:10:03,395 --> 00:10:07,450
+In this video, you learned how to select a hardware configuration by doing
+
+166
+00:10:07,450 --> 00:10:09,790
+sensor coverage analysis both for
+
+167
+00:10:09,790 --> 00:10:14,290
+longitudinal and lateral cases for highway and urban driving.
+
+168
+00:10:14,290 --> 00:10:15,790
+In the next video,
+
+169
+00:10:15,790 --> 00:10:18,760
+we'll study a modular software architecture for
+
+170
+00:10:18,760 --> 00:10:22,780
+a typical autonomous driving stack. See you then.

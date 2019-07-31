@@ -1,0 +1,1236 @@
+1
+00:00:10,640 --> 00:00:14,940
+Hello everyone. Welcome to
+this video in which we roll through
+
+2
+00:00:14,940 --> 00:00:16,650
+the many major milestones in
+
+3
+00:00:16,650 --> 00:00:19,570
+the rapidly evolving story
+of self-driving cars.
+
+4
+00:00:19,570 --> 00:00:22,450
+A driverless future seems
+just around the corner,
+
+5
+00:00:22,450 --> 00:00:25,590
+but it's been a long arduous journey
+to arrive at this point.
+
+6
+00:00:25,590 --> 00:00:29,325
+The dream of self-driving cars is
+almost as old as the automobile.
+
+7
+00:00:29,325 --> 00:00:31,200
+As early as 1925,
+
+8
+00:00:31,200 --> 00:00:34,175
+Francis Udina demonstrated
+a remote control car
+
+9
+00:00:34,175 --> 00:00:35,570
+called the American wonder,
+
+10
+00:00:35,570 --> 00:00:36,650
+which drove through the streets of
+
+11
+00:00:36,650 --> 00:00:40,650
+Manhattan frightening passerbys
+with an empty driver's seat.
+
+12
+00:00:40,650 --> 00:00:42,705
+Udina, a local mechanic,
+
+13
+00:00:42,705 --> 00:00:45,005
+is not to be confused
+with Harry Houdini,
+
+14
+00:00:45,005 --> 00:00:46,640
+the famous escape artist,
+
+15
+00:00:46,640 --> 00:00:49,220
+who was rather upset and
+started an altercation
+
+16
+00:00:49,220 --> 00:00:52,295
+when people accidentally
+attributed the marvel to him.
+
+17
+00:00:52,295 --> 00:00:56,150
+The self-driving car dream
+was alive and well in 1956,
+
+18
+00:00:56,150 --> 00:00:59,750
+as GM or at least a promotional
+video cleaning self-driving cars
+
+19
+00:00:59,750 --> 00:01:02,165
+would arrive by 1976.
+
+20
+00:01:02,165 --> 00:01:03,985
+In the key to the future,
+
+21
+00:01:03,985 --> 00:01:07,115
+GM saw humans handing over
+control on the highway,
+
+22
+00:01:07,115 --> 00:01:09,140
+enjoying a stress-free drive,
+
+23
+00:01:09,140 --> 00:01:10,970
+and the passengers
+even interacting with
+
+24
+00:01:10,970 --> 00:01:13,640
+the car in voice activated
+control features.
+
+25
+00:01:13,640 --> 00:01:15,995
+A little optimistic,
+but in terms of timing,
+
+26
+00:01:15,995 --> 00:01:18,020
+it's amazing how many of these videos
+
+27
+00:01:18,020 --> 00:01:20,390
+predictions are now becoming
+available in the market.
+
+28
+00:01:20,390 --> 00:01:22,730
+This dreams inspiration come
+
+29
+00:01:22,730 --> 00:01:26,180
+straight from the reality
+of driving in busy traffic.
+
+30
+00:01:26,180 --> 00:01:29,090
+There is no doubt that one of
+the most dangerous things we
+
+31
+00:01:29,090 --> 00:01:32,255
+do on a regular basis
+is driving our car.
+
+32
+00:01:32,255 --> 00:01:34,730
+In fact, more than 94 percent of
+
+33
+00:01:34,730 --> 00:01:36,110
+all driving accidents today are
+
+34
+00:01:36,110 --> 00:01:38,300
+caused by some kind of human error.
+
+35
+00:01:38,300 --> 00:01:41,420
+What if we could minimize or
+completely eliminate driving
+
+36
+00:01:41,420 --> 00:01:43,145
+deaths by taking human error
+
+37
+00:01:43,145 --> 00:01:44,890
+out of the picture
+through automation?
+
+38
+00:01:44,890 --> 00:01:47,330
+There are also
+many other profound benefits
+
+39
+00:01:47,330 --> 00:01:49,430
+that could arise from
+a driverless future.
+
+40
+00:01:49,430 --> 00:01:51,590
+Instead of focusing on lanes, turns,
+
+41
+00:01:51,590 --> 00:01:54,090
+and traffic, you can
+reply to work emails.
+
+42
+00:01:54,090 --> 00:01:58,130
+Eat or relax and make the morning
+so much more productive.
+
+43
+00:01:58,130 --> 00:02:00,380
+We can extend
+the mobility the driving
+
+44
+00:02:00,380 --> 00:02:03,005
+provides to the entire
+human population,
+
+45
+00:02:03,005 --> 00:02:05,920
+not just those able to
+perform the driving task.
+
+46
+00:02:05,920 --> 00:02:09,440
+Let's go back to the beginning
+of the self-driving car story,
+
+47
+00:02:09,440 --> 00:02:13,400
+and take a look at the milestones
+that have defined this industry,
+
+48
+00:02:13,400 --> 00:02:16,450
+at the breakthroughs that
+make it all seem possible,
+
+49
+00:02:16,450 --> 00:02:19,280
+and at the setbacks that
+remind us how ambitious
+
+50
+00:02:19,280 --> 00:02:22,260
+this vision of ubiquitous
+autonomy really is.
+
+51
+00:02:22,260 --> 00:02:24,020
+Our journey starts out with
+
+52
+00:02:24,020 --> 00:02:27,095
+some early advances in
+Europe in the 1980s.
+
+53
+00:02:27,095 --> 00:02:28,730
+Pioneers had been working on
+
+54
+00:02:28,730 --> 00:02:31,610
+self-driving technology
+for over 40 years,
+
+55
+00:02:31,610 --> 00:02:34,520
+with early vehicles mostly partially
+
+56
+00:02:34,520 --> 00:02:37,595
+autonomous and operating
+at low speeds.
+
+57
+00:02:37,595 --> 00:02:41,060
+In 1986, Ernst Dickens
+and his team from
+
+58
+00:02:41,060 --> 00:02:43,010
+the University of Munich pioneer to
+
+59
+00:02:43,010 --> 00:02:46,675
+robotic van that could drive fully
+autonomously without traffic,
+
+60
+00:02:46,675 --> 00:02:50,900
+and in 1987, it drove it speeds
+up to 60 kilometers per hour.
+
+61
+00:02:50,900 --> 00:02:52,340
+In the early 1990s,
+
+62
+00:02:52,340 --> 00:02:54,170
+his team contributed significantly to
+
+63
+00:02:54,170 --> 00:02:56,165
+the Eureka Prometheus project,
+
+64
+00:02:56,165 --> 00:02:58,910
+and develop an autonomous
+Daimler Benz using
+
+65
+00:02:58,910 --> 00:03:01,070
+psychotic computer vision that is
+
+66
+00:03:01,070 --> 00:03:03,635
+focusing on points of
+interest in the environment.
+
+67
+00:03:03,635 --> 00:03:05,690
+They had over 50 transporters,
+
+68
+00:03:05,690 --> 00:03:07,640
+the latest microprocessors
+of the day and the
+
+69
+00:03:07,640 --> 00:03:09,980
+same probabilistic
+approaches used throughout
+
+70
+00:03:09,980 --> 00:03:12,470
+robotics on-board to few sensor input
+
+71
+00:03:12,470 --> 00:03:15,370
+and react to road
+situations in real time.
+
+72
+00:03:15,370 --> 00:03:17,820
+Ultimately, the diamond bends drove
+
+73
+00:03:17,820 --> 00:03:20,390
+1,600 kilometers in
+traffic from Munich to
+
+74
+00:03:20,390 --> 00:03:22,670
+Copenhagen with
+a mean distance between
+
+75
+00:03:22,670 --> 00:03:25,355
+human intervention
+of nine kilometers.
+
+76
+00:03:25,355 --> 00:03:27,340
+At the same time in the US,
+
+77
+00:03:27,340 --> 00:03:30,650
+Carnegie Mellon University's
+Navlab was busy building
+
+78
+00:03:30,650 --> 00:03:34,475
+a steady series of prototypes
+with ever-improving capabilities.
+
+79
+00:03:34,475 --> 00:03:38,740
+In 1986, there first
+autonomous vehicle, Navlab1,
+
+80
+00:03:38,740 --> 00:03:40,760
+managed 30 kilometers per hour on
+
+81
+00:03:40,760 --> 00:03:43,150
+the road using
+multiple sun workstations.
+
+82
+00:03:43,150 --> 00:03:45,945
+Then in 1990, Navlab2,
+
+83
+00:03:45,945 --> 00:03:47,900
+a modified Humvee which could perform
+
+84
+00:03:47,900 --> 00:03:50,285
+autonomously both off than on-road,
+
+85
+00:03:50,285 --> 00:03:54,815
+reached autonomous speeds of 110
+kilometers per hour on the road.
+
+86
+00:03:54,815 --> 00:03:57,080
+This pushed the team
+to attempt something
+
+87
+00:03:57,080 --> 00:04:00,120
+much more ambitious, and in 1996,
+
+88
+00:04:00,120 --> 00:04:03,405
+they completed their no hands
+across America tour,
+
+89
+00:04:03,405 --> 00:04:06,800
+a 4,800 kilometer route
+across the continent with
+
+90
+00:04:06,800 --> 00:04:10,065
+an impressive 98.2 percent
+to autonomous driving.
+
+91
+00:04:10,065 --> 00:04:14,420
+Soon after, the UC Berkeley path
+project rose to prominence with
+
+92
+00:04:14,420 --> 00:04:17,600
+successful demonstrations
+of autonomous platoons of
+
+93
+00:04:17,600 --> 00:04:22,420
+vehicles operating on
+dedicated HOV lanes on the I5.
+
+94
+00:04:22,420 --> 00:04:26,735
+In 1992, four vehicles drove
+in convoy at highway speeds
+
+95
+00:04:26,735 --> 00:04:29,030
+relying on magnetic markers on
+
+96
+00:04:29,030 --> 00:04:31,430
+the roadway for
+precise relative positioning,
+
+97
+00:04:31,430 --> 00:04:33,800
+and demonstrated that
+using this kind of
+
+98
+00:04:33,800 --> 00:04:37,890
+convoy saves on fuel costs
+and reduces wind drag.
+
+99
+00:04:37,890 --> 00:04:40,890
+Successful tests
+continued and in 1997,
+
+100
+00:04:40,890 --> 00:04:43,355
+large scale demonstrations with
+
+101
+00:04:43,355 --> 00:04:45,140
+eight to 10 vehicles were completed.
+
+102
+00:04:45,140 --> 00:04:47,420
+The project also firmly
+established the use of
+
+103
+00:04:47,420 --> 00:04:49,400
+radar systems and vehicle to
+
+104
+00:04:49,400 --> 00:04:52,250
+vehicle communications
+in the AV industry,
+
+105
+00:04:52,250 --> 00:04:54,335
+leading to advances such as
+
+106
+00:04:54,335 --> 00:04:56,825
+adaptive cruise control
+and emergency braking.
+
+107
+00:04:56,825 --> 00:04:59,195
+Then in 2002, DARPA,
+
+108
+00:04:59,195 --> 00:05:02,255
+the Defense Advanced
+Research Projects Agency
+
+109
+00:05:02,255 --> 00:05:04,720
+announced the first of
+its grand challenges.
+
+110
+00:05:04,720 --> 00:05:05,960
+That would forever change
+
+111
+00:05:05,960 --> 00:05:09,395
+the world's perception about
+what autonomous robots can do.
+
+112
+00:05:09,395 --> 00:05:13,070
+The first event was held
+in 2004 and DARPA offered
+
+113
+00:05:13,070 --> 00:05:14,975
+the winners a one
+million dollar prize
+
+114
+00:05:14,975 --> 00:05:16,970
+if they could build
+an autonomous vehicle,
+
+115
+00:05:16,970 --> 00:05:20,885
+that was able to navigate 142
+miles through the Mojave Desert.
+
+116
+00:05:20,885 --> 00:05:22,460
+Although the first event saw
+
+117
+00:05:22,460 --> 00:05:24,875
+only a few teams get
+off the start line
+
+118
+00:05:24,875 --> 00:05:26,930
+and Carnegie Mellon's red team taking
+
+119
+00:05:26,930 --> 00:05:29,450
+first-place haven't
+driven only seven miles,
+
+120
+00:05:29,450 --> 00:05:31,785
+it was clear that the task of driving
+
+121
+00:05:31,785 --> 00:05:33,740
+140 miles through the desert without
+
+122
+00:05:33,740 --> 00:05:36,365
+any human aid was indeed possible.
+
+123
+00:05:36,365 --> 00:05:39,545
+In the second DARPA grand
+challenge the next year,
+
+124
+00:05:39,545 --> 00:05:43,550
+five of the 23 teams
+smashed expectations and
+
+125
+00:05:43,550 --> 00:05:45,260
+successfully completed the track
+
+126
+00:05:45,260 --> 00:05:47,510
+without any human
+intervention at all.
+
+127
+00:05:47,510 --> 00:05:49,400
+Stanford's vehicle stanley won
+
+128
+00:05:49,400 --> 00:05:52,535
+the challenge followed by
+Carnegie Mellon Sandstorm.
+
+129
+00:05:52,535 --> 00:05:55,355
+The era of driverless
+cars had arrived.
+
+130
+00:05:55,355 --> 00:05:59,740
+Later, the 2007 installment
+called the DARPA Urban Challenge,
+
+131
+00:05:59,740 --> 00:06:01,640
+invited universities to show off
+
+132
+00:06:01,640 --> 00:06:03,470
+their autonomous vehicles on
+
+133
+00:06:03,470 --> 00:06:06,005
+busy roads with
+professional stunt drivers.
+
+134
+00:06:06,005 --> 00:06:08,570
+This time, after
+a harrowing 30-minute delay when
+
+135
+00:06:08,570 --> 00:06:10,580
+the jumbotron screen block
+
+136
+00:06:10,580 --> 00:06:12,920
+their vehicle from
+receiving GPS signals,
+
+137
+00:06:12,920 --> 00:06:15,289
+the Carnegie Mellon team
+came out on top,
+
+138
+00:06:15,289 --> 00:06:18,110
+with Stanford Junior vehicle
+coming in second.
+
+139
+00:06:18,110 --> 00:06:20,210
+The three grand challenges were truly
+
+140
+00:06:20,210 --> 00:06:23,960
+a watershed moment in the
+development of self-driving cars,
+
+141
+00:06:23,960 --> 00:06:27,200
+changing the way the public and
+more importantly the tech and
+
+142
+00:06:27,200 --> 00:06:29,180
+automotive industries thought about
+
+143
+00:06:29,180 --> 00:06:31,805
+the feasibility of
+full vehicle autonomy.
+
+144
+00:06:31,805 --> 00:06:33,170
+It was now clear that
+
+145
+00:06:33,170 --> 00:06:36,910
+a massive new market was opening
+up, and the race was on.
+
+146
+00:06:36,910 --> 00:06:39,410
+Google immediately
+brought the team leads
+
+147
+00:06:39,410 --> 00:06:41,690
+from both Carnegie Mellon
+and Stanford,
+
+148
+00:06:41,690 --> 00:06:44,090
+Chris Thompson, and
+Mike Monte-Carlo to
+
+149
+00:06:44,090 --> 00:06:46,730
+push their designs onto public roads.
+
+150
+00:06:46,730 --> 00:06:51,530
+By 2010, Google's car had logged
+over 140 thousand miles in
+
+151
+00:06:51,530 --> 00:06:54,380
+California and later
+wrote in a blog post
+
+152
+00:06:54,380 --> 00:06:56,000
+how they were confident on cutting
+
+153
+00:06:56,000 --> 00:06:57,770
+the number of traffic deaths by half.
+
+154
+00:06:57,770 --> 00:07:01,430
+Their pursuit of this ambitious goal
+continues to this day with
+
+155
+00:07:01,430 --> 00:07:03,740
+the team having logged
+over 10 million miles
+
+156
+00:07:03,740 --> 00:07:05,420
+as of October of 2018.
+
+157
+00:07:05,420 --> 00:07:08,975
+Around the same time as the first
+autonomous testing in the US,
+
+158
+00:07:08,975 --> 00:07:11,465
+two orange vans from the viz lab
+
+159
+00:07:11,465 --> 00:07:14,390
+completed the international
+autonomous challenge,
+
+160
+00:07:14,390 --> 00:07:16,040
+driving an entire route from
+
+161
+00:07:16,040 --> 00:07:19,175
+the University of Parma Italy
+to Shanghai China,
+
+162
+00:07:19,175 --> 00:07:20,630
+which was about 15,000
+
+163
+00:07:20,630 --> 00:07:23,635
+kilometers with
+minimal driver intervention.
+
+164
+00:07:23,635 --> 00:07:26,060
+A year later, Volvo demonstrated
+
+165
+00:07:26,060 --> 00:07:28,190
+their road train concept in which
+
+166
+00:07:28,190 --> 00:07:31,560
+one vehicle could control
+several other vehicles behind it,
+
+167
+00:07:31,560 --> 00:07:35,585
+thereby reducing road congestion
+and improving driver comfort.
+
+168
+00:07:35,585 --> 00:07:39,230
+Car drivers could choose
+a lead truck to follow,
+
+169
+00:07:39,230 --> 00:07:40,460
+but the close following lead to
+
+170
+00:07:40,460 --> 00:07:43,880
+frequent vehicle damage in
+low visibility in rainy conditions.
+
+171
+00:07:43,880 --> 00:07:46,100
+As the pace of
+development accelerated,
+
+172
+00:07:46,100 --> 00:07:48,080
+more and more companies
+were pushing for
+
+173
+00:07:48,080 --> 00:07:50,630
+a legal framework
+for on-road testing.
+
+174
+00:07:50,630 --> 00:07:54,020
+In 2012, the Nevada Department
+of Motor Vehicles issued
+
+175
+00:07:54,020 --> 00:07:57,965
+Google the first ever autonomous
+vehicle testing license,
+
+176
+00:07:57,965 --> 00:08:01,430
+which meant they could now test
+autonomously on public roads.
+
+177
+00:08:01,430 --> 00:08:02,900
+California is soon followed
+
+178
+00:08:02,900 --> 00:08:05,420
+suit with a mandated
+requirement to publish
+
+179
+00:08:05,420 --> 00:08:07,190
+a variety of statistics on
+
+180
+00:08:07,190 --> 00:08:09,830
+the test performed and the rates
+of human intervention.
+
+181
+00:08:09,830 --> 00:08:13,400
+In 2013, 125 years
+
+182
+00:08:13,400 --> 00:08:16,960
+after the first Bertha Benz car
+was demonstrated for public use,
+
+183
+00:08:16,960 --> 00:08:20,480
+mercedes benz demonstrated
+their self-driving capabilities
+
+184
+00:08:20,480 --> 00:08:24,485
+by covering the same 106
+kilometer route autonomously.
+
+185
+00:08:24,485 --> 00:08:28,280
+With multiple players demonstrating
+viable on-road demos,
+
+186
+00:08:28,280 --> 00:08:31,130
+public interest in
+autonomous driving has taken off.
+
+187
+00:08:31,130 --> 00:08:32,900
+The consumer electronics show in
+
+188
+00:08:32,900 --> 00:08:34,910
+Nevada became the annual showcase for
+
+189
+00:08:34,910 --> 00:08:38,785
+the greatest self-driving tech and
+the wildest vehicle redesigns.
+
+190
+00:08:38,785 --> 00:08:40,020
+About a year later,
+
+191
+00:08:40,020 --> 00:08:42,275
+Google demoed their firefly car,
+
+192
+00:08:42,275 --> 00:08:44,270
+a vehicle designed from
+the ground up to be
+
+193
+00:08:44,270 --> 00:08:47,435
+autonomous at speeds up to
+40 kilometers per hour.
+
+194
+00:08:47,435 --> 00:08:49,460
+With no steering wheel or pedals,
+
+195
+00:08:49,460 --> 00:08:52,795
+passengers can instead
+sit back and relax and
+
+196
+00:08:52,795 --> 00:08:56,425
+only press one stop button
+if they feel uncomfortable.
+
+197
+00:08:56,425 --> 00:09:00,360
+By doing so, Google showed us what
+the AV future could look like.
+
+198
+00:09:00,360 --> 00:09:02,310
+Tesla wasn't far behind.
+
+199
+00:09:02,310 --> 00:09:03,990
+Around the end of 2015,
+
+200
+00:09:03,990 --> 00:09:05,360
+they introduced their suite of
+
+201
+00:09:05,360 --> 00:09:08,555
+autonomous features into
+the software called autopilot.
+
+202
+00:09:08,555 --> 00:09:11,420
+By 2016, they had
+demonstrated how autopilot
+
+203
+00:09:11,420 --> 00:09:14,440
+could self park and could
+be summoned by a button.
+
+204
+00:09:14,440 --> 00:09:16,640
+This represented
+the largest deployment
+
+205
+00:09:16,640 --> 00:09:18,800
+that partially autonomous
+features at the time,
+
+206
+00:09:18,800 --> 00:09:20,870
+and so Tesla quickly racking up
+
+207
+00:09:20,870 --> 00:09:23,915
+millions of kilometers
+driven with their autopilot.
+
+208
+00:09:23,915 --> 00:09:25,945
+Inevitably however,
+
+209
+00:09:25,945 --> 00:09:28,894
+as the number of autonomous
+miles driven expanded,
+
+210
+00:09:28,894 --> 00:09:30,770
+the first fatal accident involving
+
+211
+00:09:30,770 --> 00:09:34,400
+a Tesla Model S happened
+in Florida in 2016.
+
+212
+00:09:34,400 --> 00:09:38,000
+This was caused by a simultaneous
+failure of both Camera and
+
+213
+00:09:38,000 --> 00:09:39,860
+radar sensors to correctly
+
+214
+00:09:39,860 --> 00:09:42,260
+identify a left turning
+transport truck,
+
+215
+00:09:42,260 --> 00:09:46,475
+and an inattentive driver used to
+a car that takes care of itself.
+
+216
+00:09:46,475 --> 00:09:48,830
+This setback demonstrated
+the dangers of
+
+217
+00:09:48,830 --> 00:09:52,285
+reliance on human monitoring
+of self-driving systems.
+
+218
+00:09:52,285 --> 00:09:56,030
+Despite this setback,
+progress continued unabated.
+
+219
+00:09:56,030 --> 00:09:58,310
+This was also the time the notion of
+
+220
+00:09:58,310 --> 00:10:01,205
+autonomous taxi fleets
+were becoming popular.
+
+221
+00:10:01,205 --> 00:10:04,985
+The startups like Zoox and
+nuTonomy leading the way.
+
+222
+00:10:04,985 --> 00:10:07,610
+In fact, nuTonomy taxis first
+
+223
+00:10:07,610 --> 00:10:11,240
+became operational in
+Singapore in 2016.
+
+224
+00:10:11,240 --> 00:10:13,955
+Finally, we arrive at 2018.
+
+225
+00:10:13,955 --> 00:10:18,050
+The infamous Uber crash that claim
+to pedestrians life in Arizona.
+
+226
+00:10:18,050 --> 00:10:20,060
+This incident sent
+shock waves through
+
+227
+00:10:20,060 --> 00:10:22,205
+the autonomous vehicle
+testing community,
+
+228
+00:10:22,205 --> 00:10:24,410
+with Uber stopping testing until
+
+229
+00:10:24,410 --> 00:10:26,675
+the details could be fully understood
+
+230
+00:10:26,675 --> 00:10:28,760
+through an independent
+investigation by
+
+231
+00:10:28,760 --> 00:10:31,510
+the national highway traffic
+safety administration.
+
+232
+00:10:31,510 --> 00:10:33,920
+We'll discuss this worrying case
+in more detail in
+
+233
+00:10:33,920 --> 00:10:36,050
+the first course as an example of
+
+234
+00:10:36,050 --> 00:10:38,915
+the challenges that remain
+in self-driving systems.
+
+235
+00:10:38,915 --> 00:10:41,270
+So, the story of the development of
+
+236
+00:10:41,270 --> 00:10:43,250
+autonomous vehicles is a story of
+
+237
+00:10:43,250 --> 00:10:45,380
+enormous successes as well as
+
+238
+00:10:45,380 --> 00:10:48,080
+setbacks that seemed to be
+happening more often recently.
+
+239
+00:10:48,080 --> 00:10:49,490
+So, what is it that's driving
+
+240
+00:10:49,490 --> 00:10:52,115
+the increase in self-driving
+accidents during testing?
+
+241
+00:10:52,115 --> 00:10:54,470
+First, the number of
+miles being driven by
+
+242
+00:10:54,470 --> 00:10:57,880
+self-driving cars in
+hard conditions is exploding.
+
+243
+00:10:57,880 --> 00:11:00,455
+So, the number of accidents
+are bound to go up.
+
+244
+00:11:00,455 --> 00:11:04,595
+In fact, way more recently
+announced that as a fall 2018,
+
+245
+00:11:04,595 --> 00:11:08,015
+they've completed over 10 million
+miles of autonomous driving.
+
+246
+00:11:08,015 --> 00:11:11,990
+The time between human interventions
+continues to grow with
+
+247
+00:11:11,990 --> 00:11:13,670
+the most advanced systems traveling
+
+248
+00:11:13,670 --> 00:11:17,270
+thousands of kilometers without
+any intervention at all.
+
+249
+00:11:17,270 --> 00:11:20,630
+Human level performance appears
+to be just around the corner,
+
+250
+00:11:20,630 --> 00:11:22,760
+where the industry
+needs more support than
+
+251
+00:11:22,760 --> 00:11:25,490
+ever to meet and exceed
+this ambitious goal.
+
+252
+00:11:25,490 --> 00:11:28,460
+Many new and established
+companies are pushing to
+
+253
+00:11:28,460 --> 00:11:31,955
+bring truly driverless cars
+to market as early as 2020.
+
+254
+00:11:31,955 --> 00:11:35,185
+The first large-scale deployments
+will be in fleets,
+
+255
+00:11:35,185 --> 00:11:37,310
+where companies own
+the vehicles and provide
+
+256
+00:11:37,310 --> 00:11:38,930
+revolutionary new services like
+
+257
+00:11:38,930 --> 00:11:41,780
+robo taxis and driverless delivery.
+
+258
+00:11:41,780 --> 00:11:44,390
+The technology is
+still quite expensive,
+
+259
+00:11:44,390 --> 00:11:47,855
+but prices will fall quickly as
+economies of scale takeover.
+
+260
+00:11:47,855 --> 00:11:50,330
+So much still needs to
+be done to bring about
+
+261
+00:11:50,330 --> 00:11:52,310
+the transformational
+changes we expect
+
+262
+00:11:52,310 --> 00:11:54,350
+driverless cars to
+bring to our society.
+
+263
+00:11:54,350 --> 00:11:56,795
+The industry will continue to need
+
+264
+00:11:56,795 --> 00:12:01,075
+outstanding engineers to produce
+innovative solutions for driving.
+
+265
+00:12:01,075 --> 00:12:03,300
+So I guess, the real question is,
+
+266
+00:12:03,300 --> 00:12:07,140
+are you ready to help shape
+the future of personal mobility?

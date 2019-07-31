@@ -1,0 +1,777 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.706 --> 00:00:18.902
+In this lesson we are going to discuss
+the Inertial Measurement Unit or IMU.
+
+3
+00:00:18.902 --> 00:00:23.237
+By the end of this lesson you will be able
+to describe the operating principles of
+
+4
+00:00:23.237 --> 00:00:27.524
+the two sensors that make up the basic
+IMU, an Accelerometer and a Gyroscope.
+
+5
+00:00:27.524 --> 00:00:30.946
+You will also be able to model each
+of these sensors, and account for
+
+6
+00:00:30.946 --> 00:00:33.560
+things like sensor noise and bias.
+
+7
+00:00:33.560 --> 00:00:38.145
+This will be crucial when we incorporate
+an IMU into a full-state estimator.
+
+8
+00:00:38.145 --> 00:00:39.862
+Let's begin.
+
+9
+00:00:39.862 --> 00:00:42.148
+The inertial measurement unit, or
+
+10
+00:00:42.148 --> 00:00:45.662
+IMU measures the movement of
+a body in inertial space.
+
+11
+00:00:45.662 --> 00:00:49.594
+Today a certain type of cheap,
+mass manufactured IMU,
+
+12
+00:00:49.594 --> 00:00:54.794
+is found in nearly every smartphone,
+such as the iPhone X pictured here.
+
+13
+00:00:54.794 --> 00:00:59.368
+IMUs are often used tasks including,
+step counting for health tracking,
+
+14
+00:00:59.368 --> 00:01:02.429
+and more recently as
+augmented reality devices.
+
+15
+00:01:04.080 --> 00:01:05.891
+Despite their ubiquity today,
+
+16
+00:01:05.891 --> 00:01:09.648
+the development of a sensor that
+could accurately track the motion
+
+17
+00:01:09.648 --> 00:01:13.622
+of a moving body was a significant
+achievement of the 20th century.
+
+18
+00:01:13.622 --> 00:01:19.451
+The IMU aided transoceanic flights long
+before GPS, and was crucial to the Apollo
+
+19
+00:01:19.451 --> 00:01:25.041
+missions as part of the on board guidance,
+navigation, and control system.
+
+20
+00:01:25.041 --> 00:01:30.125
+The Apollo spacecraft relied on an IMU
+to accurately track both the position,
+
+21
+00:01:30.125 --> 00:01:34.141
+and orientation of the vehicle
+on the long voyage to the moon.
+
+22
+00:01:34.141 --> 00:01:38.413
+In space there are few landmarks
+to rely on for guidance.
+
+23
+00:01:38.413 --> 00:01:42.490
+One can track the fixed stars but
+this is not easy.
+
+24
+00:01:42.490 --> 00:01:45.987
+The onboard IMU which
+operated without the need for
+
+25
+00:01:45.987 --> 00:01:50.468
+such landmarks Enabled safe
+navigation to the Moon's surface.
+
+26
+00:01:50.468 --> 00:01:54.292
+In modern self-driving cars,
+IMUs play a very similar role.
+
+27
+00:01:54.292 --> 00:01:59.284
+Filling in during periods when navigation
+information from other sensors is
+
+28
+00:01:59.284 --> 00:02:01.671
+either unavailable or unreliable.
+
+29
+00:02:01.671 --> 00:02:03.341
+So what is an IMU?
+
+30
+00:02:03.341 --> 00:02:08.287
+Well, generally, an inertial measurement
+unit is a composite sensor suite
+
+31
+00:02:08.287 --> 00:02:10.569
+that combines three gyroscopes and
+
+32
+00:02:10.569 --> 00:02:15.380
+three accelerometers to track the exterior
+free movement of a rigid body.
+
+33
+00:02:15.380 --> 00:02:20.991
+Some IMUs also incorporate magnetometers,
+or a compass, to help track orientation.
+
+34
+00:02:20.991 --> 00:02:24.330
+IMUs come in many shapes and forms.
+
+35
+00:02:24.330 --> 00:02:27.786
+The sensors found in modern
+smartphones are relatively cheap,
+
+36
+00:02:27.786 --> 00:02:31.122
+often costing less than a few
+dollars when purchased in bulk.
+
+37
+00:02:31.122 --> 00:02:34.613
+They are lightweight and
+require relatively little power but
+
+38
+00:02:34.613 --> 00:02:36.701
+produce quite noisy measurements.
+
+39
+00:02:36.701 --> 00:02:40.350
+More expensive IMUs use more complex
+components and have more accurate
+
+40
+00:02:40.350 --> 00:02:44.608
+calibration models that can remove the
+effects of temperature fluctuations, for
+
+41
+00:02:44.608 --> 00:02:45.171
+example.
+
+42
+00:02:47.090 --> 00:02:49.194
+Let's discuss the components of an IMU.
+
+43
+00:02:49.194 --> 00:02:52.104
+The gyroscopes and
+the accelerometers in more detail.
+
+44
+00:02:54.002 --> 00:02:56.402
+The gyroscope has a long history.
+
+45
+00:02:56.402 --> 00:03:01.596
+The term gyroscope can be quite confusing,
+because it refers to several concepts
+
+46
+00:03:01.596 --> 00:03:06.503
+all relating to the idea of measuring
+orientation or change in orientation.
+
+47
+00:03:06.503 --> 00:03:13.960
+The word itself comes from the Greek words
+Guros, for circle, and skopeo, to look.
+
+48
+00:03:13.960 --> 00:03:18.484
+Historically, a gyroscope was
+a spinning disk that due to its
+
+49
+00:03:18.484 --> 00:03:22.402
+angular momentum resisted
+changes in orientation.
+
+50
+00:03:22.402 --> 00:03:27.075
+In the late 19th and early 20th century,
+engineers realized that this
+
+51
+00:03:27.075 --> 00:03:31.525
+spinning wheel could be used as
+an orientation reference for marine and
+
+52
+00:03:31.525 --> 00:03:33.393
+aeronautical navigations.
+
+53
+00:03:33.393 --> 00:03:36.647
+This required precise machining,
+and instead of gimbals,
+
+54
+00:03:36.647 --> 00:03:39.276
+it used high quality jewel or
+numeric bearings.
+
+55
+00:03:41.071 --> 00:03:45.165
+Although this type of spinning disc
+gyroscope can be very accurate,
+
+56
+00:03:45.165 --> 00:03:49.271
+it's quite heavy, bulky and
+often very expensive to manufacture.
+
+57
+00:03:49.271 --> 00:03:53.281
+Nevertheless, it is still
+using aeronautics and
+
+58
+00:03:53.281 --> 00:03:58.638
+in ballistic applications and
+can spin it up to 24,000 RPM.
+
+59
+00:03:58.638 --> 00:04:02.372
+In a modern gyroscope, the spinning
+wheel is typically replaced by
+
+60
+00:04:02.372 --> 00:04:06.697
+a microelectromechanical system that
+consists of a small silicon tuning fork
+
+61
+00:04:06.697 --> 00:04:10.564
+that changes its resonance properties
+based on an applied rotation or
+
+62
+00:04:10.564 --> 00:04:11.825
+orientation change.
+
+63
+00:04:13.703 --> 00:04:17.602
+These sensors are much cheaper and
+can fit in a tiny package.
+
+64
+00:04:17.602 --> 00:04:19.682
+However, they produce
+noisy measurements and
+
+65
+00:04:19.682 --> 00:04:21.973
+are sensitive to temperature
+based fluctuations.
+
+66
+00:04:24.190 --> 00:04:28.925
+What's more, they measure rotation rates,
+and not orientation directly, and so
+
+67
+00:04:28.925 --> 00:04:33.194
+the output signal must be numerically
+integrated to determine orientation
+
+68
+00:04:33.194 --> 00:04:33.741
+change.
+
+69
+00:04:33.741 --> 00:04:37.117
+This process can introduce additional
+errors into the final orientation
+
+70
+00:04:37.117 --> 00:04:37.668
+estimate.
+
+71
+00:04:40.030 --> 00:04:43.596
+A self driving car engineer should
+be aware need to account for
+
+72
+00:04:43.596 --> 00:04:48.056
+issues such as drift and performance
+variation with temperature introduces
+
+73
+00:04:48.056 --> 00:04:52.121
+substantial additional complexity
+in the sensor modeling process.
+
+74
+00:04:52.121 --> 00:04:56.387
+One would normally think that a spinning
+mechanical device would be inferior to
+
+75
+00:04:56.387 --> 00:04:59.201
+a silicon component but
+this is not always the case.
+
+76
+00:05:00.881 --> 00:05:05.411
+An accelerometer measures
+acceleration along a single axis.
+
+77
+00:05:05.411 --> 00:05:09.884
+Cheaper MEMS based accelerometers
+use a miniature cantilever beam with
+
+78
+00:05:09.884 --> 00:05:11.652
+a proof mass attached to it.
+
+79
+00:05:11.652 --> 00:05:14.932
+When the sensor is accelerated,
+the beam deflects.
+
+80
+00:05:14.932 --> 00:05:19.762
+This deflection can be measured through
+a capacitive circuit for example, and
+
+81
+00:05:19.762 --> 00:05:22.223
+converted into an acceleration value.
+
+82
+00:05:22.223 --> 00:05:25.819
+More expensive sensors may also
+use Piezoelectric materials.
+
+83
+00:05:27.623 --> 00:05:30.825
+It's important to note that
+an accelerometer measures
+
+84
+00:05:30.825 --> 00:05:34.241
+what's called proper acceleration,
+or specific force.
+
+85
+00:05:34.241 --> 00:05:38.282
+This is the total non-gravitational
+force per unit mass.
+
+86
+00:05:38.282 --> 00:05:42.362
+The proper acceleration is
+acceleration with respect to
+
+87
+00:05:42.362 --> 00:05:44.661
+a reference frame in free fall.
+
+88
+00:05:44.661 --> 00:05:49.076
+When you're sitting in your chair,
+stationary relative to the ground,
+
+89
+00:05:49.076 --> 00:05:53.346
+the proper acceleration you feel will
+be the value of the gravitational
+
+90
+00:05:53.346 --> 00:05:56.212
+acceleration at your location,
+but upwards.
+
+91
+00:05:56.212 --> 00:06:00.770
+Another way to say this is that the only
+non gravitational force acting on you,
+
+92
+00:06:00.770 --> 00:06:04.097
+the normal force,
+must be equal to the force of gravity.
+
+93
+00:06:05.923 --> 00:06:08.483
+However, of course, for
+navigational purposes,
+
+94
+00:06:08.483 --> 00:06:11.111
+we often don't care about
+our proper acceleration.
+
+95
+00:06:11.111 --> 00:06:15.186
+What we care about is acceleration with
+respect to some fixed reference frame.
+
+96
+00:06:16.572 --> 00:06:20.858
+To compute this acceleration, we need
+to use the fundamental equation for
+
+97
+00:06:20.858 --> 00:06:22.973
+accelerometers in a gravity field.
+
+98
+00:06:22.973 --> 00:06:27.166
+The second derivative opposition,
+computed in a fixed frame,
+
+99
+00:06:27.166 --> 00:06:31.842
+is the sum of the specific force,
+and the acceleration due to gravity.
+
+100
+00:06:31.842 --> 00:06:34.472
+Sometimes this could be sum up and
+intuitive concept.
+
+101
+00:06:34.472 --> 00:06:41.805
+So let's explore it here An accelerometer
+in a stationary car measure g upwards,
+
+102
+00:06:41.805 --> 00:06:47.533
+because the coordinate acceleration is
+zero, ignoring the rotation of the Earth.
+
+103
+00:06:47.533 --> 00:06:52.403
+Since the force of gravity acts downwards
+its negative is the scalar constant g
+
+104
+00:06:52.403 --> 00:06:54.042
+in the upward direction.
+
+105
+00:06:55.970 --> 00:07:01.621
+Let's look at an example of this on
+the International Space Station or ISS.
+
+106
+00:07:01.621 --> 00:07:04.923
+Is the value of g less in low Earth orbit?
+
+107
+00:07:04.923 --> 00:07:06.010
+Well, it is, but
+
+108
+00:07:06.010 --> 00:07:10.582
+only by about 10% when compared to
+the value on the surface of the Earth.
+
+109
+00:07:10.582 --> 00:07:15.063
+The reason why we often hear the term
+0 g is because the entire ISS is in
+
+110
+00:07:15.063 --> 00:07:18.401
+free fall together with
+the astronauts inside it.
+
+111
+00:07:20.050 --> 00:07:24.580
+An accelerometer rigidly attached to
+the station will have a coordinate
+
+112
+00:07:24.580 --> 00:07:26.223
+acceleration equal to g.
+
+113
+00:07:26.223 --> 00:07:30.202
+This means that the specific force
+measured by an accelerometer will be 0.
+
+114
+00:07:32.312 --> 00:07:36.806
+Another way of saying this is that the
+proper acceleration with respect to free
+
+115
+00:07:36.806 --> 00:07:37.493
+fall is 0.
+
+116
+00:07:37.493 --> 00:07:40.122
+The ISS is in free fall.
+
+117
+00:07:40.122 --> 00:07:45.217
+In reality residual atmospheric drag and
+structural vibrations will create some
+
+118
+00:07:45.217 --> 00:07:50.106
+measured accelerations but they
+are typically as low as 10 to the -6 g's.
+
+119
+00:07:51.582 --> 00:07:54.536
+Now, that we know about the basic
+principles of gyroscopes and
+
+120
+00:07:54.536 --> 00:07:57.266
+accelerometers, let's discuss
+the measurement models
+
+121
+00:07:57.266 --> 00:08:00.678
+we'll need to know in order to
+incorporate them into a state estimator.
+
+122
+00:08:00.678 --> 00:08:04.423
+[SOUND] Using the notation we
+discussed in the previous lesson,
+
+123
+00:08:04.423 --> 00:08:08.037
+let's define an expression for
+what a gyroscope measures.
+
+124
+00:08:10.001 --> 00:08:13.690
+The angular rotation rate,
+derived from all three gyroscopes,
+
+125
+00:08:13.690 --> 00:08:17.781
+is the angular velocity of the body
+frame relative to an inertial frame,
+
+126
+00:08:17.781 --> 00:08:19.476
+expressed in the body frame.
+
+127
+00:08:21.531 --> 00:08:25.016
+To it will be add a slowly
+varying bias term and
+
+128
+00:08:25.016 --> 00:08:29.803
+a white Gaussian additive noise
+term to model sensor errors.
+
+129
+00:08:29.803 --> 00:08:34.013
+Although gyroscopes do measure the
+rotation of the Earth, it's often safe to
+
+130
+00:08:34.013 --> 00:08:38.559
+ignore this for applications where we care
+only about motion over a short duration.
+
+131
+00:08:40.531 --> 00:08:44.793
+Our accelerometer measurement model
+will have similar noise and bias terms.
+
+132
+00:08:44.793 --> 00:08:49.259
+But now instead of measuring body
+accelerations directly as we could do with
+
+133
+00:08:49.259 --> 00:08:53.377
+rotational rates, we need to
+explicitly remove the effect of gravity
+
+134
+00:08:53.377 --> 00:08:57.658
+using our fundamental equation for
+accelerometers in a gravity field.
+
+135
+00:08:59.453 --> 00:09:03.295
+Since the accelerometers measure
+acceleration in the IMU body frame,
+
+136
+00:09:03.295 --> 00:09:06.880
+we will need to keep track of
+the orientation at all times in order to
+
+137
+00:09:06.880 --> 00:09:09.458
+be able to perform
+the necessary subtraction.
+
+138
+00:09:11.270 --> 00:09:14.487
+Finally, let's discuss a few
+important limitations of our models.
+
+139
+00:09:16.443 --> 00:09:22.252
+First, an accurate orientation estimate is
+critical for accurate position estimates.
+
+140
+00:09:22.252 --> 00:09:26.540
+When we convert the measured specific
+force into an acceleration we have to make
+
+141
+00:09:26.540 --> 00:09:29.101
+sure that the direction
+of gravity is correct.
+
+142
+00:09:29.101 --> 00:09:32.949
+Otherwise even a small error in
+orientation can cause us to think that we
+
+143
+00:09:32.949 --> 00:09:34.883
+are accelerating when we're not.
+
+144
+00:09:36.581 --> 00:09:39.665
+Second, both of the models
+we derived ignore
+
+145
+00:09:39.665 --> 00:09:42.353
+the effects of the Earth's rotation.
+
+146
+00:09:42.353 --> 00:09:45.540
+For longer distance navigation,
+this is in fact, important.
+
+147
+00:09:47.092 --> 00:09:51.072
+Finally, the models we have
+derived are for strapdown IMUs.
+
+148
+00:09:51.072 --> 00:09:55.245
+These are IMUs that are physically
+strapped down to the vehicle and
+
+149
+00:09:55.245 --> 00:09:58.311
+do not incorporate
+a spinning wheel on gimbals.
+
+150
+00:09:58.311 --> 00:10:01.462
+Although a latter can be much more
+accurate, they are rarely used in
+
+151
+00:10:01.462 --> 00:10:04.462
+automotive applications because
+of their bulk and their cost.
+
+152
+00:10:06.142 --> 00:10:11.070
+To summarize, in this video we learned
+that a 6 degree of freedom IMU is
+
+153
+00:10:11.070 --> 00:10:15.110
+composed of three gyroscopes and
+three accelerometers.
+
+154
+00:10:15.110 --> 00:10:18.275
+The gyroscopes measure rotational
+rates in the sensor frame.
+
+155
+00:10:19.655 --> 00:10:23.533
+And accelerometers measure
+the non-gravitational specific force in
+
+156
+00:10:23.533 --> 00:10:24.960
+the sensor frame as well.
+
+157
+00:10:26.532 --> 00:10:30.430
+Since strapdown IMUs are tricky
+to calibrate and drift over time,
+
+158
+00:10:30.430 --> 00:10:34.832
+we'll need another sensor to periodically
+correct our posed estimates.
+
+159
+00:10:34.832 --> 00:10:40.022
+For this, we can use the modern system
+of global navigation satellites.
+
+160
+00:10:40.022 --> 00:10:44.173
+We'll talk more about
+
+161
+00:10:44.173 --> 00:10:48.983
+this in the next lecture.
+
+162
+00:10:48.983 --> 00:10:54.062
+[MUSIC]

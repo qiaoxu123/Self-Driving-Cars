@@ -1,0 +1,743 @@
+WEBVTT
+
+1
+00:00:14.300 --> 00:00:16.980
+Hello everyone, and welcome to
+
+2
+00:00:16.980 --> 00:00:19.395
+our final lesson in module six.
+
+3
+00:00:19.395 --> 00:00:21.705
+In this video, we'll
+discuss how to
+
+4
+00:00:21.705 --> 00:00:23.940
+augment the trajectory
+rollout algorithm we
+
+5
+00:00:23.940 --> 00:00:25.785
+developed in the previous lesson
+
+6
+00:00:25.785 --> 00:00:28.950
+with a technique known
+as dynamic windowing.
+
+7
+00:00:28.950 --> 00:00:32.370
+Dynamic windowing will allow
+us to place linear and
+
+8
+00:00:32.370 --> 00:00:34.620
+angular acceleration constraints
+
+9
+00:00:34.620 --> 00:00:36.054
+on the vehicle's trajectory,
+
+10
+00:00:36.054 --> 00:00:37.940
+in order to promote comfort as
+
+11
+00:00:37.940 --> 00:00:40.820
+the vehicle progresses
+between planning cycles.
+
+12
+00:00:40.820 --> 00:00:43.580
+Specifically, by
+the end of this video,
+
+13
+00:00:43.580 --> 00:00:45.620
+you should be able to add
+
+14
+00:00:45.620 --> 00:00:48.050
+acceleration constraints
+to the bicycle model
+
+15
+00:00:48.050 --> 00:00:49.735
+derived in course one,
+
+16
+00:00:49.735 --> 00:00:52.010
+and you should be able to modify
+
+17
+00:00:52.010 --> 00:00:54.110
+the trajectory
+rollout algorithm to
+
+18
+00:00:54.110 --> 00:00:55.730
+accommodate these new constraints
+
+19
+00:00:55.730 --> 00:00:57.485
+using dynamic windowing.
+
+20
+00:00:57.485 --> 00:01:01.670
+Let's get started.
+First, let's revisit
+
+21
+00:01:01.670 --> 00:01:03.380
+lesson one where we discussed
+
+22
+00:01:03.380 --> 00:01:06.155
+the kinematic equations
+for a bicycle model.
+
+23
+00:01:06.155 --> 00:01:08.480
+Essentially, the two inputs to
+
+24
+00:01:08.480 --> 00:01:09.880
+the bicycle model are the linear
+
+25
+00:01:09.880 --> 00:01:11.665
+velocity in the steering angle,
+
+26
+00:01:11.665 --> 00:01:13.640
+which change the position and
+
+27
+00:01:13.640 --> 00:01:16.545
+heading of the robot over time.
+
+28
+00:01:16.545 --> 00:01:19.640
+One thing to notice
+with this entire set of
+
+29
+00:01:19.640 --> 00:01:21.440
+kinematic equations
+is that there is
+
+30
+00:01:21.440 --> 00:01:23.660
+no consideration of
+higher-order terms,
+
+31
+00:01:23.660 --> 00:01:26.075
+such as acceleration or jerk.
+
+32
+00:01:26.075 --> 00:01:28.040
+These higher-order terms are what
+
+33
+00:01:28.040 --> 00:01:30.455
+cause discomfort for
+passengers in the car,
+
+34
+00:01:30.455 --> 00:01:34.310
+so we should try to address
+this in our kinematic model.
+
+35
+00:01:34.310 --> 00:01:37.760
+Even without incorporating
+the full dynamic models
+
+36
+00:01:37.760 --> 00:01:39.035
+discussed in course one
+
+37
+00:01:39.035 --> 00:01:41.154
+into the trajectory
+planning process,
+
+38
+00:01:41.154 --> 00:01:43.730
+we can restrict
+the selected inputs to
+
+39
+00:01:43.730 --> 00:01:47.705
+consider the effects of
+rapid changes on ride comfort.
+
+40
+00:01:47.705 --> 00:01:51.530
+We can do this by adding
+a constraint for the range of
+
+41
+00:01:51.530 --> 00:01:53.630
+linear and angular accelerations
+
+42
+00:01:53.630 --> 00:01:55.795
+permitted for our bicycle model.
+
+43
+00:01:55.795 --> 00:01:57.890
+This will limit
+the extent to which
+
+44
+00:01:57.890 --> 00:01:59.990
+passengers in our vehicle
+will experience
+
+45
+00:01:59.990 --> 00:02:01.880
+forces and torques while
+
+46
+00:02:01.880 --> 00:02:04.700
+our vehicle traverses
+its planned trajectory.
+
+47
+00:02:04.700 --> 00:02:07.195
+However, this comes
+with a trade-off.
+
+48
+00:02:07.195 --> 00:02:08.840
+Our motion planner will lose
+
+49
+00:02:08.840 --> 00:02:11.860
+some maneuverability at
+each planning iteration.
+
+50
+00:02:11.860 --> 00:02:14.180
+Specifically, after adding
+
+51
+00:02:14.180 --> 00:02:16.190
+this angular
+acceleration constraint,
+
+52
+00:02:16.190 --> 00:02:18.200
+we may not be able to move to
+
+53
+00:02:18.200 --> 00:02:21.620
+every possible steering angle
+in our steering angle set,
+
+54
+00:02:21.620 --> 00:02:23.060
+because they may induce too
+
+55
+00:02:23.060 --> 00:02:25.220
+high of an angular acceleration.
+
+56
+00:02:25.220 --> 00:02:27.785
+In addition, we may
+not be able to ramp
+
+57
+00:02:27.785 --> 00:02:29.540
+our velocity up or down as
+
+58
+00:02:29.540 --> 00:02:32.045
+quickly between
+planning iterations.
+
+59
+00:02:32.045 --> 00:02:35.060
+Let's focus on the angular
+acceleration constraint
+
+60
+00:02:35.060 --> 00:02:38.265
+and derive the resulting
+steering angle restriction.
+
+61
+00:02:38.265 --> 00:02:40.850
+Recall that the
+angular velocity for
+
+62
+00:02:40.850 --> 00:02:44.900
+the bicycle model is given
+by vtandelta over L.
+
+63
+00:02:44.900 --> 00:02:47.570
+The magnitude of
+the angular acceleration
+
+64
+00:02:47.570 --> 00:02:49.640
+is therefore
+approximately given by
+
+65
+00:02:49.640 --> 00:02:53.240
+the absolute difference between
+the angular velocities of
+
+66
+00:02:53.240 --> 00:02:54.560
+our start and ending
+
+67
+00:02:54.560 --> 00:02:58.210
+steering angles divided by
+the time step we're using.
+
+68
+00:02:58.210 --> 00:03:01.140
+Rearranging the terms
+using the fact that
+
+69
+00:03:01.140 --> 00:03:04.330
+v and L are always
+positive for our planner,
+
+70
+00:03:04.330 --> 00:03:05.780
+we have the requirement that
+
+71
+00:03:05.780 --> 00:03:09.560
+the absolute value of the tan
+of delta at time two minus
+
+72
+00:03:09.560 --> 00:03:10.820
+the tan of delta at time
+
+73
+00:03:10.820 --> 00:03:13.340
+one must be less than
+or equal to theta
+
+74
+00:03:13.340 --> 00:03:15.350
+double-dot max times L over
+
+75
+00:03:15.350 --> 00:03:19.880
+v. To help solidify how
+this impacts our planner,
+
+76
+00:03:19.880 --> 00:03:22.550
+let's analyze a concrete example.
+
+77
+00:03:22.550 --> 00:03:25.400
+Suppose our bicycle
+model is moving at
+
+78
+00:03:25.400 --> 00:03:27.830
+a constant linear
+velocity of one meter
+
+79
+00:03:27.830 --> 00:03:30.714
+per second across
+all candidate trajectories,
+
+80
+00:03:30.714 --> 00:03:33.950
+and has a current steering angle
+of pi over eight.
+
+81
+00:03:33.950 --> 00:03:37.010
+Suppose the maximum and
+minimum steering angle for
+
+82
+00:03:37.010 --> 00:03:38.390
+this robot or pi over
+
+83
+00:03:38.390 --> 00:03:41.119
+four and minus pi over
+four respectively,
+
+84
+00:03:41.119 --> 00:03:44.765
+and that our steering angle
+step size is pi over eight.
+
+85
+00:03:44.765 --> 00:03:47.794
+In addition, suppose our
+trajectories are sampled
+
+86
+00:03:47.794 --> 00:03:50.809
+at a time resolution
+of 0.1 seconds,
+
+87
+00:03:50.809 --> 00:03:52.700
+and that our bicycle model robot
+
+88
+00:03:52.700 --> 00:03:54.955
+has a length of one meter.
+
+89
+00:03:54.955 --> 00:03:58.550
+Finally, let's constrain
+our angular acceleration
+
+90
+00:03:58.550 --> 00:04:02.220
+to 0.6 radians per
+second squared.
+
+91
+00:04:02.680 --> 00:04:06.020
+Let's apply our derived
+steering angle constraints
+
+92
+00:04:06.020 --> 00:04:07.775
+to this example problem.
+
+93
+00:04:07.775 --> 00:04:10.700
+We have that our current
+steering angle delta
+
+94
+00:04:10.700 --> 00:04:12.440
+one is pi over eight.
+
+95
+00:04:12.440 --> 00:04:15.245
+By substituting
+each potential steering angle
+
+96
+00:04:15.245 --> 00:04:17.240
+into our steering angle set,
+
+97
+00:04:17.240 --> 00:04:19.580
+we see that the angular
+acceleration constraint
+
+98
+00:04:19.580 --> 00:04:21.050
+is violated if we
+
+99
+00:04:21.050 --> 00:04:22.730
+were to change
+our steering angle to
+
+100
+00:04:22.730 --> 00:04:25.445
+minus pi over eight or
+minus pi over four.
+
+101
+00:04:25.445 --> 00:04:28.505
+However, changing
+it to pi over four
+
+102
+00:04:28.505 --> 00:04:31.460
+zero or keeping it the
+same at pi over eight,
+
+103
+00:04:31.460 --> 00:04:32.945
+are all valid selections
+
+104
+00:04:32.945 --> 00:04:35.225
+according to our new constraints.
+
+105
+00:04:35.225 --> 00:04:37.370
+To illustrate this,
+we have colored
+
+106
+00:04:37.370 --> 00:04:39.530
+the disallowed trajectories red.
+
+107
+00:04:39.530 --> 00:04:41.090
+The remaining
+trajectories colored in
+
+108
+00:04:41.090 --> 00:04:42.920
+green are still available to
+
+109
+00:04:42.920 --> 00:04:43.970
+the subsequent step of
+
+110
+00:04:43.970 --> 00:04:45.260
+the reactive planner that we
+
+111
+00:04:45.260 --> 00:04:47.500
+developed in the previous lesson.
+
+112
+00:04:47.500 --> 00:04:50.000
+This illustrates that in general,
+
+113
+00:04:50.000 --> 00:04:51.830
+the added constraints will reduce
+
+114
+00:04:51.830 --> 00:04:54.815
+the maneuverability of
+the robot to a certain extent,
+
+115
+00:04:54.815 --> 00:04:57.650
+while promoting
+more comfortable trajectories.
+
+116
+00:04:57.650 --> 00:05:00.380
+The more restrictive
+the set of constraints,
+
+117
+00:05:00.380 --> 00:05:03.335
+the less maneuverable
+the robot will be.
+
+118
+00:05:03.335 --> 00:05:06.470
+We can also apply
+similar logic to the case of
+
+119
+00:05:06.470 --> 00:05:08.810
+a linear acceleration
+constraint and
+
+120
+00:05:08.810 --> 00:05:12.035
+a range of linear velocity
+inputs available to us,
+
+121
+00:05:12.035 --> 00:05:13.910
+or even have both constraints
+
+122
+00:05:13.910 --> 00:05:16.525
+applied to the robot
+at the same time.
+
+123
+00:05:16.525 --> 00:05:19.235
+In general, the dynamic
+window approach
+
+124
+00:05:19.235 --> 00:05:20.480
+allows us to incorporate
+
+125
+00:05:20.480 --> 00:05:22.400
+more restrictions on how
+
+126
+00:05:22.400 --> 00:05:24.695
+the trajectory evolves
+during planning,
+
+127
+00:05:24.695 --> 00:05:27.320
+resulting in motion
+that better satisfies
+
+128
+00:05:27.320 --> 00:05:30.145
+a broad set of objectives
+simultaneously.
+
+129
+00:05:30.145 --> 00:05:32.245
+To summarize this lesson,
+
+130
+00:05:32.245 --> 00:05:35.390
+we first introduced additional
+acceleration constraints
+
+131
+00:05:35.390 --> 00:05:36.890
+to our bicycle model.
+
+132
+00:05:36.890 --> 00:05:39.020
+We then derive the process of
+
+133
+00:05:39.020 --> 00:05:42.305
+dynamic windowing to restrict
+our trajectory set at
+
+134
+00:05:42.305 --> 00:05:44.600
+each time step in
+order to satisfy
+
+135
+00:05:44.600 --> 00:05:45.890
+these new constraints for
+
+136
+00:05:45.890 --> 00:05:47.885
+our trajectory rollout algorithm.
+
+137
+00:05:47.885 --> 00:05:49.610
+Congratulations,
+
+138
+00:05:49.610 --> 00:05:51.695
+you've now reached
+the end of this module.
+
+139
+00:05:51.695 --> 00:05:53.780
+Let's review what we've covered.
+
+140
+00:05:53.780 --> 00:05:56.030
+We first developed the concept of
+
+141
+00:05:56.030 --> 00:05:58.130
+trajectory propagation
+in order to
+
+142
+00:05:58.130 --> 00:06:01.085
+generate trajectories for
+a given motion model.
+
+143
+00:06:01.085 --> 00:06:03.800
+We then moved on to
+collision checking,
+
+144
+00:06:03.800 --> 00:06:05.600
+which is necessary for developing
+
+145
+00:06:05.600 --> 00:06:09.355
+collision-free motion plans
+for our autonomous vehicle.
+
+146
+00:06:09.355 --> 00:06:12.410
+Then, we combined
+these two concepts into
+
+147
+00:06:12.410 --> 00:06:15.440
+the trajectory rollout planner
+and augmented it
+
+148
+00:06:15.440 --> 00:06:16.940
+using dynamic windowing to
+
+149
+00:06:16.940 --> 00:06:19.375
+handle acceleration constraints.
+
+150
+00:06:19.375 --> 00:06:22.430
+By now, you should have
+a strong foundation in
+
+151
+00:06:22.430 --> 00:06:24.140
+reactive planning centered on
+
+152
+00:06:24.140 --> 00:06:25.880
+the trajectory rollout algorithm.
+
+153
+00:06:25.880 --> 00:06:27.830
+This is a compact and effective
+
+154
+00:06:27.830 --> 00:06:29.690
+general motion planning strategy
+
+155
+00:06:29.690 --> 00:06:32.630
+suitable for a wide range
+of planning tasks,
+
+156
+00:06:32.630 --> 00:06:35.885
+with a wide variety of
+objectives and constraints.
+
+157
+00:06:35.885 --> 00:06:37.430
+In the next module,
+
+158
+00:06:37.430 --> 00:06:39.110
+we will start our discussion of
+
+159
+00:06:39.110 --> 00:06:42.680
+dynamic environments and use
+trajectory propagation and
+
+160
+00:06:42.680 --> 00:06:45.230
+collision detection to
+predict the motion of
+
+161
+00:06:45.230 --> 00:06:47.240
+other objects and determine
+
+162
+00:06:47.240 --> 00:06:48.800
+whether a collision might occur.
+
+163
+00:06:48.800 --> 00:06:50.820
+See you there.

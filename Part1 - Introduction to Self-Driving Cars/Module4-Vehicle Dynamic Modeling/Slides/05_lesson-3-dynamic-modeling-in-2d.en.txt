@@ -1,0 +1,120 @@
+[MUSIC] In the last lesson, we developed the
+kinematic bicycle model to capture vehicle motion with steering rates and
+velocity inputs. In this lesson, we will move into
+the realm of dynamic modeling. To start taking into account the forces
+and moments acting on the vehicle. This type of model can lead to
+higher fidelity predictions. Than are possible with kinematic models. This higher fidelity, however, comes at the cost of
+higher computational complexity. So both kinematic and dynamic models have
+their uses in self driving development. Dynamic modeling is likely
+very familiar to many of you. So if you're comfortable
+making free body diagrams and applying Newton's equations, Don't
+hesitate to jump forward in the course. If you need a refresher, or haven't done dynamic modeling before,
+this introductory video is for you. [SOUND] So
+why do we need dynamic modeling? In vehicle modeling,
+when the vehicle is moving and turning at higher speeds, or
+when the road is slippery, the assumptions defined by the no
+slip condition may no longer hold. As the forces exerted on the vehicle cause
+the tires to slip over the pavement. Modeling the balance of forces during slip
+conditions can expand the set of driving conditions for which our model remains
+an accurate prediction of motion. Also, many sub systems in the car have
+similar conditions where a hard kinematic constraint is not correctly captured
+the evolution of that sub system, and dynamic models are needed there as well. An example would be the drive train for which the balance of torques is needed
+to capture the connection from throttle position to wheel torque through
+the engine and transmission systems. By explicitly modeling the balance of
+forces in moments acting on the vehicle, we can determine the accelerations
+the vehicle is experiencing and use them to model our vehicle motion. We now turn to the task of defining
+the dynamic modelling process for a rigid body. To build a typical dynamic model,
+we can follow the following steps. First we set up the coordinate
+frames to be used in the model. For example, the body frame and
+the inertial frame we discussed before. Next, we break down the dynamic
+system into lumped dynamic elements. These elements combine potentially
+distributed aspects of the system into discrete or lumped elements. In the case of a spring mass damper,
+the lumped elements would be the spring, the mass, and the damper. We also define a model for
+each lumped element. For example, the linear spring provides
+a force proportional to a displacement for a resting position. Next, we sketch the free body diagram for
+each rigid body in the list of elements. And properly name and model all the forces
+and moments acting on the body. Finally, by using Newton's second law, we write the mathematical equations
+that define our dynamic model, summing all forces along each axis for
+translational dynamics. In all moments about each rotational
+axis for rotational dynamics. The result is an ordinary
+differential equation describing the motion of our rigid body and
+this is our dynamic model. Let's follow our four step process for a one dimensional translational system,
+a rolling cart. This figure shows the cart of mass m
+whose position we'd like to track. We start by defining
+the coordinate frame for the position of the cart, denoted with x. Then we identify the rigid body, which
+is in this case, is the cart of mass m. Next, we draw a free body diagram and define all of the forces
+acting on the carts. In this case, there were three
+forces acting on the cart, f1 pulling the cart to the right, and
+f2 and f3 pulling the cart to the left. Finally, we apply Newton's second law in
+the x direction to form the dynamic model. The resulting dynamic equation
+describing the motion of the carts Is m times the acceleration in the x
+direction denoted by x double dot is equal to the summation of f1,
+f2, and f3. Note that f2 and f3 have negative signs due to the fact that
+they point in the negative x direction. The same process can be applied for
+a shock absorber in a car The dynamic model of a shock absorber
+helps the engineers to design and tune the vehicle suspension for
+better ride comfort and driveability. To model this component, we can go through the same four steps that
+we introduced in the previous slides. We again set up the coordinate system, which in this case is one coordinate
+y in the vertical direction. The identified of rigid bodies or
+lump dynamic elements. In the case of a real physical system, there is notion of lump
+element very important. The shock absorber relies
+on it's spring and hydraulics cylinder with flow
+restriction to absorb shocks. We model this system as
+three separate long elements A mass a spring and
+hydraulic cylinder or damper. We use a linear spring and damper model
+where the spring resist displacement in y and damper resist the y velocity. The third step is sketching
+the free body diagram. Normally we show the forces Or torques along with the velocities and
+directions in this diagram. Finally, we form the dynamic equation, which in this case is the famous second
+order spring mass damper equation. There is no variation in this process to
+handle rotational or torsional systems. Rotational systems are very common in the
+automobile with examples like the internal combustion engine chaps, gear boxes,
+[INAUDIBLE] converters and tires. In a rotational system, we sum the [INAUDIBLE] about each
+access of rotation and lump. Inertia is J, torsional springs and dampers in the same way as
+in the translational case. We refer to the rotational
+acceleration of a rigid body as alpha. Let's model the rotational
+dynamics of a wheel, using our four-step modeling process. First, we set up the coordinate system. One coordinate in the rotational direction
+is enough to represent the wheel's motion. We defined theta as the angular
+position of the wheel, with theta dot as its rotation rate and theta double dot,
+its angular acceleration. Next, we formed the lumped
+dynamic elements. The tire model has rotational
+inertia J due to its rotating mass. And torsional stiffness k and damping b, defined by the material
+properties of the tire in the wheel hub. We drive the wheel with the a drive torque
+from the vehicles drive shaft and resist this with a load torque coming from the
+tires interaction with the road's surface. Now we sketch the freebody diagram. The drive torque and low torque
+are defined in opposite directions as the load resists the drive
+torque's acceleration of the wheel. We can now form the dynamic model for
+the wheel system. The difference between
+the drive torque and the load torque define the net
+torque acting on the wheel. While the rotational spring and the damper from the lump element
+models resist the acceleration. The final dynamic model describes
+how the wheels position changes when subject to this net torque. Dynamic models of vehicles are useful for
+multiple applications. They can be used to improve
+state estimation methods when fusing sensor data to track motion. They can be used to aid in
+controller design to track a desired trajectory or path. And they can help self-driving engineers
+define the limits of vehicle performance to avoid from planning unsafe
+trajectories that a car cannot track. However, a full three-dimensional
+model of the vehicle, taking into account body roll and pitch. And arbitrarily inclined roads,
+and different forces and moments at each tire makes for
+a very complex model. Instead, it's possible to separate our
+model into two 2D models that split our vehicle control into a steering control
+and a throttle and brake control problem. Full 3D vehicle modeling
+is a fascinating field. And we've introduced some links in
+the supplementary materials if you'd like to learn more. For these reasons,
+we'll build a separate longitudinal and lateral dynamic model for
+our self-driving car. The longitudinal model considers
+a vehicle traveling on an inclined road. We restrict the vehicle
+motion to the XZ plane. There are several forces
+acting on the vehicle body and tires, including the Traction force,
+the Rolling resistance, Aerodynamic force, and
+Gradient resistance force due to gravity. In the next video we'll go through
+the Longitudinal Vehicle Dynamics model, in more detail. Similarly, the Lateral Vehicle Dynamics
+model, can be developed from
+motion in the xy plane. When looking at the vehicle from
+the top down or birds eye view. In this 2D model there is also several
+forces in the lateral direction acting on the vehicle such as the slip
+forces and centrifugal forces, this topic would be discuss in
+the future lesson as well in this video we cover the basic of 2D dynamic model and
+apply it to a server and wheel subsystem. These models are helpful in determining
+how those systems evolved over time. In the next lesson we will cover
+the vehicle longitudinal dynamics. And study the drive train components
+that provide tweak to the drive wheels. Will see there. [MUSIC] [SOUND]

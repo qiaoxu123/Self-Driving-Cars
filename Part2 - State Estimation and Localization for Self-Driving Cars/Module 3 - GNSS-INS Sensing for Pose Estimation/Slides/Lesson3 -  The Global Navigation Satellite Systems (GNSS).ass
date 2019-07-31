@@ -1,0 +1,659 @@
+WEBVTT
+
+1
+00:00:14.000 --> 00:00:17.460
+Welcome back. In this video,
+
+2
+00:00:17.460 --> 00:00:19.500
+we'll talk about
+a particular type of sensor
+
+3
+00:00:19.500 --> 00:00:21.945
+that most of you will
+be very familiar with,
+
+4
+00:00:21.945 --> 00:00:26.805
+the Global Navigation Satellite
+Systems or GNSS receiver.
+
+5
+00:00:26.805 --> 00:00:28.980
+We'll learn about why
+this navigation sensor
+
+6
+00:00:28.980 --> 00:00:31.290
+is so important for a self-driving car.
+
+7
+00:00:31.290 --> 00:00:33.810
+It's able to provide a
+position fix anywhere in
+
+8
+00:00:33.810 --> 00:00:36.720
+the world with bounded
+error which is key.
+
+9
+00:00:36.720 --> 00:00:40.355
+Specifically, we'll
+develop a model for GNSS
+
+10
+00:00:40.355 --> 00:00:44.120
+based on the principles of
+pseudoranging and trilateration.
+
+11
+00:00:44.120 --> 00:00:47.900
+We'll then familiarize ourselves
+with sources of GNSS positioning
+
+12
+00:00:47.900 --> 00:00:53.600
+error and talk about some ways
+to improve one type of GNSS.
+
+13
+00:00:53.600 --> 00:00:56.900
+Just like the IMU discussed
+in a previous lecture,
+
+14
+00:00:56.900 --> 00:01:01.595
+nearly every modern smartphone has
+at least one type of GNSS receiver.
+
+15
+00:01:01.595 --> 00:01:04.175
+Although we take them for granted now,
+
+16
+00:01:04.175 --> 00:01:07.405
+the first modern system of
+global positioning satellites,
+
+17
+00:01:07.405 --> 00:01:12.155
+GPS, was built for military
+use during the 1980s.
+
+18
+00:01:12.155 --> 00:01:17.255
+By the time the second version of the
+system was fully operational in 1995,
+
+19
+00:01:17.255 --> 00:01:20.705
+GPS was made available
+to the public for free.
+
+20
+00:01:20.705 --> 00:01:24.350
+This was in part due to
+the highly publicized crash of
+
+21
+00:01:24.350 --> 00:01:28.885
+Korean Airlines flight 007 in 1983.
+
+22
+00:01:28.885 --> 00:01:33.500
+Flight 007 was a 747
+passenger jet that flew
+
+23
+00:01:33.500 --> 00:01:37.765
+from New York City to Seoul with
+refueling stop in Anchorage Alaska.
+
+24
+00:01:37.765 --> 00:01:40.130
+As it flew from Anchorage to Seoul,
+
+25
+00:01:40.130 --> 00:01:43.790
+it deviated from its plan flight path
+and was shot down by
+
+26
+00:01:43.790 --> 00:01:48.570
+a fighter jet after spending
+several hours in Soviet airspace.
+
+27
+00:01:48.620 --> 00:01:51.315
+To cross the North Pacific Ocean,
+
+28
+00:01:51.315 --> 00:01:56.435
+Flight 007 relied on an inertial
+navigation system for guidance.
+
+29
+00:01:56.435 --> 00:02:00.215
+The pilots, failing to properly
+initialize the system,
+
+30
+00:02:00.215 --> 00:02:04.285
+mistakenly maintained the aircraft
+on a specific magnetic heading.
+
+31
+00:02:04.285 --> 00:02:06.860
+In turn, the plane deviated by
+
+32
+00:02:06.860 --> 00:02:10.415
+more than 300 kilometers
+from its planned course.
+
+33
+00:02:10.415 --> 00:02:14.090
+Shortly after Flight 007 was shot down,
+
+34
+00:02:14.090 --> 00:02:17.210
+then President Ronald Reagan
+issued a directive to allow
+
+35
+00:02:17.210 --> 00:02:19.880
+the US Global Positioning System to
+
+36
+00:02:19.880 --> 00:02:23.450
+be freely available to the public
+once it was fully developed.
+
+37
+00:02:23.450 --> 00:02:26.210
+Although GPS was the original system of
+
+38
+00:02:26.210 --> 00:02:29.645
+navigation satellites used for
+global positioning, today,
+
+39
+00:02:29.645 --> 00:02:33.080
+the term global navigation
+satellite system is used as a
+
+40
+00:02:33.080 --> 00:02:37.490
+catch-all for several such satellite
+constellations that exist.
+
+41
+00:02:37.490 --> 00:02:41.300
+The two that are fully
+operational as of 2018 are
+
+42
+00:02:41.300 --> 00:02:45.185
+GPS and GLONASS, the Russian equivalent.
+
+43
+00:02:45.185 --> 00:02:47.450
+Several other systems
+are nearing completion
+
+44
+00:02:47.450 --> 00:02:50.305
+including the European
+Galileo constellation.
+
+45
+00:02:50.305 --> 00:02:53.625
+For this video, we'll
+look at GPS more closely,
+
+46
+00:02:53.625 --> 00:02:57.695
+though other GNSS systems
+operate on similar principles.
+
+47
+00:02:57.695 --> 00:03:00.590
+The GPS constellation is composed of
+
+48
+00:03:00.590 --> 00:03:04.760
+24-32 satellites that are
+in six orbital planes.
+
+49
+00:03:04.760 --> 00:03:08.405
+Satellites are decommissioned
+and replaced periodically.
+
+50
+00:03:08.405 --> 00:03:12.679
+Each satellite isn't a medium Earth
+orbit an altitude of roughly 20,000
+
+51
+00:03:12.679 --> 00:03:17.165
+kilometers with an orbital period
+of just under 12 hours.
+
+52
+00:03:17.165 --> 00:03:21.020
+The constellation is designed such
+that at least four satellites are
+
+53
+00:03:21.020 --> 00:03:25.370
+visible at any surface point
+on earth at all times.
+
+54
+00:03:25.370 --> 00:03:28.740
+Each satellite broadcasts
+on two frequencies,
+
+55
+00:03:28.740 --> 00:03:31.750
+one for civilian and
+one for military use.
+
+56
+00:03:31.750 --> 00:03:35.740
+Each broadcast signal contains
+a pseudo-random code that
+
+57
+00:03:35.740 --> 00:03:37.510
+identifies the satellite position and
+
+58
+00:03:37.510 --> 00:03:40.270
+the time of transmission of the signal.
+
+59
+00:03:40.270 --> 00:03:45.250
+The basic principle behind GPS
+is time of arrival ranging.
+
+60
+00:03:45.250 --> 00:03:49.210
+The receiver computes a distance
+to each visible satellite by
+
+61
+00:03:49.210 --> 00:03:53.830
+comparing its own internal clock with
+that of the time of transmission.
+
+62
+00:03:53.830 --> 00:03:57.430
+The time difference is converted
+to a distance using knowledge that
+
+63
+00:03:57.430 --> 00:04:01.285
+electromagnetic signals
+propagate at the speed of light.
+
+64
+00:04:01.285 --> 00:04:03.940
+To compute a 3D position,
+
+65
+00:04:03.940 --> 00:04:07.610
+the ranging equations require
+at least four visible satellites.
+
+66
+00:04:07.610 --> 00:04:11.270
+If altitude is known and
+only a 2D position is required,
+
+67
+00:04:11.270 --> 00:04:13.475
+only three satellites are needed.
+
+68
+00:04:13.475 --> 00:04:17.120
+The process of recovering position
+from several distances to
+
+69
+00:04:17.120 --> 00:04:21.120
+known landmarks is called trilateration.
+
+70
+00:04:21.310 --> 00:04:25.010
+Note that this is different
+from triangulation where
+
+71
+00:04:25.010 --> 00:04:28.860
+we compute positions based
+off of angle measurements.
+
+72
+00:04:29.110 --> 00:04:33.920
+A GPS receiver measures the pseudorange
+to each satellite using
+
+73
+00:04:33.920 --> 00:04:36.185
+the following measurement model:
+
+74
+00:04:36.185 --> 00:04:39.395
+The model accounts for
+receiver clock error,
+
+75
+00:04:39.395 --> 00:04:43.100
+atmospheric propagation delays,
+and measurement noise.
+
+76
+00:04:43.100 --> 00:04:45.710
+The term pseudorange
+refers to the fact that
+
+77
+00:04:45.710 --> 00:04:49.860
+the range information is corrupted
+by the error sources above.
+
+78
+00:04:50.390 --> 00:04:56.665
+Each pseudorange measurement defines
+a circle in 2D or a sphere in 3D.
+
+79
+00:04:56.665 --> 00:04:59.245
+If we have exactly four satellites,
+
+80
+00:04:59.245 --> 00:05:01.150
+we can solve for
+the receiver position and
+
+81
+00:05:01.150 --> 00:05:03.775
+the receiver clock error explicitly.
+
+82
+00:05:03.775 --> 00:05:05.880
+If we have more than four,
+
+83
+00:05:05.880 --> 00:05:08.410
+we can use the method of
+least squares to find
+
+84
+00:05:08.410 --> 00:05:12.680
+the maximum likelihood position
+assuming Gaussian noise.
+
+85
+00:05:12.720 --> 00:05:16.600
+GPS suffers from multiple error sources.
+
+86
+00:05:16.600 --> 00:05:18.700
+First, charged ions in
+
+87
+00:05:18.700 --> 00:05:22.480
+the ionosphere can delay
+the signal by an unknown amount.
+
+88
+00:05:22.480 --> 00:05:26.080
+Surrounding terrain and buildings
+may cause reflections that
+
+89
+00:05:26.080 --> 00:05:29.895
+increase the distance traveled by
+the signal before reaching the receiver,
+
+90
+00:05:29.895 --> 00:05:32.790
+these are called multi-path errors.
+
+91
+00:05:32.790 --> 00:05:36.020
+Any small error in
+clock synchronization or
+
+92
+00:05:36.020 --> 00:05:40.745
+satellite position information can
+have catastrophic consequences.
+
+93
+00:05:40.745 --> 00:05:43.910
+Even a one microsecond
+timing error can lead to
+
+94
+00:05:43.910 --> 00:05:47.865
+a significant error in
+position, 300 meters.
+
+95
+00:05:47.865 --> 00:05:50.450
+Both a Ephemeris data
+and satellite clocks
+
+96
+00:05:50.450 --> 00:05:52.550
+are updated and recalibrated often,
+
+97
+00:05:52.550 --> 00:05:55.300
+but the calibration can be out of date.
+
+98
+00:05:55.300 --> 00:05:58.340
+Finally, the geometric configuration of
+
+99
+00:05:58.340 --> 00:06:02.645
+visible satellites can also lead to
+variations in positioning accuracy.
+
+100
+00:06:02.645 --> 00:06:05.975
+This is known as the geometric
+dilution of precision.
+
+101
+00:06:05.975 --> 00:06:08.930
+For higher accuracy, a configuration with
+
+102
+00:06:08.930 --> 00:06:13.055
+satellites spread across
+the sky is preferable.
+
+103
+00:06:13.055 --> 00:06:15.800
+Luckily, for some applications,
+
+104
+00:06:15.800 --> 00:06:21.110
+we can improve GNSS accuracy by
+augmenting the system in various ways.
+
+105
+00:06:21.110 --> 00:06:23.180
+Differential GPS can correct
+
+106
+00:06:23.180 --> 00:06:25.550
+receiver positioning
+estimates by making use of
+
+107
+00:06:25.550 --> 00:06:30.830
+the more accurately known positions
+of one or more fixed base stations.
+
+108
+00:06:30.830 --> 00:06:33.950
+Corrections are broadcast
+on separate frequencies to
+
+109
+00:06:33.950 --> 00:06:37.595
+the GNSS receiver in the moving vehicle.
+
+110
+00:06:37.595 --> 00:06:42.170
+Real-Time Kinematic, or
+RTK GPS makes use of
+
+111
+00:06:42.170 --> 00:06:44.090
+carrier phase information to improve
+
+112
+00:06:44.090 --> 00:06:48.440
+positioning accuracy down to
+two centimeters in some cases.
+
+113
+00:06:48.440 --> 00:06:50.780
+Although both of these techniques can
+
+114
+00:06:50.780 --> 00:06:53.374
+significantly improve
+the accuracy of GPS,
+
+115
+00:06:53.374 --> 00:06:56.260
+they're typically quite
+costly to implement.
+
+116
+00:06:56.260 --> 00:06:58.825
+As we mentioned in the previous video,
+
+117
+00:06:58.825 --> 00:07:01.550
+inertial sensors are very
+useful for navigation.
+
+118
+00:07:01.550 --> 00:07:05.840
+However, they drift or accumulate
+unbounded error over time.
+
+119
+00:07:05.840 --> 00:07:08.150
+The GPS system in contrast,
+
+120
+00:07:08.150 --> 00:07:10.930
+provides bounded error
+positioning updates.
+
+121
+00:07:10.930 --> 00:07:13.685
+A self-driving car equipped
+with GPS will maintain
+
+122
+00:07:13.685 --> 00:07:17.570
+a guaranteed level of positioning
+accuracy at all times,
+
+123
+00:07:17.570 --> 00:07:22.280
+unless the GPS receiver fails or loses
+track of at least four satellites.
+
+124
+00:07:22.280 --> 00:07:24.965
+So to summarize this video,
+
+125
+00:07:24.965 --> 00:07:28.430
+Global Navigation Satellite
+Systems work by combining
+
+126
+00:07:28.430 --> 00:07:33.835
+pseudoranges from at least four
+satellites to determine a 3D position.
+
+127
+00:07:33.835 --> 00:07:37.220
+GPS or GNSS error can come from
+
+128
+00:07:37.220 --> 00:07:40.160
+several different sources
+including ionospheric delays,
+
+129
+00:07:40.160 --> 00:07:42.440
+multi-path effects, and also
+
+130
+00:07:42.440 --> 00:07:45.130
+possibly from the geometric
+dilution of precision.
+
+131
+00:07:45.130 --> 00:07:47.745
+To improve GNSS accuracy,
+
+132
+00:07:47.745 --> 00:07:52.530
+techniques like differential GPS
+or RTK GPS can be used.
+
+133
+00:07:52.530 --> 00:07:54.815
+That's the end of this module.
+
+134
+00:07:54.815 --> 00:07:57.320
+In module four, we'll describe how we
+
+135
+00:07:57.320 --> 00:08:00.170
+confuse inertial
+measurements from IMUs with
+
+136
+00:08:00.170 --> 00:08:02.855
+position measurements
+from a GPS to produce
+
+137
+00:08:02.855 --> 00:08:05.825
+an accurate localization estimate
+for a self-driving car.
+
+138
+00:08:05.825 --> 00:08:07.910
+The sensors are complementary
+and they're used
+
+139
+00:08:07.910 --> 00:08:10.310
+together in practically
+all self-driving cars.
+
+140
+00:08:10.310 --> 00:08:12.640
+See you in the next module.

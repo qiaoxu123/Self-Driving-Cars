@@ -1,0 +1,1427 @@
+WEBVTT
+
+1
+00:00:14.270 --> 00:00:16.650
+Welcome to the third video
+
+2
+00:00:16.650 --> 00:00:18.150
+this week on behavior planning.
+
+3
+00:00:18.150 --> 00:00:19.530
+In the last video,
+
+4
+00:00:19.530 --> 00:00:21.930
+we developed a basic
+behavior planner using
+
+5
+00:00:21.930 --> 00:00:23.670
+a finite state machine for
+
+6
+00:00:23.670 --> 00:00:26.145
+a four-way intersection
+without traffic.
+
+7
+00:00:26.145 --> 00:00:28.020
+We now focus on incorporating
+
+8
+00:00:28.020 --> 00:00:31.590
+traffic interactions in
+the same four-way intersection.
+
+9
+00:00:31.590 --> 00:00:34.910
+In today's lesson, we will
+begin by reviewing some of
+
+10
+00:00:34.910 --> 00:00:37.085
+the interactions with
+the dynamic object
+
+11
+00:00:37.085 --> 00:00:39.010
+covered in previous modules,
+
+12
+00:00:39.010 --> 00:00:41.210
+which we use throughout
+this lesson to
+
+13
+00:00:41.210 --> 00:00:42.320
+safely interact with
+
+14
+00:00:42.320 --> 00:00:44.210
+the other objects
+in the environment.
+
+15
+00:00:44.210 --> 00:00:45.590
+We will then extend
+
+16
+00:00:45.590 --> 00:00:47.090
+the state machine
+that we had built in
+
+17
+00:00:47.090 --> 00:00:48.980
+the previous lesson to include
+
+18
+00:00:48.980 --> 00:00:51.235
+these interactions
+with other vehicles.
+
+19
+00:00:51.235 --> 00:00:54.650
+Finally, we will briefly
+discuss the many edge cases and
+
+20
+00:00:54.650 --> 00:00:57.080
+various complexities
+that occur when
+
+21
+00:00:57.080 --> 00:01:00.475
+dealing with dynamic
+objects. Let's dive in.
+
+22
+00:01:00.475 --> 00:01:03.710
+Once again, the scenario
+we study in this video
+
+23
+00:01:03.710 --> 00:01:06.740
+is a single lane four-way
+stop intersection.
+
+24
+00:01:06.740 --> 00:01:08.510
+We would like to be
+able to travel in
+
+25
+00:01:08.510 --> 00:01:11.135
+any possible direction
+through this intersection,
+
+26
+00:01:11.135 --> 00:01:14.380
+while now handling interaction
+with other vehicles.
+
+27
+00:01:14.380 --> 00:01:16.435
+Recall that in
+the previous lesson,
+
+28
+00:01:16.435 --> 00:01:20.180
+we broke up the intersection
+into three areas or zones.
+
+29
+00:01:20.180 --> 00:01:22.850
+The approaching zone
+highlighted in red,
+
+30
+00:01:22.850 --> 00:01:24.260
+represents when a vehicle should
+
+31
+00:01:24.260 --> 00:01:26.600
+decelerate to stop
+at the intersection.
+
+32
+00:01:26.600 --> 00:01:29.150
+The ad zone highlighted in green,
+
+33
+00:01:29.150 --> 00:01:30.530
+is where the vehicle should stop
+
+34
+00:01:30.530 --> 00:01:32.600
+prior to entering
+the intersection.
+
+35
+00:01:32.600 --> 00:01:34.580
+The on zone in orange,
+
+36
+00:01:34.580 --> 00:01:37.475
+which represents
+the intersection itself.
+
+37
+00:01:37.475 --> 00:01:40.280
+The zone's size can be shifted
+
+38
+00:01:40.280 --> 00:01:42.865
+based on the ego and
+dynamic velocities,
+
+39
+00:01:42.865 --> 00:01:45.450
+as well as the size
+of the intersection.
+
+40
+00:01:45.450 --> 00:01:47.330
+Throughout this
+lesson, we will be
+
+41
+00:01:47.330 --> 00:01:49.040
+focusing on the interactions
+
+42
+00:01:49.040 --> 00:01:52.805
+with other dynamic objects,
+specifically other vehicles.
+
+43
+00:01:52.805 --> 00:01:56.215
+In order to be able to safely
+deal with these vehicles,
+
+44
+00:01:56.215 --> 00:01:58.670
+one important aspect
+is a measurement of
+
+45
+00:01:58.670 --> 00:02:01.715
+the distance to
+various interaction points
+
+46
+00:02:01.715 --> 00:02:03.425
+with the other objects.
+
+47
+00:02:03.425 --> 00:02:05.600
+The first distance
+measure to consider,
+
+48
+00:02:05.600 --> 00:02:07.925
+is the distance to
+dynamic objects.
+
+49
+00:02:07.925 --> 00:02:10.730
+This is defined as
+the Euclidean distance between
+
+50
+00:02:10.730 --> 00:02:12.560
+the current ego position to
+
+51
+00:02:12.560 --> 00:02:15.365
+the center of any dynamic object
+in the environment.
+
+52
+00:02:15.365 --> 00:02:18.140
+The second is the distance
+to collision point,
+
+53
+00:02:18.140 --> 00:02:19.340
+which is the distance to
+
+54
+00:02:19.340 --> 00:02:22.240
+a potential collision point
+with another dynamic object.
+
+55
+00:02:22.240 --> 00:02:24.740
+Finally, the time to collision is
+
+56
+00:02:24.740 --> 00:02:26.120
+the time it would take to reach
+
+57
+00:02:26.120 --> 00:02:27.995
+the given collision point.
+
+58
+00:02:27.995 --> 00:02:29.990
+Our approach to
+calculating this was
+
+59
+00:02:29.990 --> 00:02:32.135
+discussed in the previous video.
+
+60
+00:02:32.135 --> 00:02:35.210
+Now let's expand a finite
+state machine to
+
+61
+00:02:35.210 --> 00:02:38.435
+accommodate the added complexity
+of the dynamic objects.
+
+62
+00:02:38.435 --> 00:02:39.830
+We will need to increase
+
+63
+00:02:39.830 --> 00:02:42.080
+the required maneuvers
+to four in order to
+
+64
+00:02:42.080 --> 00:02:44.210
+correctly handle all interactions
+
+65
+00:02:44.210 --> 00:02:46.100
+with vehicles in this scenario.
+
+66
+00:02:46.100 --> 00:02:48.650
+First, let's review
+the maneuvers we
+
+67
+00:02:48.650 --> 00:02:49.970
+included in our first version
+
+68
+00:02:49.970 --> 00:02:51.410
+of the finite state machine.
+
+69
+00:02:51.410 --> 00:02:53.974
+These were: track speed,
+
+70
+00:02:53.974 --> 00:02:56.030
+who's only constraint
+is the speed of
+
+71
+00:02:56.030 --> 00:02:58.879
+the given road,
+decelerate to stop,
+
+72
+00:02:58.879 --> 00:03:01.340
+which requires the ego vehicle
+to decelerate to
+
+73
+00:03:01.340 --> 00:03:04.415
+a stop point at a specific
+location in the environment,
+
+74
+00:03:04.415 --> 00:03:08.120
+and stop, where we remained
+in the stop position.
+
+75
+00:03:08.120 --> 00:03:11.780
+The new maneuver we need
+to add is follow leader.
+
+76
+00:03:11.780 --> 00:03:14.990
+This maneuver state requires
+the ego vehicle to follow
+
+77
+00:03:14.990 --> 00:03:16.430
+the speed of and
+
+78
+00:03:16.430 --> 00:03:19.025
+maintain a safe distance
+to a lead vehicle,
+
+79
+00:03:19.025 --> 00:03:22.415
+which is any vehicle directly
+in front of it in its lane.
+
+80
+00:03:22.415 --> 00:03:24.080
+The safe distance is speed
+
+81
+00:03:24.080 --> 00:03:26.030
+dependent and both safe speed and
+
+82
+00:03:26.030 --> 00:03:28.205
+safe distance are updated as
+
+83
+00:03:28.205 --> 00:03:31.940
+entry actions on every iteration
+of the behavior planner.
+
+84
+00:03:31.940 --> 00:03:34.430
+Now that we have all
+of the states defined
+
+85
+00:03:34.430 --> 00:03:36.590
+for our expanded finite
+state machine,
+
+86
+00:03:36.590 --> 00:03:39.290
+we turn to populating
+the transitions.
+
+87
+00:03:39.290 --> 00:03:41.510
+We will do this in
+a similar fashion
+
+88
+00:03:41.510 --> 00:03:42.800
+to the previous lesson,
+
+89
+00:03:42.800 --> 00:03:45.770
+starting at a given state
+and then identifying all of
+
+90
+00:03:45.770 --> 00:03:46.970
+the transitions out of
+
+91
+00:03:46.970 --> 00:03:49.615
+that state before
+proceeding to the next.
+
+92
+00:03:49.615 --> 00:03:51.770
+We'll display progress through
+
+93
+00:03:51.770 --> 00:03:53.540
+the intersection as we define
+
+94
+00:03:53.540 --> 00:03:56.030
+transitions in
+a pictorial representation
+
+95
+00:03:56.030 --> 00:03:58.490
+of the scenario seen
+here on the left,
+
+96
+00:03:58.490 --> 00:04:01.280
+and we'll build up the finite
+state machine on the right.
+
+97
+00:04:01.280 --> 00:04:03.380
+In each pictorial representation,
+
+98
+00:04:03.380 --> 00:04:05.045
+the autonomous ego vehicle
+
+99
+00:04:05.045 --> 00:04:07.640
+will be denoted by a red arrow.
+
+100
+00:04:07.640 --> 00:04:09.890
+We will then start as we did in
+
+101
+00:04:09.890 --> 00:04:11.960
+the previous lesson
+with the ego vehicle
+
+102
+00:04:11.960 --> 00:04:14.315
+being located outside
+the intersection
+
+103
+00:04:14.315 --> 00:04:16.235
+in the track speeds state.
+
+104
+00:04:16.235 --> 00:04:18.620
+Much as we've seen in
+the previous lesson,
+
+105
+00:04:18.620 --> 00:04:20.630
+the ego vehicle will only move to
+
+106
+00:04:20.630 --> 00:04:21.770
+the decelerate to stop
+
+107
+00:04:21.770 --> 00:04:24.430
+state once in
+the approaching zone.
+
+108
+00:04:24.430 --> 00:04:26.805
+However, there is
+an additional concern,
+
+109
+00:04:26.805 --> 00:04:29.420
+the situation in which
+another vehicle appears
+
+110
+00:04:29.420 --> 00:04:32.435
+or enters the lane in
+front of the ego vehicle.
+
+111
+00:04:32.435 --> 00:04:34.870
+In this case, we will
+move to attempt to
+
+112
+00:04:34.870 --> 00:04:38.215
+follow the vehicle by
+performing a follow check.
+
+113
+00:04:38.215 --> 00:04:41.450
+The follow check can be
+decomposed into two elements.
+
+114
+00:04:41.450 --> 00:04:44.380
+A distance check and
+a same lane check.
+
+115
+00:04:44.380 --> 00:04:46.480
+The distance check confirms
+that the vehicle is
+
+116
+00:04:46.480 --> 00:04:48.600
+close enough such that
+it should be followed.
+
+117
+00:04:48.600 --> 00:04:51.010
+In the same lane
+check confirms that
+
+118
+00:04:51.010 --> 00:04:52.300
+the vehicle is actually in
+
+119
+00:04:52.300 --> 00:04:54.595
+the same lane as the ego vehicle.
+
+120
+00:04:54.595 --> 00:04:58.150
+In this case, we can use
+distance to dynamic object,
+
+121
+00:04:58.150 --> 00:04:59.830
+which is the Euclidean
+distance to
+
+122
+00:04:59.830 --> 00:05:03.565
+the object and compare
+that to a threshold.
+
+123
+00:05:03.565 --> 00:05:06.970
+There are several methods
+which can be employed to
+
+124
+00:05:06.970 --> 00:05:08.320
+check if the vehicle is in
+
+125
+00:05:08.320 --> 00:05:10.375
+the same lane as the ego vehicle.
+
+126
+00:05:10.375 --> 00:05:12.700
+However for simplicity,
+we will check if
+
+127
+00:05:12.700 --> 00:05:15.100
+the lead vehicle is
+within the lane limits
+
+128
+00:05:15.100 --> 00:05:16.310
+and if the heading of
+
+129
+00:05:16.310 --> 00:05:19.100
+the dynamic object is
+within a given threshold
+
+130
+00:05:19.100 --> 00:05:20.675
+to that of the ego vehicle
+
+131
+00:05:20.675 --> 00:05:23.690
+indicating it is moving
+in the same direction.
+
+132
+00:05:23.690 --> 00:05:25.700
+In the follow leaders state,
+
+133
+00:05:25.700 --> 00:05:28.045
+we define only two transitions.
+
+134
+00:05:28.045 --> 00:05:30.860
+First, the lead vehicle
+might exit the lean
+
+135
+00:05:30.860 --> 00:05:32.330
+before the ego vehicle is
+
+136
+00:05:32.330 --> 00:05:34.415
+approaching or at
+the intersection,
+
+137
+00:05:34.415 --> 00:05:38.035
+resulting in a switch to
+the track speed state.
+
+138
+00:05:38.035 --> 00:05:39.590
+Or the lead vehicle
+
+139
+00:05:39.590 --> 00:05:41.570
+drives out of
+the current lane, usually,
+
+140
+00:05:41.570 --> 00:05:44.090
+onto the intersection
+when the ego vehicle
+
+141
+00:05:44.090 --> 00:05:46.820
+is already in the at
+or approaching zones,
+
+142
+00:05:46.820 --> 00:05:48.620
+resulting in a direct transition
+
+143
+00:05:48.620 --> 00:05:50.570
+to the decelerate to stop state.
+
+144
+00:05:50.570 --> 00:05:52.820
+We add the transition condition,
+
+145
+00:05:52.820 --> 00:05:54.335
+that the distance to collision
+
+146
+00:05:54.335 --> 00:05:55.880
+is greater than the distance to
+
+147
+00:05:55.880 --> 00:05:58.070
+the stop point when
+the ego vehicle
+
+148
+00:05:58.070 --> 00:06:00.905
+is either in the approach
+or add zones.
+
+149
+00:06:00.905 --> 00:06:03.010
+In this situation,
+the ego vehicles
+
+150
+00:06:03.010 --> 00:06:04.670
+should transition
+to decelerate to
+
+151
+00:06:04.670 --> 00:06:06.800
+stop and set the stop point to
+
+152
+00:06:06.800 --> 00:06:07.880
+the correct location at
+
+153
+00:06:07.880 --> 00:06:10.295
+the stop line of
+the intersection.
+
+154
+00:06:10.295 --> 00:06:13.790
+As before, in the decelerate
+to stop state,
+
+155
+00:06:13.790 --> 00:06:16.430
+the ego vehicle
+continues decelerating
+
+156
+00:06:16.430 --> 00:06:20.210
+until the time when it comes
+to a stop at the stop line.
+
+157
+00:06:20.210 --> 00:06:21.890
+Which will result in a switch to
+
+158
+00:06:21.890 --> 00:06:24.605
+the stop state as seen
+in our previous lesson.
+
+159
+00:06:24.605 --> 00:06:28.280
+However, we once again have
+to take into account that
+
+160
+00:06:28.280 --> 00:06:29.900
+a vehicle is able to pull in
+
+161
+00:06:29.900 --> 00:06:32.435
+front of the autonomous car
+at an intersection,
+
+162
+00:06:32.435 --> 00:06:35.590
+either from a driveway or
+an overtaking maneuver.
+
+163
+00:06:35.590 --> 00:06:37.790
+Much as before, we perform
+
+164
+00:06:37.790 --> 00:06:40.160
+the follow check throughout
+the decelerate to
+
+165
+00:06:40.160 --> 00:06:42.170
+stop state when the ego vehicle
+
+166
+00:06:42.170 --> 00:06:44.960
+is in the approaching
+or add zones,
+
+167
+00:06:44.960 --> 00:06:46.610
+and transition to follow
+
+168
+00:06:46.610 --> 00:06:49.055
+leader if the check returns true.
+
+169
+00:06:49.055 --> 00:06:50.870
+In this case however,
+
+170
+00:06:50.870 --> 00:06:52.790
+the distance check
+considers whether
+
+171
+00:06:52.790 --> 00:06:54.320
+the lead vehicle distance to
+
+172
+00:06:54.320 --> 00:06:57.260
+collision is less than
+the stop point distance,
+
+173
+00:06:57.260 --> 00:06:59.000
+so that the leader
+following modes
+
+174
+00:06:59.000 --> 00:07:00.835
+should take precedence.
+
+175
+00:07:00.835 --> 00:07:03.665
+Finally, to complete
+our expansion
+
+176
+00:07:03.665 --> 00:07:05.290
+of the finite state machine,
+
+177
+00:07:05.290 --> 00:07:08.705
+let's look at the situations
+we can face once stopped.
+
+178
+00:07:08.705 --> 00:07:10.865
+To keep things
+simple, we'll assume
+
+179
+00:07:10.865 --> 00:07:12.760
+a very conservative
+driving style,
+
+180
+00:07:12.760 --> 00:07:14.915
+where our autonomous
+car waits until
+
+181
+00:07:14.915 --> 00:07:17.135
+all vehicles have
+cleared the approaching,
+
+182
+00:07:17.135 --> 00:07:19.790
+at, or on intersections zones
+
+183
+00:07:19.790 --> 00:07:21.740
+before proceeding through it.
+
+184
+00:07:21.740 --> 00:07:24.695
+We leave the implementation
+of precedents
+
+185
+00:07:24.695 --> 00:07:27.700
+at the stop sign for you
+to explore on your own.
+
+186
+00:07:27.700 --> 00:07:30.320
+Further, we'll
+define simple checks
+
+187
+00:07:30.320 --> 00:07:32.510
+for a rectilinear intersections,
+
+188
+00:07:32.510 --> 00:07:35.300
+that identify all vehicles
+direction of travel with
+
+189
+00:07:35.300 --> 00:07:37.460
+four easy labels and only
+
+190
+00:07:37.460 --> 00:07:39.020
+consider other vehicles moving
+
+191
+00:07:39.020 --> 00:07:40.820
+straight through
+the intersection.
+
+192
+00:07:40.820 --> 00:07:43.745
+Relative to the ego
+vehicles body frame,
+
+193
+00:07:43.745 --> 00:07:46.310
+a vehicle object with
+a relative heading of
+
+194
+00:07:46.310 --> 00:07:49.415
+between minus 45 and 45 degrees,
+
+195
+00:07:49.415 --> 00:07:50.900
+will be labeled as going in
+
+196
+00:07:50.900 --> 00:07:53.465
+the same direction
+as the ego vehicle.
+
+197
+00:07:53.465 --> 00:07:56.160
+A vehicle between minus 45 and
+
+198
+00:07:56.160 --> 00:07:58.525
+135 degrees relative heading,
+
+199
+00:07:58.525 --> 00:08:00.785
+will be labeled as
+heading to the right.
+
+200
+00:08:00.785 --> 00:08:02.660
+Between minus 135 and
+
+201
+00:08:02.660 --> 00:08:06.510
+135 as heading towards
+the ego vehicle and finally,
+
+202
+00:08:06.510 --> 00:08:09.880
+between 45-135 degrees
+relative heading,
+
+203
+00:08:09.880 --> 00:08:12.200
+will be labeled as
+going to the left.
+
+204
+00:08:12.200 --> 00:08:15.140
+This simplification
+can be improved using
+
+205
+00:08:15.140 --> 00:08:17.690
+predicted paths for
+the dynamic objects,
+
+206
+00:08:17.690 --> 00:08:20.660
+especially if additional
+perception information is
+
+207
+00:08:20.660 --> 00:08:22.925
+available to improve prediction
+
+208
+00:08:22.925 --> 00:08:26.135
+of the direction of travel
+through the intersection.
+
+209
+00:08:26.135 --> 00:08:30.245
+We can now define the transitions
+out of the stop state.
+
+210
+00:08:30.245 --> 00:08:32.785
+Will have two sets
+of transitions.
+
+211
+00:08:32.785 --> 00:08:35.530
+Either follow leader
+or track speed,
+
+212
+00:08:35.530 --> 00:08:37.990
+depending on whether
+a vehicle is present within
+
+213
+00:08:37.990 --> 00:08:39.519
+the lane through the intersection
+
+214
+00:08:39.519 --> 00:08:41.740
+that satisfies the follow check.
+
+215
+00:08:41.740 --> 00:08:45.295
+In each case, the transition
+conditions change
+
+216
+00:08:45.295 --> 00:08:46.510
+based on the path through
+
+217
+00:08:46.510 --> 00:08:49.795
+the intersection required
+by our mission plan.
+
+218
+00:08:49.795 --> 00:08:52.900
+When the ego vehicle
+needs to turn left,
+
+219
+00:08:52.900 --> 00:08:55.300
+any vehicle approaching
+from the left, right,
+
+220
+00:08:55.300 --> 00:08:56.800
+or any oncoming vehicle,
+
+221
+00:08:56.800 --> 00:08:58.210
+must clear the on
+
+222
+00:08:58.210 --> 00:09:02.065
+intersection zone before
+the ego vehicle can proceed.
+
+223
+00:09:02.065 --> 00:09:05.080
+When the ego vehicle
+needs to go straight,
+
+224
+00:09:05.080 --> 00:09:07.615
+only vehicles approaching
+from the left or right,
+
+225
+00:09:07.615 --> 00:09:09.430
+need to clear the intersection.
+
+226
+00:09:09.430 --> 00:09:12.800
+Finally, when the ego vehicle
+needs to turn right,
+
+227
+00:09:12.800 --> 00:09:14.450
+only vehicles approaching from
+
+228
+00:09:14.450 --> 00:09:16.565
+the left need to clear
+the intersection.
+
+229
+00:09:16.565 --> 00:09:18.410
+From this simple definition of
+
+230
+00:09:18.410 --> 00:09:20.510
+the transitions out
+of the stop state,
+
+231
+00:09:20.510 --> 00:09:22.070
+we hope you can visualize
+
+232
+00:09:22.070 --> 00:09:23.675
+the additional checks needed
+
+233
+00:09:23.675 --> 00:09:25.640
+to handle the precedence due to
+
+234
+00:09:25.640 --> 00:09:28.820
+arrival order at
+an intersection and the
+
+235
+00:09:28.820 --> 00:09:30.859
+possibility that
+the other vehicles
+
+236
+00:09:30.859 --> 00:09:33.500
+might also turn left or right.
+
+237
+00:09:33.500 --> 00:09:35.750
+The resulting full state machine
+
+238
+00:09:35.750 --> 00:09:38.675
+includes the following states
+and transitions.
+
+239
+00:09:38.675 --> 00:09:41.630
+While this state machine
+is unable to be used on
+
+240
+00:09:41.630 --> 00:09:43.340
+a real autonomous vehicle due to
+
+241
+00:09:43.340 --> 00:09:45.589
+the oversimplifications
+we relied on,
+
+242
+00:09:45.589 --> 00:09:47.525
+it serves as a good demonstration
+
+243
+00:09:47.525 --> 00:09:49.355
+of the process of converting
+
+244
+00:09:49.355 --> 00:09:51.520
+a given operational design domain
+
+245
+00:09:51.520 --> 00:09:54.200
+into a functional
+finite state machine.
+
+246
+00:09:54.200 --> 00:09:56.150
+You're now ready
+to start tackling
+
+247
+00:09:56.150 --> 00:09:58.250
+more complex scenarios with
+
+248
+00:09:58.250 --> 00:10:01.475
+more complete dynamic
+object models.
+
+249
+00:10:01.475 --> 00:10:05.300
+So far throughout the creation
+of a state machine,
+
+250
+00:10:05.300 --> 00:10:07.835
+we have made one particularly
+strong assumption
+
+251
+00:10:07.835 --> 00:10:10.205
+about how dynamic objects behave.
+
+252
+00:10:10.205 --> 00:10:12.485
+Namely, that all dynamic objects
+
+253
+00:10:12.485 --> 00:10:14.405
+obey the rules of the road.
+
+254
+00:10:14.405 --> 00:10:16.939
+However, this is not
+always the case,
+
+255
+00:10:16.939 --> 00:10:18.380
+and this difficulty leads to
+
+256
+00:10:18.380 --> 00:10:21.200
+many edge cases that also
+need to be considered.
+
+257
+00:10:21.200 --> 00:10:23.659
+Let's quickly discuss
+a few examples
+
+258
+00:10:23.659 --> 00:10:26.570
+of what can go wrong with
+this strong assumption.
+
+259
+00:10:26.570 --> 00:10:29.135
+The first example
+would be when a driver
+
+260
+00:10:29.135 --> 00:10:32.300
+unintentionally swerves
+into oncoming traffic,
+
+261
+00:10:32.300 --> 00:10:34.565
+entering the lane
+of the ego vehicle.
+
+262
+00:10:34.565 --> 00:10:37.850
+This actually happened
+to a Waymo van in 2018,
+
+263
+00:10:37.850 --> 00:10:39.290
+when a driver careened over
+
+264
+00:10:39.290 --> 00:10:41.285
+a median into oncoming traffic.
+
+265
+00:10:41.285 --> 00:10:43.070
+Another example, is of
+
+266
+00:10:43.070 --> 00:10:44.540
+an aggressive driver
+racing through
+
+267
+00:10:44.540 --> 00:10:45.920
+an intersection even as
+
+268
+00:10:45.920 --> 00:10:48.575
+the ego vehicle has begun
+driving through it.
+
+269
+00:10:48.575 --> 00:10:50.555
+Another common example, is when
+
+270
+00:10:50.555 --> 00:10:53.185
+a vehicle fails to stop
+at the intersection.
+
+271
+00:10:53.185 --> 00:10:55.970
+Finally, I will end with
+the case of a vehicle
+
+272
+00:10:55.970 --> 00:10:59.330
+which is parked in close
+proximity to the intersection.
+
+273
+00:10:59.330 --> 00:11:02.270
+If this vehicle is
+not tagged as parked,
+
+274
+00:11:02.270 --> 00:11:03.590
+so that it might be treated as
+
+275
+00:11:03.590 --> 00:11:06.055
+a static instead
+of dynamic object,
+
+276
+00:11:06.055 --> 00:11:08.180
+our behavior planner
+may get stuck in
+
+277
+00:11:08.180 --> 00:11:12.035
+a deadlock state waiting for
+this parked vehicle to move.
+
+278
+00:11:12.035 --> 00:11:15.635
+This is by no means a complete
+set of all possibilities,
+
+279
+00:11:15.635 --> 00:11:17.360
+and one of the
+primary objectives of
+
+280
+00:11:17.360 --> 00:11:20.120
+behaviors safety
+assessment and testing,
+
+281
+00:11:20.120 --> 00:11:22.159
+is to uncover as many variations
+
+282
+00:11:22.159 --> 00:11:24.455
+of unexpected behaviors
+as possible,
+
+283
+00:11:24.455 --> 00:11:26.704
+so that they also
+can be detected,
+
+284
+00:11:26.704 --> 00:11:28.850
+categorized, and
+incorporated into
+
+285
+00:11:28.850 --> 00:11:31.010
+the behavior planning
+design process.
+
+286
+00:11:31.010 --> 00:11:35.060
+Just simply uncovering edge
+cases is not enough, however.
+
+287
+00:11:35.060 --> 00:11:36.770
+Rather we must define how
+
+288
+00:11:36.770 --> 00:11:38.060
+the autonomous vehicles should
+
+289
+00:11:38.060 --> 00:11:40.445
+react to every one
+of these cases.
+
+290
+00:11:40.445 --> 00:11:42.800
+For this emergency maneuvers such
+
+291
+00:11:42.800 --> 00:11:45.170
+as a swerve or
+a hard break are required,
+
+292
+00:11:45.170 --> 00:11:48.245
+with many more transitions
+and conditions to define.
+
+293
+00:11:48.245 --> 00:11:49.670
+This is an active area of
+
+294
+00:11:49.670 --> 00:11:51.110
+research and
+development and we've
+
+295
+00:11:51.110 --> 00:11:53.195
+included some
+additional resources
+
+296
+00:11:53.195 --> 00:11:54.935
+in the supplemental materials,
+
+297
+00:11:54.935 --> 00:11:57.205
+if you'd like to find out more.
+
+298
+00:11:57.205 --> 00:11:59.815
+In summary, in today's video,
+
+299
+00:11:59.815 --> 00:12:02.780
+we learned how we can create
+a finite state machine,
+
+300
+00:12:02.780 --> 00:12:04.040
+able to interact with
+
+301
+00:12:04.040 --> 00:12:07.090
+dynamic objects which follow
+the rules of the road.
+
+302
+00:12:07.090 --> 00:12:08.900
+We saw why dealing with
+
+303
+00:12:08.900 --> 00:12:11.210
+dynamic objects is
+so challenging by
+
+304
+00:12:11.210 --> 00:12:12.560
+looking at just a few of
+
+305
+00:12:12.560 --> 00:12:16.025
+the many possible edge cases
+which they can create.
+
+306
+00:12:16.025 --> 00:12:17.510
+In our next lesson,
+
+307
+00:12:17.510 --> 00:12:19.040
+we will see how we can continue
+
+308
+00:12:19.040 --> 00:12:20.555
+building our behavior planner
+
+309
+00:12:20.555 --> 00:12:24.080
+to be able to handle multiple
+scenarios simultaneously.
+
+310
+00:12:24.080 --> 00:12:26.340
+We'll see you next time.

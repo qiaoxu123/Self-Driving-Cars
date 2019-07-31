@@ -1,0 +1,1243 @@
+WEBVTT
+
+1
+00:00:19.310 --> 00:00:21.480
+Hi everyone, and welcome to
+
+2
+00:00:21.480 --> 00:00:23.640
+the final module of course four.
+
+3
+00:00:23.640 --> 00:00:25.470
+In this module, we'll discuss
+
+4
+00:00:25.470 --> 00:00:28.499
+the lowest level of
+our hierarchical motion planner,
+
+5
+00:00:28.499 --> 00:00:30.195
+which is the local planner.
+
+6
+00:00:30.195 --> 00:00:32.250
+As a reminder,
+the local planner is
+
+7
+00:00:32.250 --> 00:00:34.380
+the portion of the
+hierarchical planner that
+
+8
+00:00:34.380 --> 00:00:36.660
+executes the maneuver
+requested by
+
+9
+00:00:36.660 --> 00:00:39.270
+the behavior planner
+in a collision-free,
+
+10
+00:00:39.270 --> 00:00:41.625
+efficient, and
+comfortable manner.
+
+11
+00:00:41.625 --> 00:00:44.285
+This results in
+either a trajectory,
+
+12
+00:00:44.285 --> 00:00:46.820
+which is a sequence
+of points in space at
+
+13
+00:00:46.820 --> 00:00:50.270
+given times or a path
+and velocity profile,
+
+14
+00:00:50.270 --> 00:00:51.860
+which is a sequence of points in
+
+15
+00:00:51.860 --> 00:00:55.340
+space with the required
+velocities at each point.
+
+16
+00:00:55.340 --> 00:00:57.680
+This plan can then be given as
+
+17
+00:00:57.680 --> 00:00:58.820
+the reference input to
+
+18
+00:00:58.820 --> 00:01:01.580
+the controllers that you
+developed in course one.
+
+19
+00:01:01.580 --> 00:01:03.770
+In this module, we'll build upon
+
+20
+00:01:03.770 --> 00:01:05.630
+the introductory reactive planner
+
+21
+00:01:05.630 --> 00:01:07.820
+we developed back in module four,
+
+22
+00:01:07.820 --> 00:01:09.650
+such that it is able
+to handle some of
+
+23
+00:01:09.650 --> 00:01:11.150
+the nuances presence in
+
+24
+00:01:11.150 --> 00:01:13.985
+the autonomous driving
+motion planning problem.
+
+25
+00:01:13.985 --> 00:01:16.070
+In particular, we'll move from
+
+26
+00:01:16.070 --> 00:01:18.620
+the discrete time to
+continuous time in order to
+
+27
+00:01:18.620 --> 00:01:21.110
+produce smooth
+parameterized paths
+
+28
+00:01:21.110 --> 00:01:24.095
+that are easy to track
+with our controllers.
+
+29
+00:01:24.095 --> 00:01:27.785
+In this video, we'll introduce
+the path planning problem
+
+30
+00:01:27.785 --> 00:01:31.115
+and its associated constraints
+and boundary conditions.
+
+31
+00:01:31.115 --> 00:01:34.640
+As well, we'll discuss
+parametric curves and
+
+32
+00:01:34.640 --> 00:01:35.960
+how they are useful for
+
+33
+00:01:35.960 --> 00:01:38.255
+representing paths
+for this problem.
+
+34
+00:01:38.255 --> 00:01:39.740
+In particular, you should
+
+35
+00:01:39.740 --> 00:01:41.330
+understand the difference between
+
+36
+00:01:41.330 --> 00:01:45.460
+splines and spirals in
+the context of motion planning,
+
+37
+00:01:45.460 --> 00:01:47.945
+and the advantages and
+drawbacks of each.
+
+38
+00:01:47.945 --> 00:01:49.670
+So let's get started.
+
+39
+00:01:49.670 --> 00:01:53.255
+The first step in understanding
+the path planning problem
+
+40
+00:01:53.255 --> 00:01:56.885
+is to first understand its
+most fundamental requirements.
+
+41
+00:01:56.885 --> 00:01:58.630
+For the path planning problem,
+
+42
+00:01:58.630 --> 00:02:01.155
+this is given
+a starting position,
+
+43
+00:02:01.155 --> 00:02:02.790
+heading, and curvature,
+
+44
+00:02:02.790 --> 00:02:05.950
+find a path to an ending
+position heading and
+
+45
+00:02:05.950 --> 00:02:09.940
+curvature that satisfies
+our kinematic constraints.
+
+46
+00:02:09.940 --> 00:02:12.635
+In the context of
+an optimization,
+
+47
+00:02:12.635 --> 00:02:14.380
+the starting and
+end values can be
+
+48
+00:02:14.380 --> 00:02:17.635
+formulated as the boundary
+conditions of the problem,
+
+49
+00:02:17.635 --> 00:02:19.270
+and the kinematic motion of
+
+50
+00:02:19.270 --> 00:02:21.220
+the vehicle can be formulated as
+
+51
+00:02:21.220 --> 00:02:23.020
+continuous time constraints
+
+52
+00:02:23.020 --> 00:02:25.425
+on the optimization variables.
+
+53
+00:02:25.425 --> 00:02:28.060
+In this context,
+the boundary conditions
+
+54
+00:02:28.060 --> 00:02:30.055
+are the conditions
+that must hold on
+
+55
+00:02:30.055 --> 00:02:32.290
+either end point of the path for
+
+56
+00:02:32.290 --> 00:02:35.680
+a given optimization solution
+to be considered feasible.
+
+57
+00:02:35.680 --> 00:02:38.259
+If these boundary
+conditions are violated,
+
+58
+00:02:38.259 --> 00:02:40.475
+no matter how great the path is,
+
+59
+00:02:40.475 --> 00:02:42.830
+we haven't achieved
+our core objective
+
+60
+00:02:42.830 --> 00:02:45.695
+of actually getting to
+the point we want to get to.
+
+61
+00:02:45.695 --> 00:02:48.530
+So the path is not useful to us.
+
+62
+00:02:48.530 --> 00:02:52.010
+These boundary conditions will
+influence how we decide to
+
+63
+00:02:52.010 --> 00:02:53.840
+set up the underlying structure
+
+64
+00:02:53.840 --> 00:02:55.385
+of the optimization problem.
+
+65
+00:02:55.385 --> 00:02:57.875
+Let's look at why this is.
+
+66
+00:02:57.875 --> 00:02:59.840
+For our path planner,
+
+67
+00:02:59.840 --> 00:03:02.390
+our only kinematic
+constraint is going to be
+
+68
+00:03:02.390 --> 00:03:05.585
+restricting the maximum
+curvature along the path.
+
+69
+00:03:05.585 --> 00:03:08.920
+In general, this is
+not easy to satisfy
+
+70
+00:03:08.920 --> 00:03:10.460
+since there are infinitely
+
+71
+00:03:10.460 --> 00:03:12.950
+many points along
+a continuous path.
+
+72
+00:03:12.950 --> 00:03:15.590
+Instead, we will
+often take samples
+
+73
+00:03:15.590 --> 00:03:18.260
+of the curvature at
+different points along the path,
+
+74
+00:03:18.260 --> 00:03:21.475
+and constrain the curvature
+of each of these points.
+
+75
+00:03:21.475 --> 00:03:24.420
+Assuming the path is
+relatively well-behaved,
+
+76
+00:03:24.420 --> 00:03:26.900
+this will likely correspond
+to the curvature of
+
+77
+00:03:26.900 --> 00:03:29.915
+the entire path satisfying
+the constraint.
+
+78
+00:03:29.915 --> 00:03:32.150
+To simplify the representation
+
+79
+00:03:32.150 --> 00:03:33.750
+of our optimization problem,
+
+80
+00:03:33.750 --> 00:03:37.265
+we're going to define a path
+as a parametric curve.
+
+81
+00:03:37.265 --> 00:03:39.455
+What is a parametric curve?
+
+82
+00:03:39.455 --> 00:03:42.710
+A parametric curve is a curve
+that can be described
+
+83
+00:03:42.710 --> 00:03:45.980
+as a set of equations
+with specific parameters.
+
+84
+00:03:45.980 --> 00:03:49.110
+These parameters often
+denote path traversal,
+
+85
+00:03:49.110 --> 00:03:51.045
+whether it will be
+through arc length
+
+86
+00:03:51.045 --> 00:03:53.640
+or just varying from zero to one.
+
+87
+00:03:53.640 --> 00:03:57.170
+For example, here we have
+a cubic spline set of
+
+88
+00:03:57.170 --> 00:04:01.575
+parametric equations for the
+x and y positions of a path.
+
+89
+00:04:01.575 --> 00:04:05.735
+The parameter of the equations
+u varies from zero to one,
+
+90
+00:04:05.735 --> 00:04:07.280
+as we traveled from the start of
+
+91
+00:04:07.280 --> 00:04:09.445
+the path to the end of the path.
+
+92
+00:04:09.445 --> 00:04:12.890
+The vector valued function
+r contains the x and
+
+93
+00:04:12.890 --> 00:04:15.110
+y position at each point
+
+94
+00:04:15.110 --> 00:04:17.765
+corresponding to a given u value.
+
+95
+00:04:17.765 --> 00:04:20.450
+For autonomous driving,
+we often but not
+
+96
+00:04:20.450 --> 00:04:23.885
+always require the path
+to be a parametric curve.
+
+97
+00:04:23.885 --> 00:04:25.650
+Why is this?
+
+98
+00:04:25.650 --> 00:04:29.449
+We often focus on planning
+methods that optimize
+
+99
+00:04:29.449 --> 00:04:30.920
+a given path according to
+
+100
+00:04:30.920 --> 00:04:34.790
+boundary conditions shown here
+by Beta naught and Beta f,
+
+101
+00:04:34.790 --> 00:04:38.160
+kinematic constraints
+shown here by Alpha,
+
+102
+00:04:38.160 --> 00:04:41.960
+and an objective functional
+shown here by f. Having
+
+103
+00:04:41.960 --> 00:04:44.150
+a parametric
+representation of the path
+
+104
+00:04:44.150 --> 00:04:46.910
+make setting up the
+optimization problem simpler,
+
+105
+00:04:46.910 --> 00:04:48.650
+as we have a function we can
+
+106
+00:04:48.650 --> 00:04:50.390
+directly give to our objective
+
+107
+00:04:50.390 --> 00:04:54.260
+functional f. Note that
+the term functional refers to
+
+108
+00:04:54.260 --> 00:04:56.600
+mappings that takes a function as
+
+109
+00:04:56.600 --> 00:04:59.170
+their argument and
+return a real value,
+
+110
+00:04:59.170 --> 00:05:01.790
+so it can be used to
+define a cost over
+
+111
+00:05:01.790 --> 00:05:05.135
+a space of functions or
+parametrized curves.
+
+112
+00:05:05.135 --> 00:05:08.135
+We can contrast
+this parametric curve approach
+
+113
+00:05:08.135 --> 00:05:10.750
+with the reactive planner
+in module four,
+
+114
+00:05:10.750 --> 00:05:13.220
+where we represented
+the trajectory and
+
+115
+00:05:13.220 --> 00:05:16.550
+the path with a sequence
+of points in space.
+
+116
+00:05:16.550 --> 00:05:19.880
+This is known as
+a non-parametric path since
+
+117
+00:05:19.880 --> 00:05:21.110
+the curve we followed did
+
+118
+00:05:21.110 --> 00:05:23.495
+not have a parametric
+representation.
+
+119
+00:05:23.495 --> 00:05:25.535
+In the field of
+autonomous driving,
+
+120
+00:05:25.535 --> 00:05:28.910
+there are two common types
+of path parameterizations.
+
+121
+00:05:28.910 --> 00:05:31.940
+The first are
+quintic splines which are
+
+122
+00:05:31.940 --> 00:05:33.980
+fifth order polynomial functions
+
+123
+00:05:33.980 --> 00:05:36.290
+of the x and y
+position of the car.
+
+124
+00:05:36.290 --> 00:05:39.485
+The second type is
+the polynomial spiral,
+
+125
+00:05:39.485 --> 00:05:42.125
+given by a polynomial
+curvature function
+
+126
+00:05:42.125 --> 00:05:44.290
+with respect to arc length.
+
+127
+00:05:44.290 --> 00:05:47.915
+Pictured here is
+a third order polynomial spiral,
+
+128
+00:05:47.915 --> 00:05:49.430
+a cubic spiral,
+
+129
+00:05:49.430 --> 00:05:52.250
+both of these parameterized
+curves give us
+
+130
+00:05:52.250 --> 00:05:53.600
+the means to satisfy
+
+131
+00:05:53.600 --> 00:05:55.825
+the boundary conditions
+we just discussed,
+
+132
+00:05:55.825 --> 00:05:58.820
+and also offer us
+parameters to use in
+
+133
+00:05:58.820 --> 00:06:00.740
+objective functions to craft
+
+134
+00:06:00.740 --> 00:06:03.215
+the paths according
+to our requirements.
+
+135
+00:06:03.215 --> 00:06:06.560
+Selecting either of
+these has associated tradeoffs.
+
+136
+00:06:06.560 --> 00:06:09.505
+So let's explore
+each more deeply.
+
+137
+00:06:09.505 --> 00:06:12.725
+First, let's discuss
+the quintic spline.
+
+138
+00:06:12.725 --> 00:06:15.800
+The quintic spline is
+given by two equations,
+
+139
+00:06:15.800 --> 00:06:17.600
+one for the
+progression of x along
+
+140
+00:06:17.600 --> 00:06:20.075
+the spline and one for y.
+
+141
+00:06:20.075 --> 00:06:22.340
+Here we can see that
+the quintic spline
+
+142
+00:06:22.340 --> 00:06:23.749
+has 12 parameters,
+
+143
+00:06:23.749 --> 00:06:27.125
+six for the x equation and
+six for the y equation.
+
+144
+00:06:27.125 --> 00:06:29.030
+These parameters correspond to
+
+145
+00:06:29.030 --> 00:06:30.830
+the polynomial coefficients that
+
+146
+00:06:30.830 --> 00:06:32.870
+form the shape of the curve.
+
+147
+00:06:32.870 --> 00:06:36.520
+The traversal parameter u
+is fairly arbitrary here.
+
+148
+00:06:36.520 --> 00:06:37.940
+For simplicity, we take it
+
+149
+00:06:37.940 --> 00:06:40.070
+to be in the range
+of zero to one.
+
+150
+00:06:40.070 --> 00:06:42.650
+What this means is that u equals
+
+151
+00:06:42.650 --> 00:06:44.770
+zero corresponds to
+the start of the path,
+
+152
+00:06:44.770 --> 00:06:47.735
+and u equals one
+corresponds to the end.
+
+153
+00:06:47.735 --> 00:06:50.960
+A nice property of
+the quintic spline is that for
+
+154
+00:06:50.960 --> 00:06:54.470
+given position heading and
+curvature boundary conditions,
+
+155
+00:06:54.470 --> 00:06:57.139
+there is an immediate
+closed form solution
+
+156
+00:06:57.139 --> 00:06:59.975
+for the spline coefficients
+that satisfy them.
+
+157
+00:06:59.975 --> 00:07:03.050
+The solution is quite long
+so we won't listed here,
+
+158
+00:07:03.050 --> 00:07:05.690
+but it is still cheaper
+to evaluate than
+
+159
+00:07:05.690 --> 00:07:09.020
+generating a path using an
+iterative optimization method.
+
+160
+00:07:09.020 --> 00:07:12.845
+See the supplemental materials
+for a full listing.
+
+161
+00:07:12.845 --> 00:07:16.070
+There are also additional
+degrees of freedom which can be
+
+162
+00:07:16.070 --> 00:07:19.100
+further optimize depending
+on this application.
+
+163
+00:07:19.100 --> 00:07:21.770
+This is desirable because
+it allows us to generate
+
+164
+00:07:21.770 --> 00:07:22.940
+a feasible solution to
+
+165
+00:07:22.940 --> 00:07:24.774
+the boundary conditions
+immediately,
+
+166
+00:07:24.774 --> 00:07:28.385
+which can be further
+refined in anytime fashion.
+
+167
+00:07:28.385 --> 00:07:31.010
+The downside with quintic splines
+
+168
+00:07:31.010 --> 00:07:33.440
+is that it is often
+hard to constrain
+
+169
+00:07:33.440 --> 00:07:35.540
+curvature within a certain set of
+
+170
+00:07:35.540 --> 00:07:38.870
+bounds as is often required
+in autonomous driving.
+
+171
+00:07:38.870 --> 00:07:41.030
+If we look at
+the curvature equation
+
+172
+00:07:41.030 --> 00:07:42.395
+for a parametric curve,
+
+173
+00:07:42.395 --> 00:07:44.960
+we can see that for
+our quintic splines,
+
+174
+00:07:44.960 --> 00:07:46.685
+the curvature as a function of
+
+175
+00:07:46.685 --> 00:07:50.165
+arc length will not in
+general be a polynomial.
+
+176
+00:07:50.165 --> 00:07:52.730
+This has the potential
+to introduce
+
+177
+00:07:52.730 --> 00:07:55.100
+cusps or even discontinuities
+
+178
+00:07:55.100 --> 00:07:56.635
+of the curvature in the spline,
+
+179
+00:07:56.635 --> 00:07:59.420
+which makes it difficult
+to approximately satisfy
+
+180
+00:07:59.420 --> 00:08:00.950
+curvature constraints across
+
+181
+00:08:00.950 --> 00:08:03.230
+the entire domain of the spline.
+
+182
+00:08:03.230 --> 00:08:05.990
+We will discuss
+these curvature constraints
+
+183
+00:08:05.990 --> 00:08:08.210
+in more detail in
+our next lesson,
+
+184
+00:08:08.210 --> 00:08:09.800
+where we set up the optimization
+
+185
+00:08:09.800 --> 00:08:12.090
+problem for path planning.
+
+186
+00:08:12.190 --> 00:08:14.525
+As an alternative approach,
+
+187
+00:08:14.525 --> 00:08:15.905
+we can also employ
+
+188
+00:08:15.905 --> 00:08:19.010
+polynomial spirals to
+represent our path.
+
+189
+00:08:19.010 --> 00:08:20.360
+These curves offer
+
+190
+00:08:20.360 --> 00:08:22.730
+a closed form equation
+for the curvature
+
+191
+00:08:22.730 --> 00:08:26.825
+of the curve along each point
+of its arc length.
+
+192
+00:08:26.825 --> 00:08:30.110
+For autonomous driving,
+it is common to select
+
+193
+00:08:30.110 --> 00:08:31.640
+a cubic polynomial as
+
+194
+00:08:31.640 --> 00:08:33.700
+our curvature function
+of arc length.
+
+195
+00:08:33.700 --> 00:08:36.800
+However, higher-order functions
+are also acceptable.
+
+196
+00:08:36.800 --> 00:08:39.020
+The main positive of using
+
+197
+00:08:39.020 --> 00:08:42.200
+polynomial spirals is that
+their structure is highly
+
+198
+00:08:42.200 --> 00:08:43.730
+conducive to satisfying
+
+199
+00:08:43.730 --> 00:08:45.710
+the approximate
+curvature constraints
+
+200
+00:08:45.710 --> 00:08:48.590
+that are often required by
+the path planning problem.
+
+201
+00:08:48.590 --> 00:08:52.460
+Since a spiral is a polynomial
+function of curvature,
+
+202
+00:08:52.460 --> 00:08:54.950
+the curvature value will
+not change extremely
+
+203
+00:08:54.950 --> 00:08:58.055
+quickly like it can in
+the case of quintic splines.
+
+204
+00:08:58.055 --> 00:09:00.740
+This means we can
+constrain the curvature of
+
+205
+00:09:00.740 --> 00:09:03.140
+only a few points
+in the spiral and
+
+206
+00:09:03.140 --> 00:09:05.720
+the spiral will
+very likely satisfy
+
+207
+00:09:05.720 --> 00:09:09.050
+the curvature constraints
+across the entire curve.
+
+208
+00:09:09.050 --> 00:09:12.830
+This is highly useful when
+performing path optimization,
+
+209
+00:09:12.830 --> 00:09:15.620
+as the number of constraints
+greatly increases
+
+210
+00:09:15.620 --> 00:09:19.430
+the computational effort
+of each optimization step.
+
+211
+00:09:19.430 --> 00:09:23.360
+The downside of using polynomial
+spirals is that there is
+
+212
+00:09:23.360 --> 00:09:25.250
+no closed form solution of
+
+213
+00:09:25.250 --> 00:09:27.445
+the position and
+heading of the spiral,
+
+214
+00:09:27.445 --> 00:09:30.225
+unlike the case in
+the quintic spline.
+
+215
+00:09:30.225 --> 00:09:32.210
+Therefore, we must perform
+
+216
+00:09:32.210 --> 00:09:34.130
+an iterative
+optimization in order to
+
+217
+00:09:34.130 --> 00:09:37.820
+generate a spiral that satisfies
+our boundary conditions.
+
+218
+00:09:37.820 --> 00:09:39.275
+As can be seen here,
+
+219
+00:09:39.275 --> 00:09:42.580
+the position equations
+results in Fresnel integrals,
+
+220
+00:09:42.580 --> 00:09:45.260
+which have no closed
+form solution.
+
+221
+00:09:45.260 --> 00:09:46.970
+We therefore need to use
+
+222
+00:09:46.970 --> 00:09:48.890
+numerical approximation
+techniques to
+
+223
+00:09:48.890 --> 00:09:51.335
+compute the final end points
+of the spiral.
+
+224
+00:09:51.335 --> 00:09:53.539
+In this module, we
+will approximate
+
+225
+00:09:53.539 --> 00:09:55.340
+these Fresnel integrals using
+
+226
+00:09:55.340 --> 00:09:58.340
+Simpson's rule shown
+here on the third line.
+
+227
+00:09:58.340 --> 00:10:00.410
+Simpson's rule is
+more accurate with
+
+228
+00:10:00.410 --> 00:10:02.810
+fewer points than
+other approximation methods,
+
+229
+00:10:02.810 --> 00:10:04.130
+which will be useful when we
+
+230
+00:10:04.130 --> 00:10:06.635
+setup our optimization problem.
+
+231
+00:10:06.635 --> 00:10:08.990
+When it comes to the strengths
+
+232
+00:10:08.990 --> 00:10:10.705
+and weaknesses of the spiral,
+
+233
+00:10:10.705 --> 00:10:14.195
+we almost have a duality
+when compared to the spline,
+
+234
+00:10:14.195 --> 00:10:16.865
+each has a weak point
+where the other is strong.
+
+235
+00:10:16.865 --> 00:10:19.580
+The spline provides
+closed form solutions
+
+236
+00:10:19.580 --> 00:10:21.515
+based on start and
+end points alone,
+
+237
+00:10:21.515 --> 00:10:23.395
+whereas the spiral does not.
+
+238
+00:10:23.395 --> 00:10:25.010
+The spiral ensures
+
+239
+00:10:25.010 --> 00:10:27.170
+smooth curvature variation
+along the path,
+
+240
+00:10:27.170 --> 00:10:28.775
+while the spline does not.
+
+241
+00:10:28.775 --> 00:10:31.430
+You will therefore need
+to determine which method
+
+242
+00:10:31.430 --> 00:10:34.100
+is appropriate depending on
+your specific application.
+
+243
+00:10:34.100 --> 00:10:35.440
+As a brief shorthand,
+
+244
+00:10:35.440 --> 00:10:38.245
+the spline leads to
+computational efficiency,
+
+245
+00:10:38.245 --> 00:10:39.545
+while the spiral leads to
+
+246
+00:10:39.545 --> 00:10:42.890
+easier implementation of
+curvature constraints.
+
+247
+00:10:42.890 --> 00:10:45.230
+For this module, we will focus on
+
+248
+00:10:45.230 --> 00:10:48.350
+the polynomial spirals as we
+develop our path planner,
+
+249
+00:10:48.350 --> 00:10:50.150
+as we have a strong interest in
+
+250
+00:10:50.150 --> 00:10:51.830
+ensuring the paths generated by
+
+251
+00:10:51.830 --> 00:10:53.480
+our local planner can be
+
+252
+00:10:53.480 --> 00:10:56.190
+executed smoothly and
+safely by the vehicle.
+
+253
+00:10:56.190 --> 00:10:59.180
+However, many of
+the techniques described going
+
+254
+00:10:59.180 --> 00:11:02.525
+forward can also be applied
+to quintic splines.
+
+255
+00:11:02.525 --> 00:11:04.490
+Let's summarize this lesson.
+
+256
+00:11:04.490 --> 00:11:07.400
+We gave you an overview of
+the boundary conditions and
+
+257
+00:11:07.400 --> 00:11:09.080
+parametric curves used in
+
+258
+00:11:09.080 --> 00:11:11.150
+autonomous driving path planning,
+
+259
+00:11:11.150 --> 00:11:13.490
+and we introduced splines and
+
+260
+00:11:13.490 --> 00:11:16.175
+spirals as alternative
+path representations,
+
+261
+00:11:16.175 --> 00:11:17.780
+and discuss their differences
+
+262
+00:11:17.780 --> 00:11:19.745
+in the path planning context.
+
+263
+00:11:19.745 --> 00:11:21.190
+In our next lesson,
+
+264
+00:11:21.190 --> 00:11:23.780
+we'll be discussing how to
+set up the path planning
+
+265
+00:11:23.780 --> 00:11:27.080
+optimization problem
+using the cubic spiral
+
+266
+00:11:27.080 --> 00:11:29.810
+parametrization we
+discussed in this lesson,
+
+267
+00:11:29.810 --> 00:11:32.630
+as well as the constraints
+and objective functions
+
+268
+00:11:32.630 --> 00:11:37.000
+we defined earlier in this
+course. We will see you there.

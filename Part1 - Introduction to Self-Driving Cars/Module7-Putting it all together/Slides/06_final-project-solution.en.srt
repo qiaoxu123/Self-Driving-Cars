@@ -1,0 +1,286 @@
+1
+00:00:00,000 --> 00:00:10,000
+[MUSIC]
+
+2
+00:00:14,447 --> 00:00:18,842
+Now that you've had a chance to do some
+controller design and perform simulations
+
+3
+00:00:18,842 --> 00:00:23,780
+with Carla, we will show you our
+solution to the final course assessment.
+
+4
+00:00:23,780 --> 00:00:28,310
+Recall that our reference signal
+consists of both speed and position.
+
+5
+00:00:28,310 --> 00:00:31,000
+So we will require both longitudinal and
+lateral control.
+
+6
+00:00:32,100 --> 00:00:36,420
+For longitudinal control we
+implemented a PID Controller
+
+7
+00:00:36,420 --> 00:00:39,560
+which was described in the module
+on longitudinal control.
+
+8
+00:00:40,620 --> 00:00:44,570
+This PID controller will take
+the desired speed as the reference and
+
+9
+00:00:44,570 --> 00:00:46,830
+outputs throttle and brick.
+
+10
+00:00:46,830 --> 00:00:49,120
+As the desired speeds
+are reasonably low and
+
+11
+00:00:49,120 --> 00:00:52,410
+steady, we bypass the low
+level controller entirely.
+
+12
+00:00:53,560 --> 00:00:57,410
+Remember that a PID controller
+consists of three components.
+
+13
+00:00:57,410 --> 00:01:01,550
+First, a pure gain Kp that
+scales the vehicle acceleration
+
+14
+00:01:01,550 --> 00:01:03,560
+based on the speed error.
+
+15
+00:01:03,560 --> 00:01:06,990
+This ensures that the vehicle is
+accelerating in the correct direction
+
+16
+00:01:06,990 --> 00:01:09,100
+with the magnitude
+proportional to the error.
+
+17
+00:01:10,140 --> 00:01:16,990
+Second in integral term KI sets up the
+output based on accumulated past errors.
+
+18
+00:01:16,990 --> 00:01:20,670
+This ensures the steady steed errors
+are eliminated for ramp referencing.
+
+19
+00:01:21,690 --> 00:01:25,150
+Finally, the derivative term
+KD dampens the overshoot
+
+20
+00:01:25,150 --> 00:01:26,680
+caused by the integration term.
+
+21
+00:01:27,820 --> 00:01:31,730
+To complete the longitudinal control,
+we must convert the acceleration
+
+22
+00:01:31,730 --> 00:01:35,750
+output from the PID controller
+into throttle and brake commands.
+
+23
+00:01:35,750 --> 00:01:39,100
+For simplicity,
+positive outputs will be throttle and
+
+24
+00:01:39,100 --> 00:01:40,989
+negative outputs will correspond to break.
+
+25
+00:01:42,110 --> 00:01:43,590
+For lateral control,
+
+26
+00:01:43,590 --> 00:01:48,240
+we implement the Stanley controller that
+you learned about on lateral control.
+
+27
+00:01:49,310 --> 00:01:52,860
+Since the reference signal
+given are waypoint positions,
+
+28
+00:01:52,860 --> 00:01:56,629
+we need to convert them into cross
+track errors and heading errors.
+
+29
+00:01:58,030 --> 00:02:03,510
+We use the current way point, and the past
+way point to generate the trajectory line.
+
+30
+00:02:03,510 --> 00:02:05,770
+Then, using the equation of this line,
+
+31
+00:02:05,770 --> 00:02:09,430
+we determine the perpendicular
+distance to the front axle.
+
+32
+00:02:09,430 --> 00:02:10,710
+This is our cross track error.
+
+33
+00:02:11,780 --> 00:02:16,000
+We can now convert the cross track
+error into part of our steering input
+
+34
+00:02:16,000 --> 00:02:18,340
+by multiplying a gain k.
+
+35
+00:02:18,340 --> 00:02:21,560
+Dividing by the current velocity and
+taking the inverse tangent.
+
+36
+00:02:23,000 --> 00:02:26,840
+To calculate the heading error we
+subtract the current vehicle yard from
+
+37
+00:02:26,840 --> 00:02:28,980
+the trajectory line angle.
+
+38
+00:02:28,980 --> 00:02:32,780
+The trajectory line angle can be
+calculated by taking the inverse tangent
+
+39
+00:02:32,780 --> 00:02:33,329
+of it's slope.
+
+40
+00:02:35,000 --> 00:02:38,570
+Adding both the steering derived
+from the cross track error and
+
+41
+00:02:38,570 --> 00:02:41,670
+the heading error gives us
+the total steering input.
+
+42
+00:02:41,670 --> 00:02:44,160
+This completes our lateral controller.
+
+43
+00:02:44,160 --> 00:02:45,980
+Combining both the longitudinal and
+
+44
+00:02:45,980 --> 00:02:50,970
+lateral controllers gives us the following
+speed profile and trajectory.
+
+45
+00:02:50,970 --> 00:02:54,650
+As you can see, the controller
+tracks the reference speed well and
+
+46
+00:02:54,650 --> 00:02:57,690
+follows the path with very little error.
+
+47
+00:02:57,690 --> 00:03:00,620
+There are of course other controllers
+that you could of implemented
+
+48
+00:03:00,620 --> 00:03:02,360
+to solve this project as well.
+
+49
+00:03:02,360 --> 00:03:06,720
+Such as pure pursuit, feet forward
+control, and model predictive control.
+
+50
+00:03:06,720 --> 00:03:10,320
+If you've implemented these controllers
+let us know how they performed.
+
+51
+00:03:10,320 --> 00:03:15,160
+Congratulations you have now completed
+the final project for this course.
+
+52
+00:03:15,160 --> 00:03:18,710
+This is a huge milestone on your
+journey to becoming engineers for
+
+53
+00:03:18,710 --> 00:03:20,440
+self driving cars.
+
+54
+00:03:20,440 --> 00:03:23,160
+You will be able to employ
+your new simulation and
+
+55
+00:03:23,160 --> 00:03:27,490
+control algorithm design skills
+throughout the autonomous driving space.
+
+56
+00:03:27,490 --> 00:03:29,330
+So keep up the great work.
+
+57
+00:03:29,330 --> 00:03:33,290
+We hope applying what you've learned
+throughout this course in a real world
+
+58
+00:03:33,290 --> 00:03:37,100
+programming scenario has been
+an enjoyable learning experience.
+
+59
+00:03:37,100 --> 00:03:40,535
+You're going to learn a lot more
+about what it takes to programming
+
+60
+00:03:40,535 --> 00:03:44,295
+a self-driving car in the subsequent
+courses in this specialization.
+
+61
+00:03:44,295 --> 00:03:54,295
+[MUSIC]

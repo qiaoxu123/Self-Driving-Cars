@@ -1,0 +1,830 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Module 6：Vehicle Lateral Control · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../Module7-Putting it all together/module-7-putting-it-all-together.html" />
+    
+    
+    <link rel="prev" href="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Part1: Introduction to Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                <a href="../Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                    
+                    Module 0：Welcome to the self-driving cars specialization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                <a href="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                    
+                    Module 1：The Requirements for Autonomy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                <a href="../Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                    
+                    Module2：Self-Driving Hardware and Software Architectures
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                <a href="../Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                    
+                    Module3：Safety Assurance for Autonomous Vehicles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.5" data-path="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                <a href="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                    
+                    Module4：Vehicle Dynamic Modeling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.6" data-path="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                <a href="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                    
+                    Module 5：Vehicle Longitudinal Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.7" data-path="module-6-vehicle-lateral-control.html">
+            
+                <a href="module-6-vehicle-lateral-control.html">
+            
+                    
+                    Module 6：Vehicle Lateral Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.8" data-path="../Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                <a href="../Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                    
+                    Module 7：Putting it all together
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/">
+            
+                    
+                    Part2：State Estimation and Localization for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                    
+                    Module 1：Least Squares
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                    
+                    Module 2 - State Estimation - Linear and Nonlinear Kalman Filters
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                    
+                    Module 3 - GNSSINS Sensing for Pose Estimation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                    
+                    Module 4 - LIDAR Sensing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                    
+                    Module 5 - Putting It together - An Autonomous Vehicle State Estimator
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                <a href="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                    
+                    Part3：Visual Perception for Self-Driving Cars
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                    
+                    Part4：Motion Planning for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                    
+                    Module 1 - The Planning Problem
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                    
+                    Module 2 - Mapping for Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 3 - Mission Planning in Driving Environments/Module 3 - Mission Planning in Driving Environments.md">
+            
+                <span>
+            
+                    
+                    Module 3 - Mission Planning in Driving Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 4 - Dynamic Object Interactions/Module 4 - Dynamic Object Interactions.md">
+            
+                <span>
+            
+                    
+                    Module 4 - Dynamic Object Interactions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 5 - Principles of Behaviour Planning/Module 5 - Principles of Behaviour Planning.md">
+            
+                <span>
+            
+                    
+                    Module 5 - Principles of Behaviour Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 6 - Reactive Planning in Static Environments/Module 6 - Reactive Planning in Static Environments.md">
+            
+                <span>
+            
+                    
+                    Module 6 - Reactive Planning in Static Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 7 - Putting it all together - Smooth Local Planning/Module 7 - Putting it all together - Smooth Local Planning.md">
+            
+                <span>
+            
+                    
+                    Module 7 - Putting it all together - Smooth Local Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Module 6：Vehicle Lateral Control</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="module-6&#xFF1A;vehicle-lateral-control">Module 6&#xFF1A;Vehicle Lateral Control</h1>
+<blockquote>
+<p>This week, you will learn about how lateral vehicle control ensures that a fixed path through the environment is tracked accurately. You will see how to define geometry of the path following control problem and develop both a simple geometric control and a dynamic model predictive control approach.</p>
+</blockquote>
+<h3 id="&#x5B66;&#x4E60;&#x76EE;&#x6807;&#xFF1A;">&#x5B66;&#x4E60;&#x76EE;&#x6807;&#xFF1A;</h3>
+<ul>
+<li>Define the geometry of the lateral control problem, including heading and cross track errors</li>
+<li>Design a geometric steering controller to track a straight line segment</li>
+<li>Identify the limits of geometric controllers as wheel slip increases</li>
+<li>Explore options for dynamic control, including model predictive control</li>
+</ul>
+<h3 id="learning-objectives">Learning Objectives</h3>
+<p>Welcome to this week&apos;s first lesson. In the previous module, we learned some basic longitudinal control for autonomous car controlled development. In this module, we will go through the lateral control. We will cover four lessons this week.</p>
+<ul>
+<li>Explore lateral vehicle control definitions</li>
+<li>Design two geometric path following controllers</li>
+<li>Discuss model predictive control for autonomous driving</li>
+</ul>
+<p>In this lesson specifically, we&apos;ll introduce the core concepts needed to perform lateral control, and you&apos;ll learn how to define different types of reference path and how to compute heading and crosstrack errors relative to those reference paths. So, let&apos;s get started.</p>
+<h2 id="lesson-1-introduction-to-lateral-vehicle-control">Lesson 1: Introduction to Lateral Vehicle Control</h2>
+<h3 id="1-lateral-control-design">1. Lateral Control Design</h3>
+<p>One of the main concerns in autonomous vehicles is ensuring the vehicle can precisely follow a predefined path, executing the motion plan devised in the higher level planning module. This is the main goal of lateral control which must select the steering angle required to correct any errors that accumulate and track changes in the path direction as they appear.</p>
+<p>To design the lateral controller, we need to</p>
+<ul>
+<li>Define the error between the vehicle position and the appropriate desired path coordinates</li>
+<li>Select a control design strategy that drives errors to zero while still satisfying steering angle limits</li>
+<li>Consider the dynamic limitations of vehicle and desired ride characteristics such as maximum lateral acceleration and minimum jerk.</li>
+</ul>
+<p>Control command must be cognizant of the available tire forces and not exceed the capabilities of the vehicle when correcting for tracking errors.</p>
+<h3 id="2-the-reference-path">2. The Reference Path</h3>
+<p>The reference path is a fundamental interface between the planning system in the lateral controller, and can be defined in multiple ways. The easiest approach is to <strong>define a sequence of straight line segments</strong> by requiring a sequence of end point vertices that are connected linearly.</p>
+<p><img src="../../.gitbook/assets/dc12350e-f583-4090-92f0-54e3cd5fb11cuntitled.png" alt=""></p>
+<p>This path definition can be very compact and easy to construct, assuming points are well spaced and the environment allows for mostly straight line motion, as in a Manhattan grid of roadways. However, the path includes heading discontinuities, which make precise tracking a challenge with a steered vehicle.</p>
+<p><img src="../../.gitbook/assets/d037a4f0-b546-4cc6-9135-5fb9cff59264untitled.png" alt=""></p>
+<p>A refinement of the line segment approach is to provide <strong>a series of tightly spaced waypoints</strong>. This spacing is usually fixed in terms of distance or travel time. The relative position of the waypoints can be restricted to satisfy an approximate curvature constraint. Waypoint paths are very common, as they are easy to work with and can be directly constructed from state estimates or GPS waypoints collected in earlier runs of a particular route.</p>
+<p><img src="../../.gitbook/assets/84e14e38-486f-410a-8e06-64a57563d0e1untitled.png" alt=""></p>
+<p>It is also possible to define a path using a sequence of continuous parameterized curves, which can be either drawn from a fixed set of motion primitives or can be identified through optimization during planning. These curves provide the benefit of continuously varying motion, and can be constructed to have smooth derivatives to aid in the consistency of error and error rate calculations.</p>
+<p>In all cases of path following, the controller tries to eliminate the offset of the vehicle to the desired path and to align the vehicle heading with the path heading. For each of these paths definitions, the direction of travel along the path is also provided, which can be encoded with the point ordering or curve ordering. We will define these two terms shortly, as they both play a critical role in the design of lateral controllers. Let&apos;s now introduced the two main categories of lateral control design, which are widely used in autonomous vehicles.</p>
+<h3 id="3-two-types-of-control-design">3. Two Types of Control Design</h3>
+<p>The first category of controllers are <strong>geometric controllers</strong>, which rely on the geometry and coordinates of the desired path and the kinematic models of the vehicle. We&apos;ll consider two types of controllers that are geometric controllers:</p>
+<ul>
+<li><strong>Pure pursuit(carrot following)</strong></li>
+<li><strong>Stanley controllers.</strong></li>
+</ul>
+<p>We&apos;ll look at these in detail in the next lessons in this module. The other category of controllers is called <strong>dynamic controllers</strong>.</p>
+<ul>
+<li><strong>MPC control</strong></li>
+<li><strong>Other control systems</strong><ul>
+<li>Sliding mode,feedback linearization</li>
+</ul>
+</li>
+</ul>
+<p>The most popular advanced controller in this category is the model predictive controller or MPC, which performs a finite horizon optimization to identify the control command to apply. <strong>MPC is commonly used because of its ability to handle a wide variety of constraints and to identify optimized solutions that consider more than just the current errors.</strong> We&apos;ll look at MPC design in the final video in this module.</p>
+<h3 id="4-plant-model">4. Plant Model</h3>
+<p>Let&apos;s now investigate the definitions of errors in path tracking control. We&apos;ll use the kinematic bicycle model as our basis for this discussion. So, let&apos;s quickly review the important parameters of the bicycle model.</p>
+<p><img src="../../.gitbook/assets/da636319-c33a-4b81-94f2-787f4c2ea78buntitled.png" alt=""></p>
+<p>The bicycle model is a suitable control oriented model of a four-wheel vehicle, where the front left and right wheels are combined into a single steerable wheel, and the rear left and right wheels are combined together in a single drive wheel. For this discussion, we&apos;ll use a line segment as our reference path, shown as a solid black line in the diagram. A dashed black line that is parallel to the path but runs through the center of the front axle is also visible. <strong>For the purposes of lateral control, we redefine our heading relative to the current path line segment.</strong></p>
+<p>The variable side will be reused to represent the relative heading angle of the vehicle with respect to the path line. The front wheel velocity V and the steering angle relative to the heading direction delta do not change, and are also shown in this diagram. <strong>Note that we can place a reference frame for the vehicle at the center of the rear axle, at the center of the front axle, or at the center of gravity depending on our controller design.</strong></p>
+<h3 id="5-driving-controller">5. Driving Controller</h3>
+<p>As mentioned in the previous section, we&apos;ll introduce two types of error: heading and crosstrack error.</p>
+<p><img src="../../.gitbook/assets/724a7ce3-c7c1-4280-83ad-72a2840758fbuntitled.png" alt=""></p>
+<p><strong>The heading error</strong> is equal to the difference between path heading and vehicle heading at the reference point along the path. <strong>It is a principal measure of how well the vehicle is aligned with and moving in the direction of the desired path</strong>. The rate of heading error psi dot helps us understand how the heading error evolves over time, and can be computed from the kinematic bicycle model equations. The rate of heading error can be expressed in terms of any of the three vehicle reference points as well.</p>
+<p>Here we present the rate of heading error relative to the front axle, as will be used in the Stanley controller presented in the third video in this module. For straight line segments, the desired heading rate of change is zero, and it can be removed. This is because the reference heading is not time-varying for a straight line, and is in fact equal to zero, as we have redefined our heading relative to the current path direction.</p>
+<p><img src="../../.gitbook/assets/cbaa29e6-9615-482f-8b91-3bf4074bda21untitled.png" alt=""></p>
+<p>The other type of error is an offset error called the crosstrack error. <strong>The crosstrack error</strong> is the distance between the reference point on the vehicle and the closest point on the desired path. It is the principal measure of how close the vehicle&apos;s position is to the desired position along the path.</p>
+<p>Both heading error and crosstrack error must converge to zero for the vehicle to be properly tracking the desired path. The line from the vehicle reference point to the path reference point is perpendicular to the path. The rate of change of the crosstrack error can be calculated by extracting the lateral component of the forward velocity. <strong>From this equation, we can see that as the velocity increases, the crosstrack error changes more quickly, meaning that smaller steering angles are needed to correct for the same size crosstrack errors.</strong></p>
+<blockquote>
+<p>&#x5C06;&#x5BF9;&#x822A;&#x5411;&#x548C;&#x4EA4;&#x53C9;&#x8BEF;&#x5DEE;&#x7684;&#x8BA8;&#x8BBA;&#x6269;&#x5C55;&#x5230;&#x5F2F;&#x66F2;&#x8DEF;&#x5F84;&#x4F1A;&#x589E;&#x52A0;&#x4E00;&#x4E9B;&#x989D;&#x5916;&#x7684;&#x590D;&#x6742;&#x6027;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x80FD;&#x7ACB;&#x5373;&#x6E05;&#x695A;&#x5F2F;&#x66F2;&#x8DEF;&#x5F84;&#x4E0A;&#x7684;&#x53C2;&#x8003;&#x70B9;&#x5E94;&#x8BE5;&#x4F4D;&#x4E8E;&#x4F55;&#x5904;&#x3002;</p>
+</blockquote>
+<p><strong>Extending this discussion of the heading and crosstrack errors to the curved paths adds some additional complexity, as it is not immediately clear where the reference point on the curved path should lie.</strong> The geometric relations required fall outside the scope of this video. We&apos;ve nonetheless provided links in the supplemental materials for those interested in error calculations relative to curved paths.</p>
+<h3 id="6-summary">6. Summary</h3>
+<p>Let&apos;s summarize our discussion of the lateral control concepts.</p>
+<ul>
+<li><strong>Three approaches to defining reference paths: line segments, waypoints, and curves.</strong></li>
+<li><strong>How to construct error metrics for lateral control, including heading and crosstrack error</strong></li>
+</ul>
+<p>In the next video, we&apos;ll use these definitions to construct our first lateral vehicle controller, the pure pursuit controller, to define steering commands that will track our reference path. See you there.</p>
+<h2 id="lesson-2-geometric-lateral-control---pure-pursuit">Lesson 2: Geometric Lateral Control - Pure Pursuit</h2>
+<blockquote>
+<p>&#x5BF9;&#x4E8E;&#x65E0;&#x4EBA;&#x8F66;&#x8F68;&#x8FF9;&#x7684;&#x8FFD;&#x8E2A;&#xFF0C;&#x76EE;&#x524D;&#x4E3B;&#x6D41;&#x7684;&#x65B9;&#x6CD5;&#x5206;&#x4E3A;&#x4E24;&#x7C7B;&#xFF1A;&#x57FA;&#x4E8E;&#x51E0;&#x4F55;&#x8FFD;&#x8E2A;&#x7684;&#x65B9;&#x6CD5;&#x548C;&#x57FA;&#x4E8E;&#x6A21;&#x578B;&#x9884;&#x6D4B;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x672C;&#x8282;&#x4E3B;&#x8981;&#x4ECB;&#x7ECD;&#x4E00;&#x79CD;&#x5E7F;&#x6CDB;&#x4F7F;&#x7528;&#x7684;&#x57FA;&#x4E8E;&#x51E0;&#x4F55;&#x8FFD;&#x8E2A;&#x7684;&#x65B9;&#x6CD5;&#x2014;Pure Pursuit</p>
+</blockquote>
+<p>In the last lesson, we defined important concepts relevant for the lateral vehicle control. In this lesson, we will put these concepts to good use. We&apos;ll</p>
+<ul>
+<li>First introduce the concept of a geometric path tracking controller which relies on our kinematic vehicle model for selecting steering commands</li>
+<li>Design a pure pursuit controller for our self-driving cars to track a reference path through the environment. Let&apos;s get started.</li>
+</ul>
+<h3 id="1-geometric-path-tracking">1. Geometric path tracking</h3>
+<p>What is a geometric path tracking controller? Generically, it is any controller that tracks a reference path using only the geometry of the vehicle kinematics and the reference path. In the case of self-driving cars, a geometric path tracking controller is a <strong>type of lateral controller</strong> that ignores dynamic forces on the vehicles and assumes the no-slip condition holds at the wheels.</p>
+<blockquote>
+<p>Advantage and disadvantage</p>
+</blockquote>
+<p>It relies on a kinematic bicycle model and the error measures defined in the previous video to construct a steering command rule that achieves path tracking. Because of its simple nature, it is very popular and useful in robotics and autonomous driving. <strong>However, this simple approach has a downside in that its performance suffers when the vehicle motion does not match the no-slip assumption, as is the case in aggressive vehicle maneuvers with high lateral acceleration.</strong></p>
+<p>In these cases, a deeper understanding of the limits of the available tire forces is needed, as are more involved control strategies. When the vehicle is operating in the linear tire region and a tire is not saturated, however, geometric path tracking controllers can work very well. Geometric path tracking controllers rely on a reference point along the desired path, which can be the same reference point used to compute heading and cross track errors, or it can be a look-ahead point some distance in front of the vehicle along the path, an example of which is shown in red here.</p>
+<p><img src="../../.gitbook/assets/f4039063-c092-4083-b3c7-79be801f61cfuntitled.png" alt=""></p>
+<p>In fact, the pure pursuit controller we&apos;re about to derive uses a look-ahead point on the reference path, while the Stanley controller in the next video uses the same reference point as is needed for error calculations. Let&apos;s now take a closer look at the pure pursuit controller.</p>
+<h3 id="2-pure-pursuit">2. Pure pursuit</h3>
+<p>In the pure pursuit method, the core idea is that a reference point can be placed on the path a fixed distance ahead of the vehicle, and the steering commands needed to intersect with this point using a constant steering angle can be computed. As the vehicle turns towards the path to follow this curve, the point continues to move forward, reducing the steering angle and gently bringing the vehicle towards the path.</p>
+<p><img src="../../.gitbook/assets/e29f2933-0dae-4768-a9f0-2e0bf4544b9auntitled.png" alt=""></p>
+<p>In this method, the center of the rear axle is used as the reference point on the vehicle, and we define the line that connects the center of the rear axle to the target reference point as a line of fixed distance <em>ld</em>, known as the <strong>look-ahead distance</strong>, which is the red dashed line in this figure. The angle between the vehicle&apos;s body heading and the look-ahead line is referred to as alpha.</p>
+<h3 id="3-pure-pursuit---formulation">3. Pure pursuit - formulation</h3>
+<p>To construct the pure pursuit controller, we once again turn to the concept of the instantaneous center of rotation. The target point on the trajectory, the center of the rear axle, and the instantaneous center of rotation form a triangle with two sides of length R and one of length ld. We&apos;d like to define the arc that takes the vehicle reference point to the target point on the path. This arc is the part of the ICR circle that covers the angle of two alpha. The angle two alpha can be derived using standard trigonometric identities.</p>
+<p><img src="../../.gitbook/assets/e19e0f84-f689-476e-8da3-59dee27204bbuntitled.png" alt=""></p>
+<p>Based on the law of sines, we can write the following equation: ld over the sine of two alpha is equal to r over the sine of pi over two minus alpha. Then using some more trigonometric identities, we can simplify the equations as follows, which leads to the compact expression ld over sine alpha is equal to two R. Finally, the curvature kappa, which is the inverse of the arc radius R, is equal to two sine alpha over ld. Now, let&apos;s take a look at the bicycle model to calculate the steering angle needed to track this arc.</p>
+<p><img src="../../.gitbook/assets/fc663ca1-bf41-4ee5-8f32-7870898e0f09untitled.png" alt=""></p>
+<p>Recall that the steering angle defines the arc radius and yields the relation tan delta is equal to the car length l, over the arc radius R. Combining this expression with the expression for R derived earlier, we can now express the steering angle needed to follow the arc in terms of easily computed values. The steering angle delta is set to the inverse tan of 2L sine alpha over ld. This is an easily implemented controller for steering, but how well will it perform? To understand this, we need to dig into how the error values evolve in closed loop.</p>
+<p>Crosstrack error(e) is defined here as the lateral distance between the heading vector and the target point so:</p>
+<p><img src="../../.gitbook/assets/4d4bd1d1-b7d0-4bd1-82e8-9a818b055598untitled.png" alt=""></p>
+<p><strong>For the pure pursuit controller, we can define the cross track error as the distance between the heading vector and the target point.</strong> Once again, we&apos;ll use <em>e</em> to denote the cross track error. We now arrive at the expression sine alpha equals e over ld. <strong>Combining this with the expression for curvature shows us that the curvature of the path created by the pure pursuit controller is proportional to the cross track error at the look-ahead reference point.</strong> As the error increases, so does the curvature, bringing the vehicle back to the path more aggressively.</p>
+<p>This equation demonstrates that the pure pursuit controller works in a manner similar to proportional control to correct cross track error using path curvature as the output of the controller. The proportional gain depends on two over ld squared. So as the look-ahead distance increases, the proportional gain decreases in a nonlinear manner.</p>
+<p>It&apos;s important to note that the pure pursuit controller with a fixed value of ld leads to a curvature controller that does not take into account the vehicle speed. This means that the selected steering angle would be the same regardless of whether the vehicle is going 10 kilometers per hour or 100 kilometers per hour, leading to very different lateral acceleration&apos;s. A controller tuned for high-speed would be far too sluggish at low speed, and one tuned for low speed would be dangerously aggressive at high speeds.</p>
+<p><img src="../../.gitbook/assets/7d3e0561-2b71-4eac-89e3-377df9b64197untitled.png" alt=""></p>
+<p>To overcome this limitation, we add one more modification to our pure pursuit controller. <strong>We can vary the look-ahead distance ld based on the speed of the vehicle.</strong> We define the look-ahead distance to increase proportional to the vehicle forward speed.</p>
+<p>$$l<em>d = K</em>{dd}v_f$$</p>
+<p>The addition to the controller takes the form ld is equal to K sub PP, the pure pursuit look-ahead gain, times the forward velocity, vf. Substituting this adjustment into the steering angle command equation, we arrive at the complete pure pursuit controller. The controller selects the steering angle that will form an arc to the look-ahead reference point, and adjusts this look-ahead point to be further away the faster the vehicle is traveling. This design results in steering commands and turn rates that are achievable given available tire forces, although it must be tuned to do so. You now are ready to start building geometric lateral controllers for self-driving cars.</p>
+<h3 id="4-summary">4. Summary</h3>
+<p>Let&apos;s summarize. In this lesson, we defined the class of geometric path tracking controllers and derived the pure proceed controller, which is one of two geometric path following controllers that we&apos;ll study in this course. In the next video, we&apos;ll explore the second geometric path tracking controller, the Stanley controller. We&apos;ll see you there.</p>
+<h2 id="lesson-3-geometric-lateral-control---stanley">Lesson 3: Geometric Lateral Control - Stanley</h2>
+<p>Welcome back. In the last lesson, we derived the pure pursuit controller, a geometric path tracking controller that defined steering input based on a look ahead reference point.</p>
+<p>In this lesson, we will cover a second geometric path tracking controller, <strong>the Stanley controller</strong>. This controller was used by the Stanford racing team to win the second Darpa Grand Challenge event. Specifically in this video, you will</p>
+<ul>
+<li><strong>Derive the Stanley geometric controller</strong></li>
+<li><strong>Analyze the evolution of its steering commands for small and large errors</strong></li>
+<li><strong>Evaluate the control performance in the form of convergence to the desired path from arbitrary starting conditions</strong></li>
+</ul>
+<p>Let&apos;s get started.</p>
+<h3 id="1-stanley-controller-approach">1. Stanley Controller Approach</h3>
+<p>The Stanley controller is a geometric path tracking controller which is simple but useful for autonomous robotics and autonomous cars.</p>
+<p><img src="../../.gitbook/assets/0d00a9cf-dabc-4239-9415-7b2691ef484euntitled.png" alt=""></p>
+<p>The method was originally developed by Gabe Hoffman, a fellow lab-mate of mine at Stanford University as his contribution to the winning teams entry, and is named after the vehicle Stanley. The main concept that went into the creation of the Stanley controller was that a change in the reference position could lead to different, possibly more desirable properties of the control.</p>
+<p>Dr. Hoffman was seeking a control law with global convergence to the path and predictable decay of the errors that would be independent of vehicle speed. So, one day in a fit of inspiration, Dr. Hoffman switched the vehicle reference point used for the controller to the center of the front axle instead of either the CG or the rear axle to see how this new controller might behave. The next modifications he added were to consider both heading alignment and cross track error without a look-ahead distance, but directly at the reference point. Finally, the Stanley controller caps its outputs to fall within the limits of the maximum steering angle. In all these three considerations formed the basis for the resulting control law.</p>
+<p><strong>Couclusion:</strong></p>
+<ul>
+<li>Use the center of the front axle as a reference point</li>
+<li>Look at both the error in heading and the error in position relative to the closest point on the earth</li>
+<li>Define an intuitive steering law to<ul>
+<li>Correct heading error</li>
+<li>Correct position error</li>
+<li>Obey max steering angle bounds</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-heading-control-law">2. Heading control law</h3>
+<p>Let&apos;s define each of the terms of the Stanley controller.</p>
+<p><img src="../../.gitbook/assets/24482950-6e6c-4995-867c-bd713ee98740untitled.png" alt=""></p>
+<p>In this diagram, you can see the slight modifications to the relevant terms based on the Stanley assumptions. The cross track error is measured relative to the front axle, and the reference point on the path has no look ahead distance associated with it. Let&apos;s make each of the three components of the Stanley controller more concrete.</p>
+<p>First, to eliminate heading error relative to the path, <strong>the steering angle is set equal to the heading directly.</strong></p>
+<p>$$\delta(t) = \psi(t)$$</p>
+<p>Then to eliminate cross track error, a proportional control is added, whose gain is scaled by the inverse of the forward velocity. The control is then passed through an inverse tan function which maps the proportional control signal to the angular range of minus Pi to Pi.</p>
+<ul>
+<li><strong>Essentially proportional to error</strong></li>
+<li><strong>Inversely proportional to speed</strong></li>
+<li><strong>Limit effect for large errors with inverse tan</strong></li>
+<li><p><strong>Gain k determined experimentally</strong></p>
+<p>$$\delta(t) = tan^{-1}(\frac{ke(t)}{v_f(t)})$$</p>
+</li>
+</ul>
+<p>Finally, the steering angle command is kept to fall within the minimum and maximum steering angles, Delta min and Delta max, which are usually symmetric about 0.</p>
+<p>$$\delta(t)\in[\delta<em>{min},\delta</em>{max}]$$</p>
+<p>The similarities with the pure pursuit controller are not surprising, as both are seeking to perform the same task with the same kinematic model. <strong>The Stanley controller scales its gains by the forward speed in the same way as pure pursuit control, and also has the same inverse tangent of the proportional control signal.</strong> However, the independent penalization of heading and cross track errors and the elimination of the look-ahead distance make this a different approach from pure pursuit.</p>
+<h3 id="3-combind-steering-law">3. Combind steering law</h3>
+<p>The final control law simply combines these three elements to set the steering angle of the car as follows.</p>
+<p>$$\delta(t) = \psi(t) + tan^{-1}(\frac{ke(t)}{v<em>f(t)}), \delta(t)\in[\delta</em>{min},\delta_{max}]$$</p>
+<p>Let&apos;s now take a look at what&apos;s steering angle is requested for different error signals. For heading error, the steering command points in the opposite direction to the heading error, causing the vehicle to turn to correct the misalignment with the path. For large heading errors, for example, if the heading error exceeds the maximum steering angle, this part of the controller requests the maximum steering command until alignment falls back within the available balance.</p>
+<p>For large positive cross track error, ke over vf becomes large and the inverse tangent approaches Pi over 2. So we can approximate the Stanley control law as the heading error plus Pi over 2.</p>
+<p>$$tan^{-1}(\frac{ke(t)}{v_f(t)})\approx\frac{\pi}2$$</p>
+<p>This large value clamps the steering command to the maximum and the vehicle turns towards the path. The effect of this term is to increase the heading error in the opposite direction, and so the steering command will drop to 0 once the heading error reaches minus Pi over 2.</p>
+<p><img src="../../.gitbook/assets/23909170-288a-48fc-84ef-e063e738840euntitled.png" alt=""></p>
+<p><img src="../../.gitbook/assets/bac63c05-f943-4a09-b2bf-e6f7347624aduntitled.png" alt=""></p>
+<p><img src="../../.gitbook/assets/2c9a42b8-1abc-4eb7-a262-9b2d164ee7eduntitled.png" alt=""></p>
+<p>The vehicle then proceeds straight to the path until the cross track error decreases. At this point, the heading term starts correcting the alignment with the path again and ultimately, the vehicle starts to track the path more closely. But how does this control actually converge to the path?</p>
+<h3 id="4-error-dynamics">4. Error Dynamics</h3>
+<p>As it turns out, it&apos;s possible to use our expression for the cross track aerodynamics defined in the first video of this module to get a sense for the convergence characteristics of the Stanley controller.</p>
+<p><img src="../../.gitbook/assets/082ac4cd-45cb-4934-bce3-b727d96e2323untitled.png" alt=""></p>
+<p>Recall that the rate of change of the cross track error for a front axle reference point is equal to minus the forward velocity, times the sine of the heading minus the steering angle. If we substitute in the Stanley control law without limits, we get the final expression in this equation. Using a trigonometric identity for simplifying the sign of the inverse of 10, we can find that the rate of change of the cross track error evolves according to minus the gain k times the cross track error, divided by the square root of 1 plus ke over vf squared.</p>
+<p>For small cross track errors, we can simplify the denominator of this expression by assuming the quadratic term is negligible.</p>
+<p>$$\dot{e}(t)\approx-ke(t)$$</p>
+<p>This leads to the realization that the cross track error evolution follows a first-order differential equation, and the solution for this ODE is an exponential. Since k is positive, we see that the error decays exponentially to 0. The most interesting aspect of this investigation is that the decay rate is completely independent of the speed. So faster vehicles will travel farther while converging to the path, but will converge to the path at the same time as slower moving vehicles.</p>
+<h3 id="5-case-study">5. Case Study</h3>
+<p>Let&apos;s now dive into a simulation example of the error dynamics for the Stanley controller to observe its convergence characteristics.</p>
+<p><img src="../../.gitbook/assets/73d60677-7f6d-4db5-9215-95104796c883untitled.png" alt=""></p>
+<p>In this example, let&apos;s take a look at two extreme scenarios, large initial cross track error and large initial heading error.</p>
+<p><strong>In the first case</strong>, for large initial cross track error, let&apos;s assume the initial cross track error is five meters, and that the maximum allowable steering angle is 25 degrees and the forward velocity is five meters per second.</p>
+<p><img src="../../.gitbook/assets/08f12f95-38f2-4bda-bd2e-d0ad668b6af1untitled.png" alt=""></p>
+<p>We&apos;ll set the vehicle wheel base length to one meter for simplicity and the gain k will be set to a value of 2.5. This was selected based on chosen parameters for the simulation and some trial and error testing. The simulation shows how the Stanley controller corrects for a large cross track error and converges to the desired path. The large initial error leads to a large steering command that quickly turns the vehicle towards the path. The heading error and cross track error terms then reach an equilibrium, and the vehicle continues in a straight line towards the path. As the cross track error decreases, the exponential decay to the path becomes visible.</p>
+<p>Finally, the vehicle safely tracks the path in the final stages of the simulation. We can also run the same simulation at different forward velocities. So, let&apos;s try speeds of two, five and 10 meters per second. The results show the main characteristics of the Stanley controller. In all cases, the turn towards the path, straight line progress and then exponential decay to the path are visible. The higher the speed, the further the car travels before reaching the path. But the final convergence for small cross track errors takes the same amount of time in each case.</p>
+<p><strong>In the second case</strong>, the simulation can be regenerated for the scenario at a large initial heading error. The parameters are the same as the previous case but the vehicle starts out on the path pointing very much in the wrong direction.</p>
+<p><img src="../../.gitbook/assets/8d8ef322-5bdb-44e6-b300-8de76867a7aduntitled.png" alt=""></p>
+<p>The simulation results show the heading error is corrected by the Stanley control law. First, the steering command is up against its limit as the heading error is corrected. Then as the cross track error starts to grow, the steering commands continue to correct the heading of the car beyond the alignment with the path. Finally, the car enters the exponential convergence segment as before. These simulation results give us a good idea of the ability of the Stanley controller to correct arbitrarily large errors.</p>
+<p>In fact, it comes with a global stability proof, meaning that no matter what the initial conditions, the controller will guide the car back to its path. In practice however, the Stanley controller is still a geometric path tracking controller, and as such does not consider many different aspects of real self-driving car. For example, it does not consider noisy measurements, actuator dynamics or tire force effects, all of which can cause undesirable ride characteristics during maneuvers. It is possible, however, to make a few adjustments to the geometric path tracking controllers that help mitigate some of these most undesirable effects.</p>
+<h3 id="6-adjustment">6. Adjustment</h3>
+<p>During low-speed operation, the pure pursuit and Stanley controllers can behave quite aggressively when confronted with noisy velocity estimates.</p>
+<p>Since the velocity term is in the denominator of the fraction inside the inverse tangent, errors in low speed estimates tend to get amplified in the steering command. This leads to wild swings in the steering wheel, which is not desirable for rider comfort. So to get rid of this issue and to increase the stability of our solution at low speeds, we add a positive softening constant that ensures the denominator always has a minimum value. This softening constant can be tuned in the field.</p>
+<p><img src="../../.gitbook/assets/2ef4ac52-154c-4144-8b17-762a1bd681b0untitled.png" alt=""></p>
+<p>At higher speeds, we have the issue that steering commands need to vary slowly to ensure lateral forces are not excessive. Even with this scaling on speeds, Stanley&apos;s response was overly aggressive at high speeds, and so a damping term on heading rate was also added. This essentially converts the heading error control portion to a PD controller, and the same idea can be applied to the pure pursuit control of curvature as well.</p>
+<p>Finally, for curved paths with high curvature, the controller fails to track them well as the reference dynamics were not considered in the derivation of the geometric controllers. It is also possible as we saw in longitudinal control to enhance the performance and drive errors to 0 more quickly by adding a feed forward term to the controller. In this case, it is sufficient to simply include the steering angle required to maintain the curvature of the desired path. With these modifications, the Stanley controller becomes a useful tool for moderate driving tasks as long as the vehicle avoids exiting the linear tire region. We&apos;ll look more at defining paths that are safe to track in the fourth course of this specialization.</p>
+<h3 id="7-summary">7. Summary</h3>
+<p>In this lesson, you learned how to apply the Stanley controller as a geometric path tracking controller, what the convergence properties are for the Stanley controller and how to add further enhancements that improve the controllers real-world performance. In the next video, we&apos;ll introduce the model predictive control method and advanced model-based control method that can overcome many of the limitations of geometric controllers. See you next time.</p>
+<h2 id="lesson-4-advanced-steering-control---mpc">Lesson 4: Advanced Steering Control - MPC</h2>
+<p>Welcome back. In the last video, we studied the Stanley controller for lateral path tracking control. In this video, we will explore an advanced applied control strategy, known as Model Predictive Control or MPC, to understand how to incorporate dynamic modeling into controller design.</p>
+<p>Specifically in this video, we will</p>
+<ul>
+<li><strong>Describe the MPC architecture and the concept of receding horizon control</strong></li>
+<li><strong>Formulate an MPC optimization problem for both linear and nonlinear models</strong></li>
+<li><strong>Apply MPC to joint longitudinal and lateral vehicle control.</strong></li>
+</ul>
+<p>Let&apos;s dive in.</p>
+<h3 id="1-model-predictive-control">1. Model predictive control</h3>
+<p>First, let&apos;s quickly go through the key aspects of Model Predictive Control. <strong>MPC refers to the control design approach that numerically solves an optimization problem at each time-step</strong>. Because solving an optimization problem at each time step can take time, MPC was originally applied to slow processes such as industrial chemical processing.</p>
+<p>However, the ever-improving performance of today&apos;s computing hardware has made MPC a viable approach even on embedded hardware. More and more automotive applications are turning to MPC as a way to improve performance and expand operating range for a suite of different embedded controllers, from traction control and stability control, to emission reduction, and idle speed control.</p>
+<p><a href="https://zh.wikipedia.org/wiki/&#x6A21;&#x578B;&#x9810;&#x6E2C;&#x63A7;&#x5236;" target="_blank">&#x6A21;&#x578B;&#x9810;&#x6E2C;&#x63A7;&#x5236; - &#x7EF4;&#x57FA;&#x767E;&#x79D1;&#xFF0C;&#x81EA;&#x7531;&#x7684;&#x767E;&#x79D1;&#x5168;&#x4E66;</a></p>
+<p>Longitudinal and lateral control for autonomous vehicles is another extremely suitable application for MPC. <strong>Model Predictive Control is often interchangeably referred to as Receding Horizon Control</strong>, since the controller generates an actuator signal based on a fixed finite length horizon at each time-step which receives as time moves forward. The key advantages to solving online optimizations as part of the controller are as follows:</p>
+<blockquote>
+<p>Advantages</p>
+</blockquote>
+<p>The formulation of an MPC controller is straightforward requiring the definition of an objective function and relevant constraints that are then optimized using well-established solvers. The states and control signals can be constrained to stay within safe operating bounds and controls can be selected to maximize multiple objectives simultaneously. Both hard constraints and soft penalties can be employed, leading to a rich set of solutions for constrained control problems.</p>
+<blockquote>
+<p>Disadvanges</p>
+</blockquote>
+<p><img src="../../.gitbook/assets/untitled-a43f04c4-7092-4438-a6f6-9b64ba9a46ba.png" alt=""></p>
+<p>As many automotive subsystems have rigid actuator constraints and diverse performance objectives, MPC has emerged as a major tool for vehicle control. <strong>The controller can be explicitly applied to the linear or non-linear models of the vehicle and its subsystems, meaning that we can use the same approach even as our models change or improve over time.</strong> The trade-off these advantages must be weighed against, is that MPC requires significantly more computational resources than a Static Control Law.</p>
+<p>It is certainly possible to create optimization formulations that are too expensive to compute at the high update rates required for smooth vehicle control. Careful implementation is needed to avoid overloading processors.</p>
+<h3 id="2-receding-horizon-control">2. Receding horizon Control</h3>
+<p>Before we start designing MPC controllers, let&apos;s take a closer look at the concept of Receding Horizon. Receding Horizon Control solves a fixed size optimization at each time-step, which identifies optimal control inputs to apply from the current time to the end of the horizon based on the objectives constraints and current state of the vehicle. One issue that arises in implementation however, is that because optimization can take some amount of time, the state of the vehicle when starting the optimization, will be different from the state of the vehicle when completing the optimization.</p>
+<p>As a results, we must use a predicted state in the optimization for the time at which the control input will actually be applied. Let&apos;s step through the process and clarify the notation needed.</p>
+<p><img src="../../.gitbook/assets/untitled-5fd3b29f-ab49-4c60-9a00-e0c28b6ee905.png" alt=""></p>
+<p>First, we define the receding horizon length t. Then, we set the initial state for the optimization to be the predicted state at the end of the optimization x at time t. Next, we solve the optimization as the vehicle moves from its current state at time t minus one to x of t using the control input identified in the previous optimization. Although we won&apos;t exactly arrive at the predicted state at time t due to disturbances, we do expect to be reasonably close if the time interval is short. Finally, we apply the control signal from the first time step of the receding horizon optimization and repeat the process for the next time step.</p>
+<h3 id="3-mpc-structure">3. MPC structure</h3>
+<p>We can visualize the Receding Horizon or MPC Algorithm, using the following block diagram for a control.</p>
+<p><img src="../../.gitbook/assets/untitled-c95f780f-972f-419c-8035-9d52e3cc3563.png" alt=""></p>
+<p>We have two main blocks, an optimizer block, which is the core MPC component or a Receding Horizon Control component, and the dynamic model. The model takes in the past inputs and state from time t minus one and takes in the output of the optimizer which is the current sequence of inputs U at each time step in the horizon. The model then outputs predicted states at the next time-step, which are compared to the reference trajectory and passed into the optimizer as the future or predicted error.</p>
+<p>The optimizer also receives updated constraints and the cost function to use, which can be fixed in advanced or varied based on changing operating modes. The optimizer then solves its optimization and the process repeats.</p>
+<h3 id="4-linear-mpc-formulation">4. Linear MPC formulation</h3>
+<p>Now, let&apos;s take a look at the linear MPC design in particular. We use the state space formulation which represents a motion model in discrete form. The future states are linearly related to the current states and the actuator signals. Note that, A and B are the coefficient matrices and are assumed to be time-invariant.</p>
+<p>$$x_{t+1} = Ax_t + Bu_t$$</p>
+<p>MPC seeks to find a control policy U of inputs over a finite horizon.</p>
+<p>$$U = {u<em>{t|t},u</em>{t+1|t},u_{t+2|t},&#xB7;&#xB7;&#xB7;}$$</p>
+<p>If all the states are to be driven to zero, the objective function or cost function when we minimize, can be defined as follows:</p>
+<p>$$J(x(t),U) = \sum<em>{j=t}^{t+T-1}x^{T}</em>{j|t}Qx<em>{j|t}+u^T</em>{j|t}Ru_{j|t}$$</p>
+<p>with quadratic error on both deviations of the state from zero and on non-zero control inputs. This is similar to the optimization problem of optimal control theory and trades off control performance and input aggressiveness. Note that, the matrices Q and R are called weight matrices and can be selected to achieve a particular type of response.</p>
+<p>If instead we need to track a reference signals such as a desired trajectory, we modify the formulation to include the error delta x relative to the desired state.</p>
+<p>$$\delta x<em>{j|t}=x</em>{j|t,des}-x<em>{j|t} \ J(x(t),U) = \sum</em>{j=t}^{t+T-1}x^{T}<em>{j|t}Qx</em>{j|t}+u^T<em>{j|t}Ru</em>{j|t}$$</p>
+<h3 id="5-linear-mpc-solution">5. Linear MPC SOLUTION</h3>
+<p>This is a famous optimization formulation and has a closed form solution, the Linear Quadratic Regulator or LQR. The closed form solution uses full state feedback, meaning that all states are used in the control response. <strong>The LQR solution defines a control gain matrix K</strong>, which can be computed from the A and B matrices of the state-space model and the Q and R matrices of the cost function.</p>
+<p><img src="../../.gitbook/assets/untitled-431fb09f-4dae-4d13-943a-22de518e37aa.png" alt=""></p>
+<p>We&apos;ve included links in the supplemental materials to this fascinating result of states-pace control theory.</p>
+<p>Linear quadratic regulator,provides a closed form solution</p>
+<ul>
+<li>Full state feedback : u_t = - K x_t</li>
+<li>Control gain K is a matrix</li>
+<li>Refer to supplemental materials</li>
+</ul>
+<h3 id="6-nonlinear-mpc-formulation">6. (Non)Linear MPC formulation</h3>
+<p>In the more general case, the objective function is any differentiable non-linear function of a state and inputs over the receding horizon. The constraints imposed on the optimization can include; non-linear dynamic models of motion, state and input bounds that capture things like maximum steering angles, and any other inequality constraints g are equality constraints h that affect our system.</p>
+<p><img src="../../.gitbook/assets/untitled-e3ece32d-3f36-4eb3-bc24-36f58d215a71.png" alt=""></p>
+<p>For such a general optimization problem however, no closed form solution exists. So, we must rely on numerical optimization to find a solution. Even the kinematic bicycle model falls into this category. So, <strong>almost all MPC controllers for autonomous driving will be solved numerically</strong>.</p>
+<h3 id="7-vehicle-lateral-control">7. Vehicle Lateral Control</h3>
+<p>Let&apos;s now look at the implementation of an MPC controller for trajectory tracking on a self-driving car.</p>
+<p><img src="../../.gitbook/assets/untitled-909fd6a8-588a-47b7-8ccc-89d92bf0b537.png" alt=""></p>
+<p>MPC will be used in the same feedback structure presented earlier, but we include the conversion from the tire forces to throttle, break, and steering commands as a low level controller inside the loop. The inputs to the MPC block or the reference trajectory, which include the reference path and velocity, as well as the vehicle states at each time step. The outputs of the MPC block are the lateral and longitudinal forces needed to follow the desired trajectory. These forces are then translated into throttle, breaking, and steering commands, as the output of the low-level control. Finally, the actuation signals are applied to the vehicle at each time-step, and a new vehicle state is achieved closing the feedback loop.</p>
+<h3 id="8model-predictive-controller">8.Model Predictive Controller</h3>
+<p>The MPC optimization will be set up as follows to perform a double lane change maneuver. First, we define a cost for tracking the desired trajectory, which includes deviation from the desired trajectory and minimization of control command magnitude. Next, we define motion constraints on the vehicle, which rely on the lateral and longitudinal models developed in earlier videos. We also impose maximum limits on the tire forces to restrict them to fall within the linear tire region to avoid extreme responses to control our errors.</p>
+<p><img src="../../.gitbook/assets/untitled-378b30cd-a96f-4dd4-8641-2ec9377124b1.png" alt=""></p>
+<p>These costs and constraints define the optimization used in our example, which then gets converted into actual vehicle commands by the low-level controller. It is also possible to incorporate the low-level control into the MPC optimization, which would involve including as constraints, the engine map, full vehicle dynamic models, actuator forces, and tire force models. The result is a large optimization problem that may be challenging to solve in real time, but let&apos;s have a look at the results.</p>
+<h3 id="9-simulation--vehicle-trajectorydouble-lane-change">9. Simulation : Vehicle trajectory(double lane change)</h3>
+<p>This simulation is done for the double lane change scenario, where the vehicle first accelerates to a steady-state speed of 17 meters per second or 60 kilometers per hour, then maneuvers four meters to the left, and returns four meters to the right immediately thereafter.</p>
+<p><img src="../../.gitbook/assets/untitled-cd4fcbb7-1a7c-49ec-b320-7a8d20a37cce.png" alt=""></p>
+<p>The following plots show the results of the simulated maneuver with MPC control, with the reference trajectory in blue and the actual vehicle trajectory in red. We can see that the tracking performance with the MPC controller is excellent, lagging slightly, but without overshoot or oscillation. This is perhaps not surprising as the simulation and MPC use the same model and parameters. The output of model predictive controllers, the lateral and longitudinal forces, can be seen to be smoothly varying and well-behaved.</p>
+<p>Also, the vehicle yaw rate during the double lane change maneuver is plotted, revealing precise tracking throughout the states of a vehicle. MPC shows a lot of promises a control technique for autonomous driving and can be used without modification for a wide range of operating conditions and a large variety of scenarios. This flexibility and convenience comes at the cost of increased computational requirements and relies on the availability of robust optimization solvers to always return feasible solutions in the available time window.</p>
+<p>Let&apos;s summarize what we&apos;ve discussed in this video. We first explored the definition of Model Predictive Control and the Receding Horizon and constructed the closed loop block diagram for an MPC system. We then define the costs and constraints used in MPC. Finally, we applied MPC to the trajectory tracking problem for self-driving cars.</p>
+<h2 id="end-of-the-module">End of the module</h2>
+<p>Congratulations, you&apos;ve made it to the end of the module. In this module, you learned how to define the lateral path tracking problem, applied two geometric path tracking controllers, the pure pursuit and Stanley controllers to the path tracking problem, and defined a Model Predictive Controller for joint, lateral, and longitudinal control. In the final module in this course, you&apos;ll get your first hands on look at the Carlos simulator where you&apos;ll design lateral and longitudinal controllers to navigate a vehicle around a race track.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html" class="navigation navigation-prev " aria-label="Previous page: Module 5：Vehicle Longitudinal Control">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../Module7-Putting it all together/module-7-putting-it-all-together.html" class="navigation navigation-next " aria-label="Next page: Module 7：Putting it all together">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Module 6：Vehicle Lateral Control","level":"1.2.7","depth":2,"next":{"title":"Module 7：Putting it all together","level":"1.2.8","depth":2,"path":"Part1 - Introduction to Self-Driving Cars/Module7-Putting it all together/module-7-putting-it-all-together.md","ref":"Part1 - Introduction to Self-Driving Cars/Module7-Putting it all together/module-7-putting-it-all-together.md","articles":[]},"previous":{"title":"Module 5：Vehicle Longitudinal Control","level":"1.2.6","depth":2,"path":"Part1 - Introduction to Self-Driving Cars/Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.md","ref":"Part1 - Introduction to Self-Driving Cars/Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Part1 - Introduction to Self-Driving Cars/Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.md","mtime":"2019-07-31T02:26:20.220Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T02:26:51.944Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

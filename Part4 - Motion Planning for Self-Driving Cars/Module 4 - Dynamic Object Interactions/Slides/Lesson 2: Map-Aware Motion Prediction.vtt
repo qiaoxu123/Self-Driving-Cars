@@ -1,0 +1,1229 @@
+WEBVTT
+
+1
+00:00:13.790 --> 00:00:16.510
+Welcome to the second lesson in
+
+2
+00:00:16.510 --> 00:00:19.345
+our module on Dynamic
+Object Interaction.
+
+3
+00:00:19.345 --> 00:00:21.880
+In this video, we will
+be extending the topic
+
+4
+00:00:21.880 --> 00:00:24.280
+of motion prediction
+of dynamic objects,
+
+5
+00:00:24.280 --> 00:00:27.955
+to include information
+available from the HD road map.
+
+6
+00:00:27.955 --> 00:00:29.830
+To begin, we will discuss
+
+7
+00:00:29.830 --> 00:00:31.330
+the different assumptions relied
+
+8
+00:00:31.330 --> 00:00:33.220
+on by map-aware where algorithms,
+
+9
+00:00:33.220 --> 00:00:34.990
+for motion prediction, To
+
+10
+00:00:34.990 --> 00:00:37.390
+keep the task simple
+and efficient.
+
+11
+00:00:37.390 --> 00:00:39.385
+Then we will look at applying
+
+12
+00:00:39.385 --> 00:00:41.439
+a lane following
+prediction approach,
+
+13
+00:00:41.439 --> 00:00:44.260
+to improve position
+prediction components.
+
+14
+00:00:44.260 --> 00:00:47.030
+Next, we'll explore
+map-based prediction
+
+15
+00:00:47.030 --> 00:00:49.420
+when multiple lane options
+are available.
+
+16
+00:00:49.420 --> 00:00:51.830
+Then we'll explore a
+velocity prediction
+
+17
+00:00:51.830 --> 00:00:53.810
+around regulatory elements.
+
+18
+00:00:53.810 --> 00:00:56.420
+Finally, we'll discuss
+some of the issues
+
+19
+00:00:56.420 --> 00:00:58.940
+in short-falls of
+map-aware predictions that
+
+20
+00:00:58.940 --> 00:01:00.800
+revolve around assumptions made
+
+21
+00:01:00.800 --> 00:01:04.555
+regarding dynamic objects.
+So let's get started.
+
+22
+00:01:04.555 --> 00:01:06.410
+In the previous video,
+
+23
+00:01:06.410 --> 00:01:09.335
+we explored constant
+velocity motion prediction,
+
+24
+00:01:09.335 --> 00:01:10.940
+which worked well only in
+
+25
+00:01:10.940 --> 00:01:13.010
+a very limited number
+of scenarios.
+
+26
+00:01:13.010 --> 00:01:14.690
+Map-aware algorithms make
+
+27
+00:01:14.690 --> 00:01:16.700
+two broad categories
+of assumptions
+
+28
+00:01:16.700 --> 00:01:18.635
+to improve the motion predictions
+
+29
+00:01:18.635 --> 00:01:20.720
+particularly for vehicles.
+
+30
+00:01:20.720 --> 00:01:23.360
+Position-based
+assumptions to improve
+
+31
+00:01:23.360 --> 00:01:25.715
+the position component
+of the vehicle state,
+
+32
+00:01:25.715 --> 00:01:27.680
+and velocity-based assumptions to
+
+33
+00:01:27.680 --> 00:01:30.240
+improve the velocity component.
+
+34
+00:01:30.310 --> 00:01:33.260
+The first assumption
+made to improve
+
+35
+00:01:33.260 --> 00:01:35.495
+the position component
+of the prediction,
+
+36
+00:01:35.495 --> 00:01:37.250
+is that vehicles driving down
+
+37
+00:01:37.250 --> 00:01:39.815
+a given lane usually
+follow that lane.
+
+38
+00:01:39.815 --> 00:01:42.515
+Returning to our simple
+example scenario,
+
+39
+00:01:42.515 --> 00:01:45.139
+if we have a vehicle
+on a curved roadway,
+
+40
+00:01:45.139 --> 00:01:48.320
+the vehicle will most likely
+turn along with the roadway.
+
+41
+00:01:48.320 --> 00:01:50.825
+The second assumption
+that can be made is that
+
+42
+00:01:50.825 --> 00:01:53.690
+a drive lane change or
+direction prediction,
+
+43
+00:01:53.690 --> 00:01:55.190
+can be made based on the state of
+
+44
+00:01:55.190 --> 00:01:57.170
+the indicator light
+of the vehicle.
+
+45
+00:01:57.170 --> 00:01:59.300
+If such a detection has been made
+
+46
+00:01:59.300 --> 00:02:01.050
+by the perception stack
+for a vehicle,
+
+47
+00:02:01.050 --> 00:02:02.990
+it is possible to
+switch the prediction
+
+48
+00:02:02.990 --> 00:02:05.690
+to account for
+this additional information.
+
+49
+00:02:05.690 --> 00:02:08.690
+Velocity-based
+assumptions are used to
+
+50
+00:02:08.690 --> 00:02:11.795
+improve the velocity prediction
+of a dynamic object.
+
+51
+00:02:11.795 --> 00:02:14.900
+All vehicles on the road are
+affected by road geometry.
+
+52
+00:02:14.900 --> 00:02:17.510
+Thus, it is useful
+to assume that as
+
+53
+00:02:17.510 --> 00:02:21.005
+a vehicle approaches a turn
+with significant curvature,
+
+54
+00:02:21.005 --> 00:02:23.180
+the vehicle is likely
+to slow down to
+
+55
+00:02:23.180 --> 00:02:26.215
+avoid exceeding its lateral
+acceleration limits.
+
+56
+00:02:26.215 --> 00:02:29.570
+Finally, velocity prediction
+can be greatly enhanced
+
+57
+00:02:29.570 --> 00:02:32.450
+if we also consider
+a regulatory elements,
+
+58
+00:02:32.450 --> 00:02:35.250
+which the dynamic object
+may encounter.
+
+59
+00:02:35.250 --> 00:02:38.450
+For example, if there
+is a stop sign at
+
+60
+00:02:38.450 --> 00:02:41.290
+a close distance in front
+of a dynamic object,
+
+61
+00:02:41.290 --> 00:02:43.250
+it is safe to assume
+that the vehicle will
+
+62
+00:02:43.250 --> 00:02:46.010
+execute a decelerate
+to stop maneuver,
+
+63
+00:02:46.010 --> 00:02:48.935
+resulting in a lower
+velocity over time.
+
+64
+00:02:48.935 --> 00:02:51.245
+Well this is not a complete set
+
+65
+00:02:51.245 --> 00:02:52.730
+of all assumptions that can
+
+66
+00:02:52.730 --> 00:02:56.110
+be made to improve motion
+prediction using HD road maps,
+
+67
+00:02:56.110 --> 00:02:58.640
+they are sufficient to
+illustrate the diversity
+
+68
+00:02:58.640 --> 00:03:00.906
+of contextual
+information available
+
+69
+00:03:00.906 --> 00:03:02.930
+to improve our predictions.
+
+70
+00:03:02.930 --> 00:03:05.870
+Further, it is important
+to understand that
+
+71
+00:03:05.870 --> 00:03:07.670
+the more constraints
+or assumptions that
+
+72
+00:03:07.670 --> 00:03:09.650
+are added to a prediction model,
+
+73
+00:03:09.650 --> 00:03:11.330
+the less generalizable it can
+
+74
+00:03:11.330 --> 00:03:13.520
+be to all traffic scenarios.
+
+75
+00:03:13.520 --> 00:03:15.635
+In fact, by the end
+of this lesson,
+
+76
+00:03:15.635 --> 00:03:16.820
+we will see cases where
+
+77
+00:03:16.820 --> 00:03:19.039
+even these generic assumptions
+
+78
+00:03:19.039 --> 00:03:20.855
+can be overly constraining.
+
+79
+00:03:20.855 --> 00:03:22.910
+Let's now incorporate each of
+
+80
+00:03:22.910 --> 00:03:24.740
+these map-based assumptions into
+
+81
+00:03:24.740 --> 00:03:26.555
+our motion prediction methods.
+
+82
+00:03:26.555 --> 00:03:29.465
+For roadways with
+natural curvature,
+
+83
+00:03:29.465 --> 00:03:32.360
+we make the assumption
+that a vehicle which is on
+
+84
+00:03:32.360 --> 00:03:34.070
+a drive lane will likely follow
+
+85
+00:03:34.070 --> 00:03:36.175
+that drive lane
+through the curve.
+
+86
+00:03:36.175 --> 00:03:39.080
+Our motion predictions can
+be updated then by using
+
+87
+00:03:39.080 --> 00:03:40.130
+the center line of
+
+88
+00:03:40.130 --> 00:03:43.220
+the mainland map as the
+predicted path of the vehicle,
+
+89
+00:03:43.220 --> 00:03:44.990
+instead of the straight line path
+
+90
+00:03:44.990 --> 00:03:47.845
+generated by constant
+velocity predictions.
+
+91
+00:03:47.845 --> 00:03:50.630
+Recall the lane that
+map definition from module
+
+92
+00:03:50.630 --> 00:03:53.210
+two of this course
+which provides left,
+
+93
+00:03:53.210 --> 00:03:55.460
+and right lane boundaries
+for every lane on
+
+94
+00:03:55.460 --> 00:03:56.780
+the road from which there can
+
+95
+00:03:56.780 --> 00:03:59.150
+be a center line to construct it.
+
+96
+00:03:59.150 --> 00:04:01.280
+The center line of a lane lit is
+
+97
+00:04:01.280 --> 00:04:03.170
+defined as a set of points making
+
+98
+00:04:03.170 --> 00:04:04.880
+up a polyline that is equally
+
+99
+00:04:04.880 --> 00:04:07.355
+spaced from both lane boundaries.
+
+100
+00:04:07.355 --> 00:04:09.380
+While minor deviations from
+
+101
+00:04:09.380 --> 00:04:11.550
+the exact center line
+can be expected,
+
+102
+00:04:11.550 --> 00:04:12.860
+the center line can act as
+
+103
+00:04:12.860 --> 00:04:15.260
+a good motion prediction
+approximation.
+
+104
+00:04:15.260 --> 00:04:17.300
+This is a major step forward over
+
+105
+00:04:17.300 --> 00:04:18.995
+constant velocity predictions on
+
+106
+00:04:18.995 --> 00:04:21.230
+any roadway with curvature.
+
+107
+00:04:21.230 --> 00:04:24.140
+However, by restricting
+path predictions
+
+108
+00:04:24.140 --> 00:04:26.510
+to the center line of
+any given lane lit,
+
+109
+00:04:26.510 --> 00:04:28.865
+will result in two major issues.
+
+110
+00:04:28.865 --> 00:04:31.609
+The first is that
+during normal driving,
+
+111
+00:04:31.609 --> 00:04:33.935
+drivers routinely change lanes.
+
+112
+00:04:33.935 --> 00:04:35.455
+So as mentioned earlier,
+
+113
+00:04:35.455 --> 00:04:37.220
+such maneuver may be predicted
+
+114
+00:04:37.220 --> 00:04:39.215
+based on indicator
+light perception.
+
+115
+00:04:39.215 --> 00:04:41.180
+Although not all lean changes by
+
+116
+00:04:41.180 --> 00:04:43.850
+human drivers are preceded
+by an indication.
+
+117
+00:04:43.850 --> 00:04:45.935
+The second problem that arises
+
+118
+00:04:45.935 --> 00:04:47.660
+is that it is regularly the case,
+
+119
+00:04:47.660 --> 00:04:50.480
+that there is more than one
+center line to choose from.
+
+120
+00:04:50.480 --> 00:04:53.380
+Such as in the case
+of an intersection.
+
+121
+00:04:53.380 --> 00:04:56.185
+For example, at
+this simple T junction,
+
+122
+00:04:56.185 --> 00:04:57.410
+it is possible for the vehicle
+
+123
+00:04:57.410 --> 00:04:59.090
+to turn either left or right.
+
+124
+00:04:59.090 --> 00:05:01.490
+This leads us to
+the need to consider
+
+125
+00:05:01.490 --> 00:05:03.500
+multiple hypotheses based on
+
+126
+00:05:03.500 --> 00:05:06.700
+likely behaviors of the
+other agents in the scene.
+
+127
+00:05:06.700 --> 00:05:09.620
+Again, we have
+two options: we can
+
+128
+00:05:09.620 --> 00:05:12.935
+identify the most likely
+behavior using objects state,
+
+129
+00:05:12.935 --> 00:05:15.005
+appearance, and
+track information,
+
+130
+00:05:15.005 --> 00:05:16.970
+and then construct a prediction
+
+131
+00:05:16.970 --> 00:05:19.045
+based on the most
+likely behavior,
+
+132
+00:05:19.045 --> 00:05:21.470
+or we can construct
+a prediction for
+
+133
+00:05:21.470 --> 00:05:23.960
+the most likely behaviors
+and associate
+
+134
+00:05:23.960 --> 00:05:26.300
+a probability that
+the agents will follow
+
+135
+00:05:26.300 --> 00:05:27.980
+a particular path based on
+
+136
+00:05:27.980 --> 00:05:30.650
+the state appearance
+and track information.
+
+137
+00:05:30.650 --> 00:05:32.420
+The second approach is
+
+138
+00:05:32.420 --> 00:05:34.310
+a slight generalization
+of the first.
+
+139
+00:05:34.310 --> 00:05:36.485
+So we will focus
+our attention on it.
+
+140
+00:05:36.485 --> 00:05:40.415
+We refer to this as
+multi hypothesis prediction.
+
+141
+00:05:40.415 --> 00:05:43.744
+In the case of multi-hypothesis
+prediction approaches,
+
+142
+00:05:43.744 --> 00:05:45.860
+each nominal behavior
+of a vehicle
+
+143
+00:05:45.860 --> 00:05:48.080
+based on the full range
+of possibilities
+
+144
+00:05:48.080 --> 00:05:49.490
+available to it at
+
+145
+00:05:49.490 --> 00:05:52.820
+its current location in
+the HD road map is considered.
+
+146
+00:05:52.820 --> 00:05:55.520
+For the three-way
+intersection example,
+
+147
+00:05:55.520 --> 00:05:58.770
+we can include three
+possibilities: turn left,
+
+148
+00:05:58.770 --> 00:06:01.455
+turn right, or stay stationary.
+
+149
+00:06:01.455 --> 00:06:03.790
+Based on corroborating evidence
+
+150
+00:06:03.790 --> 00:06:05.530
+such as indicators signals,
+
+151
+00:06:05.530 --> 00:06:08.379
+position to the left or
+right of the center line,
+
+152
+00:06:08.379 --> 00:06:11.170
+and the state of the vehicle
+at the intersection.
+
+153
+00:06:11.170 --> 00:06:13.254
+It is possible to evaluate
+
+154
+00:06:13.254 --> 00:06:15.460
+each of the three
+hypotheses in terms
+
+155
+00:06:15.460 --> 00:06:16.990
+of the likelihood the agent will
+
+156
+00:06:16.990 --> 00:06:20.050
+execute each of them within
+the prediction horizon.
+
+157
+00:06:20.050 --> 00:06:23.545
+These probabilities can be
+hard to quantify exactly.
+
+158
+00:06:23.545 --> 00:06:26.515
+So can either be learned
+from training data
+
+159
+00:06:26.515 --> 00:06:28.000
+of many vehicles proceeding
+
+160
+00:06:28.000 --> 00:06:29.830
+through similar intersections,
+
+161
+00:06:29.830 --> 00:06:34.420
+or can be engineered and refined
+from real-world testing.
+
+162
+00:06:34.420 --> 00:06:37.510
+Such approaches
+traditionally provide
+
+163
+00:06:37.510 --> 00:06:40.630
+more ambiguous information
+to the behavior planner,
+
+164
+00:06:40.630 --> 00:06:44.004
+requiring this next stage
+of the planning process,
+
+165
+00:06:44.004 --> 00:06:47.040
+to consider multiple scenarios
+simultaneously,
+
+166
+00:06:47.040 --> 00:06:51.605
+and to handle the probabilistic
+representation of belief.
+
+167
+00:06:51.605 --> 00:06:54.035
+However, if handled correctly,
+
+168
+00:06:54.035 --> 00:06:56.870
+this approach can also
+be significantly safer,
+
+169
+00:06:56.870 --> 00:06:59.270
+enabling defensive
+driving strategies,
+
+170
+00:06:59.270 --> 00:07:00.740
+and rapid re-planning if
+
+171
+00:07:00.740 --> 00:07:03.440
+probabilities shift based
+on new information.
+
+172
+00:07:03.440 --> 00:07:06.320
+This approach also has
+an advantage of being
+
+173
+00:07:06.320 --> 00:07:08.990
+able to adapt to
+human-based driving errors.
+
+174
+00:07:08.990 --> 00:07:12.125
+Such as forgetting to
+signal when changing lanes.
+
+175
+00:07:12.125 --> 00:07:15.320
+Now that we understand how
+a road map can be used to
+
+176
+00:07:15.320 --> 00:07:17.120
+improve the positional component
+
+177
+00:07:17.120 --> 00:07:18.950
+of the predicted trajectories,
+
+178
+00:07:18.950 --> 00:07:22.585
+let us now dive into
+the velocity component.
+
+179
+00:07:22.585 --> 00:07:25.340
+The first improvement
+in this area is
+
+180
+00:07:25.340 --> 00:07:28.355
+based on the known road
+geometry or curvature,
+
+181
+00:07:28.355 --> 00:07:29.675
+and the prediction of how
+
+182
+00:07:29.675 --> 00:07:31.835
+other vehicles will react to it.
+
+183
+00:07:31.835 --> 00:07:34.760
+All vehicles no matter
+their making model,
+
+184
+00:07:34.760 --> 00:07:36.920
+will reduce their velocity
+as they enter
+
+185
+00:07:36.920 --> 00:07:39.620
+sharp curves or execute turns.
+
+186
+00:07:39.620 --> 00:07:43.280
+We can use an expected
+maximum lateral acceleration,
+
+187
+00:07:43.280 --> 00:07:44.540
+usually in the range of
+
+188
+00:07:44.540 --> 00:07:47.420
+0.5 to one meter
+per second squared,
+
+189
+00:07:47.420 --> 00:07:50.825
+to improve velocity
+estimation along curves.
+
+190
+00:07:50.825 --> 00:07:52.850
+The second and more significant
+
+191
+00:07:52.850 --> 00:07:54.320
+improvement is to incorporate
+
+192
+00:07:54.320 --> 00:07:57.845
+regulatory elements to
+improve velocity estimation.
+
+193
+00:07:57.845 --> 00:08:00.800
+Given the anticipated path
+of the vehicle,
+
+194
+00:08:00.800 --> 00:08:03.140
+any roadway elements
+such as stop signs,
+
+195
+00:08:03.140 --> 00:08:06.445
+yield signs, speed limit changes
+or traffic lights,
+
+196
+00:08:06.445 --> 00:08:09.020
+can all inform the
+velocity prediction.
+
+197
+00:08:09.020 --> 00:08:10.820
+In the case of traffic lights
+
+198
+00:08:10.820 --> 00:08:13.205
+the lights state
+is also required.
+
+199
+00:08:13.205 --> 00:08:16.250
+In each case
+a stop location can be
+
+200
+00:08:16.250 --> 00:08:19.075
+predicted based on
+the regulatory element line,
+
+201
+00:08:19.075 --> 00:08:21.300
+as defined in the road map.
+
+202
+00:08:21.300 --> 00:08:24.335
+Then a smooth deceleration
+can be applied
+
+203
+00:08:24.335 --> 00:08:27.605
+to the vehicle velocity
+prediction along its path.
+
+204
+00:08:27.605 --> 00:08:30.385
+In fact, given a HD road map,
+
+205
+00:08:30.385 --> 00:08:32.540
+it is possible to
+preprocess the map
+
+206
+00:08:32.540 --> 00:08:35.180
+for nominal trajectories
+along each roadway,
+
+207
+00:08:35.180 --> 00:08:39.500
+and to define lanelet specific
+multi-hypothesis priors,
+
+208
+00:08:39.500 --> 00:08:42.110
+based on nominal
+driving behavior.
+
+209
+00:08:42.110 --> 00:08:44.510
+This serves both as guidance for
+
+210
+00:08:44.510 --> 00:08:45.950
+the ego vehicle in planning
+
+211
+00:08:45.950 --> 00:08:47.885
+its behaviors and trajectories,
+
+212
+00:08:47.885 --> 00:08:50.030
+and also in terms of refining
+
+213
+00:08:50.030 --> 00:08:53.015
+the motion predictions
+for other agents.
+
+214
+00:08:53.015 --> 00:08:55.640
+Of course obstructions in
+
+215
+00:08:55.640 --> 00:08:57.950
+the lane ahead of
+a vehicle precedence of
+
+216
+00:08:57.950 --> 00:09:00.380
+arrival information
+at intersections
+
+217
+00:09:00.380 --> 00:09:02.270
+and lead vehicles in the lane,
+
+218
+00:09:02.270 --> 00:09:03.620
+can all be integrated to
+
+219
+00:09:03.620 --> 00:09:06.335
+improve predictions
+for other vehicles.
+
+220
+00:09:06.335 --> 00:09:08.090
+Given the complexity of making
+
+221
+00:09:08.090 --> 00:09:10.699
+decisions for
+a single self-driving car,
+
+222
+00:09:10.699 --> 00:09:13.370
+there is a limit to
+how many variables and
+
+223
+00:09:13.370 --> 00:09:16.729
+how much depth of information
+in logic can be used,
+
+224
+00:09:16.729 --> 00:09:18.500
+to improve motion prediction.
+
+225
+00:09:18.500 --> 00:09:21.680
+There is also a limit to
+how much we can rely on
+
+226
+00:09:21.680 --> 00:09:24.650
+assumptions about expected
+dynamic object behavior,
+
+227
+00:09:24.650 --> 00:09:26.705
+to predict future actions.
+
+228
+00:09:26.705 --> 00:09:29.720
+Dynamic objects do not
+always behave according
+
+229
+00:09:29.720 --> 00:09:32.645
+to the nominal behaviors
+expected of the drivers.
+
+230
+00:09:32.645 --> 00:09:35.215
+They do not exactly
+follow the center line,
+
+231
+00:09:35.215 --> 00:09:37.230
+do not drive at the speed limit,
+
+232
+00:09:37.230 --> 00:09:40.690
+accelerate and decelerate at
+different rates for example.
+
+233
+00:09:40.690 --> 00:09:43.100
+Further, they may
+react to information
+
+234
+00:09:43.100 --> 00:09:45.800
+not yet available to
+the prediction system,
+
+235
+00:09:45.800 --> 00:09:49.175
+such as a potholes in the road
+ahead or a bouncing ball.
+
+236
+00:09:49.175 --> 00:09:51.020
+They may simply not observe
+
+237
+00:09:51.020 --> 00:09:52.790
+a regulatory element as occurs
+
+238
+00:09:52.790 --> 00:09:55.265
+when a vehicle accidentally
+runs a red light.
+
+239
+00:09:55.265 --> 00:09:58.580
+All these variations must be
+accounted for which can be
+
+240
+00:09:58.580 --> 00:10:02.050
+done to some extent with
+the multi-hypothesis approach.
+
+241
+00:10:02.050 --> 00:10:04.310
+The best approach is
+therefore to track
+
+242
+00:10:04.310 --> 00:10:07.845
+the evolution of beliefs
+over the set of hypotheses,
+
+243
+00:10:07.845 --> 00:10:10.070
+and to update based
+on evidence from
+
+244
+00:10:10.070 --> 00:10:12.695
+the perception stack
+at every time step.
+
+245
+00:10:12.695 --> 00:10:14.270
+There is a great deal of
+
+246
+00:10:14.270 --> 00:10:16.490
+complexity embedded
+in these methods,
+
+247
+00:10:16.490 --> 00:10:17.540
+and we encourage you to
+
+248
+00:10:17.540 --> 00:10:19.460
+explore some of
+the challenging issues
+
+249
+00:10:19.460 --> 00:10:22.910
+associated with motion prediction
+for self-driving cars,
+
+250
+00:10:22.910 --> 00:10:24.440
+by digging into the references
+
+251
+00:10:24.440 --> 00:10:27.005
+included in the
+supplementary materials.
+
+252
+00:10:27.005 --> 00:10:30.140
+This concludes our discussion
+of motion prediction.
+
+253
+00:10:30.140 --> 00:10:32.255
+In today's lesson, we have
+
+254
+00:10:32.255 --> 00:10:35.810
+described a set of assumptions
+for map-aware algorithms,
+
+255
+00:10:35.810 --> 00:10:39.245
+to improve motion prediction
+of vehicles on drive lanes,
+
+256
+00:10:39.245 --> 00:10:42.230
+defined position and
+velocity-based methods
+
+257
+00:10:42.230 --> 00:10:46.490
+to improve motion prediction,
+described multi-hypothesis
+
+258
+00:10:46.490 --> 00:10:48.230
+prediction as a way to maintain
+
+259
+00:10:48.230 --> 00:10:52.040
+multiple beliefs about
+another vehicles future actions,
+
+260
+00:10:52.040 --> 00:10:54.830
+and finally identified
+some of the issues with
+
+261
+00:10:54.830 --> 00:10:58.385
+exclusively relying on
+map-aware motion prediction.
+
+262
+00:10:58.385 --> 00:11:00.890
+I hope you will join
+us next time where we
+
+263
+00:11:00.890 --> 00:11:02.990
+will see how to use
+our predicted paths,
+
+264
+00:11:02.990 --> 00:11:05.120
+to calculate a time to collision,
+
+265
+00:11:05.120 --> 00:11:08.880
+between pairs of dynamic
+objects. See you there.

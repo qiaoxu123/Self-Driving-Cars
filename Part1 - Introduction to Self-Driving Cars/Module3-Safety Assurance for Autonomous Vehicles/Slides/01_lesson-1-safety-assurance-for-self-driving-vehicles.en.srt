@@ -1,0 +1,1007 @@
+1
+00:00:18,530 --> 00:00:21,780
+Welcome to the third week of this course.
+
+2
+00:00:21,780 --> 00:00:24,240
+This week we will dive into the basics of
+
+3
+00:00:24,240 --> 00:00:27,615
+incorporating safety into autonomous vehicle design.
+
+4
+00:00:27,615 --> 00:00:30,815
+Throughout this module, we'll discuss
+
+5
+00:00:30,815 --> 00:00:34,340
+some of the recent autonomous vehicle crash reports,
+
+6
+00:00:34,340 --> 00:00:38,940
+then we will formally define safety concepts for self-driving cars,
+
+7
+00:00:38,940 --> 00:00:43,090
+and discuss the most common sources of hazard that occur.
+
+8
+00:00:43,090 --> 00:00:47,360
+We'll discuss some industry perspectives on safety, and finally,
+
+9
+00:00:47,360 --> 00:00:49,040
+we'll wrap up by discussing some of
+
+10
+00:00:49,040 --> 00:00:52,880
+the common frameworks that are used in safe system design.
+
+11
+00:00:52,880 --> 00:00:55,970
+In this lesson, we will discuss some of
+
+12
+00:00:55,970 --> 00:01:01,655
+the first incidence of self-driving car crashes from 2017 and 2018.
+
+13
+00:01:01,655 --> 00:01:05,780
+Then, we will define some basic safety concepts and
+
+14
+00:01:05,780 --> 00:01:10,119
+list some of the most common causes for autonomous vehicle hazards,
+
+15
+00:01:10,119 --> 00:01:14,600
+and discuss the low level and high level requirements for safety.
+
+16
+00:01:14,600 --> 00:01:17,750
+We should point out that the material in this module is
+
+17
+00:01:17,750 --> 00:01:20,300
+mostly taken from the published guidelines,
+
+18
+00:01:20,300 --> 00:01:23,600
+by the International Organization for Standards, ISO.
+
+19
+00:01:23,600 --> 00:01:28,290
+You'll find a more comprehensive version of these frameworks online.
+
+20
+00:01:28,390 --> 00:01:31,160
+Let's start with a discussion of some of
+
+21
+00:01:31,160 --> 00:01:34,840
+the more prominent autonomous vehicle failures to date.
+
+22
+00:01:34,840 --> 00:01:39,640
+In March 2016, a self-driving Google car now Waymo,
+
+23
+00:01:39,640 --> 00:01:42,170
+ran into the side of a bus when it attempted to
+
+24
+00:01:42,170 --> 00:01:44,815
+pull out from behind an obstacle in its way.
+
+25
+00:01:44,815 --> 00:01:50,105
+A bus was approaching from the rear and was aiming to pass the Google car in its lane,
+
+26
+00:01:50,105 --> 00:01:53,705
+which was over to the right of its lane prepared to turn.
+
+27
+00:01:53,705 --> 00:01:58,310
+The Google car software believed the bus would not attempt to pass it,
+
+28
+00:01:58,310 --> 00:02:03,125
+as the gap between itself and the cars in the next lane was too narrow.
+
+29
+00:02:03,125 --> 00:02:06,740
+It turns out buses habitually shoot through smaller gaps
+
+30
+00:02:06,740 --> 00:02:10,685
+than Google anticipated leading to the crash in this case.
+
+31
+00:02:10,685 --> 00:02:13,340
+By the time the Google car could react to
+
+32
+00:02:13,340 --> 00:02:16,490
+the new measurements of the bus location, it was too late.
+
+33
+00:02:16,490 --> 00:02:19,160
+This is just one example of how hard it is to
+
+34
+00:02:19,160 --> 00:02:23,065
+predict all other vehicles actions before they happen.
+
+35
+00:02:23,065 --> 00:02:27,530
+A year later, an Uber self-driving vehicle overreacted during
+
+36
+00:02:27,530 --> 00:02:31,975
+a minor collision caused by another vehicle and ended up overturning.
+
+37
+00:02:31,975 --> 00:02:35,090
+Since the dynamic models of the vehicle don't assume
+
+38
+00:02:35,090 --> 00:02:39,455
+significant disturbance forces from other vehicles acting on the car,
+
+39
+00:02:39,455 --> 00:02:44,510
+the controller had likely not been tested for such a scenario and overreacted.
+
+40
+00:02:44,510 --> 00:02:48,500
+This crash highlights the need for robustness integrated into
+
+41
+00:02:48,500 --> 00:02:50,330
+the control system and for
+
+42
+00:02:50,330 --> 00:02:55,360
+exploratory testing that covers as many foreseeable events as possible.
+
+43
+00:02:55,360 --> 00:02:57,900
+In the late 2017,
+
+44
+00:02:57,900 --> 00:03:01,350
+a GM Cruise Chevy Bolt knocked over
+
+45
+00:03:01,350 --> 00:03:05,345
+a motorcyclist after it aborted a lane change maneuver.
+
+46
+00:03:05,345 --> 00:03:08,124
+After the Bolt initiated the maneuver,
+
+47
+00:03:08,124 --> 00:03:10,400
+the gap it was hoping to enter closed
+
+48
+00:03:10,400 --> 00:03:14,210
+rapidly due to a braking lead vehicle in the adjacent lane.
+
+49
+00:03:14,210 --> 00:03:17,060
+The motorcyclist who was lane splitting,
+
+50
+00:03:17,060 --> 00:03:21,175
+moved forward beside the Bolt and blocked the return maneuver.
+
+51
+00:03:21,175 --> 00:03:24,100
+The Bolt was stuck in a dilemma situation;
+
+52
+00:03:24,100 --> 00:03:28,880
+to collide with the motorcycle or to crash into both cars in the adjacent lane.
+
+53
+00:03:28,880 --> 00:03:34,465
+It's not clear that a specific decision was made here to choose one or the other outcome,
+
+54
+00:03:34,465 --> 00:03:37,665
+and a lawsuit has buried the details of the case.
+
+55
+00:03:37,665 --> 00:03:43,280
+However, because other agents are also predicting the self-driving cars actions,
+
+56
+00:03:43,280 --> 00:03:47,510
+it is very challenging to assess what the right action is in many situations.
+
+57
+00:03:47,510 --> 00:03:50,900
+As it's possible, the merging might have been possible with
+
+58
+00:03:50,900 --> 00:03:53,240
+a more aggressive driving style or
+
+59
+00:03:53,240 --> 00:03:58,670
+a slightly delayed abort might have been enough time to avoid the motorcyclist.
+
+60
+00:03:58,670 --> 00:04:05,030
+This tight interaction of decision-making is still a big challenge in self-driving cars.
+
+61
+00:04:05,030 --> 00:04:09,320
+Finally, we should talk a little bit about the Uber crash that
+
+62
+00:04:09,320 --> 00:04:13,495
+led to a pedestrian fatality in early 2018.
+
+63
+00:04:13,495 --> 00:04:16,035
+Operating in Tempe, Arizona,
+
+64
+00:04:16,035 --> 00:04:19,100
+Uber had an extensive testing program at the time,
+
+65
+00:04:19,100 --> 00:04:22,800
+with safety drivers monitoring the autonomy software.
+
+66
+00:04:22,810 --> 00:04:28,940
+The incident occurred on a wide multilane divided road at night,
+
+67
+00:04:28,940 --> 00:04:33,740
+where a pedestrian was walking her bicycle across the road in an unmarked area.
+
+68
+00:04:33,740 --> 00:04:35,855
+The victim, Elaine Herzberg,
+
+69
+00:04:35,855 --> 00:04:38,560
+was a 49 year-old woman from Tempe.
+
+70
+00:04:38,560 --> 00:04:42,935
+This is the car and the scene depicted from a bird's eye view.
+
+71
+00:04:42,935 --> 00:04:46,310
+You can see the pedestrian entering from the left and
+
+72
+00:04:46,310 --> 00:04:50,495
+the vehicle traveling along the road way from the bottom of the image.
+
+73
+00:04:50,495 --> 00:04:53,570
+The preliminary investigation revealed that there
+
+74
+00:04:53,570 --> 00:04:56,480
+were multiple failures that led to the incident.
+
+75
+00:04:56,480 --> 00:04:59,750
+Let's walk through the different contributing factors.
+
+76
+00:04:59,750 --> 00:05:03,955
+First, there were no real-time checks on the safety driver.
+
+77
+00:05:03,955 --> 00:05:09,350
+In this case, the safety driver was inattentive and allegedly watching Hulu at the time.
+
+78
+00:05:09,350 --> 00:05:13,415
+The safety driver could have been doing anything and Uber didn't have
+
+79
+00:05:13,415 --> 00:05:17,390
+any way in the vehicle to assess the drivers attentiveness.
+
+80
+00:05:17,390 --> 00:05:20,720
+Because watching an autonomous driving system operate
+
+81
+00:05:20,720 --> 00:05:23,090
+is a difficult task to stay focused on,
+
+82
+00:05:23,090 --> 00:05:27,150
+it is really important to have a safety driver monitoring system.
+
+83
+00:05:27,150 --> 00:05:32,285
+Second, there was significant confusion in the software detection system.
+
+84
+00:05:32,285 --> 00:05:36,035
+Upon initial detection at six seconds to impact,
+
+85
+00:05:36,035 --> 00:05:39,560
+the victim was first classified as an unknown object,
+
+86
+00:05:39,560 --> 00:05:42,305
+then misclassified as a vehicle,
+
+87
+00:05:42,305 --> 00:05:44,990
+and then misclassified as a bicycle.
+
+88
+00:05:44,990 --> 00:05:50,015
+In the end, the decision made by the autonomy software was to ignore the detections,
+
+89
+00:05:50,015 --> 00:05:52,610
+possibly because they were too unreliable.
+
+90
+00:05:52,610 --> 00:05:56,855
+Perception is not perfect and the switching classifications
+
+91
+00:05:56,855 --> 00:06:01,680
+should not have led the vehicle to ignore an object like that completely.
+
+92
+00:06:01,680 --> 00:06:05,760
+Finally, 1.3 seconds before the crash,
+
+93
+00:06:05,760 --> 00:06:09,755
+the Volvo emergency braking system did detect the pedestrian
+
+94
+00:06:09,755 --> 00:06:14,179
+and would have applied the brakes rapidly to reduce the impact speed,
+
+95
+00:06:14,179 --> 00:06:17,665
+potentially saving the life of Elaine Herzberg.
+
+96
+00:06:17,665 --> 00:06:19,820
+However, it is not safe to have
+
+97
+00:06:19,820 --> 00:06:24,335
+multiple collision avoidance systems operating simultaneously during testing,
+
+98
+00:06:24,335 --> 00:06:29,365
+so Uber had disabled the Volvo system when in autonomous mode.
+
+99
+00:06:29,365 --> 00:06:34,415
+Ultimately, the autonomous vehicle did not react to the pedestrian's path
+
+100
+00:06:34,415 --> 00:06:39,560
+and the inattentive driver was unable to react quickly enough to avoid the collision.
+
+101
+00:06:39,560 --> 00:06:41,690
+The combination of the failure of
+
+102
+00:06:41,690 --> 00:06:45,395
+the perception system to correctly identify the pedestrian,
+
+103
+00:06:45,395 --> 00:06:48,680
+with a bicycle and of the planning system to
+
+104
+00:06:48,680 --> 00:06:52,425
+avoid the detective object even though it's class was uncertain,
+
+105
+00:06:52,425 --> 00:06:54,750
+led to the autonomy failure,
+
+106
+00:06:54,750 --> 00:07:00,680
+and the lack of human or emergency braking backup ultimately led to the fatality.
+
+107
+00:07:00,680 --> 00:07:03,995
+So, we can see that from this set of incidents,
+
+108
+00:07:03,995 --> 00:07:07,020
+every aspect of the autonomous driving system;
+
+109
+00:07:07,020 --> 00:07:09,645
+the perception, planning, and control,
+
+110
+00:07:09,645 --> 00:07:12,390
+can all lead to failures and crashes,
+
+111
+00:07:12,390 --> 00:07:17,045
+and that often the interaction of multiple systems or multiple decision-makers,
+
+112
+00:07:17,045 --> 00:07:20,045
+can lead to unanticipated consequences.
+
+113
+00:07:20,045 --> 00:07:24,575
+In fact, there are many more ways an autonomous system can fail.
+
+114
+00:07:24,575 --> 00:07:29,600
+It is clear that we need rigorous and exhaustive approaches to safety,
+
+115
+00:07:29,600 --> 00:07:33,965
+and both industry and the regulators are tackling the safety challenge head-on.
+
+116
+00:07:33,965 --> 00:07:38,480
+Okay. Now, that we have a sense for the challenges of safety assessment,
+
+117
+00:07:38,480 --> 00:07:42,330
+let's formally define some basic safety terms.
+
+118
+00:07:42,330 --> 00:07:44,030
+We will use the term,
+
+119
+00:07:44,030 --> 00:07:47,905
+harm to refer to the physical harm to a living thing,
+
+120
+00:07:47,905 --> 00:07:52,550
+and we will use the term risk to describe the probability that an event occurs,
+
+121
+00:07:52,550 --> 00:07:55,100
+combined with the severity of the harm,
+
+122
+00:07:55,100 --> 00:07:57,260
+that the event can cause.
+
+123
+00:07:57,260 --> 00:08:00,770
+We can now describe safety as the process of
+
+124
+00:08:00,770 --> 00:08:04,385
+avoiding unreasonable risk of harm to a living thing.
+
+125
+00:08:04,385 --> 00:08:07,310
+For example, driving into an intersection when
+
+126
+00:08:07,310 --> 00:08:10,415
+the traffic signal is red would be unsafe as it leads to
+
+127
+00:08:10,415 --> 00:08:13,400
+unreasonable risk to harm of the occupants of
+
+128
+00:08:13,400 --> 00:08:17,840
+the vehicle and to other vehicles moving through the intersection.
+
+129
+00:08:17,840 --> 00:08:21,785
+Finally, a hazard is a potential source of
+
+130
+00:08:21,785 --> 00:08:25,285
+unreasonable risk of harm or a threat to safety.
+
+131
+00:08:25,285 --> 00:08:30,245
+So, if my system software has a bug that could potentially cause an accident,
+
+132
+00:08:30,245 --> 00:08:32,945
+the software bug would be a hazard.
+
+133
+00:08:32,945 --> 00:08:39,310
+Now, what do you think are the most common sources of autonomous vehicle hazards?
+
+134
+00:08:39,310 --> 00:08:42,355
+Well, hazards can be mechanical,
+
+135
+00:08:42,355 --> 00:08:47,405
+so maybe incorrect assembly of a brake system causing a premature failure.
+
+136
+00:08:47,405 --> 00:08:49,325
+They can be electrical,
+
+137
+00:08:49,325 --> 00:08:53,935
+so faulty internal wiring leading to a loss of indicator lighting.
+
+138
+00:08:53,935 --> 00:08:59,900
+Hazards could also be a failure of computing hardware chips used for autonomous driving.
+
+139
+00:08:59,900 --> 00:09:02,510
+They can, as described earlier,
+
+140
+00:09:02,510 --> 00:09:06,810
+be due to errors or bugs in the autonomy software.
+
+141
+00:09:07,170 --> 00:09:13,345
+They might be caused by bad or noisy sensor data or inaccurate perception.
+
+142
+00:09:13,345 --> 00:09:18,635
+Hazards can also arise due to incorrect planning or decision-making,
+
+143
+00:09:18,635 --> 00:09:21,720
+inadvertently selecting hazardous actions because
+
+144
+00:09:21,720 --> 00:09:26,005
+the behavior selection for a specific scenario wasn't designed correctly.
+
+145
+00:09:26,005 --> 00:09:29,660
+It's also possible that the fallback to a human driver
+
+146
+00:09:29,660 --> 00:09:32,570
+fails by not providing enough warning to
+
+147
+00:09:32,570 --> 00:09:35,770
+the driver to resume responsibility or
+
+148
+00:09:35,770 --> 00:09:39,675
+maybe a self-driving car gets hacked by some malicious entity.
+
+149
+00:09:39,675 --> 00:09:42,780
+These are all the main categories of hazards that are
+
+150
+00:09:42,780 --> 00:09:46,025
+regularly considered; mechanical, electrical,
+
+151
+00:09:46,025 --> 00:09:49,635
+computing hardware, software, perception,
+
+152
+00:09:49,635 --> 00:09:54,200
+planning, driving-task fallback, and cybersecurity.
+
+153
+00:09:54,200 --> 00:09:59,605
+Each of these hazards requires different approaches when assessing overall system safety.
+
+154
+00:09:59,605 --> 00:10:04,250
+We'll see more on how to deal with these categories in later videos.
+
+155
+00:10:04,250 --> 00:10:08,115
+Now that we know the basic terminology involved in safety,
+
+156
+00:10:08,115 --> 00:10:10,260
+let's think about the following question.
+
+157
+00:10:10,260 --> 00:10:14,395
+How do we ensure our self-driving car is truly safe?
+
+158
+00:10:14,395 --> 00:10:20,310
+That is, how do we take the complex task of driving and the many hazards that can occur,
+
+159
+00:10:20,310 --> 00:10:25,280
+and define a safety assessment framework for a complete self-driving system?
+
+160
+00:10:25,280 --> 00:10:31,165
+In the US, the National Highway Transportation Safety Administration or NHTSA,
+
+161
+00:10:31,165 --> 00:10:34,095
+has defined a twelve-part safety framework
+
+162
+00:10:34,095 --> 00:10:36,985
+to structure safety assessment for autonomous driving.
+
+163
+00:10:36,985 --> 00:10:39,655
+As we'll see in the next videos in this module,
+
+164
+00:10:39,655 --> 00:10:43,970
+this framework is only a starting point and different approaches that combine
+
+165
+00:10:43,970 --> 00:10:48,950
+multiple existing methods and standards have already emerged in the industry.
+
+166
+00:10:48,950 --> 00:10:53,890
+So, let's first discuss the NHTSA's safety recommendations.
+
+167
+00:10:53,890 --> 00:10:56,700
+This framework was released as a suggested,
+
+168
+00:10:56,700 --> 00:11:00,565
+not mandatory framework to follow in 2017.
+
+169
+00:11:00,565 --> 00:11:04,420
+The framework itself consists of 12 areas or
+
+170
+00:11:04,420 --> 00:11:07,870
+elements any autonomous driving company should focus on or rather,
+
+171
+00:11:07,870 --> 00:11:10,140
+are encouraged to focus on.
+
+172
+00:11:10,140 --> 00:11:15,055
+First, a system design approach to safety should be adopted,
+
+173
+00:11:15,055 --> 00:11:18,520
+and this really permeates the entire framework document.
+
+174
+00:11:18,520 --> 00:11:23,625
+Well-planned and controlled software development processes are essential,
+
+175
+00:11:23,625 --> 00:11:28,305
+and the application of existing SAE and ISO standards from automotive,
+
+176
+00:11:28,305 --> 00:11:32,855
+aerospace, and other relevant industries should be applied where relevant.
+
+177
+00:11:32,855 --> 00:11:35,360
+For the remaining 11 areas,
+
+178
+00:11:35,360 --> 00:11:38,525
+we can organize them loosely into two categories.
+
+179
+00:11:38,525 --> 00:11:42,160
+Autonomy design, which requires certain components to
+
+180
+00:11:42,160 --> 00:11:45,955
+be included and considered in the autonomy software stack,
+
+181
+00:11:45,955 --> 00:11:48,235
+and testing and crash mitigation,
+
+182
+00:11:48,235 --> 00:11:50,490
+which covers approaches to testing
+
+183
+00:11:50,490 --> 00:11:55,015
+the autonomy functions and ways to reduce the negative effects of failures,
+
+184
+00:11:55,015 --> 00:11:56,895
+as well as learning from them.
+
+185
+00:11:56,895 --> 00:11:59,060
+In the autonomy design category,
+
+186
+00:11:59,060 --> 00:12:01,690
+we see some components we're already familiar with.
+
+187
+00:12:01,690 --> 00:12:06,625
+The NHTSA encourages a well-defined operational design domain,
+
+188
+00:12:06,625 --> 00:12:11,240
+so that the designers are well aware of the flaws of this and limitations of the system,
+
+189
+00:12:11,240 --> 00:12:14,080
+and can make an assessment as to which scenarios are
+
+190
+00:12:14,080 --> 00:12:17,730
+supported and safe in advance of testing or deployment.
+
+191
+00:12:17,730 --> 00:12:23,495
+Next, it encourages a well-tested object and event detection and response system,
+
+192
+00:12:23,495 --> 00:12:27,165
+which is critical to perception and crash avoidance.
+
+193
+00:12:27,165 --> 00:12:29,840
+Then, it encourages the car to have
+
+194
+00:12:29,840 --> 00:12:33,340
+a reliable and convenient fallback mechanism by which
+
+195
+00:12:33,340 --> 00:12:37,445
+the driver is alerted or the car is brought to safety autonomously.
+
+196
+00:12:37,445 --> 00:12:39,950
+It is essential to develop this mechanism
+
+197
+00:12:39,950 --> 00:12:42,900
+keeping in mind that the driver may be inattentive.
+
+198
+00:12:42,900 --> 00:12:45,570
+So, some thoughts should go into how to bring
+
+199
+00:12:45,570 --> 00:12:48,885
+the system to a minimal risk condition if this happens.
+
+200
+00:12:48,885 --> 00:12:54,450
+The driving system should also be designed such that all the federal level, state level,
+
+201
+00:12:54,450 --> 00:13:00,530
+and local laws for traffic are followed and obeyed within the ODD.
+
+202
+00:13:00,530 --> 00:13:05,200
+Next, the framework encourages designers to think about cybersecurity threats,
+
+203
+00:13:05,200 --> 00:13:09,015
+and how to protect the driving system from malicious agents.
+
+204
+00:13:09,015 --> 00:13:14,635
+Finally, there should be some thought put into the human machine interface, or HMI.
+
+205
+00:13:14,635 --> 00:13:18,250
+So, the car should be able to well convey the status of
+
+206
+00:13:18,250 --> 00:13:22,520
+the machine at any point in time to the passengers or the driver.
+
+207
+00:13:22,520 --> 00:13:26,780
+Important examples of status information that can be displayed,
+
+208
+00:13:26,780 --> 00:13:29,230
+are whether all sensors are operational,
+
+209
+00:13:29,230 --> 00:13:31,375
+what the current motion plans are,
+
+210
+00:13:31,375 --> 00:13:35,860
+which objects in the environment are affecting our driving behavior, and so on.
+
+211
+00:13:35,860 --> 00:13:40,120
+We now move to the testing and crash mitigation areas.
+
+212
+00:13:40,120 --> 00:13:42,980
+First and foremost, the NHTSA recommends
+
+213
+00:13:42,980 --> 00:13:48,565
+a strong and extensive testing program before any service is launched for the public.
+
+214
+00:13:48,565 --> 00:13:51,885
+This testing can rely on three common pillars;
+
+215
+00:13:51,885 --> 00:13:54,750
+simulation, close track testing,
+
+216
+00:13:54,750 --> 00:13:56,410
+and public road driving.
+
+217
+00:13:56,410 --> 00:14:00,330
+Next, there should be careful consideration of methods to
+
+218
+00:14:00,330 --> 00:14:05,210
+mitigate the extent of injury or damage that occurs during a crash event.
+
+219
+00:14:05,210 --> 00:14:10,530
+Crashes remain a reality of public road driving and autonomy systems that can
+
+220
+00:14:10,530 --> 00:14:15,740
+minimize crash energy and exceed passenger safety standards in terms of restraints,
+
+221
+00:14:15,740 --> 00:14:19,440
+airbags, and crash worthiness should be the norm.
+
+222
+00:14:19,440 --> 00:14:23,200
+Next, there should be support for post crash behavior.
+
+223
+00:14:23,200 --> 00:14:27,425
+The car must be rapidly returned to a safe state, for example,
+
+224
+00:14:27,425 --> 00:14:31,120
+brought to a stop with fuel pumps securing the fuel,
+
+225
+00:14:31,120 --> 00:14:33,890
+first responders alerted, and so on.
+
+226
+00:14:33,890 --> 00:14:39,310
+Further, there should be an automated data recording function or black box recorder.
+
+227
+00:14:39,310 --> 00:14:42,930
+It is very helpful to have this crash data to analyze and
+
+228
+00:14:42,930 --> 00:14:46,855
+design systems that can avoid the specific kind of crash in the future,
+
+229
+00:14:46,855 --> 00:14:49,685
+and to resolve questions about what went wrong,
+
+230
+00:14:49,685 --> 00:14:52,150
+and who was at fault during the event.
+
+231
+00:14:52,150 --> 00:14:57,405
+Finally, there should be well-defined consumer education and training.
+
+232
+00:14:57,405 --> 00:15:02,870
+So, courses for the fallback driver during testing and training for consumer drivers and
+
+233
+00:15:02,870 --> 00:15:04,995
+passengers to better understand
+
+234
+00:15:04,995 --> 00:15:09,550
+both the capabilities and limits of the deployed autonomous system.
+
+235
+00:15:09,550 --> 00:15:15,755
+This final step is essential to ensuring our natural overconfidence in automation,
+
+236
+00:15:15,755 --> 00:15:20,990
+does not lead to unnecessary hazards being introduced by early adopters.
+
+237
+00:15:20,990 --> 00:15:25,450
+Keep in mind that these are suggested areas that any company should work on.
+
+238
+00:15:25,450 --> 00:15:28,190
+Not mandatory requirements, yet.
+
+239
+00:15:28,190 --> 00:15:31,870
+The main objective of the NHTSA is to guide companies
+
+240
+00:15:31,870 --> 00:15:35,845
+building self-driving cars without overly restricting innovation.
+
+241
+00:15:35,845 --> 00:15:38,150
+We're pre-selecting technologies.
+
+242
+00:15:38,150 --> 00:15:40,575
+As entrance to the market start to emerge,
+
+243
+00:15:40,575 --> 00:15:45,660
+it is likely that more definitive requirements for safety assessment will also emerge.
+
+244
+00:15:45,660 --> 00:15:47,890
+Okay. Let's summarize.
+
+245
+00:15:47,890 --> 00:15:50,860
+In this video, we discussed a
+
+246
+00:15:50,860 --> 00:15:54,850
+few of the first accidents that the self-driving industry has seen,
+
+247
+00:15:54,850 --> 00:15:59,030
+and revealed the many ways in which autonomy software can fail.
+
+248
+00:15:59,030 --> 00:16:03,080
+We then formally defined harm, risk, hazard,
+
+249
+00:16:03,080 --> 00:16:08,535
+and safety, and listed out the major sources of autonomous vehicle hazards.
+
+250
+00:16:08,535 --> 00:16:12,565
+We then reviewed the NHTSA safety framework.
+
+251
+00:16:12,565 --> 00:16:17,770
+In the next video, we'll discuss some industry perspectives on self-driving safety,
+
+252
+00:16:17,770 --> 00:16:23,270
+as well as some safety recommendations for self-driving cars. See you then.

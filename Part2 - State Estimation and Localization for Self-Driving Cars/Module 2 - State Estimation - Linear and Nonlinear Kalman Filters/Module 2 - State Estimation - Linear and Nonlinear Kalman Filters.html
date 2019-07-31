@@ -1,0 +1,979 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Module 2 - State Estimation - Linear and Nonlinear Kalman Filters · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html" />
+    
+    
+    <link rel="prev" href="../Module 1 - Least Squares/Module 1 - Least Squares.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../Part1 - Introduction to Self-Driving Cars/">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/">
+            
+                    
+                    Part1: Introduction to Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../../Part1 - Introduction to Self-Driving Cars/Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                    
+                    Module 0：Welcome to the self-driving cars specialization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../../Part1 - Introduction to Self-Driving Cars/Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                    
+                    Module 1：The Requirements for Autonomy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../../Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                    
+                    Module2：Self-Driving Hardware and Software Architectures
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../../Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                    
+                    Module3：Safety Assurance for Autonomous Vehicles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.5" data-path="../../Part1 - Introduction to Self-Driving Cars/Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                    
+                    Module4：Vehicle Dynamic Modeling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.6" data-path="../../Part1 - Introduction to Self-Driving Cars/Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                    
+                    Module 5：Vehicle Longitudinal Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.7" data-path="../../Part1 - Introduction to Self-Driving Cars/Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                    
+                    Module 6：Vehicle Lateral Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.8" data-path="../../Part1 - Introduction to Self-Driving Cars/Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                <a href="../../Part1 - Introduction to Self-Driving Cars/Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                    
+                    Module 7：Putting it all together
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Part2：State Estimation and Localization for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                <a href="../Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                    
+                    Module 1：Least Squares
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.2" data-path="Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                <a href="Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                    
+                    Module 2 - State Estimation - Linear and Nonlinear Kalman Filters
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                <a href="../Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                    
+                    Module 3 - GNSSINS Sensing for Pose Estimation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                <a href="../Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                    
+                    Module 4 - LIDAR Sensing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                <a href="../Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                    
+                    Module 5 - Putting It together - An Autonomous Vehicle State Estimator
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                <a href="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                    
+                    Part3：Visual Perception for Self-Driving Cars
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                    
+                    Part4：Motion Planning for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                    
+                    Module 1 - The Planning Problem
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                    
+                    Module 2 - Mapping for Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 3 - Mission Planning in Driving Environments/Module 3 - Mission Planning in Driving Environments.md">
+            
+                <span>
+            
+                    
+                    Module 3 - Mission Planning in Driving Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 4 - Dynamic Object Interactions/Module 4 - Dynamic Object Interactions.md">
+            
+                <span>
+            
+                    
+                    Module 4 - Dynamic Object Interactions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 5 - Principles of Behaviour Planning/Module 5 - Principles of Behaviour Planning.md">
+            
+                <span>
+            
+                    
+                    Module 5 - Principles of Behaviour Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 6 - Reactive Planning in Static Environments/Module 6 - Reactive Planning in Static Environments.md">
+            
+                <span>
+            
+                    
+                    Module 6 - Reactive Planning in Static Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 7 - Putting it all together - Smooth Local Planning/Module 7 - Putting it all together - Smooth Local Planning.md">
+            
+                <span>
+            
+                    
+                    Module 7 - Putting it all together - Smooth Local Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Module 2 - State Estimation - Linear and Nonlinear Kalman Filters</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="module-2---state-estimation---linear-and-nonlinear-kalman-filters">Module 2 - State Estimation - Linear and Nonlinear Kalman Filters</h1>
+<p>Any engineer working on autonomous vehicles must understand the Kalman filter, first described in a paper by Rudolf Kalman in 1960. The filter has been recognized as one of the top 10 algorithms of the 20th century, is implemented in software that runs on your smartphone and on modern jet aircraft, and was crucial to enabling the Apollo spacecraft to reach the moon. This module derives the Kalman filter equations from a least squares perspective, for linear systems. </p>
+<p>The module also examines why the Kalman filter is the best linear unbiased estimator (that is, it is optimal in the linear case). The Kalman filter, as originally published, is a linear algorithm; however, all systems in practice are nonlinear to some degree. Shortly after the Kalman filter was developed, it was extended to nonlinear systems, resulting in an algorithm now called the &#x2018;extended&#x2019; Kalman filter, or EKF. The EKF is the &#x2018;bread and butter&#x2019; of state estimators, and should be in every engineer&#x2019;s toolbox. This module explains how the EKF operates (i.e., through linearization) and discusses its relationship to the original Kalman filter. The module also provides an overview of the unscented Kalman filter, a more recently developed and very popular member of the Kalman filter family.</p>
+<h3 id="&#x5B66;&#x4E60;&#x76EE;&#x6807;">&#x5B66;&#x4E60;&#x76EE;&#x6807;</h3>
+<ul>
+<li>Describe the relationship between least squares and the linear Kalman filter</li>
+<li>Explain the (in)sensitivity of the Kalman filter to new data and the need for process noise</li>
+<li>Describe how the linear Kalman filter can be extended to nonlinear systems via linearization</li>
+<li>Describe how the EKF uses first-order linearization to turn a nonlinear problem into a linear one</li>
+<li>Contrast the linearization approach of the EKF with that of the UKF, and explain why the UKF is superior for many problems</li>
+<li>Assess the performance of the extended Kalman filter and its variants</li>
+</ul>
+<hr>
+<h2 id="lesson-1-the-linear-kalman-filter">Lesson 1: The (Linear) Kalman Filter</h2>
+<blockquote>
+<p>&#x7EBF;&#x6027;&#x5361;&#x5C14;&#x66FC;&#x6EE4;&#x6CE2;&#x5668;&#xFF0C;&#x53EF;&#x53C2;&#x8003;<a href="https://zhuanlan.zhihu.com/p/59622824" target="_blank">&#x535A;&#x5BA2;</a></p>
+</blockquote>
+<h3 id="1-overview">1. Overview</h3>
+<p>Welcome back. In module two, we&apos;ll learn about one of the most famous algorithms in all of engineering; the Kalman filter. In today&apos;s world of advanced machine learning, the Kalman filter remains an important tool to fuse measurements from several sensors to estimate in real-time the state of a robotic system such as a self-driving car. In this module, we&apos;ll learn some of the history of the Kalman filter and introduce its basic linear formulation. We&apos;ll present why the Kalman filter is the best linear unbiased estimator and then extend the linear formulation to nonlinear systems through linearization. Discuss limitations of this linearization approach, and finally, present a modern alternative to linearization through the unscented transform. </p>
+<p>By the end of this lesson, you&apos;ll be able to </p>
+<ul>
+<li><p>Describe the common filter as a state estimator that works in two stages&#xFF1A;&#xFF08;1&#xFF09;prediction&#xFF08;2&#xFF09;correction. </p>
+</li>
+<li><p>Understand the difference between motion and measurement models</p>
+</li>
+<li><p>Use the Kalman filter formulation in a simple 1D localization example. </p>
+</li>
+</ul>
+<hr>
+<h3 id="2-history">2. History</h3>
+<p>Let&apos;s begin with a bit of history. The Kalman filter algorithm was published in 1960 by Rudolf E. Kalman, a Hungarian born professor and engineer who was working at the Research Institute for Advanced Studies in Baltimore Maryland. Years later in 2009, American President Barack Obama awarded Kalman the prestigious National Medal of Science for his work on the Kalman filter and other contributions to the field of control engineering. </p>
+<p><img src="assets/1555943834657.png" alt="1555943834657"></p>
+<p>After its publication in 1960, the Kalman filter was adopted by NASA for use in the Apollo guidance computer. It was this ground-breaking innovation that played a pivotal role in successfully getting the Apollo spacecraft to the moon, and to our first steps on another world. The filter helped guide the Apollo spacecraft accurately through its circumlunar orbit. </p>
+<p><img src="assets/1555943868943.png" alt="1555943868943"></p>
+<p>The engineers at NASA&apos;s Ames Research Center, adopted Kalman&apos;s linear theory and extended it to nonlinear models. We&apos;ll look at this specific extension in upcoming module. But first, let&apos;s talk about the basic linear Kalman filter. </p>
+<hr>
+<h3 id="3-the-kalman-filter--prediction-and-correction">3. The Kalman Filter | Prediction and Correction</h3>
+<blockquote>
+<p>&#x5361;&#x5C14;&#x66FC;&#x6EE4;&#x6CE2;&#x5668;&#x4E0E;&#x6211;&#x4EEC;&#x524D;&#x9762;&#x8BA8;&#x8BBA;&#x8FC7;&#x7684;&#x7EBF;&#x6027;&#x9012;&#x5F52;&#x6700;&#x5C0F;&#x4E8C;&#x4E58;&#x6EE4;&#x6CE2;&#x5668;&#x975E;&#x5E38;&#x76F8;&#x4F3C;&#x3002; &#x4F46;&#x662F;&#x9012;&#x5F52;&#x6700;&#x5C0F;&#x4E8C;&#x4E58;&#x66F4;&#x65B0;<strong>&#x9759;&#x6001;&#x53C2;&#x6570;</strong>&#x7684;&#x4F30;&#x8BA1;&#xFF0C;&#x800C;&#x5361;&#x5C14;&#x66FC;&#x6EE4;&#x6CE2;&#x5668;&#x80FD;&#x591F;&#x66F4;&#x65B0;&#x548C;&#x4F30;&#x8BA1;&#x4E0D;&#x65AD;&#x53D8;&#x5316;&#x7684;&#x72B6;&#x6001;&#x3002; &#x5361;&#x5C14;&#x66FC;&#x6EE4;&#x6CE2;&#x5668;&#x7684;&#x76EE;&#x6807;&#x662F;&#x5BF9;&#x8BE5;&#x72B6;&#x6001;&#x8FDB;&#x884C;&#x6982;&#x7387;&#x4F30;&#x8BA1;&#x5E76;&#x4F7F;&#x7528;&#x4E24;&#x4E2A;&#x6B65;&#x9AA4;&#x5B9E;&#x65F6;&#x66F4;&#x65B0;&#x5B83;&#xFF1A;<strong>&#x9884;&#x6D4B;&#x548C;&#x7EA0;&#x6B63;</strong>&#x3002;</p>
+</blockquote>
+<p>The Kalman filter is very similar to the linear recursive least squares filter we discussed earlier. While recursive least squares updates the estimate of a static parameter, but Kalman filter is able to update and estimate of an evolving state. <strong>The goal of the Kalman filter is to take a probabilistic estimate of this state and update it in real time using two steps; prediction and correction.</strong> To make these ideas more concrete, let&apos;s consider a problem of estimating the 1D position of the vehicle. </p>
+<p>Starting from an initial probabilistic estimate at time k minus 1, our goal is to use a motion model which could be derived from wheel odometry or inertial sensor measurements to predict our new state. </p>
+<p><img src="assets/1555943972575.png" alt="1555943972575"></p>
+<p>Then, we&apos;ll use the observation model derived from GPS for example, to correct that prediction of vehicle position at time k. Each of these components, the initial estimate, the predicted state, and the final corrected state are all random variables that we will specify by their means and covariances. In this way, we can think of the Kalman filter as a technique to fuse information from different sensors to produce a final estimate of some unknown state, taking into account, uncertainty in motion and in our measurements. </p>
+<hr>
+<h3 id="4-the-kalman-filter--linear-dynamical-system">4. The Kalman Filter | Linear Dynamical System</h3>
+<p>For the Kalman filter algorithm, we had been able to write the motion model in the following way; the estimate at time step k is a linear combination of the estimate at time step k minus 1, a control input and some zero-mean noise. </p>
+<p><img src="assets/1555944141213.png" alt="1555944141213"></p>
+<p>The input is an external signal that affects the evolution of our system state. In the context of self-driving vehicles, this may be a wheel torque applied to speed up and change lanes, for example. Next, we will also need to define a linear measurement model. </p>
+<p><img src="assets/1555944203679.png" alt="1555944203679"></p>
+<p>Finally, we&apos;ll need a measurement noise as before and a process noise that governs how certain we are that our linear dynamical system is actually correct, or equivalently, how uncertain we are about the effects of our control inputs. </p>
+<p><img src="assets/1555944249190.png" alt="1555944249190"></p>
+<hr>
+<h3 id="5-the-kalman-filter--recursive-least-squares--process-model">5. The Kalman Filter | Recursive Least Squares + Process Model</h3>
+<p>Once we have our system in hand, we can use an approach very similar to that we discussed in the recursive least squares video. The Kalman filter is a recursive least squares estimator that also includes a motion model.</p>
+<p>Except this time, we&apos;ll do it in two steps. First, we use the process model to predict how our states, remember, that we&apos;re now typically talking about evolving states and non-state parameters evolved since the last time step, and will propagate our uncertainty. </p>
+<p>$$
+\begin{aligned} \check{\mathbf{x}}<em>{k} &amp;=\mathbf{F}</em>{k-1} \mathbf{x}<em>{k-1}+\mathbf{G}</em>{k-1} \mathbf{u}<em>{k-1} \ \check{\mathbf{P}}</em>{k} &amp;=\mathbf{F}<em>{k-1} \hat{\mathbf{P}}</em>{k-1} \mathbf{F}<em>{k-1}^{T}+\mathbf{Q}</em>{k-1} \end{aligned}</p>
+<p>$$
+Second, we&apos;ll use our measurement to correct that prediction based on our measurement residual or innovation and our optimal gain. </p>
+<p>$$
+\mathbf{K}<em>{k}=\check{\mathbf{P}}</em>{k} \mathbf{H}<em>{k}^{T}\left(\mathbf{H}</em>{k} \check{\mathbf{P}}<em>{k} \mathbf{H}</em>{k}^{T}+\mathbf{R}_{k}\right)^{-1}</p>
+<p>$$
+Finally, we&apos;ll use the gain to also propagate the state covariance from our prediction to our corrected estimate. </p>
+<p>$$
+\begin{aligned} \hat{\mathbf{x}}<em>{k} &amp;=\check{\mathbf{x}}</em>{k}+\mathbf{K}<em>{k}\left(\mathbf{y}</em>{k}-\mathbf{H}<em>{k} \check{\mathbf{x}}</em>{k}\right) \ \hat{\mathbf{P}}<em>{k} &amp;=\left(\mathbf{1}-\mathbf{K}</em>{k} \mathbf{H}<em>{k}\right) \mathbf{P}</em>{k} \end{aligned}</p>
+<p>$$
+In our notation, the hat indicates a corrected prediction at a particular time step. Whereas a check indicates a prediction before the measurement is incorporated. </p>
+<p><img src="assets/1555944542344.png" alt="1555944542344"></p>
+<p>If you&apos;ve worked with the Kalman filter before, you may also have seen this written with plus and minus signs for the corrected and predicted quantities, respectively. </p>
+<hr>
+<h3 id="6-the-kalman-filter--prediction--correction">6. The Kalman Filter | Prediction &amp; Correction</h3>
+<p>Let&apos;s recap. We start with a probability density over our states and also maybe parameters at time step k minus 1, which we represent as a multivariate Gaussian. We then predict the states at time step k using our linear prediction model and propagate both the mean and the uncertainty; the covariance, forward in time. </p>
+<p><img src="assets/1555944615676.png" alt="1555944615676"></p>
+<p>Finally, using our probabilistic measurement model, we correct our initial prediction by optimally fusing the information from our measurement together with the prior prediction through our optimal gain matrix k. Our end result is an updated probabilistic estimate for our states at time step k. The best way to become comfortable with the Kalman filter is to use it. Let&apos;s look at a simple example. Consider again the case of the self-driving vehicle estimating its own position. Our state vector will include the vehicle position and its first derivative velocity. </p>
+<p>Our input will be a scalar acceleration that could come from a control system that commands our car to accelerate forward or backwards. For our measurement, we&apos;ll assume that we&apos;re able to determine the vehicle position directly using something like a GPS receiver. Finally, we&apos;ll define our noise variances as follows: </p>
+<p><img src="assets/1555944648178.png" alt="1555944648178"></p>
+<p>Given this initial estimate and our data, what is our corrected position estimate after we perform one prediction step and one correction step using the Kalman filter? Here&apos;s, how we can use these definitions to solve for our corrected position and velocity estimates. </p>
+<p><img src="assets/1555944698834.png" alt="1555944698834"></p>
+<p>Pay attention to the fact that our final corrected state covariance is smaller. That is we are more certain about the car&apos;s position after we incorporate the position measurement. </p>
+<p><img src="assets/1555944718984.png" alt="1555944718984"></p>
+<p>This uncertainty reduction occurs because our measurement model is fairly accurate. That is, the measurement noise variance is quite small. Try increasing the measurement variance and observe what happens to the final state estimate. </p>
+<hr>
+<h3 id="7-summary">7. Summary</h3>
+<blockquote>
+<p>&#x8FDB;&#x4E00;&#x6B65;&#x4E86;&#x89E3;&#x53EF;&#x53C2;&#x8003;<a href="https://www.cnblogs.com/leexiaoming/p/6852483.html" target="_blank">&#x535A;&#x5BA2;</a></p>
+</blockquote>
+<p>To summarize, the Kalman filter is similar to recursively squares, but also adds a motion model that defines how our state evolves over time. The Kalman filter works in two stages: </p>
+<p>First, predicting the next state using the motion model, and second, correcting this prediction using a measurement. But how can we be sure that the Kalman filter is giving us an accurate state estimate? In the next video, we&apos;ll discuss a few appealing theoretical properties of the Kalman filter that have made it such a staple in the engineering field.</p>
+<hr>
+<h2 id="lesson-2-kalman-filter-and-the-bias-blues">Lesson 2: Kalman Filter and The Bias BLUEs</h2>
+<p>Now, we&apos;ve introduced the Kalman Filter, let&apos;s discuss little bit about what makes it such an appealing estimation method. By the end of this lesson, you&apos;ll be able to define a few terms that are important in state estimation. </p>
+<ul>
+<li><strong>Define bias</strong></li>
+<li><strong>Define consistency</strong></li>
+<li><strong>Explain why the Kalman filter is the Best Linear Unbiased Estimator(BLUE)</strong></li>
+</ul>
+<hr>
+<h3 id="1-bias-in-state-estimation">1. Bias in State Estimation</h3>
+<p>Let&apos;s dive in. First, let&apos;s discuss bias. Let&apos;s consider our Kalman Filter from the previous lesson and use it to estimate the position of our autonomous car. If we have some way of knowing the true position of the vehicle, for example, an oracle tells us, we can then use this to record a position error of our filter at each time step k. Since we&apos;re dealing with random noise, doing this once is not enough. We&apos;ll need to repeat this same process over and over and record our position error at each time step(&#x7531;&#x4E8E;&#x6211;&#x4EEC;&#x5904;&#x7406;&#x7684;&#x662F;&#x968F;&#x673A;&#x566A;&#x58F0;&#xFF0C;&#x8FD9;&#x6837;&#x505A;&#x4E00;&#x6B21;&#x662F;&#x4E0D;&#x591F;&#x7684;&#x3002; &#x6211;&#x4EEC;&#x9700;&#x8981;&#x53CD;&#x590D;&#x91CD;&#x590D;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#xFF0C;&#x5E76;&#x5728;&#x6BCF;&#x4E2A;&#x65F6;&#x95F4;&#x6B65;&#x8BB0;&#x5F55;&#x6211;&#x4EEC;&#x7684;&#x4F4D;&#x7F6E;&#x9519;&#x8BEF;) </p>
+<p><img src="assets/1556028440311.png" alt="1556028440311"></p>
+<p>Once we&apos;ve collected these errors, if they average to zero at a particular time step k, then we say the Kalman Filter estimate is unbiased at this time step. </p>
+<p><img src="assets/1556028641962.png" alt="1556028641962"></p>
+<p>Graphically, this is what the situation may look like. Say the particular time step, we know that the true position is the following. We build a histogram of the positions that our filter reports over multiple trials, and then compute the difference between the average of these estimates and the true position. If this difference does not approach zero, then our estimate is biased. However, if this difference does approach zero as we repeat this experiment many more times, and if this happens for all time intervals, then we say that our filter is unbiased. </p>
+<p>This filter is an unbiased if for all k</p>
+<p>$$
+E\left[\hat{e}<em>{k}\right]=E\left[\hat{p}</em>{k}-p<em>{k}\right]=E\left[\hat{p}</em>{k}\right]-p_{k}=0</p>
+<p>$$
+Although we could potentially verify this lack of bias empirically, what we&apos;d really like are some theoretical guarantees. Let&apos;s consider the error dynamics of our filter. </p>
+<ul>
+<li>Predicted state error&#xFF1A;$\check{\mathbf{e}}<em>{k}=\check{\mathbf{x}}</em>{k}-\mathbf{x}_{k}$</li>
+<li>Corrected estimate error : $\hat{\mathbf{e}}<em>{k}=\hat{\mathbf{x}}</em>{k}-\mathbf{x}_{k}$</li>
+</ul>
+<p>Defining our predicted and corrected state errors, we can then use the common filter equations to write the following relations. </p>
+<p>$$
+\begin{aligned} \check{\mathbf{e}}<em>{k} &amp;=\mathbf{F}</em>{k-1} \check{\mathbf{e}}<em>{k-1}-\mathbf{w}</em>{k} \ \hat{\mathbf{e}}<em>{k} &amp;=\left(\mathbf{1}-\mathbf{K}</em>{k} \mathbf{H}<em>{k}\right) \check{\mathbf{e}}</em>{k}+\mathbf{K}<em>{k} \mathbf{v}</em>{k} \end{aligned}</p>
+<p>$$
+For the Kalman Filter, we can show the expectation value of these errors is equal to zero exactly. For this to be true, we need to ensure that our initial state estimate is unbiased and that our noise is white, uncorrelated, and zero mean. </p>
+<p><img src="assets/1556029088893.png" alt="1556029088893"></p>
+<p>While this is a great result for linear systems, remember that this doesn&apos;t guarantee that our estimates will be error free for a given trial, only that the expected value of the error is zero. </p>
+<hr>
+<h3 id="2-consistency-in-state-estimation">2. Consistency in State Estimation</h3>
+<p>Kalman Filters are also what is called consistent. By consistency we mean that for all time steps k, the filter co-variants $P_k$ matches the expected value of the square of our error. </p>
+<p><img src="assets/1556029158538.png" alt="1556029158538"></p>
+<p>For scalar parameters, this means that the empirical variance of our estimate should match the variance reported by the filter. </p>
+<p>The filter is consistent if for all k,</p>
+<p>$$
+E\left[\hat{e}<em>{k}^{2}\right]=E\left[\left(\hat{p}</em>{k}-p<em>{k}\right)^{2}\right]=\hat{P}</em>{k}</p>
+<p>$$
+Practically, this means that our filter is neither overconfident, nor underconfident in the estimate it has produced. A filter that is overconfident, and hence inconsistent, will report a covariance that is optimistic. That is, the filter will essentially place too much emphasis on its own estimate and will be less sensitive to future measurement updates, which may provide critical information. </p>
+<p>One can also show (with more algebra!) that for all k,</p>
+<p>$$
+E\left[\mathbf{&#xE8;}<em>{k} \check{\mathbf{e}}</em>{k}^{T}\right]=\check{\mathbf{P}}<em>{k} \quad E\left[\hat{\mathbf{e}}</em>{k} \hat{\mathbf{e}}<em>{k}^{T}\right]=\hat{\mathbf{P}}</em>{k}</p>
+<p>$$
+Consistent predictions !</p>
+<p>Provided,</p>
+<p>$$
+E\left[\hat{\mathbf{e}}<em>{0} \hat{\mathbf{e}}</em>{0}^{T}\right]=\check{\mathbf{P}}_{0} \quad E[\mathbf{v}]=\mathbf{0} \quad E[\mathbf{w}]=\mathbf{0}</p>
+<p>$$
+It&apos;s easy to see how an overconfident filter might have a negative or dangerous effect on the performance of self-driving car. Showing the consistency property formally is outside of the scope of the course. You can take my word that it is indeed true for a common filter. So long as our initial estimate is consistent, and we have white zero mean noise, then all estimates will be consistent. </p>
+<hr>
+<h3 id="3-the-kalman-filter-is-the-blue--best-linear-unbiased-estimator">3. The Kalman Filter is the BLUE | Best Linear Unbiased Estimator</h3>
+<p>Putting everything together, we&apos;ve shown that given white uncorrelated zero mean noise, the Kalman Filter is unbiased and consistent. </p>
+<p>In general , if we have white ,uncorrelated zero-mean noise ,the Kalman filter is the best (i,e.., lowest variance ) unbiased estimator that uses only a linear combination of measurements</p>
+<p>Because of these two facts, we say that the Kalman Filter is the BLUE, the best linear unbiased estimator. It produces unbiased estimates with the minimum possible variance. </p>
+<hr>
+<h3 id="4-summary">4. Summary</h3>
+<p>To summarize, in this lesson we&apos;ve defined the terms bias and consistency, and showed that the Kalman Filter is unbiased, consistent, and the Best Linear Unbiased Estimator, or BLUE. Remember that best here refers to the fact that the Kalman Filter minimizes the state variance. Although this is a fantastic result, most real systems are not linear. For self-driving cars, we&apos;ll generally need to estimate non-linear quantities like vehicle poses, position, and orientation in 2D and 3D. To do this, we&apos;ll need to extend the linear Kalman Filter into the non-linear domain. We&apos;ll do this in the next lesson.</p>
+<hr>
+<h2 id="lesson-3---going-nonlinear---the-extended-kalman-filter">Lesson 3 - Going Nonlinear - The Extended Kalman Filter</h2>
+<p>So far in this module, you&apos;ve learned how to use the linear Kalman filter for state estimation and you also saw that the Kalman filter is the best linear unbiased estimator or blue. However, the linear Kalman filter cannot be used directly to estimate states that are nonlinear functions of either the measurements or the control inputs. For example, the pose of the car includes its orientation which is not a linear quantity, orientations in 3D live on a sphere, in fact. So, we need to look for something else. In this video, we&apos;ll be learning about one important and widely used variation of a Kalman filter called the Extended Kalman Filter or EKF. </p>
+<p>The EKF is designed to work with nonlinear systems and it&apos;s often considered one of the workhorses of state estimation because it&apos;s used in all sorts of applications including self-driving cars. By the end of the video, you&apos;ll be able to </p>
+<ul>
+<li><strong>Describe how the EKF uses first-order linearization to turn a nonlinear problem into a linear one</strong></li>
+<li><strong>Understand the role of Jacobian matrices in the EKF and how to compute them</strong></li>
+<li><strong>Apply the EKF to a simple nonlinear tracking problem.</strong> </li>
+</ul>
+<hr>
+<h3 id="1-recap--the-linear-kalman-filter">1. Recap | The Linear Kalman Filter</h3>
+<p>The filter works by first predicting the mean and co-variance of the updated state estimate at some time step k based on the previous state and any inputs we give to the system, such as the position of the accelerator pedal. </p>
+<p><img src="assets/1556892918655.png" alt="1556892918655"></p>
+<p>The filter then uses a measurement model to predict what measurements should arrive based on the state estimate and compares these predictions with the measurements that actually arrive from our sensors. <strong>The Kalman gain tells us how to weight all of these pieces of information</strong>, so that we can optimally combine them into a corrected estimate, that is, a new state and an updated co-variance. This is sometimes called a predictor-corrector architecture. </p>
+<hr>
+<h3 id="2-nonlinear-kalman-filtering">2. Nonlinear Kalman Filtering</h3>
+<p>As we saw in the last video, the Kalman filter is actually the best of all possible estimators for linear systems. Unfortunately, there is a catch. Linear systems don&apos;t exist in reality. Even a very simple system like a resistor with a voltage applied isn&apos;t truly linear, at least not all the time. </p>
+<p><img src="assets/1556893118317.png" alt="1556893118317"></p>
+<p>For a certain range of voltages, the current is a linear function of the voltage and follows Ohm&apos;s Law. But as the voltage gets higher, the resistor heats up which alters the resistance in a nonlinear way. Since the systems that we encounter in practice are nonlinear, this raises an important question. Can we still use the Kalman filter for nonlinear systems? If so, how? </p>
+<hr>
+<h3 id="3-ekf--linearizing-a-nonlinear-system">3. EKF | Linearizing a Nonlinear System</h3>
+<blockquote>
+<p>&#x8FDB;&#x884C;&#x4E00;&#x9636;&#x6CF0;&#x52D2;&#x516C;&#x5F0F;&#x5C55;&#x5F00;</p>
+</blockquote>
+<p>The key concept in the Extended Kalman Filter is <strong>the idea of linearizing a nonlinear system.</strong> </p>
+<p><img src="assets/1556893212773.png" alt="1556893212773"></p>
+<p>For this reason, the EKF is sometimes referred to as the Linearized Kalman filter. Linearizing a system just means picking some operating point a and finding a linear approximation to the nonlinear function in the neighborhood of a. In two dimensions, this means finding the tangent line to the function f of x when x equals a. </p>
+<p><img src="assets/1556893231424.png" alt="1556893231424"></p>
+<p>Mathematically, we do this by taking the Taylor series expansion of the function. Thinking back to your calculus courses, you may remember that the Taylor series expansion is a way of representing a function as an infinite possibly, some whose terms are calculated from the function&apos;s derivatives at a single point. <strong>For linearization, we&apos;re only interested in the first order terms of the Taylor series expansion highlighted in red.</strong> Let&apos;s return to our general nonlinear motion and measurement models and try to linearize them. </p>
+<blockquote>
+<p>&#x5BF9;&#x4E8E;EKF&#xFF0C;&#x6211;&#x4EEC;&#x9009;&#x62E9;&#x4E0A;&#x4E00;&#x4E2A;&#x6700;&#x4F18;&#x72B6;&#x6001;&#x4F30;&#x8BA1;&#xFF08;&#x5373;&#x8FD1;&#x4F3C;&#x5E73;&#x5747;&#x503C;&#xFF09;&#x8FDB;&#x884C;&#x7EBF;&#x6027;&#x5316;&#x3002;</p>
+</blockquote>
+<p>What should we choose as the operating point for our Taylor&apos;s expansion? Ideally, we would like to linearize the models about the true value of the state but we can&apos;t do that because we already knew the true value of the state, we wouldn&apos;t need to estimate it. So instead, let&apos;s pick the next best thing, the most recent estimate of the state. </p>
+<p><img src="assets/1556893536893.png" alt="1556893536893"></p>
+<p>For our emotion model, we&apos;ll linearize about the posterior estimate of the previous state and for the measurement model, we&apos;ll linearize about our prediction of the current state based on the motion model.</p>
+<p><img src="assets/1556893554197.png" alt="1556893554197"></p>
+<p>So, now we have a linear system in state space and the matrices $\mathrm{F}<em>{k-1}, \mathrm{L}</em>{k-1}, \mathrm{H}<em>{k,} \text { and } \mathrm{M}</em>{k}$ are called Jacobian matrices of the system. Computing these matrices correctly is the most important and difficult step in the Extended Kalman filter algorithm, and it&apos;s also the most common place to make mistakes. But what are these Jacobian matrix exactly? </p>
+<hr>
+<h3 id="4-ekf--computing-jacobian-matrices">4. EKF | Computing Jacobian Matrices</h3>
+<blockquote>
+<p>&#x5047;&#x8BBE;&#x6709;n&#x7EF4;&#x8F93;&#x5165;&#xFF0C;m&#x7EF4;&#x8F93;&#x51FA;&#xFF0C;&#x5219;&#x96C5;&#x514B;&#x6BD4;&#x77E9;&#x9635;&#x7EF4;&#x5EA6;&#x662F;m*n&#x3002;</p>
+</blockquote>
+<p>In vector calculus, a Jacobian or Jacobian matrix is the matrix of all first-order partial derivatives of a vector valued function. </p>
+<p>$$
+\frac{\partial \mathbf{f}}{\partial \mathbf{x}}=\left[ \begin{array}{ccc}{\frac{\partial \mathbf{f}}{\partial x<em>{1}}} &amp; {\cdots} &amp; {\frac{\partial \mathbf{f}}{\partial x</em>{n}}}\end{array}\right]=\left[ \begin{array}{ccc}{\frac{\partial f<em>{1}}{\partial x</em>{1}}} &amp; {\cdots} &amp; {\frac{\partial f<em>{1}}{\partial x</em>{n}}} \ {\vdots} &amp; {\ddots} &amp; {\vdots} \ {\frac{\partial f<em>{m}}{\partial x</em>{1}}} &amp; {\cdots} &amp; {\frac{\partial f<em>{m}}{\partial x</em>{n}}}\end{array}\right]</p>
+<p>$$
+Each column of the Jacobian contains the derivatives of the function outputs with respect to a given input. For example, if your function takes a three-dimensional vector and spits out a two-dimensional vector, the Jacobian would be a two by three matrix. Intuitively, the Jacobian matrix tells you how fast each output of your function is changing along each input dimension, just like how the derivative of a scalar function tells you how fast the output is changing as you vary the input. The Jacobian is really just a generalization of the first derivative to multiple dimensions. Here&apos;s a simple example of the Jacobian of a two-dimensional function with two inputs. </p>
+<p>$$
+\mathbf{f}(\mathbf{x})=\left[ \begin{array}{c}{f<em>{1}} \ {f</em>{2}}\end{array}\right]=\left[ \begin{array}{c}{x<em>{1}+x</em>{2}} \ {x<em>{1}^{2}}\end{array}\right] \quad \rightarrow \quad \frac{\partial \mathbf{f}}{\partial \mathbf{x}}=\left[ \begin{array}{cc}{\frac{\partial f</em>{1}}{d x<em>{1}}} &amp; {\frac{\partial f</em>{1}}{\partial x<em>{2}}} \ {\frac{\partial f</em>{2}}{d x<em>{1}}} &amp; {\frac{\partial f</em>{2}}{\partial x<em>{2}}}\end{array}\right]=\left[ \begin{array}{cc}{1} &amp; {1} \ {2 x</em>{1}} &amp; {0}\end{array}\right]</p>
+<p>$$
+The Jacobian matrix captures the first derivatives of each of the two output variables with respect to each of the two input variables. The best way to get comfortable with driving Jacobian is just practice. Try deriving the Jacobian of this vector valued function. </p>
+<hr>
+<h3 id="5-ekf--putting-it-all-together">5. EKF | Putting It All Together</h3>
+<p>Now, we know how to compute the Jacobian matrices needed for the EKF, and all that&apos;s left is to plug them into our standard Kalman filter equations. </p>
+<p><img src="assets/1556782688001.png" alt="1556782688001"></p>
+<p>There are a couple of differences to notice in the EKF equations compared to the Kalman filter equations we saw in module two. First, in the prediction and correction steps, we&apos;re still using the nonlinear models to propagate the mean of the state estimate and to compute the measurement residual or innovation. That&apos;s because we linearized our motion model about the previous state estimate, and we linearized the measurement model about the predicted state. By definition, the linearized model exactly coincides with the nonlinear model at the operating points. The second difference is the appearance of the L and M Jacobians related to the process and measurement noise. In many cases, both of these matrices will be identity since noise is often assumed to be additive but this is not always the case. So far, this has all been very abstract. </p>
+<p>So, let&apos;s walk through a concrete example of actually using the EKF. </p>
+<p><img src="assets/1556782810269.png" alt="1556782810269"></p>
+<p>We&apos;ll use the same example from module two but with a twist. We&apos;re going to track the position and velocity of a car moving along a rail. But now, instead of receiving periodic GPS measurements that tell us our position, we&apos;re going to use an on-board sensor like a camera to measure the altitude of distant landmarks relative to the horizon. We&apos;ll keep the same linear motion model as in the original example, and assume we know both the height of the landmark and its position in a global reference frame. Because our sensor is measuring an angle, our measurement model has a nonlinear dependence on the position of the car. We&apos;re going to need to linearize the measurement model and use it in our Extended Kalman Filter. </p>
+<p><img src="assets/1556782891716.png" alt="1556782891716"></p>
+<p>The Jacobians for this problem look like this. Notice that the F matrix in this problem is exactly the same as the F matrix in the original problem. That&apos;s because our motion model is already linear in the state. Also notice that the noise Jacobians, L and M, are both identity since both the emotion and the measurement model have additive noise. </p>
+<p><img src="assets/1556782987930.png" alt="1556782987930"></p>
+<p>Try using the data given here to estimate the position of the vehicle at time one using the EKF. </p>
+<p>Here is the result of the prediction step for the mean and co-variance of the state. </p>
+<p><img src="assets/1556783027696.png" alt="1556783027696"></p>
+<p>Notice that the result is identical to the linear Kalman filter case because the motion model actually is linear. For the correction step, this is what you should get. Keep in mind that you should use the nonlinear measurement model to compute the measurement residual, not the linearized model. Also note that in this case, even though the corrected mean at the state estimate is different from the predicted mean, the corrected co-variance didn&apos;t change that much from the predicted co-variance. </p>
+<p><img src="assets/1556783083861.png" alt="1556783083861"></p>
+<p>This is because the Azimuth angle changes slowly at this distance and doesn&apos;t provide much information about the vehicle state compared to a GPS measurement. </p>
+<hr>
+<h3 id="6-summary">6. Summary</h3>
+<p>So, to recap</p>
+<ul>
+<li>The EKF uses linearization to adapt the Kalman filter to nonlinear systems</li>
+<li>Linearization works by computing a local linear approximation to a nonlinear function about a chosen operating point</li>
+<li>Linearization relies on computing Jacobian matrices, which contain all the firstorder partial derivatives of a function</li>
+</ul>
+<p>In the next video, we&apos;ll discuss an alternative formulation of the EKF called the error state Extended Kalman Filter. This would be a useful tool later in the course when we talk about estimating the vehicle orientation in 3D space.</p>
+<hr>
+<h2 id="lesson-4---an-improved-ekf--the-error-state-extended-kalman-filter">Lesson 4 - An Improved EKF : The Error State Extended Kalman Filter</h2>
+<p>In the last video, we introduced the Extended Kalman Filter, which uses local linearization as a way to allow us to apply the Kalman filter equations to non-linear systems. In this video, we&apos;re going to look at a variant of the EKF called the Error-State Extended Kalman Filter, or ES-EKF, which has a couple of nice properties that will come in handy later in the course. By the end of this video, you&apos;ll be able to </p>
+<ul>
+<li><strong>Describe the error state formulation of the Extended Kalman Filter</strong></li>
+<li><strong>Describe the advantages of the error state EKF over the vanilla EKF</strong></li>
+</ul>
+<hr>
+<h3 id="1-whats-in-a-state">1. What&apos;s in a State</h3>
+<p>The idea behind the error state EKF is really very simple. We&apos;re going to start thinking about our vehicle state, x, as being composed of two parts; a large part called the nominal state, x hat, and a small part called the error state, Delta x. </p>
+<p><img src="assets/1556783451808.png" alt="1556783451808"></p>
+<p>We can think of a simple example of tracking the position of a car over time. The green line shows the true position of the car, which is the quantity we&apos;re trying to estimate. The red line is the nominal state, or our best guess what the true state could be based on what we know about the car&apos;s motion model and acceleration and breaking inputs. </p>
+<p><img src="assets/1556783576978.png" alt="1556783576978"></p>
+<p>Of course, our motion model is never perfect, and there is always some random process noise. These errors build up over time as we integrate the motion model. We can think of the error state as the place where all of these modelling errors and process noise accumulate over time, so that the error state is just the difference between the nominal state and the true state at any given time. If we can figure out what the error state is, we can actually use it as a correction to the nominal state to bring us closer to the true state. </p>
+<hr>
+<h3 id="2-the-error-state-extended-kalman-filter">2. The Error-State Extended Kalman Filter</h3>
+<p>So, in the error state EKF, instead of doing Kalman filtering on the full state which might have lots of complicated non-linear behaviors, we&apos;re going to use the EKF to estimate the error state instead, and then use the estimate of the error state as a correction to the nominal state. </p>
+<p><img src="assets/1556783744349.png" alt="1556783744349"></p>
+<p>What this means mathematically is that we&apos;re going to rearrange our linearized motion model so that we now have an equation that can tell us how the difference between the true state at time, k, and our predicted state at time, k, is related to the same difference at time, k minus one. These differences are exactly the error states we just talked about; Delta x sub k and Delta x sub k minus one, and the equations relating them are called the error state kinematics. We can also re-express our linearized measurement model in terms of the error state directly. We can use this error state formulation of the EKF in a very similar way to the vanilla EKF. We start off by updating the nominal state using the non-linear motion model and our current best estimate of the state. </p>
+<p><img src="assets/1556784000692.png" alt="1556784000692"></p>
+<p>We could do this a bunch of times before ever getting a measurement for the correction step. So, the current best estimate might be x check or x hat. We also need to keep track of the state covariance, which grows as we integrate more and more process noise from the motion model. Note that again, the previous covariance estimate could be P check or P hat depending on whether we used a measurement to do a correction step. </p>
+<p><img src="assets/1556784049446.png" alt="1556784049446"></p>
+<p>We can repeat the loop updating the nominal state and the error state covariance for as long as we like until we receive the measurement and want to do a correction. </p>
+<p><img src="assets/1556784145281.png" alt="1556784145281"></p>
+<p>When this happens, we can compute the Kalman gain as usual, and then compute the best estimate of the error state using the Kalman gain, the measurement, and our nonlinear measurement model. </p>
+<p><img src="assets/1556784200570.png" alt="1556784200570"></p>
+<p>Now, here&apos;s where things are little different. Once we have an estimate for the mean of the error state, we want to use this to update the nominal state and correct the error. We can do that by just adding our estimate of the error state to the nominal state to get the correct state estimate for the full state. </p>
+<p><img src="assets/1556784242175.png" alt="1556784242175"></p>
+<p>Finally, we can update the state covariance using the usual equations. </p>
+<p><img src="assets/1556784264103.png" alt="1556784264103"></p>
+<p>That&apos;s it. This process goes on forever, or at least until the vehicle runs out of gas. </p>
+<hr>
+<h3 id="3-why-use-the-es-ekf">3. Why Use the ES-EKF?</h3>
+<p>So, why would we actually want to use the error state EKF in practice? Well, there are two good reasons to use it. </p>
+<p><img src="assets/1556784380734.png" alt="1556784380734"></p>
+<p>One reason is that it can often work better than the vanilla EKF because the small error state is more amenable to linear filtering than the large nominal state, which we can integrate non-linearly.  The other reason is that the error state formulation makes it much easier to work with constrained quantities like rotations, which will come in handy a bit later in the course. The reason for this is that we don&apos;t necessarily have to use plane vector addition to break down the state. In fact, we could use any generalized composition operation we like as long as it gives us a consistent way of incorporating small perturbations into the nominal state.If this all sounds a bit abstract right now, don&apos;t worry. Later in the course, we&apos;ll use the error state EKF to help us deal with rotations in 3D space, which are a very common type of constraint quantity. </p>
+<hr>
+<h3 id="4-summary--the-error-state-ekf-es-ekf">4. Summary | The Error-State EKF (ES-EKF)</h3>
+<blockquote>
+<ul>
+<li><p><strong>The error-state formulation separates the state into a &#x201C;large&#x201D; nominal state and a &#x201C;small&#x201D; error state.</strong></p>
+</li>
+<li><p><strong>The ES-EKF uses local linearization to estimate the error state and uses it to correct the nominal state.</strong></p>
+</li>
+<li><p><strong>The ES-EKF can perform better than the vanilla EKF, and provides a natural way to handle constrained quantities like rotations in 3D.</strong></p>
+</li>
+</ul>
+</blockquote>
+<p>The error state formulation of the EKF separates the vehicle state into a large nominal state and a small error state. The nominal state keeps track of what the motion model predicts the states should be, while the error state captures the modelling errors and process noise that accumulate over time. In the error state EKF, we estimate this small error state and use it as a correction to the nominal state. This is the main difference between the error state EKF and the vanilla EKF, which estimates the full state. Keep in mind that both formulations still rely on local linearization. The error state EKF has a couple of advantages over the vanilla EKF. </p>
+<p>The first is that it simply performs better because the evolution of the error state tends to be closer to linear. The other is that the error state formulation makes it easier to handle special quantities like 3D rotations as we&apos;ll see later in the course. </p>
+<p>In the next video, we&apos;ll discuss some of the shortcomings of the EKF, and how local linearization can break down creating a potentially dangerous situation for a self-driving car.</p>
+<hr>
+<h2 id="lesson-5---limitations-of-the-ekf">Lesson 5 - Limitations of the EKF</h2>
+<p>In the last two videos, we learned about the extended Kalman filter or EKF and how we can use it to adapt the linear Kalman filter to non-linear systems. While the EKF works well for many practical problems, there are some important limitations to keep in mind when deciding if the EKF is the right algorithm for you. In this video, we&apos;ll discuss some of these limitations. </p>
+<hr>
+<h3 id="1-limitations-of-the-ekf--linearization-error">1. Limitations of the EKF | Linearization error</h3>
+<p>Recall that the EKF works by linearizing our systems non-linear motion and observation models to update both the mean and covariance of our state estimate.</p>
+<p><img src="assets/1556787143712.png" alt="1556787143712"></p>
+<p>$$
+f(x) \approx f(a)+\left.\frac{\partial f(x)}{\partial x}\right|_{x=a}(x-a)</p>
+<p>$$
+A linearized model is just a local linear approximation of the true non-linear model. We call the difference between the approximation and the true model, the linearization error. In general, the linearization error for any function depends on two things. </p>
+<p>The first thing is how non-linear the original function is to begin with. If our nonlinear function very slowly or is quite flat much of the time, linear approximation is going to be a pretty good fit. On the other hand, if the function varies quickly, linear approximation is not going to do a great job of capturing the true shape of the function over most of its domain. </p>
+<p>The second thing linearization error depends on is how far away from the operating point you are. The further away you move from the operating point, the more likely the linear approximation is to diverge from the true function. These properties of linearization error have important implications for the EKF. So, let&apos;s look at an example of how linearization error affects the mean and covariance of two random variables transformed by a common pair of non-linear functions. Specifically, let&apos;s look at the non-linear transformation from polar coordinates r and Theta to Cartesian coordinates, x and y. This kind of transformation is commonly used to work with laser scanners or LIDARs, to report range and bearing measurements, just as the scanners on many self-driving cars do. </p>
+<hr>
+<h3 id="2-linearization-error--example">2. Linearization Error | Example</h3>
+<p>Let&apos;s take a number of samples from a uniform distribution over an interval of polar coordinates and consider what happens when we transform the samples into Cartesian coordinates. To illustrate what this looks like, we&apos;ve plotted the random samples from the uniform distribution as blue dots you see on the left. </p>
+<p><img src="assets/1556787318509.png" alt="1556787318509"></p>
+<p>When we transform each of these sample points into the corresponding Cartesian coordinates, we see that the transform distribution takes on a banana shape, shown on the right. Clearly, the shape of the banana distribution is not captured completely by using a mean and a covariance only. But let&apos;s see what happens to the mean and covariance of the original PDF. </p>
+<p>In the left-hand plot, the true mean of the uniform distribution is shown as the green dot in the middle, and the true covariance is represented by the green ellipse. After transforming the uniform distribution into Cartesian coordinates, the mean of the output distribution ends up here, and its covariance looks like this. Now, consider what happens if we linearize the polar to Cartesian transformation about the mean of the original distribution and then transform all the sample points again. The linearized transformation gives us an output distribution that looks like another uniform distribution and bears almost no resemblance to the banana-shaped distribution we saw before. </p>
+<p>If we look at the mean of this distribution, represented by a red dot, it lands somewhere up here, and the linearized covariance looks quite different as well. Let&apos;s compare the linearized and non-linear output distributions. You can see that the mean of the linearized distribution is in a very different place from the true mean, and the linearized covariance seriously underestimates the spread of the true output distribution along the y dimension. </p>
+<p>So, in this case, we can see that linearization error can cause our belief about the output distribution to completely miss the mark, and this can cause big problems in our estimator. For example, the estimated position of lane markers produced from a laser scanner might differ significantly from the actual positions, leading our car to drive over the center line. </p>
+<hr>
+<h3 id="3-limitations-of-the-ekf--linearization-error">3. Limitations of the EKF | Linearization Error</h3>
+<blockquote>
+<p>The EKF is prone to linearization error when</p>
+<ol>
+<li><strong>The system dynamics are highly nonlinear</strong></li>
+<li><strong>The sensor sampling time is slow relative how fast the system is evolving</strong></li>
+</ol>
+</blockquote>
+<p>So when is linearization a problem for the EKF? There are two situations to watch out for. The first is when your system dynamics are highly nonlinear. If your emotion and measurement models are close to linear, linearization error won&apos;t be a big problem. But if they&apos;re not, your linearized estimator won&apos;t do a good job of capturing the true behavior of the system. The second situation is related to how far away from the operating point you&apos;re trying to use the linearized model. For self-driving cars moving very fast relative to the sampling time of your sensors, you&apos;re going to get more linearization error than if it&apos;s moving slowly. </p>
+<blockquote>
+<p>Two important consequences:</p>
+<ol>
+<li><strong>The estimated mean state can become very different from the true state</strong></li>
+<li><strong>The estimated state covariance can fail to capture the true uncertainty in the state</strong></li>
+</ol>
+</blockquote>
+<p>Mathematically speaking, there are two important consequences of linearization error in the EKF, both of which we saw in the previous example. One is that the estimated mean can become very different from the true state, and the other is that the estimated covariance may not accurately capture the true uncertainty in the state. <strong>In other words, this means that linearization error can cause our estimator to be overconfident in a completely wrong answer.</strong> </p>
+<p>In the worst case, the estimator may diverge, that is, become completely lost and fail to provide useful output. Worse, once an estimator such as the EKF has diverged, it can&apos;t be pulled back on track. Often, you&apos;re forced to re-initialize if you can. This is a huge problem for safety when we&apos;re dealing with self-driving cars. If your car&apos;s estimator diverges while driving, it could easily drive off the road into a ditch or cause a collision with another vehicle. </p>
+<hr>
+<h3 id="4-limitations-of-the-ekf--computing-jacobians">4. Limitations of the EKF | Computing Jacobians</h3>
+<blockquote>
+<p>Computing Jacobian matrices for complicated nonlinear functions is also a common source of error in EKF implementations!</p>
+<ul>
+<li><strong>Analytical differentiation is prone to human error</strong></li>
+<li><strong>Numerical differentiation can be slow and unstable</strong></li>
+<li><strong>Automatic differentiation (e.g., at compile time) can also behave unpredictably</strong></li>
+</ul>
+</blockquote>
+<p>So, linearization error is the main theoretical limitation of the EKF. But there are other common problems that we will encounter in our implementations. Probably the most common problem in practice is that it&apos;s very easy to make mistakes when we compute Jacobian matrices, especially if we&apos;re dealing with a complicated nonlinear system. I cannot tell you the number of times my students and I have missed a minus sign while deriving a Jacobian. This can lead to many many hours of debugging. Some people try to get around this problem by using numerical differentiation at runtime or automatic differentiation at compile time. But these had their own pitfalls and can sometimes behave unpredictably. </p>
+<p>On top of that, what happens if one or more of our models isn&apos;t even differentiable, like the step function response of a stepper motor. All of these drawbacks lead us to a question: Do we really need linearization to do nonlinear Kalman filtering? </p>
+<hr>
+<h3 id="5-summary--limitations-of-the-ekf">5. Summary | Limitations of the EKF</h3>
+<p>To summarize this video, the extended Kalman filter has several limitations based on its use of analytical local linearization. If the dynamics of the system being modeled are highly non-linear or the linearization error is large, the filter may diverge. The EKF requires Jacobian matrices to be computed which is often a tedious and error-prone process. Nonetheless, the EKF is a proven tool for state estimation and you will no doubt encounter it often as a self-driving car engineer. In the next video, we&apos;ll discuss another common filter variant called the unscented Kalman filter, which largely addresses these limitations of the EKF.</p>
+<hr>
+<h2 id="lesson-6---an-alternative-to-the-ekf--the-unscented-kalman-filter">Lesson 6 - An Alternative to the EKF : The Unscented Kalman Filter</h2>
+<p>In the previous video, we saw how linearization error can cause the EKF to produce state estimates that are very different from the true value of the state and covariances that don&apos;t accurately capture the uncertainty in the state. This can be a big problem when we&apos;re relying on the EKF in safety critical applications like self-driving cars. </p>
+<p>In this lesson, you&apos;ll learn about the unscented common filter, which is an alternative approach to non-linear common filtering that relies on something called the unscented transform to pass probability distributions through nonlinear functions. As we&apos;ll see, the unscented transform gives us much higher accuracy than analytical EKF style linearization for a similar amount of computation, and without needing to compute any Jacobians. So by the end of this video you&apos;ll be able to </p>
+<ul>
+<li><p><strong>Use the unscented transform to pass a probability distribution through a nonlinear function</strong></p>
+</li>
+<li><p><strong>Describe how the Unscented Kalman Filter or UKF uses the unscented transform in the prediction and correction steps</strong></p>
+</li>
+<li><p><strong>Explain the advantages of the UKF over the EKF</strong></p>
+</li>
+<li><p><strong>Apply the UKF to a simple nonlinear tracking problem.</strong> </p>
+</li>
+</ul>
+<hr>
+<h3 id="1-the-unscented-transform">1. The Unscented Transform</h3>
+<p>The intuition behind the unscented transform is simple. It&apos;s typically much easier to approximate a probability distribution than it is to approximate an arbitrary nonlinear function. </p>
+<p><em>&#x201C;It is easier to approximate a probability distribution than it is to approximate an arbitrary nonlinear function&#x201D; &#x2014; S. Julier, J. Uhlmann, and H. Durrant-Whyte (2000)</em></p>
+<p>Let&apos;s think about a simple example where a 1D Gaussian distribution like the one on the left gets transformed through nonlinear function into a more complicated 1D distribution like the one on the right. </p>
+<p><img src="assets/1556799656395.png" alt="1556799656395"></p>
+<p>We already know the mean and the standard deviation of the input Gaussian and we want to figure out the mean and standard deviation of the output distribution using this information and the nonlinear function. The unscented transform gives us a way to do this. The basic idea in the unscented transform has three steps. </p>
+<p>First, we choose a set of sample points from our input distribution. Now these aren&apos;t random samples, they&apos;re deterministic samples chosen to be a certain number of standard deviations away from the mean. For this reason, these samples are called sigma points, and the unscented transform is sometimes called the sigma point transform. </p>
+<p>Once we have our set of carefully chosen sigma points, the second and easiest step is to pass each sigma point through our nonlinear function, producing a new set of sigma points belonging to the output distribution. </p>
+<p>Finally, we can compute the sample mean and covariance of the output sigma points with some carefully chosen weights, and these will give us a good approximation of the mean and covariance of the true output distribution. Now that you&apos;ve seen the basic idea of the unscented transform, let&apos;s look at each of these steps in detail. The first thing you might be wondering is how many sigma points do we need and which points are, in fact, sigma points? </p>
+<hr>
+<h3 id="2-the-unscented-transform--choosing-sigma-points">2. The Unscented Transform | Choosing Sigma Points</h3>
+<p>In general, for an n dimensional probability distribution, we need 2n+1 sigma points, one for the mean and the rest symmetrically distributed about the mean. The diagrams in the left show the sigma points for one dimensional and two dimensional examples. In 1D we need three sigma points and in 2D we need five. </p>
+<p><img src="assets/1556799822985.png" alt="1556799822985"></p>
+<p>The first step in determining where the sigma point should be is taking something called the Cholesky decomposition of the covariance matrix associated with the input distribution. A Cholesky decomposition is basically a square root operation that operates on symmetric positive definite matrices, such as covariance matrices. In fact, if the input PDF is one dimensional the Cholesky decomposition really is just the square root of the variants, which is also known as the standard deviation. We won&apos;t go into the details of how to
+compute a Cholesky decomposition but you can use the chole function in MATLAB or the Cholesky function in NumPy. </p>
+<p>Once we&apos;ve decomposed the covariance matrix, we can choose our first sigma point to be the mean of the distribution and the remainder to be the mean plus or minus some factor times each column of the matrix L that we got from the cholesky decomposition. The value of N here again is a number of dimensions of the probability distribution. The parameter capa is a tuning parameter that you&apos;re free to set yourself. For Gaussian distributions, which is what we&apos;ll be working with, setting N plus capa equal to 3 is a good choice. </p>
+<hr>
+<h3 id="3-the-unscented-transform--transforming-and-recombining">3. The Unscented Transform | Transforming and Recombining</h3>
+<p>Okay, so now we have our set of sigma points. The next step is straightforward. Just pass each of the sigma points through our nonlinear function h(x) to get a new set of transformed sigma points. </p>
+<p>$$
+\mathbf{y}<em>{i}=\mathbf{h}\left(\mathbf{x}</em>{i}\right) \quad i=0, \ldots, 2 N</p>
+<p>$$
+Now all that&apos;s left is to recombine the transformed sigma points to find our output mean and output covariance. </p>
+<p><img src="assets/1556800067449.png" alt="1556800067449"></p>
+<p>We do this using the standard formulas for the sample means and covariance that you would have seen in your introductory statistics courses. The trick is that each of the points gets a specific weight in the mean and covariance calculations, and that weight depends on the parameter kappa and the dimension of the input distribution N. And that&apos;s really all there is to it. </p>
+<hr>
+<h3 id="4-the-unscented-transform-vs-linearization">4. The Unscented Transform vs. Linearization</h3>
+<p>To see the unscented transform in action, lets come back to our example of the previous video where we nonlinearly transformed a uniform distribution in polar coordinates into Cartesian coordinates, and let&apos;s see how the unscented transform compares to the analytical linearization approach. So here, again, we have the true mean and covariance of the two distributions in green. </p>
+<p><img src="assets/1556800165463.png" alt="1556800165463"></p>
+<p>Now let&apos;s apply the unscented transform. The dimension of our input distribution is two, so we need five sigma points which we&apos;ve shown as orange stars. Passing these sigma points through our nonlinear function puts them here. And the mean and covariance we compute from the transformed sigma points look like this shown in orange. Note that our estimate for the mean using the unscented transform is almost exactly the same as the true nonlinear mean and our estimate for the covariance almost exactly matches the true covariance. </p>
+<p>Compare that to the analytically linearized transform mean and covariance in red, which are both very different from the true mean and true covariance. It&apos;s easy to see from this example that the unscented transform gives us a much better approximation of the output PDF without requiring much more work than the analytical linearization approach. </p>
+<hr>
+<h3 id="5-the-unscented-kalman-filter-ukf">5. The Unscented Kalman Filter (UKF)</h3>
+<p>Now that we&apos;ve seen how the unscented transform works, we can easily use it in our Kalman Filtering framework to work with nonlinear models. </p>
+<p><img src="assets/1556800260407.png" alt="1556800260407"></p>
+<p>This variant of the common filter is called the Unscented Kalman Filter or UKF. You may also hear it called the sigma point common filter. The main idea of the UKF is that instead of approximating the system equations by linearizing them like the EKF does, we use the unscented transform to approximate the PDFs directly. Let&apos;s look at the prediction step of the UKF. </p>
+<h4 id="51-prediction-step">5.1 Prediction step</h4>
+<p>To propagate the state and covariance through the motion model from time k-1 to time k, we apply the unscented transform using the current best guess for the mean and covariance of the state. </p>
+<p><img src="assets/1556800350607.png" alt="1556800350607"></p>
+<p>First, we decompose the estimated state covariance from time k- 1, then we calculate our sigma points centered around the estimated means state from time k- 1. Second, we propagate our sigma points through our nonlinear motion model to get a new set of sigma points for the predicted state at time k. And finally, we calculate the predicted mean and covariance for the state at time K. At this point it&apos;s important to account for the process noise by adding its covariance to the covariance of the transformed sigma points to get the final predicted covariance. </p>
+<p>This equation looks a bit different if the process noise is not additive, but most of the time you will be dealing with additive noise in your models unless there is a good reason not to. </p>
+<h4 id="52-correction-step">5.2 Correction step</h4>
+<p>For the correction step, we&apos;re going to follow a similar procedure, this time with a non-linear measurement model. </p>
+<p><img src="assets/1556800422346.png" alt="1556800422346"></p>
+<p>First, we will need to redraw our sigma points using the predicted covariance matrix. We need to do this a second time because we added process noise at the end of the last step, and this will modify the positions of some of the sigma points. </p>
+<p>Next, we&apos;re going to plug these new sigma points one by one into our nonlinear measurement model to get another set of sigma points for the predicted measurements, then we can estimate the mean and covariance of the predicted measurements using the sample mean and covariance formulas. Again, take note that we&#x2019;re adding in the measurement noise covariance to get the final covariance of the predicted measurements, and also remember that this formula only applies to additive noise. To compute the common gain, we&#x2019;re also going to need the cross covariance between the predicted state and the predicted measurements, which tells us how the measurements are correlated with the state. </p>
+<p>You can calculate this using the standard formula for the cross covariance and using the same weights as before. Then all that&apos;s left is to use the Kalman gain to optimally correct the mean and covariance of the predicted state. And that&apos;s it! The UKF follows the same prediction correction pattern as the EKF, but we&apos;ve just replaced the analytical linearization step with the unscented transform. </p>
+<h4 id="53-short-example">5.3 Short Example</h4>
+<p>Let&apos;s try applying the UKF to the same example driving scenario we worked through with the EKF. We&apos;re again trying to track the position and velocity of a moving car that we&apos;re controlling by pressing on the gas pedal or the brake. </p>
+<p><img src="assets/1556800534463.png" alt="1556800534463"></p>
+<p>The car has a sensor on board that measures the angle between a distant landmark and the horizon. The motion model is linear but the measurement model is nonlinear. Try using the data given here to estimate the position of the vehicle at time one, using the UKF. </p>
+<p><img src="assets/1556800598327.png" alt="1556800598327"></p>
+<p>Here is the Cholesky decomposition of the initial covariance matrix and the five sigma points we&apos;ll use to represent the state and its covariance. </p>
+<p><img src="assets/1556800660325.png" alt="1556800660325"></p>
+<p>And here is the result of the prediction step for the mean of the state. </p>
+<p><img src="assets/1556800695791.png" alt="1556800695791"></p>
+<p>And finally, the predicted covariance. </p>
+<p><img src="assets/1556800728909.png" alt="1556800728909"></p>
+<p>Notice that the predicted mean and covariance are identical to what we would&apos;ve found with the linear common filter and the extended common filter. This is because the motion model actually is linear. For the correction step, these are the sigma points for the predicted measurements and the mean and covariance of that distribution. </p>
+<p><img src="assets/1556800764286.png" alt="1556800764286"></p>
+<p>And finally, the cross covariance, common gain, and our final answer for the position of the vehicle at time k = 1. </p>
+<p><img src="assets/1556800787381.png" alt="1556800787381"></p>
+<p><img src="assets/1556800802864.png" alt="1556800802864"></p>
+<hr>
+<h3 id="6-summary">6. Summary</h3>
+<p>To summarize this video, we looked at the Unscented Kalman Filter or UKF, which uses the unscented transform to adapt the Kalman filter to nonlinear systems. As we saw, the unscented transform works by passing a small set of carefully chosen samples through a nonlinear system, and computing the mean and covariance of the outputs, and it often does a much better job of approximating the output distribution than the local analytical linearization technique used by the EKF for similar computational cost. </p>
+<hr>
+<h2 id="module-summary">Module Summary</h2>
+<p>Let&apos;s recap what we learned in this module. We started off by discussing the linear Kalman filter, which is a form of recursive least squares estimation that allows us to combine information from a motion model with information from sensor measurements to estimate the vehicle state. The Kalman filter follows a prediction correction architecture. The motion model is used to make predictions of the state, and the measurements are used to make corrections to those predictions. </p>
+<p>We also saw that the Kalman filter is the best linear unbiased estimator, or BLUE. That is, the Kalman filter is the best unbiased estimator that uses only a linear combination of measurements. But, of course, linear systems don&apos;t really exist in reality, so we needed to develop techniques for handling nonlinear systems. </p>
+<p>In this module, we looked at three different approaches to nonlinear Kalman filtering, the Extended Kalman Filter or EKF, the error state formulation of the EKF and the Unscented Kalman Filter or UKF. As we&apos;ve discussed the main difference is that the EKF relies on local analytical linearization to propagate PDFs through nonlinear functions whether using the full state or the error state formulation. </p>
+<p>In contrast, the UKF relies on the unscented transform to handle nonlinear functions. For most systems that are only mildly nonlinear, the EKF will give accurate results, but the UKF will be more accurate in cases where linearization error is a problem for the EKF. The error state Kalman filter performs somewhere in-between. One of the biggest advantages of the UKF over any EKF formulation is that the UKF doesn&apos;t require you to compute any derivatives of your non-linear models, which can be prone to human error or numerical instability. Finally, in terms of speed, the EKF wins out by a small margin for typical estimation problems, but in general, the EKF and the UKF require very similar amounts of computation. Because of its accuracy and simplicity, we recommend using the UKF over the EKF whenever possible in your projects. </p>
+<p>If you must use the EKF, our advice is to use the error state formulation, be wary of linearization error, and take extra care to ensure your Jacobians are correct, a good mantra to repeat. </p>
+<p>Now that you&apos;ve learned about the basic tools we need for state estimation, we can start thinking about the types of sensors we might find on a self-driving car and how we can use them to localize the vehicle. In the next module, we&apos;ll discuss one common pair of sensors, the inertial measurement unit or IMU and the global navigation satellite system, or GNSS. </p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../Module 1 - Least Squares/Module 1 - Least Squares.html" class="navigation navigation-prev " aria-label="Previous page: Module 1：Least Squares">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html" class="navigation navigation-next " aria-label="Next page: Module 3 - GNSSINS Sensing for Pose Estimation">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Module 2 - State Estimation - Linear and Nonlinear Kalman Filters","level":"1.3.2","depth":2,"next":{"title":"Module 3 - GNSSINS Sensing for Pose Estimation","level":"1.3.3","depth":2,"path":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.md","ref":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.md","articles":[]},"previous":{"title":"Module 1：Least Squares","level":"1.3.1","depth":2,"path":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.md","ref":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.md","mtime":"2019-07-31T02:26:20.804Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T02:26:51.944Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

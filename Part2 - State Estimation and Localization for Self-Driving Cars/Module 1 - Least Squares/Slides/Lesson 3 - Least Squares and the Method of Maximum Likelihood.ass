@@ -1,0 +1,1119 @@
+WEBVTT
+
+1
+00:00:13.970 --> 00:00:17.280
+Welcome to the final
+lesson of module one.
+
+2
+00:00:17.280 --> 00:00:18.780
+We'll finish off
+the module by
+
+3
+00:00:18.780 --> 00:00:20.510
+discussing an
+important connection,
+
+4
+00:00:20.510 --> 00:00:22.410
+that will help to provide
+further intuition
+
+5
+00:00:22.410 --> 00:00:24.390
+for the method of
+least squares.
+
+6
+00:00:24.390 --> 00:00:27.600
+Specifically, by
+the end of this lesson,
+
+7
+00:00:27.600 --> 00:00:29.430
+you'll be able to
+state the connection
+
+8
+00:00:29.430 --> 00:00:31.200
+between the method
+of least squares
+
+9
+00:00:31.200 --> 00:00:33.120
+and maximum
+likelihood estimation
+
+10
+00:00:33.120 --> 00:00:35.760
+with Gaussian
+random variables.
+
+11
+00:00:35.760 --> 00:00:37.920
+Let's begin by recalling
+
+12
+00:00:37.920 --> 00:00:39.450
+the least squares
+criterion from
+
+13
+00:00:39.450 --> 00:00:42.285
+the very first video
+in this module.
+
+14
+00:00:42.285 --> 00:00:44.840
+We found the
+best estimates
+
+15
+00:00:44.840 --> 00:00:45.980
+of some unknown,
+
+16
+00:00:45.980 --> 00:00:47.780
+but constant parameters by
+
+17
+00:00:47.780 --> 00:00:48.950
+determining
+the values that
+
+18
+00:00:48.950 --> 00:00:50.120
+minimize the sum of
+
+19
+00:00:50.120 --> 00:00:53.465
+squared errors based
+on our measurements.
+
+20
+00:00:53.465 --> 00:00:56.485
+But we can ask, why
+squared errors?
+
+21
+00:00:56.485 --> 00:00:58.095
+Why not cubed errors,
+
+22
+00:00:58.095 --> 00:01:00.830
+or square root errors,
+or something else?
+
+23
+00:01:00.830 --> 00:01:02.690
+This is actually
+a particularly
+
+24
+00:01:02.690 --> 00:01:04.340
+deep question and there is
+
+25
+00:01:04.340 --> 00:01:06.650
+a whole field of
+robust statistics
+
+26
+00:01:06.650 --> 00:01:08.135
+dedicated to it.
+
+27
+00:01:08.135 --> 00:01:09.560
+You can indeed use
+
+28
+00:01:09.560 --> 00:01:10.880
+different error functions,
+
+29
+00:01:10.880 --> 00:01:12.530
+but we'll go over
+two reasons why
+
+30
+00:01:12.530 --> 00:01:15.545
+squared errors are
+attractive and relevant.
+
+31
+00:01:15.545 --> 00:01:17.705
+The first is simple.
+
+32
+00:01:17.705 --> 00:01:19.850
+Squared errors allow
+us to solve for
+
+33
+00:01:19.850 --> 00:01:21.530
+the optimal
+parameters with
+
+34
+00:01:21.530 --> 00:01:23.695
+relatively
+straightforward algebra.
+
+35
+00:01:23.695 --> 00:01:26.040
+If the measurement
+model is linear,
+
+36
+00:01:26.040 --> 00:01:28.325
+minimizing the squared
+error criterion
+
+37
+00:01:28.325 --> 00:01:29.690
+amounts to
+solving a linear
+
+38
+00:01:29.690 --> 00:01:31.610
+system of equations.
+
+39
+00:01:31.610 --> 00:01:33.500
+The second reason
+has to do with
+
+40
+00:01:33.500 --> 00:01:35.660
+probability and
+a deep connection between
+
+41
+00:01:35.660 --> 00:01:36.950
+least squares and
+
+42
+00:01:36.950 --> 00:01:39.050
+maximum likelihood
+estimators
+
+43
+00:01:39.050 --> 00:01:41.495
+under the assumption
+of Gaussian noise.
+
+44
+00:01:41.495 --> 00:01:43.010
+As you may have guessed,
+
+45
+00:01:43.010 --> 00:01:44.705
+this connection
+was first derived
+
+46
+00:01:44.705 --> 00:01:46.730
+in a particular
+form by Gauss.
+
+47
+00:01:46.730 --> 00:01:48.620
+So, it's no surprise
+that it involves
+
+48
+00:01:48.620 --> 00:01:50.570
+Gaussian random
+variables or
+
+49
+00:01:50.570 --> 00:01:53.165
+equivalently
+Gaussian noise.
+
+50
+00:01:53.165 --> 00:01:56.000
+To understand this
+fundamental connection,
+
+51
+00:01:56.000 --> 00:01:59.180
+let's first discuss
+maximum likelihood.
+
+52
+00:01:59.180 --> 00:02:01.370
+Instead of writing
+down a loss,
+
+53
+00:02:01.370 --> 00:02:02.765
+we can approach
+the problem of
+
+54
+00:02:02.765 --> 00:02:05.120
+optimal parameter
+estimation by asking,
+
+55
+00:02:05.120 --> 00:02:06.590
+which parameters make
+
+56
+00:02:06.590 --> 00:02:09.220
+our recorded measurements
+the most likely?
+
+57
+00:02:09.220 --> 00:02:11.140
+To keep things simple,
+
+58
+00:02:11.140 --> 00:02:13.445
+we'll stick to
+a single scalar parameter
+
+59
+00:02:13.445 --> 00:02:15.110
+to build our intuition.
+
+60
+00:02:15.110 --> 00:02:16.910
+For example, let's look
+
+61
+00:02:16.910 --> 00:02:18.800
+again at measuring
+resistance.
+
+62
+00:02:18.800 --> 00:02:20.815
+Given what we know
+about probability,
+
+63
+00:02:20.815 --> 00:02:22.670
+if we have
+four possible values
+
+64
+00:02:22.670 --> 00:02:24.395
+for this unknown
+resistance parameter,
+
+65
+00:02:24.395 --> 00:02:26.780
+capital X, small x sub A
+
+66
+00:02:26.780 --> 00:02:28.490
+through small x sub D,
+
+67
+00:02:28.490 --> 00:02:30.110
+and each gives rise to
+
+68
+00:02:30.110 --> 00:02:31.955
+the following
+conditional probability
+
+69
+00:02:31.955 --> 00:02:33.665
+on our measurement Y,
+
+70
+00:02:33.665 --> 00:02:35.510
+which value would maximize
+
+71
+00:02:35.510 --> 00:02:37.460
+the conditional
+likelihood given
+
+72
+00:02:37.460 --> 00:02:40.380
+the measurement Y sub mes?
+
+73
+00:02:40.380 --> 00:02:43.485
+That's right. X sub A.
+
+74
+00:02:43.485 --> 00:02:45.500
+The highest
+probability density at
+
+75
+00:02:45.500 --> 00:02:46.910
+the measured location is
+
+76
+00:02:46.910 --> 00:02:48.340
+given by the green curve,
+
+77
+00:02:48.340 --> 00:02:50.150
+which means
+that X sub A is
+
+78
+00:02:50.150 --> 00:02:51.260
+our most likely parameter
+
+79
+00:02:51.260 --> 00:02:53.760
+value given
+this measurement.
+
+80
+00:02:54.190 --> 00:02:55.700
+Now, if we take
+
+81
+00:02:55.700 --> 00:02:56.930
+our simple
+measurement model,
+
+82
+00:02:56.930 --> 00:02:57.770
+we can convert it to
+
+83
+00:02:57.770 --> 00:02:59.180
+a probability density by
+
+84
+00:02:59.180 --> 00:03:02.350
+assuming a density for
+our additive noise.
+
+85
+00:03:02.350 --> 00:03:04.630
+The unknown parameter, X,
+
+86
+00:03:04.630 --> 00:03:06.560
+becomes the mean
+of this density
+
+87
+00:03:06.560 --> 00:03:07.820
+and the variance is simply
+
+88
+00:03:07.820 --> 00:03:09.575
+our noise variance.
+
+89
+00:03:09.575 --> 00:03:11.870
+Recall that the
+probability density of
+
+90
+00:03:11.870 --> 00:03:13.310
+a Gaussian
+random variable is
+
+91
+00:03:13.310 --> 00:03:15.950
+given by the
+following equation.
+
+92
+00:03:15.950 --> 00:03:18.170
+This means that
+we can express
+
+93
+00:03:18.170 --> 00:03:19.430
+our measurement
+likelihood for
+
+94
+00:03:19.430 --> 00:03:22.055
+a single measurement
+as follows.
+
+95
+00:03:22.055 --> 00:03:24.154
+If we have multiple
+
+96
+00:03:24.154 --> 00:03:25.745
+independent measurements,
+
+97
+00:03:25.745 --> 00:03:28.030
+each with the same
+noise variance,
+
+98
+00:03:28.030 --> 00:03:29.660
+we can simply
+take the product
+
+99
+00:03:29.660 --> 00:03:31.235
+of multiple Gaussians,
+
+100
+00:03:31.235 --> 00:03:34.050
+which results in
+another Gaussian.
+
+101
+00:03:36.580 --> 00:03:39.860
+We can try to maximize
+this likelihood with
+
+102
+00:03:39.860 --> 00:03:43.530
+respect to the mean
+parameter X half.
+
+103
+00:03:43.690 --> 00:03:46.295
+To do this, we'll use
+a technique that's
+
+104
+00:03:46.295 --> 00:03:48.905
+often used in
+optimization.
+
+105
+00:03:48.905 --> 00:03:50.869
+Instead of maximizing
+
+106
+00:03:50.869 --> 00:03:52.319
+the likelihood directly,
+
+107
+00:03:52.319 --> 00:03:53.765
+we'll take it's logarithm
+
+108
+00:03:53.765 --> 00:03:55.325
+and maximize that.
+
+109
+00:03:55.325 --> 00:03:56.960
+Since the likelihood will
+
+110
+00:03:56.960 --> 00:03:58.610
+always be a
+positive number and
+
+111
+00:03:58.610 --> 00:04:00.140
+because the logarithm is
+
+112
+00:04:00.140 --> 00:04:02.405
+a monotonically
+increasing function,
+
+113
+00:04:02.405 --> 00:04:04.970
+this will not affect
+the final result,
+
+114
+00:04:04.970 --> 00:04:07.290
+which is very convenient.
+
+115
+00:04:07.540 --> 00:04:09.380
+Once we apply
+
+116
+00:04:09.380 --> 00:04:11.194
+the logarithm to
+this likelihood,
+
+117
+00:04:11.194 --> 00:04:13.010
+we see that something
+pops out that
+
+118
+00:04:13.010 --> 00:04:15.840
+looks a lot like the sum
+of squared errors.
+
+119
+00:04:16.460 --> 00:04:19.040
+The constant C in
+this expression
+
+120
+00:04:19.040 --> 00:04:20.480
+refers to terms that are
+
+121
+00:04:20.480 --> 00:04:22.310
+not a function of X and
+
+122
+00:04:22.310 --> 00:04:24.780
+ones which we can
+safely ignore.
+
+123
+00:04:25.510 --> 00:04:27.830
+The last step is now to
+
+124
+00:04:27.830 --> 00:04:29.900
+realize that the arg max
+of the function
+
+125
+00:04:29.900 --> 00:04:31.550
+F is the same as
+
+126
+00:04:31.550 --> 00:04:32.510
+the arg min of the
+
+127
+00:04:32.510 --> 00:04:34.445
+negative of that function.
+
+128
+00:04:34.445 --> 00:04:37.070
+Using this fact,
+we can turn
+
+129
+00:04:37.070 --> 00:04:39.949
+our likelihood
+maximization into
+
+130
+00:04:39.949 --> 00:04:41.120
+a minimization of
+
+131
+00:04:41.120 --> 00:04:43.350
+the sum of squared errors.
+
+132
+00:04:46.000 --> 00:04:48.800
+For that,
+minimizing the sum
+
+133
+00:04:48.800 --> 00:04:49.910
+of squared errors is
+
+134
+00:04:49.910 --> 00:04:52.114
+equivalent to maximizing
+the likelihood
+
+135
+00:04:52.114 --> 00:04:53.540
+of a set of measurements,
+
+136
+00:04:53.540 --> 00:04:54.740
+assuming that
+the measurements
+
+137
+00:04:54.740 --> 00:04:56.285
+are corrupted by additive,
+
+138
+00:04:56.285 --> 00:04:58.250
+independent,
+Gaussian noise
+
+139
+00:04:58.250 --> 00:05:00.440
+that's of equal variance.
+
+140
+00:05:00.440 --> 00:05:02.600
+Furthermore, if we
+
+141
+00:05:02.600 --> 00:05:04.295
+maintain the same
+assumptions,
+
+142
+00:05:04.295 --> 00:05:05.510
+but change the variance of
+
+143
+00:05:05.510 --> 00:05:07.810
+the Gaussian noise
+for each measurement,
+
+144
+00:05:07.810 --> 00:05:10.520
+we can arrive at
+the same criterion as
+
+145
+00:05:10.520 --> 00:05:13.460
+we saw in our weighted
+least squares video.
+
+146
+00:05:13.460 --> 00:05:15.320
+So, in both cases,
+
+147
+00:05:15.320 --> 00:05:17.125
+the maximum
+likelihood estimate,
+
+148
+00:05:17.125 --> 00:05:19.260
+given additive
+Gaussian noise,
+
+149
+00:05:19.260 --> 00:05:21.350
+is equivalent to
+the least squares or
+
+150
+00:05:21.350 --> 00:05:22.910
+weighted least
+squares solutions
+
+151
+00:05:22.910 --> 00:05:25.050
+we derived earlier.
+
+152
+00:05:25.120 --> 00:05:28.595
+So, why is this result
+so important?
+
+153
+00:05:28.595 --> 00:05:30.410
+Our self-driving car will
+
+154
+00:05:30.410 --> 00:05:31.520
+have to deal with many,
+
+155
+00:05:31.520 --> 00:05:32.795
+many sources of error.
+
+156
+00:05:32.795 --> 00:05:35.375
+Some of which are very
+difficult to model.
+
+157
+00:05:35.375 --> 00:05:37.820
+However, the central
+limit theorem,
+
+158
+00:05:37.820 --> 00:05:39.350
+tells us that when
+
+159
+00:05:39.350 --> 00:05:41.840
+combining all of
+these errors together,
+
+160
+00:05:41.840 --> 00:05:43.460
+they can reasonably
+be modeled by
+
+161
+00:05:43.460 --> 00:05:46.370
+a single Gaussian
+error distribution.
+
+162
+00:05:46.370 --> 00:05:48.620
+We would like to
+model our system
+
+163
+00:05:48.620 --> 00:05:49.715
+probabilistically
+
+164
+00:05:49.715 --> 00:05:51.350
+and yet maintain
+simplicity
+
+165
+00:05:51.350 --> 00:05:52.700
+in calculations.
+
+166
+00:05:52.700 --> 00:05:54.950
+If our errors
+are Gaussian,
+
+167
+00:05:54.950 --> 00:05:58.000
+then the best maximum
+likelihood estimate
+
+168
+00:05:58.000 --> 00:05:59.710
+of the parameters
+of interest,
+
+169
+00:05:59.710 --> 00:06:01.980
+is exactly the least
+squares solution
+
+170
+00:06:01.980 --> 00:06:03.480
+we're already
+familiar with.
+
+171
+00:06:03.480 --> 00:06:05.925
+Easy. To finish off,
+
+172
+00:06:05.925 --> 00:06:07.420
+let's discuss
+one important
+
+173
+00:06:07.420 --> 00:06:09.490
+caveat for this method.
+
+174
+00:06:09.490 --> 00:06:12.655
+When we use the method
+of least squares,
+
+175
+00:06:12.655 --> 00:06:14.200
+measurement
+outliers can have
+
+176
+00:06:14.200 --> 00:06:16.750
+a significant effect
+on our final estimate.
+
+177
+00:06:16.750 --> 00:06:18.489
+To understand why,
+
+178
+00:06:18.489 --> 00:06:19.480
+consider that under
+
+179
+00:06:19.480 --> 00:06:21.130
+a Gaussian distribution,
+
+180
+00:06:21.130 --> 00:06:22.780
+a sample that
+is two standard
+
+181
+00:06:22.780 --> 00:06:24.550
+deviations away
+from the mean,
+
+182
+00:06:24.550 --> 00:06:25.780
+has less than a five
+
+183
+00:06:25.780 --> 00:06:27.775
+percent probability
+of occurring.
+
+184
+00:06:27.775 --> 00:06:29.650
+As a result, if there are
+
+185
+00:06:29.650 --> 00:06:31.795
+some outliers in
+our measurement data,
+
+186
+00:06:31.795 --> 00:06:33.819
+the method of
+maximum likelihood,
+
+187
+00:06:33.819 --> 00:06:34.955
+and equivalently,
+
+188
+00:06:34.955 --> 00:06:36.625
+the method of
+least squares,
+
+189
+00:06:36.625 --> 00:06:38.585
+will put significant
+importance
+
+190
+00:06:38.585 --> 00:06:40.175
+on these measurements.
+
+191
+00:06:40.175 --> 00:06:42.560
+So, the estimated value of
+
+192
+00:06:42.560 --> 00:06:44.000
+our parameter
+will be pulled
+
+193
+00:06:44.000 --> 00:06:45.755
+strongly by
+these outliers.
+
+194
+00:06:45.755 --> 00:06:48.380
+Our optimal method
+will be skewed
+
+195
+00:06:48.380 --> 00:06:49.685
+so that the outlying
+measurement
+
+196
+00:06:49.685 --> 00:06:51.200
+is more likely.
+
+197
+00:06:51.200 --> 00:06:53.270
+This can happen to
+many estimators
+
+198
+00:06:53.270 --> 00:06:54.290
+using sensor data from a
+
+199
+00:06:54.290 --> 00:06:55.745
+self-driving vehicle.
+
+200
+00:06:55.745 --> 00:06:57.410
+Outliers might
+result from people
+
+201
+00:06:57.410 --> 00:06:59.000
+walking in the middle
+of a Lidar scan,
+
+202
+00:06:59.000 --> 00:07:02.510
+for example, or from
+a bad GPS signal.
+
+203
+00:07:02.510 --> 00:07:06.240
+Consider our
+resistor example.
+
+204
+00:07:06.550 --> 00:07:09.185
+With one outlying
+measurement
+
+205
+00:07:09.185 --> 00:07:11.150
+that may come from
+a simple accident,
+
+206
+00:07:11.150 --> 00:07:13.610
+the final estimate is
+pulled significantly
+
+207
+00:07:13.610 --> 00:07:16.870
+away from that of
+the outlier free case.
+
+208
+00:07:16.870 --> 00:07:19.040
+We always want to be
+
+209
+00:07:19.040 --> 00:07:20.930
+cognizant of
+outliers and try
+
+210
+00:07:20.930 --> 00:07:22.670
+to quantify
+the error distribution
+
+211
+00:07:22.670 --> 00:07:24.110
+whenever possible,
+
+212
+00:07:24.110 --> 00:07:25.550
+before blindly applying
+
+213
+00:07:25.550 --> 00:07:27.865
+maximum likelihood
+or least squares.
+
+214
+00:07:27.865 --> 00:07:28.590
+Now,
+
+215
+00:07:28.590 --> 00:07:30.080
+that we've derived
+this connection between
+
+216
+00:07:30.080 --> 00:07:32.165
+maximum likelihood
+and least squares,
+
+217
+00:07:32.165 --> 00:07:33.470
+we're ready to extend
+
+218
+00:07:33.470 --> 00:07:34.670
+our recursive
+least squares
+
+219
+00:07:34.670 --> 00:07:37.205
+estimator to
+the full common filter,
+
+220
+00:07:37.205 --> 00:07:38.960
+one of the most
+famous algorithms
+
+221
+00:07:38.960 --> 00:07:40.810
+of the 20th century.
+
+222
+00:07:40.810 --> 00:07:42.475
+To summarize,
+
+223
+00:07:42.475 --> 00:07:43.640
+we've learned that
+the method of
+
+224
+00:07:43.640 --> 00:07:45.920
+least squares and
+weighted least squares
+
+225
+00:07:45.920 --> 00:07:47.930
+produce the same
+estimates as
+
+226
+00:07:47.930 --> 00:07:51.440
+maximum likelihood,
+given Gaussian noise.
+
+227
+00:07:51.440 --> 00:07:53.780
+This is particularly
+important because
+
+228
+00:07:53.780 --> 00:07:55.745
+many complex
+noise sources,
+
+229
+00:07:55.745 --> 00:07:59.770
+when added, will tend
+towards a Gaussian.
+
+230
+00:07:59.770 --> 00:08:01.040
+However,
+
+231
+00:08:01.040 --> 00:08:02.810
+it's always important
+to be wary of
+
+232
+00:08:02.810 --> 00:08:04.310
+outlier measurements
+that can
+
+233
+00:08:04.310 --> 00:08:05.405
+significantly affect
+
+234
+00:08:05.405 --> 00:08:07.520
+our final estimate values.
+
+235
+00:08:07.520 --> 00:08:09.319
+In the next module,
+
+236
+00:08:09.319 --> 00:08:10.730
+we'll take a look
+at how we can
+
+237
+00:08:10.730 --> 00:08:12.110
+now extend what
+we've learned
+
+238
+00:08:12.110 --> 00:08:13.040
+about least squares and
+
+239
+00:08:13.040 --> 00:08:14.240
+parameter estimation
+
+240
+00:08:14.240 --> 00:08:16.454
+to continually
+varying states,
+
+241
+00:08:16.454 --> 00:08:18.890
+that may have more
+complex nonlinear models
+
+242
+00:08:18.890 --> 00:08:21.990
+associated with
+them. See you there.

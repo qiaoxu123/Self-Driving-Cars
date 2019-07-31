@@ -1,0 +1,915 @@
+WEBVTT
+
+1
+00:00:13.820 --> 00:00:16.020
+In this lesson, we'll
+
+2
+00:00:16.020 --> 00:00:18.465
+discuss recursive
+least squares,
+
+3
+00:00:18.465 --> 00:00:19.800
+a technique to compute
+
+4
+00:00:19.800 --> 00:00:22.200
+least squares on the fly.
+
+5
+00:00:22.200 --> 00:00:23.730
+By the end of the lesson,
+
+6
+00:00:23.730 --> 00:00:26.180
+you'll be able to extend
+
+7
+00:00:26.180 --> 00:00:27.740
+the batch least
+squares solution
+
+8
+00:00:27.740 --> 00:00:30.260
+we discussed in
+the previous two videos
+
+9
+00:00:30.260 --> 00:00:32.395
+to one that works
+recursively.
+
+10
+00:00:32.395 --> 00:00:34.070
+Use this method of
+
+11
+00:00:34.070 --> 00:00:35.960
+recursive least squares to
+
+12
+00:00:35.960 --> 00:00:37.340
+keep a running estimate of
+
+13
+00:00:37.340 --> 00:00:38.630
+the least squares solution
+
+14
+00:00:38.630 --> 00:00:39.635
+as new measurements
+
+15
+00:00:39.635 --> 00:00:42.875
+stream in. Let's begin.
+
+16
+00:00:42.875 --> 00:00:44.690
+We've already
+explored the problem
+
+17
+00:00:44.690 --> 00:00:46.010
+of computing a value for
+
+18
+00:00:46.010 --> 00:00:48.815
+some unknown but
+constant parameter
+
+19
+00:00:48.815 --> 00:00:50.570
+from a set of
+measurements.
+
+20
+00:00:50.570 --> 00:00:52.625
+One of our assumptions
+was that we had
+
+21
+00:00:52.625 --> 00:00:54.740
+all of the data at hand.
+
+22
+00:00:54.740 --> 00:00:56.240
+That is, we assumed
+
+23
+00:00:56.240 --> 00:00:57.620
+that we collected
+a batch of
+
+24
+00:00:57.620 --> 00:00:59.690
+measurements and
+we wanted to use
+
+25
+00:00:59.690 --> 00:01:01.010
+those measurements
+to compute
+
+26
+00:01:01.010 --> 00:01:03.770
+our estimated quantities
+of interest.
+
+27
+00:01:03.770 --> 00:01:05.270
+This is sometimes
+
+28
+00:01:05.270 --> 00:01:07.390
+a completely
+reasonable assumption.
+
+29
+00:01:07.390 --> 00:01:09.830
+What can we do if instead
+
+30
+00:01:09.830 --> 00:01:11.250
+we have a stream of data?
+
+31
+00:01:11.250 --> 00:01:12.410
+Do we need to recompute
+
+32
+00:01:12.410 --> 00:01:13.700
+the least squares solution
+
+33
+00:01:13.700 --> 00:01:15.980
+every time we receive
+a new measurement?
+
+34
+00:01:15.980 --> 00:01:18.170
+For example, let's
+say we have a
+
+35
+00:01:18.170 --> 00:01:18.980
+multimeter that can
+
+36
+00:01:18.980 --> 00:01:22.105
+measure resistance
+10 times per second.
+
+37
+00:01:22.105 --> 00:01:24.170
+Ideally, we'd like to
+
+38
+00:01:24.170 --> 00:01:25.310
+use as many
+measurements as
+
+39
+00:01:25.310 --> 00:01:26.660
+possible to get
+
+40
+00:01:26.660 --> 00:01:28.760
+an accurate estimate
+of the resistance.
+
+41
+00:01:28.760 --> 00:01:30.050
+If we use the method
+
+42
+00:01:30.050 --> 00:01:31.370
+of least squares however,
+
+43
+00:01:31.370 --> 00:01:33.110
+the amount of
+computational resources
+
+44
+00:01:33.110 --> 00:01:34.250
+we will need to solve
+
+45
+00:01:34.250 --> 00:01:35.810
+our normal equations will
+
+46
+00:01:35.810 --> 00:01:38.900
+grow with the
+measurement vector size.
+
+47
+00:01:38.900 --> 00:01:41.960
+Alternatively, we
+can try and use
+
+48
+00:01:41.960 --> 00:01:43.790
+a recursive method one
+
+49
+00:01:43.790 --> 00:01:45.095
+that keeps
+a running estimate
+
+50
+00:01:45.095 --> 00:01:46.520
+of the optimal parameter
+
+51
+00:01:46.520 --> 00:01:47.810
+for all of the
+measurements that
+
+52
+00:01:47.810 --> 00:01:49.280
+we've collected up
+to the previous
+
+53
+00:01:49.280 --> 00:01:50.945
+time step and then
+
+54
+00:01:50.945 --> 00:01:52.460
+updates that
+estimate given
+
+55
+00:01:52.460 --> 00:01:55.040
+the measurement at
+the current time step.
+
+56
+00:01:55.040 --> 00:01:58.730
+To do this we use
+a recursive algorithm,
+
+57
+00:01:58.730 --> 00:02:00.110
+incrementally updating
+
+58
+00:02:00.110 --> 00:02:02.390
+our estimate as
+we go along.
+
+59
+00:02:02.390 --> 00:02:04.415
+Let us assume that we have
+
+60
+00:02:04.415 --> 00:02:05.990
+our best optimal estimate
+
+61
+00:02:05.990 --> 00:02:07.955
+at time k minus 1.
+
+62
+00:02:07.955 --> 00:02:09.680
+At time k we receive
+
+63
+00:02:09.680 --> 00:02:11.480
+a new measurement
+that will
+
+64
+00:02:11.480 --> 00:02:13.565
+assume follows
+linear measurement model
+
+65
+00:02:13.565 --> 00:02:16.115
+with additive
+Gaussian noise.
+
+66
+00:02:16.115 --> 00:02:18.110
+Our goal is to compute
+
+67
+00:02:18.110 --> 00:02:21.365
+an updated optimal
+estimate at time k,
+
+68
+00:02:21.365 --> 00:02:23.300
+given our measurement and
+
+69
+00:02:23.300 --> 00:02:25.015
+the previous estimate.
+
+70
+00:02:25.015 --> 00:02:27.500
+A linear recursive
+estimate is
+
+71
+00:02:27.500 --> 00:02:30.245
+given by the
+following expression.
+
+72
+00:02:30.245 --> 00:02:34.925
+Here k is called an
+estimator gain matrix.
+
+73
+00:02:34.925 --> 00:02:36.455
+The term in brackets
+
+74
+00:02:36.455 --> 00:02:38.105
+is called the innovation.
+
+75
+00:02:38.105 --> 00:02:39.680
+It quantifies how well
+
+76
+00:02:39.680 --> 00:02:41.270
+our current
+measurement matches
+
+77
+00:02:41.270 --> 00:02:43.400
+our previous best
+estimate.
+
+78
+00:02:43.400 --> 00:02:45.380
+Even without knowing
+the expression
+
+79
+00:02:45.380 --> 00:02:46.535
+for k. We can
+
+80
+00:02:46.535 --> 00:02:47.690
+already see how this
+
+81
+00:02:47.690 --> 00:02:50.270
+recursive structure works.
+
+82
+00:02:50.270 --> 00:02:52.310
+Our new estimate is simply
+
+83
+00:02:52.310 --> 00:02:54.320
+the sum of the old
+estimate and
+
+84
+00:02:54.320 --> 00:02:56.090
+corrective term based on
+
+85
+00:02:56.090 --> 00:02:57.170
+the difference
+between what we
+
+86
+00:02:57.170 --> 00:02:58.220
+expected the
+measurement to
+
+87
+00:02:58.220 --> 00:03:00.770
+be and what we
+actually measured.
+
+88
+00:03:00.770 --> 00:03:02.990
+In fact, if the innovation
+
+89
+00:03:02.990 --> 00:03:04.310
+were equal to zero,
+
+90
+00:03:04.310 --> 00:03:05.360
+we would not change
+
+91
+00:03:05.360 --> 00:03:07.735
+our old estimate at all.
+
+92
+00:03:07.735 --> 00:03:10.875
+Now, how do we compute k?
+
+93
+00:03:10.875 --> 00:03:14.425
+Well, for that,
+we'll need to use
+
+94
+00:03:14.425 --> 00:03:16.645
+a recursive least
+squares criterion
+
+95
+00:03:16.645 --> 00:03:19.975
+and some matrix
+calculus as before.
+
+96
+00:03:19.975 --> 00:03:21.970
+This time the math is
+
+97
+00:03:21.970 --> 00:03:24.010
+significantly more
+involved, so,
+
+98
+00:03:24.010 --> 00:03:26.110
+only work through
+a few steps and let
+
+99
+00:03:26.110 --> 00:03:27.670
+the more curious
+learners refer
+
+100
+00:03:27.670 --> 00:03:30.290
+to the textbook for
+more information.
+
+101
+00:03:30.930 --> 00:03:33.490
+Our least squares
+criterion and in
+
+102
+00:03:33.490 --> 00:03:36.550
+this case will be
+the expected value of r
+
+103
+00:03:36.550 --> 00:03:39.430
+squared errors for
+our estimate at time
+
+104
+00:03:39.430 --> 00:03:41.980
+k. For a single
+scalar parameter
+
+105
+00:03:41.980 --> 00:03:43.180
+like resistance,
+
+106
+00:03:43.180 --> 00:03:44.710
+this amounts to minimizing
+
+107
+00:03:44.710 --> 00:03:46.805
+the estimator
+state variance,
+
+108
+00:03:46.805 --> 00:03:50.085
+sigma squared sub k.
+
+109
+00:03:50.085 --> 00:03:53.045
+For multiple
+unknown parameters,
+
+110
+00:03:53.045 --> 00:03:55.465
+this is equivalent to
+minimizing the trace
+
+111
+00:03:55.465 --> 00:03:58.045
+of our state covariance
+matrix at time
+
+112
+00:03:58.045 --> 00:04:01.480
+t. This is exactly like
+
+113
+00:04:01.480 --> 00:04:03.460
+our former least
+squares criterion
+
+114
+00:04:03.460 --> 00:04:04.780
+except now we have
+
+115
+00:04:04.780 --> 00:04:06.700
+to talk about
+expectations.
+
+116
+00:04:06.700 --> 00:04:09.430
+Instead of minimizing
+the error directly,
+
+117
+00:04:09.430 --> 00:04:11.710
+we minimize
+its expected value
+
+118
+00:04:11.710 --> 00:04:14.365
+which is actually
+the estimator variance.
+
+119
+00:04:14.365 --> 00:04:16.090
+The lower the variance,
+
+120
+00:04:16.090 --> 00:04:18.890
+the more we are certain
+of our estimate.
+
+121
+00:04:18.960 --> 00:04:21.250
+It turns out that
+we can formulate
+
+122
+00:04:21.250 --> 00:04:23.110
+a recursive definition for
+
+123
+00:04:23.110 --> 00:04:26.395
+this state covariance
+matrix P_k.
+
+124
+00:04:26.395 --> 00:04:28.930
+By using matrix calculus
+
+125
+00:04:28.930 --> 00:04:30.400
+and taking derivatives,
+
+126
+00:04:30.400 --> 00:04:32.110
+we can show that
+this criterion is
+
+127
+00:04:32.110 --> 00:04:35.905
+minimized when k has
+the following value.
+
+128
+00:04:35.905 --> 00:04:37.550
+The full derivation is
+
+129
+00:04:37.550 --> 00:04:38.570
+a bit beyond the scope of
+
+130
+00:04:38.570 --> 00:04:40.280
+our course but
+can be found
+
+131
+00:04:40.280 --> 00:04:43.170
+in any standard
+estimation text.
+
+132
+00:04:44.020 --> 00:04:47.735
+Finally, by using
+this formulation,
+
+133
+00:04:47.735 --> 00:04:48.935
+we can also rewrite
+
+134
+00:04:48.935 --> 00:04:50.150
+our recursive definition
+
+135
+00:04:50.150 --> 00:04:53.780
+for P_k into something
+much simpler.
+
+136
+00:04:53.780 --> 00:04:56.495
+Take a second to think
+about this equation.
+
+137
+00:04:56.495 --> 00:04:59.224
+The larger
+our gain matrix k,
+
+138
+00:04:59.224 --> 00:05:01.370
+the smaller
+our new estimator
+
+139
+00:05:01.370 --> 00:05:02.900
+covariance will be.
+
+140
+00:05:02.900 --> 00:05:05.120
+Intuitively, you
+can think of
+
+141
+00:05:05.120 --> 00:05:06.080
+this gain matrix as
+
+142
+00:05:06.080 --> 00:05:07.310
+balancing the information
+
+143
+00:05:07.310 --> 00:05:09.275
+we get from
+our prior estimate
+
+144
+00:05:09.275 --> 00:05:11.255
+and the information
+we receive
+
+145
+00:05:11.255 --> 00:05:13.170
+from our new measurement.
+
+146
+00:05:13.170 --> 00:05:15.235
+Putting everything
+together,
+
+147
+00:05:15.235 --> 00:05:16.580
+our least squares
+algorithm
+
+148
+00:05:16.580 --> 00:05:17.885
+looks like this.
+
+149
+00:05:17.885 --> 00:05:19.190
+We initialize the
+
+150
+00:05:19.190 --> 00:05:20.840
+algorithm with estimate of
+
+151
+00:05:20.840 --> 00:05:22.460
+our unknown parameters and
+
+152
+00:05:22.460 --> 00:05:24.755
+a corresponding
+covariance matrix.
+
+153
+00:05:24.755 --> 00:05:26.090
+This initial guess
+could come
+
+154
+00:05:26.090 --> 00:05:27.950
+from the first
+measurement we
+
+155
+00:05:27.950 --> 00:05:29.840
+take and the covariance
+
+156
+00:05:29.840 --> 00:05:32.530
+could come from
+technical specifications.
+
+157
+00:05:32.530 --> 00:05:35.465
+Next, we set up
+
+158
+00:05:35.465 --> 00:05:37.010
+our measurement
+model and pick
+
+159
+00:05:37.010 --> 00:05:39.710
+values for our
+measurement covariance.
+
+160
+00:05:39.710 --> 00:05:42.140
+Finally, every time a
+
+161
+00:05:42.140 --> 00:05:43.474
+measurement is recorded,
+
+162
+00:05:43.474 --> 00:05:45.395
+we compute
+the measurement gain
+
+163
+00:05:45.395 --> 00:05:47.390
+and then use it to
+update our estimate of
+
+164
+00:05:47.390 --> 00:05:48.980
+the parameters and
+
+165
+00:05:48.980 --> 00:05:51.680
+our estimator covariance
+or uncertainty.
+
+166
+00:05:51.680 --> 00:05:53.420
+Every time we get
+a new measurement
+
+167
+00:05:53.420 --> 00:05:56.690
+our parameter
+uncertainty shrinks.
+
+168
+00:05:56.690 --> 00:05:59.315
+Why is recursive
+least squares
+
+169
+00:05:59.315 --> 00:06:00.780
+an important algorithm?
+
+170
+00:06:00.780 --> 00:06:03.800
+As we've seen, it
+enables us to minimize
+
+171
+00:06:03.800 --> 00:06:05.075
+computational effort
+
+172
+00:06:05.075 --> 00:06:06.755
+in our estimation process
+
+173
+00:06:06.755 --> 00:06:08.525
+which is always
+a good thing.
+
+174
+00:06:08.525 --> 00:06:11.705
+More importantly,
+recursive least squares
+
+175
+00:06:11.705 --> 00:06:13.220
+forms the update step of
+
+176
+00:06:13.220 --> 00:06:14.930
+the linear Kalman filter.
+
+177
+00:06:14.930 --> 00:06:16.670
+We'll discuss this
+in more detail
+
+178
+00:06:16.670 --> 00:06:18.685
+in the next module.
+
+179
+00:06:18.685 --> 00:06:21.645
+In your upcoming
+graded assessment,
+
+180
+00:06:21.645 --> 00:06:23.570
+you'll get some hands
+on experience using
+
+181
+00:06:23.570 --> 00:06:25.640
+recursive least squares
+to determine
+
+182
+00:06:25.640 --> 00:06:26.600
+a voltage value from
+
+183
+00:06:26.600 --> 00:06:28.550
+a series of measurements.
+
+184
+00:06:28.550 --> 00:06:31.470
+To summarize,
+
+185
+00:06:31.520 --> 00:06:34.435
+the recursive least
+squares algorithm
+
+186
+00:06:34.435 --> 00:06:35.620
+lets us produce
+
+187
+00:06:35.620 --> 00:06:36.880
+a running estimate of
+
+188
+00:06:36.880 --> 00:06:38.500
+a parameter without having
+
+189
+00:06:38.500 --> 00:06:39.670
+to have the entire batch
+
+190
+00:06:39.670 --> 00:06:41.230
+of measurements at hand
+
+191
+00:06:41.230 --> 00:06:43.450
+and recursive
+least squares is
+
+192
+00:06:43.450 --> 00:06:45.730
+a recursive linear
+estimator that
+
+193
+00:06:45.730 --> 00:06:47.470
+minimizes the variance of
+
+194
+00:06:47.470 --> 00:06:50.155
+the parameters at
+the current time.
+
+195
+00:06:50.155 --> 00:06:53.575
+In the next and final
+video of this module,
+
+196
+00:06:53.575 --> 00:06:55.360
+we'll discuss
+why minimizing
+
+197
+00:06:55.360 --> 00:06:56.770
+squared errors is
+
+198
+00:06:56.770 --> 00:06:58.690
+a reasonable
+thing to do by
+
+199
+00:06:58.690 --> 00:06:59.740
+connecting the method of
+
+200
+00:06:59.740 --> 00:07:01.540
+least squares with
+another technique
+
+201
+00:07:01.540 --> 00:07:03.250
+from statistics, maximum
+
+202
+00:07:03.250 --> 00:07:05.450
+likelihood estimation.

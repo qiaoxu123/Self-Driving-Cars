@@ -1,0 +1,426 @@
+WEBVTT
+
+1
+00:00:13.820 --> 00:00:18.190
+If you've ever had to create any sort
+of moving robotics platform,
+
+2
+00:00:18.190 --> 00:00:22.285
+you'll probably recall how finicky
+any piece of hardware can be.
+
+3
+00:00:22.285 --> 00:00:25.105
+Sensing hardware is no different.
+
+4
+00:00:25.105 --> 00:00:28.900
+In long-term autonomy applications
+like self-driving vehicles,
+
+5
+00:00:28.900 --> 00:00:33.070
+sensors can malfunction or dropout
+for a number of different reasons,
+
+6
+00:00:33.070 --> 00:00:36.100
+like weather damage, firmware failures,
+
+7
+00:00:36.100 --> 00:00:38.255
+or something as simple as a loose wire.
+
+8
+00:00:38.255 --> 00:00:40.360
+We've seen in this module that even if
+
+9
+00:00:40.360 --> 00:00:42.685
+all of our sensors are working normally,
+
+10
+00:00:42.685 --> 00:00:44.210
+it's still beneficial to have
+
+11
+00:00:44.210 --> 00:00:46.550
+multiple complimentary sensors to
+
+12
+00:00:46.550 --> 00:00:50.255
+provide robust accurate
+localization estimates.
+
+13
+00:00:50.255 --> 00:00:53.200
+But what happens if one
+of the sensors fails?
+
+14
+00:00:53.200 --> 00:00:58.270
+So far, we've discussed
+GNSS receivers, IMUs, and Lidars,
+
+15
+00:00:58.270 --> 00:01:00.305
+but most modern autonomous vehicles
+
+16
+00:01:00.305 --> 00:01:02.975
+also includes sensors
+like wheel encoders,
+
+17
+00:01:02.975 --> 00:01:06.395
+radar, sonar, and multiple cameras.
+
+18
+00:01:06.395 --> 00:01:08.450
+In order to build a safe vehicle,
+
+19
+00:01:08.450 --> 00:01:10.805
+it's crucial to understand
+and characterize
+
+20
+00:01:10.805 --> 00:01:13.850
+what happens when one or
+more sensors malfunctions,
+
+21
+00:01:13.850 --> 00:01:17.795
+and the minimal sensing we need
+to maintain safe operation.
+
+22
+00:01:17.795 --> 00:01:21.830
+In this lesson, we'll discuss
+the importance of sensor redundancy for
+
+23
+00:01:21.830 --> 00:01:24.530
+robust localization and explore
+
+24
+00:01:24.530 --> 00:01:28.145
+several examples of sensing
+failures in localization.
+
+25
+00:01:28.145 --> 00:01:30.350
+One important consideration
+for this type of
+
+26
+00:01:30.350 --> 00:01:34.800
+analysis is sensor range
+and operating limitations.
+
+27
+00:01:38.140 --> 00:01:41.180
+A GNSS receiver will not work under
+
+28
+00:01:41.180 --> 00:01:45.145
+a bridge and may have reduced
+accuracy between tall buildings.
+
+29
+00:01:45.145 --> 00:01:46.730
+An IMU may be sensitive to
+
+30
+00:01:46.730 --> 00:01:50.060
+temperature and may require
+periodic recalibration.
+
+31
+00:01:50.060 --> 00:01:52.610
+What's more, for sensors that observe
+
+32
+00:01:52.610 --> 00:01:55.700
+the external world like Lidars, sonar,
+
+33
+00:01:55.700 --> 00:01:58.445
+cameras, or radars, their sensing range
+
+34
+00:01:58.445 --> 00:02:01.930
+plays a very important role
+in safe operation.
+
+35
+00:02:01.930 --> 00:02:03.990
+Most cars have long,
+
+36
+00:02:03.990 --> 00:02:06.120
+medium, and short range sensing.
+
+37
+00:02:06.120 --> 00:02:07.725
+If one of these malfunctions,
+
+38
+00:02:07.725 --> 00:02:09.420
+it's often important to restrict
+
+39
+00:02:09.420 --> 00:02:12.845
+movement so the malfunction
+doesn't affect safety.
+
+40
+00:02:12.845 --> 00:02:15.280
+For example, in localization,
+
+41
+00:02:15.280 --> 00:02:17.360
+we may use short range sensors for
+
+42
+00:02:17.360 --> 00:02:21.320
+parking and to ensure we're not
+colliding with nearby vehicles.
+
+43
+00:02:21.320 --> 00:02:23.780
+Medium range sensors may help in
+
+44
+00:02:23.780 --> 00:02:27.350
+pedestrian and cyclist detection
+and in lane keeping.
+
+45
+00:02:27.350 --> 00:02:30.170
+Longer range sensors
+can help us detect and
+
+46
+00:02:30.170 --> 00:02:33.320
+predict the motion of
+approaching distant obstacles.
+
+47
+00:02:33.320 --> 00:02:34.985
+If one of these fails,
+
+48
+00:02:34.985 --> 00:02:38.270
+we have to take appropriate action
+to ensure that the safety of
+
+49
+00:02:38.270 --> 00:02:42.695
+the car occupants or the people
+around us is not compromised.
+
+50
+00:02:42.695 --> 00:02:46.160
+This means that a self-driving car
+engineer will have to consider
+
+51
+00:02:46.160 --> 00:02:48.470
+the minimal allowable sensing equipment
+
+52
+00:02:48.470 --> 00:02:51.665
+necessary to perform each of these steps.
+
+53
+00:02:51.665 --> 00:02:54.500
+For this type of redundant system design,
+
+54
+00:02:54.500 --> 00:02:57.050
+we can look at examples
+from an industry known for
+
+55
+00:02:57.050 --> 00:03:00.965
+its rigorous safety standards,
+commercial aviation.
+
+56
+00:03:00.965 --> 00:03:03.860
+As an example of a redundant system,
+
+57
+00:03:03.860 --> 00:03:07.475
+consider the primary flight computer
+of the Boeing 777.
+
+58
+00:03:07.475 --> 00:03:11.390
+The 777 operates on
+a triple redundancy principle.
+
+59
+00:03:11.390 --> 00:03:14.285
+All major systems, including
+this flight computer,
+
+60
+00:03:14.285 --> 00:03:16.250
+have two backups, each with
+
+61
+00:03:16.250 --> 00:03:20.030
+independent power and
+separate programming and specifications.
+
+62
+00:03:20.030 --> 00:03:21.860
+Here you can see that each of
+
+63
+00:03:21.860 --> 00:03:24.620
+the flight computers has
+a different processor to
+
+64
+00:03:24.620 --> 00:03:26.645
+ensure that a bug in
+the architecture itself
+
+65
+00:03:26.645 --> 00:03:29.725
+doesn't affect all three computers.
+
+66
+00:03:29.725 --> 00:03:33.045
+If one of the computers
+fails or malfunctions,
+
+67
+00:03:33.045 --> 00:03:38.075
+the 777 uses a consensus algorithm
+to seamlessly switch to another one.
+
+68
+00:03:38.075 --> 00:03:41.440
+Although self-driving technology
+has come a long way,
+
+69
+00:03:41.440 --> 00:03:45.305
+we're still only a decade beyond some
+of the first self-driving challenges,
+
+70
+00:03:45.305 --> 00:03:48.260
+like the 2007 DARPA Urban Challenge.
+
+71
+00:03:48.260 --> 00:03:51.230
+Here you can see how a lack
+of safety redundancy
+
+72
+00:03:51.230 --> 00:03:54.695
+leads the MIT and Cornell teams
+to crash into each other.
+
+73
+00:03:54.695 --> 00:03:57.260
+If this crash occurred at higher speeds,
+
+74
+00:03:57.260 --> 00:04:00.070
+the results may have been much worse.
+
+75
+00:04:00.070 --> 00:04:02.340
+Taking a more recent example,
+
+76
+00:04:02.340 --> 00:04:04.155
+here's a car from the 2015
+
+77
+00:04:04.155 --> 00:04:06.920
+International Driver's Vehicle
+Conference that fails to
+
+78
+00:04:06.920 --> 00:04:08.870
+apply its autonomous breaking
+
+79
+00:04:08.870 --> 00:04:12.810
+appropriately and crashes
+into a blown-up kangaroo.
+
+80
+00:04:13.310 --> 00:04:18.340
+Finally, consider this now infamous
+recording of a Tesla Model S
+
+81
+00:04:18.340 --> 00:04:23.350
+driving almost straight into a dividing
+barrier on a freeway in California.
+
+82
+00:04:23.350 --> 00:04:26.875
+This was a sobering reminder
+that it is crucial
+
+83
+00:04:26.875 --> 00:04:30.485
+for the engineers and architects
+who design self-driving vehicles,
+
+84
+00:04:30.485 --> 00:04:35.140
+to carefully consider and characterize
+the different failure modes of
+
+85
+00:04:35.140 --> 00:04:38.080
+the different sensing paradigms
+used in order to assure
+
+86
+00:04:38.080 --> 00:04:42.830
+that one malfunctioning component
+doesn't cause tragedy.
+
+87
+00:04:42.830 --> 00:04:45.700
+To summarize, it's always
+
+88
+00:04:45.700 --> 00:04:48.130
+important to consider
+the limitations of any set of
+
+89
+00:04:48.130 --> 00:04:53.480
+sensors and use multiple complimentary
+sensors for robust localization.
+
+90
+00:04:53.480 --> 00:04:55.590
+That's it for this module.
+
+91
+00:04:55.590 --> 00:04:58.290
+Next, you'll start your course project,
+
+92
+00:04:58.290 --> 00:05:00.980
+where you'll use everything
+you've learned in this course
+
+93
+00:05:00.980 --> 00:05:04.860
+to implement a realistic
+state-estimation system.

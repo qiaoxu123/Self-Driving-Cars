@@ -1,0 +1,870 @@
+WEBVTT
+
+1
+00:00:19.430 --> 00:00:24.540
+Hello, and welcome to course two of
+the self-driving car specialization.
+
+2
+00:00:24.540 --> 00:00:29.565
+In this course, we'll cover state
+estimation with a focus on localization.
+
+3
+00:00:29.565 --> 00:00:33.360
+Let's first begin by
+defining a few key terms.
+
+4
+00:00:33.360 --> 00:00:36.060
+Localization is the method
+by which we determine
+
+5
+00:00:36.060 --> 00:00:39.660
+the position and orientation
+of a vehicle within the world.
+
+6
+00:00:39.660 --> 00:00:41.545
+As you can probably imagine,
+
+7
+00:00:41.545 --> 00:00:43.925
+accurate localization
+is a key component of
+
+8
+00:00:43.925 --> 00:00:46.700
+any self-driving car software stack.
+
+9
+00:00:46.700 --> 00:00:48.590
+If we want to drive autonomously,
+
+10
+00:00:48.590 --> 00:00:50.615
+we certainly need to know where we are.
+
+11
+00:00:50.615 --> 00:00:54.020
+To accomplish this, we
+can use state estimation.
+
+12
+00:00:54.020 --> 00:00:56.735
+This is the process of
+computing a physical quantity
+
+13
+00:00:56.735 --> 00:00:59.555
+like position from a set of measurements.
+
+14
+00:00:59.555 --> 00:01:02.900
+Since any real-world measurements
+will be imprecise,
+
+15
+00:01:02.900 --> 00:01:05.780
+we will develop methods that
+try to find the best or
+
+16
+00:01:05.780 --> 00:01:08.030
+optimal value given some assumptions
+
+17
+00:01:08.030 --> 00:01:10.235
+about our sensors and the external world.
+
+18
+00:01:10.235 --> 00:01:14.330
+Related to state estimation is
+the idea of parameter estimation.
+
+19
+00:01:14.330 --> 00:01:16.640
+Unlike a state, which we will define as
+
+20
+00:01:16.640 --> 00:01:18.895
+a physical quantity
+that changes over time,
+
+21
+00:01:18.895 --> 00:01:21.530
+a parameter is constant over time.
+
+22
+00:01:21.530 --> 00:01:25.220
+Position and orientation are
+states of a moving vehicle,
+
+23
+00:01:25.220 --> 00:01:27.380
+while the resistance of
+a particular resistor in
+
+24
+00:01:27.380 --> 00:01:31.370
+the electrical sub-system of
+a vehicle would be a parameter.
+
+25
+00:01:31.370 --> 00:01:35.210
+In the first module or
+week one of the course,
+
+26
+00:01:35.210 --> 00:01:38.030
+we will cover a common technique
+in state estimation,
+
+27
+00:01:38.030 --> 00:01:40.655
+the method of least squares.
+
+28
+00:01:40.655 --> 00:01:42.470
+By the end of this week,
+
+29
+00:01:42.470 --> 00:01:45.890
+you'll know a little bit about
+the history of least squares and you'll
+
+30
+00:01:45.890 --> 00:01:49.430
+learn about the method of
+ordinary least squares and its cousin,
+
+31
+00:01:49.430 --> 00:01:51.935
+the method of weighted least squares.
+
+32
+00:01:51.935 --> 00:01:56.990
+Then, we'll cover the method of
+recursive least squares and finally,
+
+33
+00:01:56.990 --> 00:01:59.195
+discuss the link between least squares
+
+34
+00:01:59.195 --> 00:02:02.615
+and the maximum likelihood
+estimation technique.
+
+35
+00:02:02.615 --> 00:02:05.135
+In the first lesson of this module,
+
+36
+00:02:05.135 --> 00:02:07.130
+we'll introduce the method
+of least squares
+
+37
+00:02:07.130 --> 00:02:10.345
+and something called
+the squared error criterion.
+
+38
+00:02:10.345 --> 00:02:12.580
+By the end of the video,
+
+39
+00:02:12.580 --> 00:02:16.760
+you'll be able to describe how
+the method of least squares was first
+
+40
+00:02:16.760 --> 00:02:22.015
+used by Carl Friedrich Gauss in
+the discovery of the planetoid Ceres.
+
+41
+00:02:22.015 --> 00:02:25.460
+Describe the least
+error criterion and how
+
+42
+00:02:25.460 --> 00:02:28.745
+it's used in estimating
+the best parameters.
+
+43
+00:02:28.745 --> 00:02:32.330
+Derive the necessary
+normal equations that
+
+44
+00:02:32.330 --> 00:02:36.390
+we'll need to solve to use
+the method. Let's begin.
+
+45
+00:02:36.460 --> 00:02:39.590
+The method of least squares dates to
+
+46
+00:02:39.590 --> 00:02:42.050
+the late 18th century well
+
+47
+00:02:42.050 --> 00:02:45.990
+before anyone had considered
+the concept of automobiles.
+
+48
+00:02:45.990 --> 00:02:49.030
+On January 1st, 1801,
+
+49
+00:02:49.030 --> 00:02:50.944
+an Italian priest and astronomer
+
+50
+00:02:50.944 --> 00:02:55.880
+Giuseppe Piazzi discovered
+a new celestial object in the night sky.
+
+51
+00:02:55.880 --> 00:02:59.960
+The asteroid or planetoid
+now called Ceres.
+
+52
+00:02:59.960 --> 00:03:04.290
+You can see it here next to
+the moon and to the earth.
+
+53
+00:03:04.540 --> 00:03:08.180
+Piazzi made 24 telescope observations of
+
+54
+00:03:08.180 --> 00:03:13.570
+this new object over 40 days before
+it was lost in the glare of the sun.
+
+55
+00:03:13.570 --> 00:03:17.555
+Since Ceres is only about
+900 kilometers in diameter,
+
+56
+00:03:17.555 --> 00:03:20.300
+finding it again it was
+extremely challenging.
+
+57
+00:03:20.300 --> 00:03:25.410
+This meant that other astronomers
+could not confirm Piazzi's discovery.
+
+58
+00:03:25.420 --> 00:03:28.235
+To help locate Ceres again,
+
+59
+00:03:28.235 --> 00:03:31.010
+Carl Friedrich Gauss who has
+been called the prince of
+
+60
+00:03:31.010 --> 00:03:35.195
+mathematicians for his prodigious
+contributions to many different fields,
+
+61
+00:03:35.195 --> 00:03:39.200
+used a method of least squares
+to accurately estimate
+
+62
+00:03:39.200 --> 00:03:44.555
+Ceres orbital parameters based on
+Piazza's published measurements.
+
+63
+00:03:44.555 --> 00:03:47.525
+With Gauss's calculations in hand,
+
+64
+00:03:47.525 --> 00:03:51.110
+astronomers were successfully
+able to rediscover Ceres
+
+65
+00:03:51.110 --> 00:03:56.010
+nearly a year after Piazzi had
+made his first observations.
+
+66
+00:03:56.020 --> 00:03:59.530
+Although he published the method in 1809,
+
+67
+00:03:59.530 --> 00:04:01.830
+Gauss claimed that he
+developed least squares in
+
+68
+00:04:01.830 --> 00:04:05.960
+1795, predating Lesion's work.
+
+69
+00:04:05.960 --> 00:04:09.760
+Gauss summarized the approach as follows.
+
+70
+00:04:09.760 --> 00:04:14.740
+The most probable value of an unknown
+parameter is that which minimizes
+
+71
+00:04:14.740 --> 00:04:20.170
+the sum of squared errors between
+what we observe and what we expect.
+
+72
+00:04:20.170 --> 00:04:22.390
+To illustrate how this works,
+
+73
+00:04:22.390 --> 00:04:24.890
+let's take a simple example.
+
+74
+00:04:25.080 --> 00:04:29.080
+Suppose you are trying to
+measure the value in ohms of
+
+75
+00:04:29.080 --> 00:04:33.565
+a simple resistor within the drive
+system of an autonomous vehicle.
+
+76
+00:04:33.565 --> 00:04:35.500
+To do this, you grab
+
+77
+00:04:35.500 --> 00:04:39.770
+a relatively inexpensive multimeter
+that's lying around your lab.
+
+78
+00:04:39.790 --> 00:04:45.380
+Now, let's say you collect these four
+separate measurements, sequentially.
+
+79
+00:04:45.780 --> 00:04:48.909
+If you've studied
+electrical circuits before,
+
+80
+00:04:48.909 --> 00:04:52.300
+you'll probably recall that the type
+of carbon film resistors shown
+
+81
+00:04:52.300 --> 00:04:56.425
+here is color-coded according
+to its rated resistance value.
+
+82
+00:04:56.425 --> 00:04:59.840
+This resistor is rated at one kilo ohm.
+
+83
+00:04:59.870 --> 00:05:03.210
+However, due to a number of factors,
+
+84
+00:05:03.210 --> 00:05:06.785
+the true resistance can
+vary from the rated value.
+
+85
+00:05:06.785 --> 00:05:09.985
+In this case, the resistor
+has a gold band
+
+86
+00:05:09.985 --> 00:05:13.900
+which indicates that it can vary
+by as much as five percent.
+
+87
+00:05:14.600 --> 00:05:18.490
+Furthermore, let's imagine that
+our multimeter is particularly
+
+88
+00:05:18.490 --> 00:05:20.530
+poor and that the person making
+
+89
+00:05:20.530 --> 00:05:23.570
+the measurements is not
+particularly careful.
+
+90
+00:05:24.890 --> 00:05:27.550
+For now, it's sufficient to treat
+
+91
+00:05:27.550 --> 00:05:30.370
+this noise as equivalent
+to a general error
+
+92
+00:05:30.370 --> 00:05:33.070
+but we'll come back to ways we
+can interpret the noise from
+
+93
+00:05:33.070 --> 00:05:36.655
+a probabilistic perspective
+later in the module.
+
+94
+00:05:36.655 --> 00:05:39.565
+For each of the four measurements,
+
+95
+00:05:39.565 --> 00:05:45.085
+we define a scalar noise term that is
+independent of the other noise terms.
+
+96
+00:05:45.085 --> 00:05:48.790
+Statistically, we would say
+in this case that the noise
+
+97
+00:05:48.790 --> 00:05:52.445
+is independent and identically
+distributed or IID,
+
+98
+00:05:52.445 --> 00:05:55.240
+and we'll discuss this more later.
+
+99
+00:05:55.970 --> 00:05:59.005
+Next, we define the error between
+
+100
+00:05:59.005 --> 00:06:03.880
+each measurement and the actual value
+of our resistance x.
+
+101
+00:06:03.880 --> 00:06:07.745
+But remember, we don't
+yet know what x is.
+
+102
+00:06:07.745 --> 00:06:12.260
+To find x, we square these errors
+to arrive at an equation
+
+103
+00:06:12.260 --> 00:06:14.330
+that is a function of
+our measurements and
+
+104
+00:06:14.330 --> 00:06:17.640
+the unknown resistance
+that we're looking for.
+
+105
+00:06:18.380 --> 00:06:20.740
+With these errors defined,
+
+106
+00:06:20.740 --> 00:06:22.430
+the method of least squares says that
+
+107
+00:06:22.430 --> 00:06:24.505
+the resistance value we are looking for,
+
+108
+00:06:24.505 --> 00:06:27.470
+that is the best estimate of x is
+
+109
+00:06:27.470 --> 00:06:30.785
+one which minimizes
+the squared error criterion,
+
+110
+00:06:30.785 --> 00:06:36.390
+also sometimes called the squared error
+cost function or loss function.
+
+111
+00:06:36.610 --> 00:06:39.900
+To minimize the squared error criterion,
+
+112
+00:06:39.900 --> 00:06:42.770
+we'll rewrite our errors
+in matrix notation.
+
+113
+00:06:42.770 --> 00:06:45.260
+This will be especially
+helpful when we have to deal
+
+114
+00:06:45.260 --> 00:06:48.510
+with hundreds or even thousands
+of measurements.
+
+115
+00:06:48.830 --> 00:06:53.540
+We'll define an error vector
+identified as bold e,
+
+116
+00:06:53.540 --> 00:06:56.570
+that is a function of
+our observations stacked into
+
+117
+00:06:56.570 --> 00:07:00.725
+a vector y and a matrix H
+called the Jacobian.
+
+118
+00:07:00.725 --> 00:07:07.700
+Finally, our true resistance x.
+H has the dimensions m by n,
+
+119
+00:07:07.700 --> 00:07:10.970
+where m is the number of
+measurements and n is the number
+
+120
+00:07:10.970 --> 00:07:15.360
+of unknowns or parameters
+that we wish to estimate.
+
+121
+00:07:15.830 --> 00:07:19.430
+In general, this will be
+a rectangular matrix which we can
+
+122
+00:07:19.430 --> 00:07:22.970
+write down quite easily
+in this linear case.
+
+123
+00:07:22.970 --> 00:07:26.810
+It will require some more
+mathematical effort to compute when
+
+124
+00:07:26.810 --> 00:07:30.365
+we discuss non-linear estimation
+in an upcoming lesson.
+
+125
+00:07:30.365 --> 00:07:33.440
+Note here that x is a single scaler.
+
+126
+00:07:33.440 --> 00:07:38.370
+We'll see later that it can be
+a vector comprising multiple unknowns.
+
+127
+00:07:40.100 --> 00:07:42.460
+With these definitions in mind,
+
+128
+00:07:42.460 --> 00:07:47.670
+we can convert our squared error
+criterion to vector notation as follows.
+
+129
+00:07:48.010 --> 00:07:50.495
+Expanding out the brackets,
+
+130
+00:07:50.495 --> 00:07:56.460
+we arrive at this somewhat
+intimidating expression. So, what now?
+
+131
+00:07:56.460 --> 00:07:58.730
+Well, remember that we need to minimize
+
+132
+00:07:58.730 --> 00:08:03.190
+the squared error with respect
+to our true resistance x.
+
+133
+00:08:03.190 --> 00:08:07.490
+From calculus, we know that we can
+do this by taking a derivative of
+
+134
+00:08:07.490 --> 00:08:09.320
+the error function with respect to
+
+135
+00:08:09.320 --> 00:08:12.395
+the unknown x and setting
+the derivative to zero.
+
+136
+00:08:12.395 --> 00:08:14.850
+Let's do exactly that.
+
+137
+00:08:15.010 --> 00:08:19.440
+We'll have to use
+some standard matrix expressions.
+
+138
+00:08:19.600 --> 00:08:24.080
+Re-arranging, we arrive at what
+are called the normal equations,
+
+139
+00:08:24.080 --> 00:08:27.100
+which can be written as
+a single matrix formula.
+
+140
+00:08:27.100 --> 00:08:30.210
+We can solve these to find x-hat,
+
+141
+00:08:30.210 --> 00:08:34.790
+the resistance which minimizes
+our squared error criterion.
+
+142
+00:08:34.790 --> 00:08:38.300
+This expression has
+a unique solution if and only
+
+143
+00:08:38.300 --> 00:08:41.465
+if H transpose H is not singular.
+
+144
+00:08:41.465 --> 00:08:45.220
+In other words, if
+the matrix has an inverse.
+
+145
+00:08:45.380 --> 00:08:49.760
+If we have m measurements
+and n unknown parameters,
+
+146
+00:08:49.760 --> 00:08:53.705
+H transpose H will be n by n.
+
+147
+00:08:53.705 --> 00:08:56.750
+The matrix will be invertible if and only
+
+148
+00:08:56.750 --> 00:09:00.079
+if m is greater than or equal to n. So,
+
+149
+00:09:00.079 --> 00:09:01.880
+we need at least as many measurements as
+
+150
+00:09:01.880 --> 00:09:05.550
+unknowns in order to derive
+the least squares solution.
+
+151
+00:09:05.710 --> 00:09:08.570
+This will usually not be a problem.
+
+152
+00:09:08.570 --> 00:09:10.940
+In fact, we'll often face the challenge
+
+153
+00:09:10.940 --> 00:09:13.985
+of dealing with too many measurements.
+
+154
+00:09:13.985 --> 00:09:16.130
+But nevertheless, you should keep
+
+155
+00:09:16.130 --> 00:09:19.650
+this limitation in mind when
+working with the formula.
+
+156
+00:09:19.810 --> 00:09:23.140
+Coming back to our particular
+resistance problem,
+
+157
+00:09:23.140 --> 00:09:25.750
+let's fill out our variables.
+
+158
+00:09:26.180 --> 00:09:28.450
+Once we have these quantities,
+
+159
+00:09:28.450 --> 00:09:30.725
+it's just a matter of plug and chug.
+
+160
+00:09:30.725 --> 00:09:32.900
+The expression is quite
+straightforward to code
+
+161
+00:09:32.900 --> 00:09:36.090
+up as you'll see in
+your module assignment.
+
+162
+00:09:36.490 --> 00:09:39.680
+Note here that
+the expression simplifies to
+
+163
+00:09:39.680 --> 00:09:42.755
+the arithmetic mean of
+our four measurements.
+
+164
+00:09:42.755 --> 00:09:46.010
+Perhaps this is something you
+thought of doing all along.
+
+165
+00:09:46.010 --> 00:09:49.765
+Now, we have another justification
+for using the arithmetic mean,
+
+166
+00:09:49.765 --> 00:09:53.405
+it minimizes the simple
+least squares criterion.
+
+167
+00:09:53.405 --> 00:09:58.535
+Finally, we should note two important
+assumptions that we've made.
+
+168
+00:09:58.535 --> 00:10:02.495
+First, we've assumed that
+our measurement model is linear.
+
+169
+00:10:02.495 --> 00:10:04.820
+This is a very important assumption that
+
+170
+00:10:04.820 --> 00:10:07.510
+is often broken in complex systems.
+
+171
+00:10:07.510 --> 00:10:12.240
+We'll discuss non-linear measurement
+models in later lessons.
+
+172
+00:10:12.830 --> 00:10:15.710
+Second, we've assumed that all of
+
+173
+00:10:15.710 --> 00:10:19.610
+our measurements have an equal weight
+in our error equation.
+
+174
+00:10:19.610 --> 00:10:21.590
+To put this another way,
+
+175
+00:10:21.590 --> 00:10:26.010
+we've assumed that we care about
+each of our measurements equally.
+
+176
+00:10:28.240 --> 00:10:31.280
+To summarize, in this video,
+
+177
+00:10:31.280 --> 00:10:34.850
+you've learned that the method of
+least squares was pioneered by
+
+178
+00:10:34.850 --> 00:10:37.760
+Carl Friedrich Gauss who
+used it to accurately
+
+179
+00:10:37.760 --> 00:10:41.510
+predict the orbit of a new planet
+like object called Ceres.
+
+180
+00:10:41.510 --> 00:10:42.830
+You saw how we can minimize
+
+181
+00:10:42.830 --> 00:10:47.345
+the least squares criterion to solve
+for parameter values of interest.
+
+182
+00:10:47.345 --> 00:10:50.990
+We noted that the method of
+ordinary least squares assumes
+
+183
+00:10:50.990 --> 00:10:52.910
+a linear measurement model and
+
+184
+00:10:52.910 --> 00:10:55.655
+can't handle measurements
+of unequal importance.
+
+185
+00:10:55.655 --> 00:10:57.920
+In the next video, we'll
+extend the method of
+
+186
+00:10:57.920 --> 00:11:01.070
+least squares to the method
+of weighted least squares,
+
+187
+00:11:01.070 --> 00:11:04.950
+which can account for measurements
+of varying importance.

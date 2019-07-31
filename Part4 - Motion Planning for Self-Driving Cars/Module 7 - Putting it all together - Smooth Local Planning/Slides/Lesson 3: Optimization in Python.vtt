@@ -1,0 +1,601 @@
+WEBVTT
+
+1
+00:00:14.150 --> 00:00:16.950
+Hello everyone. In this lesson,
+
+2
+00:00:16.950 --> 00:00:18.570
+we're going to go
+over the basics of
+
+3
+00:00:18.570 --> 00:00:21.120
+optimization in Python to help
+
+4
+00:00:21.120 --> 00:00:23.370
+cement some of the
+optimization concepts we've
+
+5
+00:00:23.370 --> 00:00:26.100
+discussed in the previous
+lessons of this module,
+
+6
+00:00:26.100 --> 00:00:28.860
+and in fact, throughout
+this specialization.
+
+7
+00:00:28.860 --> 00:00:31.280
+In particular, we're
+going to go through some
+
+8
+00:00:31.280 --> 00:00:33.305
+of the functions
+required to solve
+
+9
+00:00:33.305 --> 00:00:36.170
+a generic non-linear
+optimization problem
+
+10
+00:00:36.170 --> 00:00:39.370
+using the SciPy optimize library.
+
+11
+00:00:39.370 --> 00:00:41.035
+By the end of this video,
+
+12
+00:00:41.035 --> 00:00:43.055
+you should know how
+to set up and call
+
+13
+00:00:43.055 --> 00:00:46.385
+a constrained optimization
+problem using this library.
+
+14
+00:00:46.385 --> 00:00:48.530
+In particular, you
+should know how to
+
+15
+00:00:48.530 --> 00:00:50.900
+pass Jacobians to the optimizer,
+
+16
+00:00:50.900 --> 00:00:53.510
+as well as any required
+parameter bounds
+
+17
+00:00:53.510 --> 00:00:55.595
+defined in the
+optimization problem.
+
+18
+00:00:55.595 --> 00:00:57.695
+So let's get started.
+
+19
+00:00:57.695 --> 00:01:01.370
+The field of optimization is
+a wonderfully rich area of
+
+20
+00:01:01.370 --> 00:01:02.900
+study which we cannot
+
+21
+00:01:02.900 --> 00:01:05.375
+explore in detail in
+this specialization.
+
+22
+00:01:05.375 --> 00:01:08.840
+The SciPy optimized library
+covers a handful of some of
+
+23
+00:01:08.840 --> 00:01:11.095
+the most popular
+optimization algorithms
+
+24
+00:01:11.095 --> 00:01:12.290
+making them easily
+
+25
+00:01:12.290 --> 00:01:13.700
+accessible and ensuring
+
+26
+00:01:13.700 --> 00:01:16.670
+reasonable efficiency in
+their implementation.
+
+27
+00:01:16.670 --> 00:01:19.610
+Many of the implemented
+optimization methods have
+
+28
+00:01:19.610 --> 00:01:21.410
+a similar structure in terms of
+
+29
+00:01:21.410 --> 00:01:23.720
+what type of parameters
+they require.
+
+30
+00:01:23.720 --> 00:01:27.595
+So to abstract this away
+into a simple interface,
+
+31
+00:01:27.595 --> 00:01:29.660
+the SciPy optimized library
+
+32
+00:01:29.660 --> 00:01:32.720
+contains a generic
+minimize function.
+
+33
+00:01:32.720 --> 00:01:35.780
+Some examples of the available
+optimization methods
+
+34
+00:01:35.780 --> 00:01:37.625
+include conjugate gradient,
+
+35
+00:01:37.625 --> 00:01:40.500
+Nelder-Mead, dogleg, and BFGS.
+
+36
+00:01:40.500 --> 00:01:42.630
+For more details
+on these methods,
+
+37
+00:01:42.630 --> 00:01:45.755
+see the links in
+the supplemental materials.
+
+38
+00:01:45.755 --> 00:01:48.500
+The specific
+optimization algorithm
+
+39
+00:01:48.500 --> 00:01:49.730
+run by the library will
+
+40
+00:01:49.730 --> 00:01:51.905
+depend on the method parameter
+
+41
+00:01:51.905 --> 00:01:53.905
+that you pass to this function.
+
+42
+00:01:53.905 --> 00:01:56.270
+The method parameter
+will also determine
+
+43
+00:01:56.270 --> 00:01:57.740
+which additional parameters
+
+44
+00:01:57.740 --> 00:01:59.915
+the optimization
+algorithm requires.
+
+45
+00:01:59.915 --> 00:02:04.475
+For example, in the L-BFGS-B
+algorithm that we'll use,
+
+46
+00:02:04.475 --> 00:02:07.340
+we require not only
+the model to minimize,
+
+47
+00:02:07.340 --> 00:02:10.805
+but also the models Jacobian
+and variable bounds.
+
+48
+00:02:10.805 --> 00:02:12.530
+In the case where the model is
+
+49
+00:02:12.530 --> 00:02:14.750
+a single scalar valued function,
+
+50
+00:02:14.750 --> 00:02:17.585
+the Jacobian reduces
+to the gradient.
+
+51
+00:02:17.585 --> 00:02:21.170
+This Jacobian is passed to
+the minimize function through
+
+52
+00:02:21.170 --> 00:02:24.845
+the jac parameter as shown
+in this function call.
+
+53
+00:02:24.845 --> 00:02:27.335
+The actual function
+we wish to minimize
+
+54
+00:02:27.335 --> 00:02:29.980
+is the first argument to
+the minimize function.
+
+55
+00:02:29.980 --> 00:02:32.960
+The constraints are
+passed to the constraints
+
+56
+00:02:32.960 --> 00:02:37.340
+variable as a list of constraint
+dictionaries or objects.
+
+57
+00:02:37.340 --> 00:02:39.485
+In addition, there is also
+
+58
+00:02:39.485 --> 00:02:42.365
+the optional options
+parameter which
+
+59
+00:02:42.365 --> 00:02:44.120
+advanced users can use to
+
+60
+00:02:44.120 --> 00:02:47.255
+customize things like what
+is output by the optimizer.
+
+61
+00:02:47.255 --> 00:02:50.090
+These optimization
+algorithms also require
+
+62
+00:02:50.090 --> 00:02:51.290
+an initial guess for
+
+63
+00:02:51.290 --> 00:02:52.760
+the optimization variables for
+
+64
+00:02:52.760 --> 00:02:54.565
+the model or objective function,
+
+65
+00:02:54.565 --> 00:02:57.755
+and this is given by x
+naught in the function call.
+
+66
+00:02:57.755 --> 00:03:00.020
+Let's look at
+the BFGS algorithm for
+
+67
+00:03:00.020 --> 00:03:01.580
+a concrete example of how to
+
+68
+00:03:01.580 --> 00:03:04.165
+implement an
+optimization with SciPy.
+
+69
+00:03:04.165 --> 00:03:07.165
+Essentially for
+the BFGS algorithm,
+
+70
+00:03:07.165 --> 00:03:08.780
+we are required to pass in
+
+71
+00:03:08.780 --> 00:03:09.950
+the function pointer to
+
+72
+00:03:09.950 --> 00:03:11.960
+the actual objective
+function we wish to
+
+73
+00:03:11.960 --> 00:03:14.990
+minimize as well as
+a function pointer to
+
+74
+00:03:14.990 --> 00:03:16.339
+a function that evaluates
+
+75
+00:03:16.339 --> 00:03:18.530
+the Jacobian of
+the objective function.
+
+76
+00:03:18.530 --> 00:03:20.960
+These functions will
+take in a vector
+
+77
+00:03:20.960 --> 00:03:23.150
+of all of the
+optimization variables
+
+78
+00:03:23.150 --> 00:03:24.590
+in order to evaluate
+
+79
+00:03:24.590 --> 00:03:25.910
+the objective function and
+
+80
+00:03:25.910 --> 00:03:28.445
+the Jacobian at a specific point.
+
+81
+00:03:28.445 --> 00:03:31.009
+Once the optimization
+is complete,
+
+82
+00:03:31.009 --> 00:03:34.415
+the minimize function will
+return a result variable.
+
+83
+00:03:34.415 --> 00:03:36.080
+The member variable of
+
+84
+00:03:36.080 --> 00:03:38.510
+the results denoted
+by x will return
+
+85
+00:03:38.510 --> 00:03:39.725
+the final vector of
+
+86
+00:03:39.725 --> 00:03:41.510
+optimization variables where
+
+87
+00:03:41.510 --> 00:03:43.985
+the local minima
+has been achieved.
+
+88
+00:03:43.985 --> 00:03:45.560
+As we mentioned earlier,
+
+89
+00:03:45.560 --> 00:03:46.940
+we can also specify
+
+90
+00:03:46.940 --> 00:03:49.475
+constraints for
+our optimization problems.
+
+91
+00:03:49.475 --> 00:03:51.920
+For most algorithms,
+these constraints are
+
+92
+00:03:51.920 --> 00:03:54.895
+given in the form of
+lists or dictionaries.
+
+93
+00:03:54.895 --> 00:03:57.200
+The simplest type
+of constraints are
+
+94
+00:03:57.200 --> 00:03:58.520
+inequality constraints on
+
+95
+00:03:58.520 --> 00:04:00.965
+the objective variables
+called bounds.
+
+96
+00:04:00.965 --> 00:04:02.960
+Bounds are specified by
+
+97
+00:04:02.960 --> 00:04:06.790
+the L-BFGS-B algorithm
+as a list of lists,
+
+98
+00:04:06.790 --> 00:04:10.505
+where each sub-list is of
+length two and contains the
+
+99
+00:04:10.505 --> 00:04:14.450
+upper and lower bound for
+each optimization variable.
+
+100
+00:04:14.450 --> 00:04:16.980
+In other words,
+the first sub-list
+
+101
+00:04:16.980 --> 00:04:19.455
+corresponds to
+the bounds for x 0,
+
+102
+00:04:19.455 --> 00:04:22.510
+and the second sub-list
+for x 1 etc.
+
+103
+00:04:22.510 --> 00:04:24.650
+These bounds are then passed to
+
+104
+00:04:24.650 --> 00:04:26.735
+the constraints
+optional parameter
+
+105
+00:04:26.735 --> 00:04:28.595
+of the minimize function.
+
+106
+00:04:28.595 --> 00:04:31.219
+Linear and non-linear constraints
+
+107
+00:04:31.219 --> 00:04:33.290
+can also be passed
+to the optimizer,
+
+108
+00:04:33.290 --> 00:04:34.970
+but for now we will
+focus on using
+
+109
+00:04:34.970 --> 00:04:37.415
+bounds for optimization
+constraints.
+
+110
+00:04:37.415 --> 00:04:39.950
+For more details, you
+can take a look at
+
+111
+00:04:39.950 --> 00:04:43.265
+the SciPy optimization
+documentation online.
+
+112
+00:04:43.265 --> 00:04:44.930
+You can also combine
+
+113
+00:04:44.930 --> 00:04:47.615
+multiple types of
+constraints by passing in
+
+114
+00:04:47.615 --> 00:04:50.150
+a Python list of
+each constraint object
+
+115
+00:04:50.150 --> 00:04:53.315
+that you would like to use
+in the optimizer function.
+
+116
+00:04:53.315 --> 00:04:56.870
+To summarize, in this video
+we introduced how to set up
+
+117
+00:04:56.870 --> 00:04:58.820
+an optimization problem using
+
+118
+00:04:58.820 --> 00:05:01.160
+the SciPy optimization library.
+
+119
+00:05:01.160 --> 00:05:03.950
+In particular, we
+discussed how to pass in
+
+120
+00:05:03.950 --> 00:05:05.900
+user-defined objective
+functions in
+
+121
+00:05:05.900 --> 00:05:09.785
+Jacobian's as well as parameter
+bounds to the optimizer.
+
+122
+00:05:09.785 --> 00:05:12.860
+You should now have
+a good idea of how to solve
+
+123
+00:05:12.860 --> 00:05:16.310
+general optimization problems
+using a Python library.
+
+124
+00:05:16.310 --> 00:05:18.650
+For more information,
+you can consult
+
+125
+00:05:18.650 --> 00:05:21.890
+the SciPy optimization
+library documentation.
+
+126
+00:05:21.890 --> 00:05:23.600
+After this lesson, we have
+
+127
+00:05:23.600 --> 00:05:25.850
+a programming assignment
+to give you a chance to
+
+128
+00:05:25.850 --> 00:05:28.640
+practice the concepts
+we've discussed here
+
+129
+00:05:28.640 --> 00:05:32.460
+and to prepare you for
+the end of module project.

@@ -1,0 +1,823 @@
+1
+00:00:18,800 --> 00:00:22,140
+Welcome to week five of this course.
+
+2
+00:00:22,140 --> 00:00:23,670
+In the previous module,
+
+3
+00:00:23,670 --> 00:00:29,250
+you learned how to develop vehicle models to capture longitudinal and lateral dynamics.
+
+4
+00:00:29,250 --> 00:00:32,010
+In this module, we will go through the concepts of
+
+5
+00:00:32,010 --> 00:00:36,795
+longitudinal vehicle control to regulate the speed of our self-driving car.
+
+6
+00:00:36,795 --> 00:00:39,080
+Specifically, you'll review some of
+
+7
+00:00:39,080 --> 00:00:43,730
+the essential concepts from classical linear time-invariant control,
+
+8
+00:00:43,730 --> 00:00:48,530
+develop a PID control law for the longitudinal vehicle model and
+
+9
+00:00:48,530 --> 00:00:53,660
+combine feedforward and feedback control to improve desired speed tracking.
+
+10
+00:00:53,660 --> 00:00:58,580
+Design of the longitudinal speed control underpins all vehicle performance
+
+11
+00:00:58,580 --> 00:01:03,335
+on the road and is one of the fundamental components needed for autonomous driving.
+
+12
+00:01:03,335 --> 00:01:07,100
+In this video, we will briefly review some of the basics of
+
+13
+00:01:07,100 --> 00:01:11,045
+linear time-invariant control and the PID controller.
+
+14
+00:01:11,045 --> 00:01:12,470
+By the end of this video,
+
+15
+00:01:12,470 --> 00:01:17,015
+you'll be able to design a PID control for a linear time-invariant system.
+
+16
+00:01:17,015 --> 00:01:20,090
+Note that we will have to assume you're familiar with
+
+17
+00:01:20,090 --> 00:01:25,150
+classical control design including the use of transfer functions and the Laplace domain.
+
+18
+00:01:25,150 --> 00:01:27,590
+So, if you haven't seen these concepts before,
+
+19
+00:01:27,590 --> 00:01:30,440
+please check out some of the great controls courses on
+
+20
+00:01:30,440 --> 00:01:35,135
+Coursera listed in the supplemental materials. Let's get started.
+
+21
+00:01:35,135 --> 00:01:37,395
+In module three of this course,
+
+22
+00:01:37,395 --> 00:01:38,660
+we learned how to develop
+
+23
+00:01:38,660 --> 00:01:43,160
+the dynamic and kinematic models for a vehicle based on the bicycle model.
+
+24
+00:01:43,160 --> 00:01:48,380
+These models aim to capture how the dynamic system reacts to input commands from
+
+25
+00:01:48,380 --> 00:01:54,410
+the driver such as steering gas and break and how it reacts to disturbances such as wind,
+
+26
+00:01:54,410 --> 00:01:56,930
+road surface and different vehicle loads.
+
+27
+00:01:56,930 --> 00:02:01,610
+The effects of the inputs and disturbances on the states such as velocity and
+
+28
+00:02:01,610 --> 00:02:04,070
+rotation rate of the vehicle are defined
+
+29
+00:02:04,070 --> 00:02:06,965
+by the kinematic and dynamic models we developed.
+
+30
+00:02:06,965 --> 00:02:09,530
+The role of the controller then is to
+
+31
+00:02:09,530 --> 00:02:12,950
+regulate some of these states of the vehicle by sensing
+
+32
+00:02:12,950 --> 00:02:15,635
+the current state variables and then generating
+
+33
+00:02:15,635 --> 00:02:19,160
+actuator signals to satisfy the commands provided.
+
+34
+00:02:19,160 --> 00:02:24,650
+For longitudinal control, the controller sensing the vehicle speed and adjust
+
+35
+00:02:24,650 --> 00:02:26,690
+the throttle and break commands to match
+
+36
+00:02:26,690 --> 00:02:30,285
+the desired speed set by the autonomous motion planning system.
+
+37
+00:02:30,285 --> 00:02:33,695
+Let's take a look at a typical feedback control loop.
+
+38
+00:02:33,695 --> 00:02:37,040
+The plant or process model takes the actuator signals as
+
+39
+00:02:37,040 --> 00:02:41,660
+the input and generates the output or state variables of the system.
+
+40
+00:02:41,660 --> 00:02:45,050
+These outputs are measured by sensors and
+
+41
+00:02:45,050 --> 00:02:49,280
+estimators are used to fuse measurements into accurate output estimates.
+
+42
+00:02:49,280 --> 00:02:51,470
+The output estimates are compared to
+
+43
+00:02:51,470 --> 00:02:54,214
+the desired or reference output variables
+
+44
+00:02:54,214 --> 00:02:57,875
+and the difference or error is passed to the controller.
+
+45
+00:02:57,875 --> 00:02:59,810
+The controller can be seen as
+
+46
+00:02:59,810 --> 00:03:03,950
+a mathematical algorithm that generates actuator signals so that
+
+47
+00:03:03,950 --> 00:03:06,350
+the error signal is minimized and
+
+48
+00:03:06,350 --> 00:03:10,310
+the plant state variables approach the desired state variables.
+
+49
+00:03:10,310 --> 00:03:15,035
+The plant model be it linear or nonlinear can be represented in several ways.
+
+50
+00:03:15,035 --> 00:03:18,215
+Two of the most common ways are state-space form
+
+51
+00:03:18,215 --> 00:03:21,530
+which tracks the evolution of an internal state to connect
+
+52
+00:03:21,530 --> 00:03:25,025
+the input to the output and transfer function form
+
+53
+00:03:25,025 --> 00:03:28,490
+which models the input to output relation directly.
+
+54
+00:03:28,490 --> 00:03:30,590
+Note that for transfer functions,
+
+55
+00:03:30,590 --> 00:03:33,485
+the system must be linear and time-invariant.
+
+56
+00:03:33,485 --> 00:03:39,170
+A transfer function G is a relation between inputs U and outputs Y of
+
+57
+00:03:39,170 --> 00:03:45,320
+the system defined in the Laplace domain as a function of S a complex variable.
+
+58
+00:03:45,320 --> 00:03:48,500
+We use the Laplace transform to go from
+
+59
+00:03:48,500 --> 00:03:51,755
+the time domain to the S domain because it allows for
+
+60
+00:03:51,755 --> 00:03:54,740
+easier analysis of an input-output relation
+
+61
+00:03:54,740 --> 00:03:58,355
+and is useful in understanding control performance.
+
+62
+00:03:58,355 --> 00:04:00,515
+When working with the transfer functions,
+
+63
+00:04:00,515 --> 00:04:03,170
+the numerator and denominator roots provide
+
+64
+00:04:03,170 --> 00:04:07,715
+powerful insight into the response of a system to input functions.
+
+65
+00:04:07,715 --> 00:04:10,310
+The zeros of a system are the roots of
+
+66
+00:04:10,310 --> 00:04:14,525
+the numerator and the poles of the system are the roots of its denominator.
+
+67
+00:04:14,525 --> 00:04:20,720
+Control algorithm design can vary from simple such as constant gain multiplication,
+
+68
+00:04:20,720 --> 00:04:24,950
+lookup tables and linear equations to more detailed methods based
+
+69
+00:04:24,950 --> 00:04:29,435
+on non-linear functions and optimization over finite prediction horizons.
+
+70
+00:04:29,435 --> 00:04:32,540
+Some of the basic and classic controllers include
+
+71
+00:04:32,540 --> 00:04:38,270
+lead-lag controllers and proportional integral and derivative or PID controllers.
+
+72
+00:04:38,270 --> 00:04:39,900
+In the rest of this video,
+
+73
+00:04:39,900 --> 00:04:41,690
+we will go into more detail on
+
+74
+00:04:41,690 --> 00:04:46,955
+the PID control combination as a useful starting point for longitudinal control.
+
+75
+00:04:46,955 --> 00:04:50,255
+More involved control design is also possible
+
+76
+00:04:50,255 --> 00:04:53,570
+and it's particularly useful for non-linear system models,
+
+77
+00:04:53,570 --> 00:04:58,730
+time-varying models, or models with constraints that limit output selection.
+
+78
+00:04:58,730 --> 00:05:01,940
+Nonlinear methods such as feedback linearization,
+
+79
+00:05:01,940 --> 00:05:05,300
+back stepping and sliding mode control are beyond the scope of
+
+80
+00:05:05,300 --> 00:05:10,420
+this course but can certainly be applied to self-driving vehicle control problem.
+
+81
+00:05:10,420 --> 00:05:15,910
+Optimization-based methods are heavily used in autonomous driving and so we'll look
+
+82
+00:05:15,910 --> 00:05:18,370
+at model predictive control as an example of
+
+83
+00:05:18,370 --> 00:05:21,515
+this group of controllers later on in the course.
+
+84
+00:05:21,515 --> 00:05:24,580
+PID control is mathematically formulated by
+
+85
+00:05:24,580 --> 00:05:27,565
+adding three terms dependent on the error function.
+
+86
+00:05:27,565 --> 00:05:31,765
+A proportional term directly proportional to the error E,
+
+87
+00:05:31,765 --> 00:05:35,530
+an integral term proportional to the integral of the error,
+
+88
+00:05:35,530 --> 00:05:38,980
+and a derivative term proportional to the derivative of the error.
+
+89
+00:05:38,980 --> 00:05:41,350
+The constants Kp, Ki,
+
+90
+00:05:41,350 --> 00:05:42,400
+and Kd are called
+
+91
+00:05:42,400 --> 00:05:46,630
+the proportional integral and derivative gains and govern the response so
+
+92
+00:05:46,630 --> 00:05:53,185
+the PID controller which is denoted U of t as it is the input to the plant model.
+
+93
+00:05:53,185 --> 00:05:57,020
+Taking the Laplace transform of the PID control yields
+
+94
+00:05:57,020 --> 00:06:01,160
+the transfer function Gc of S. Multiplying by
+
+95
+00:06:01,160 --> 00:06:04,640
+S in the Laplace domain is equivalent to taking a derivative in
+
+96
+00:06:04,640 --> 00:06:09,245
+the time domain and dividing by S is equivalent to taking the integral.
+
+97
+00:06:09,245 --> 00:06:13,070
+By adding these three terms of the PID controller together,
+
+98
+00:06:13,070 --> 00:06:16,925
+we get a single transfer function for PID control.
+
+99
+00:06:16,925 --> 00:06:20,975
+Note that not all gains need to be used for all systems.
+
+100
+00:06:20,975 --> 00:06:24,200
+If one or more of the PID gains are set to zero,
+
+101
+00:06:24,200 --> 00:06:28,155
+the controller can be referred to as P, Pd or Pi.
+
+102
+00:06:28,155 --> 00:06:30,620
+The PID transfer function contains
+
+103
+00:06:30,620 --> 00:06:35,020
+a single pole at the origin which comes from the integral term.
+
+104
+00:06:35,020 --> 00:06:40,400
+It also contains a second-order numerator with two zeros that can be
+
+105
+00:06:40,400 --> 00:06:46,240
+placed anywhere in the complex plane by selecting appropriate values for the gains.
+
+106
+00:06:46,240 --> 00:06:48,820
+PID control design therefore,
+
+107
+00:06:48,820 --> 00:06:52,100
+boils down to selecting zero locations to achieve
+
+108
+00:06:52,100 --> 00:06:57,005
+the desired output or performance based on the model for the plant.
+
+109
+00:06:57,005 --> 00:07:01,205
+There are also several algorithms to tune PID gains,
+
+110
+00:07:01,205 --> 00:07:04,715
+among them, Ziegler Nichols is one of the most popular.
+
+111
+00:07:04,715 --> 00:07:08,570
+Closed loop response denotes the response of a system when
+
+112
+00:07:08,570 --> 00:07:12,440
+the controller decides the inputs to apply to the plant model.
+
+113
+00:07:12,440 --> 00:07:16,820
+For a step input on the reference signal we can define
+
+114
+00:07:16,820 --> 00:07:21,515
+the rise time as the time it takes to reach 90 percent of the reference value.
+
+115
+00:07:21,515 --> 00:07:26,720
+The overshoot as the maximum percentage the output exceeds this reference.
+
+116
+00:07:26,720 --> 00:07:31,700
+The settling time as the time to settle to within five percent of the reference
+
+117
+00:07:31,700 --> 00:07:34,460
+and the steady-state error as the error between
+
+118
+00:07:34,460 --> 00:07:37,945
+the output and the reference at steady-state.
+
+119
+00:07:37,945 --> 00:07:40,380
+The effects of each P,
+
+120
+00:07:40,380 --> 00:07:44,165
+I and D action are summarized in the following table.
+
+121
+00:07:44,165 --> 00:07:49,310
+For instance, an increase in Kp leads to a stronger reaction to
+
+122
+00:07:49,310 --> 00:07:51,830
+errors and therefore a decrease in
+
+123
+00:07:51,830 --> 00:07:55,640
+rise time in response to a step change in the reference signal.
+
+124
+00:07:55,640 --> 00:07:59,720
+Similarly, since Kd reacts to the rate of change of the error
+
+125
+00:07:59,720 --> 00:08:06,350
+an increased Kd leads to a decrease in overshoot or the rate of change of error is high.
+
+126
+00:08:06,350 --> 00:08:10,580
+It may simultaneously lead to a decrease in oscillations
+
+127
+00:08:10,580 --> 00:08:15,130
+about the reference and a decreased settling time as a result.
+
+128
+00:08:15,130 --> 00:08:18,650
+Finally, an increase in Ki can eliminate
+
+129
+00:08:18,650 --> 00:08:23,770
+steady-state errors but may lead to increased oscillation in the response.
+
+130
+00:08:23,770 --> 00:08:28,910
+Ultimately, the P, I and D gains must be selected with knowledge of
+
+131
+00:08:28,910 --> 00:08:31,580
+the interaction of their effects to adjust
+
+132
+00:08:31,580 --> 00:08:35,420
+the system response to get the right closed loop performance.
+
+133
+00:08:35,420 --> 00:08:39,140
+You'll get a chance to see these interactions as you develop
+
+134
+00:08:39,140 --> 00:08:43,775
+your own PID controller as part of the assessment for this course.
+
+135
+00:08:43,775 --> 00:08:45,920
+Now, let's take a look at
+
+136
+00:08:45,920 --> 00:08:50,270
+the well-known second-order spring-mass damper model as shown in the figure.
+
+137
+00:08:50,270 --> 00:08:54,050
+In this example, we'll first review the transfer function of
+
+138
+00:08:54,050 --> 00:08:59,000
+the proposed dynamic system and then design a PID controller for it.
+
+139
+00:08:59,000 --> 00:09:01,760
+The dynamics of the spring-mass damper system
+
+140
+00:09:01,760 --> 00:09:04,400
+were derived in an earlier video in this course.
+
+141
+00:09:04,400 --> 00:09:07,790
+The system is subjected to the input force F
+
+142
+00:09:07,790 --> 00:09:11,945
+and the output of the model is the displacement of the body x.
+
+143
+00:09:11,945 --> 00:09:16,130
+The mass M is connected to a rigid foundation by
+
+144
+00:09:16,130 --> 00:09:21,480
+a spring with spring constant K and a damper with damping coefficient b.
+
+145
+00:09:21,480 --> 00:09:26,210
+Now to transform the equation into the S domain or Laplace domain,
+
+146
+00:09:26,210 --> 00:09:32,375
+we use the Laplace transform and write the second-order equation as follows.
+
+147
+00:09:32,375 --> 00:09:35,120
+This relies on the fact that the derivative in
+
+148
+00:09:35,120 --> 00:09:39,500
+the time domain are multiplications by S in the Laplace domain.
+
+149
+00:09:39,500 --> 00:09:43,910
+Finally, the transfer function is formed which represents the relation
+
+150
+00:09:43,910 --> 00:09:48,020
+between the output x of s and the input F of S and is
+
+151
+00:09:48,020 --> 00:09:52,340
+defined as the plant transfer function G of s. This is
+
+152
+00:09:52,340 --> 00:09:55,370
+a second-order system with two poles defined by
+
+153
+00:09:55,370 --> 00:09:58,955
+the mass spring constant and damping coefficient.
+
+154
+00:09:58,955 --> 00:10:01,400
+To evaluate the system characteristics,
+
+155
+00:10:01,400 --> 00:10:04,850
+we excite the system by using a unit step input.
+
+156
+00:10:04,850 --> 00:10:10,160
+This is normally the first step to evaluate the dynamic characteristics of a plant.
+
+157
+00:10:10,160 --> 00:10:13,880
+For example, the system response x is plotted
+
+158
+00:10:13,880 --> 00:10:17,650
+here for the parameter values given as m equals one,
+
+159
+00:10:17,650 --> 00:10:21,155
+b equals 10 and k equals 20.
+
+160
+00:10:21,155 --> 00:10:24,020
+This type of response is easily generated with
+
+161
+00:10:24,020 --> 00:10:27,665
+scientific computing tools such as Matlab recite pi.
+
+162
+00:10:27,665 --> 00:10:33,815
+The input is the unit step F equals one and the output is once again x.
+
+163
+00:10:33,815 --> 00:10:37,115
+This response is called the open-loop response
+
+164
+00:10:37,115 --> 00:10:40,760
+since there is no controller applied to the system at this point.
+
+165
+00:10:40,760 --> 00:10:44,930
+If a controller is added to the plant and the output of the model
+
+166
+00:10:44,930 --> 00:10:48,960
+is measured and compared with the desired output or reference signal,
+
+167
+00:10:48,960 --> 00:10:52,850
+then the response of the system is called the closed loop response.
+
+168
+00:10:52,850 --> 00:10:56,300
+For unity feedback, the sensor transfer function is
+
+169
+00:10:56,300 --> 00:11:00,770
+assumed to be one and in general it could be any transfer function.
+
+170
+00:11:00,770 --> 00:11:04,550
+The closed loop transfer function given here can be performed from
+
+171
+00:11:04,550 --> 00:11:08,270
+the transfer functions of the controller and the plant.
+
+172
+00:11:08,270 --> 00:11:11,720
+For those of you who have studied classical feedback control,
+
+173
+00:11:11,720 --> 00:11:14,390
+you'll know that the poles of the open-loop system
+
+174
+00:11:14,390 --> 00:11:17,540
+define the characteristics of the closed-loop response.
+
+175
+00:11:17,540 --> 00:11:22,220
+You may have also seen root locus bodhi and Nyquist design techniques which can
+
+176
+00:11:22,220 --> 00:11:27,215
+be used to select controllers that meet specific output specifications.
+
+177
+00:11:27,215 --> 00:11:30,200
+We've left some links to appropriate resources for
+
+178
+00:11:30,200 --> 00:11:33,835
+those who'd like to learn more in the supplemental material.
+
+179
+00:11:33,835 --> 00:11:38,300
+Let's look at the step response for a few different PID controllers.
+
+180
+00:11:38,300 --> 00:11:43,160
+The dashed horizontal line represents the reference or desired output and
+
+181
+00:11:43,160 --> 00:11:48,320
+the controllers goal is to keep the actual output close to this reference.
+
+182
+00:11:48,320 --> 00:11:49,939
+In the first example,
+
+183
+00:11:49,939 --> 00:11:54,890
+the step responses for pure proportional control of the spring-mass damper system.
+
+184
+00:11:54,890 --> 00:11:56,990
+In the P controller response,
+
+185
+00:11:56,990 --> 00:11:59,180
+we see a fast rise time,
+
+186
+00:11:59,180 --> 00:12:04,820
+significant overshoot and prolonged oscillation leading to a long settling time.
+
+187
+00:12:04,820 --> 00:12:09,125
+Adding derivative control improves the step response in terms of
+
+188
+00:12:09,125 --> 00:12:13,705
+overshoot and settling time but slows down the rise time.
+
+189
+00:12:13,705 --> 00:12:18,980
+Adding the integral term instead maintains a short rise time and is
+
+190
+00:12:18,980 --> 00:12:24,470
+able to reduce oscillations and overshoot leading to a fast settling time as well.
+
+191
+00:12:24,470 --> 00:12:29,855
+The simple Pi control is an excellent design for the spring-mass damper system.
+
+192
+00:12:29,855 --> 00:12:33,800
+Including all three PID terms in the controller,
+
+193
+00:12:33,800 --> 00:12:37,790
+leads to even more flexibility in designing the step response.
+
+194
+00:12:37,790 --> 00:12:40,220
+By carefully tuning the controller gains,
+
+195
+00:12:40,220 --> 00:12:43,160
+we can use the benefits of all three to eliminate
+
+196
+00:12:43,160 --> 00:12:47,900
+overshoot and still maintain very short rise and settling times.
+
+197
+00:12:47,900 --> 00:12:49,700
+As can be seen in the plot,
+
+198
+00:12:49,700 --> 00:12:52,400
+the system approaches the reference at much more
+
+199
+00:12:52,400 --> 00:12:56,575
+quickly without any overshoot with PID control.
+
+200
+00:12:56,575 --> 00:12:59,720
+In this video, we've covered the concepts of
+
+201
+00:12:59,720 --> 00:13:04,655
+controller design and why we integrate controllers into a dynamic model.
+
+202
+00:13:04,655 --> 00:13:08,510
+We also reviewed the PID controller and learned how to control
+
+203
+00:13:08,510 --> 00:13:12,590
+the step response of a spring-mass damper system with PID control.
+
+204
+00:13:12,590 --> 00:13:13,790
+In the next video,
+
+205
+00:13:13,790 --> 00:13:16,970
+you will learn how to apply PID control to
+
+206
+00:13:16,970 --> 00:13:21,150
+regulate the speed of a self-driving car. See you there.

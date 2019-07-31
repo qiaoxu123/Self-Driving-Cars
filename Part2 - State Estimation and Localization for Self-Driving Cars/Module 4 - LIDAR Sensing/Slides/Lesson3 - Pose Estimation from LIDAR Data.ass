@@ -1,0 +1,1970 @@
+WEBVTT
+
+1
+00:00:13.940 --> 00:00:16.650
+Now that you've learned
+how to translate,
+
+2
+00:00:16.650 --> 00:00:18.685
+rotate and scale point clouds,
+
+3
+00:00:18.685 --> 00:00:20.360
+it's time to talk
+about how we can
+
+4
+00:00:20.360 --> 00:00:22.190
+actually use these operations
+
+5
+00:00:22.190 --> 00:00:23.990
+with real point clouds to
+
+6
+00:00:23.990 --> 00:00:26.545
+estimate the motion of
+a self-driving car.
+
+7
+00:00:26.545 --> 00:00:27.950
+The way that we do this in
+
+8
+00:00:27.950 --> 00:00:29.420
+general is by solving something
+
+9
+00:00:29.420 --> 00:00:32.060
+called the point set
+registration problem,
+
+10
+00:00:32.060 --> 00:00:33.950
+which is one of
+the most important problems
+
+11
+00:00:33.950 --> 00:00:36.260
+in computer vision and
+pattern recognition.
+
+12
+00:00:36.260 --> 00:00:37.820
+By the end of this video,
+
+13
+00:00:37.820 --> 00:00:39.980
+you'll be able to
+describe the point set
+
+14
+00:00:39.980 --> 00:00:41.720
+registration problem and how
+
+15
+00:00:41.720 --> 00:00:43.955
+it can be used for
+state estimation,
+
+16
+00:00:43.955 --> 00:00:47.555
+describe and implement
+the Iterative Closest Point
+
+17
+00:00:47.555 --> 00:00:50.975
+or ICP algorithm for
+point set registration,
+
+18
+00:00:50.975 --> 00:00:53.795
+and understand some
+common pitfalls of using
+
+19
+00:00:53.795 --> 00:00:58.080
+ICP for state estimation
+on self-driving cars.
+
+20
+00:00:58.190 --> 00:01:01.810
+Let's explore this problem by
+returning to our example of
+
+21
+00:01:01.810 --> 00:01:03.790
+a self-driving car observing
+
+22
+00:01:03.790 --> 00:01:06.985
+a tree from a LIDAR
+mounted on the cars roof.
+
+23
+00:01:06.985 --> 00:01:09.935
+At time t equals one say,
+
+24
+00:01:09.935 --> 00:01:11.920
+the LIDAR returns
+a point cloud that
+
+25
+00:01:11.920 --> 00:01:14.755
+follows the contour of
+the tree as before.
+
+26
+00:01:14.755 --> 00:01:16.990
+The coordinates of every point
+
+27
+00:01:16.990 --> 00:01:18.130
+in the point cloud are given
+
+28
+00:01:18.130 --> 00:01:19.150
+relative to the pose of
+
+29
+00:01:19.150 --> 00:01:21.755
+the lidar at the time
+of the scan,
+
+30
+00:01:21.755 --> 00:01:25.480
+we'll call this
+coordinate frame S. At
+
+31
+00:01:25.480 --> 00:01:28.990
+time t equals two the car is
+driven a bit further ahead,
+
+32
+00:01:28.990 --> 00:01:30.700
+but the LIDAR can
+still see the tree
+
+33
+00:01:30.700 --> 00:01:32.650
+and return a second point cloud
+
+34
+00:01:32.650 --> 00:01:35.470
+whose coordinates are again
+specified relative to
+
+35
+00:01:35.470 --> 00:01:38.530
+the pose of the lidar
+at time t equals two,
+
+36
+00:01:38.530 --> 00:01:42.170
+we'll call this
+coordinate frame S prime.
+
+37
+00:01:42.260 --> 00:01:45.725
+Now, the point set
+registration problems says,
+
+38
+00:01:45.725 --> 00:01:48.920
+given 2 point clouds in
+two different coordinate frames,
+
+39
+00:01:48.920 --> 00:01:51.170
+and with the knowledge
+that they correspond to
+
+40
+00:01:51.170 --> 00:01:54.070
+or contain the same object
+in the world,
+
+41
+00:01:54.070 --> 00:01:57.050
+how shall we align them to
+determine how the sensor
+
+42
+00:01:57.050 --> 00:02:00.410
+must have moved
+between the two scans?
+
+43
+00:02:00.410 --> 00:02:03.050
+More specifically,
+we want to figure
+
+44
+00:02:03.050 --> 00:02:05.060
+out the optimal translation and
+
+45
+00:02:05.060 --> 00:02:06.890
+the optimal rotation between
+
+46
+00:02:06.890 --> 00:02:08.930
+the two sensor
+reference frames that
+
+47
+00:02:08.930 --> 00:02:12.515
+minimizes the distance
+between the 2 point clouds.
+
+48
+00:02:12.515 --> 00:02:15.790
+We'll describe what we
+mean by distance shortly.
+
+49
+00:02:15.790 --> 00:02:17.425
+To keep things simple,
+
+50
+00:02:17.425 --> 00:02:20.135
+we're going to pretend that
+we have an ideal LIDAR sensor
+
+51
+00:02:20.135 --> 00:02:23.300
+that measures the entire point
+cloud all at once,
+
+52
+00:02:23.300 --> 00:02:26.575
+so that we can ignore the
+effects of motion distortion.
+
+53
+00:02:26.575 --> 00:02:30.800
+Now, if we somehow knew that
+each and every point in
+
+54
+00:02:30.800 --> 00:02:32.930
+the second point
+cloud corresponded to
+
+55
+00:02:32.930 --> 00:02:35.360
+a specific point in
+the first point cloud,
+
+56
+00:02:35.360 --> 00:02:36.980
+and we knew ahead of time
+
+57
+00:02:36.980 --> 00:02:39.275
+which points
+corresponding to which,
+
+58
+00:02:39.275 --> 00:02:41.690
+we could solve this
+problem easily.
+
+59
+00:02:41.690 --> 00:02:44.060
+All we'd have to do is
+find the translation and
+
+60
+00:02:44.060 --> 00:02:47.855
+rotation that lines up
+each point with its twin.
+
+61
+00:02:47.855 --> 00:02:51.080
+In this example,
+our ideal rotation matrix
+
+62
+00:02:51.080 --> 00:02:52.475
+would be the identity matrix,
+
+63
+00:02:52.475 --> 00:02:54.460
+that is no rotation at all,
+
+64
+00:02:54.460 --> 00:02:56.000
+and a ideal translation would be
+
+65
+00:02:56.000 --> 00:02:58.505
+along the cars forward direction.
+
+66
+00:02:58.505 --> 00:03:01.270
+The problem is
+that, in general we
+
+67
+00:03:01.270 --> 00:03:04.130
+don't know which points
+correspond to each other.
+
+68
+00:03:04.130 --> 00:03:06.200
+In the course on computer vision,
+
+69
+00:03:06.200 --> 00:03:07.450
+you'll learn about
+feature matching
+
+70
+00:03:07.450 --> 00:03:08.860
+which is one way of determining
+
+71
+00:03:08.860 --> 00:03:12.400
+correspondences between
+points using cameraData.
+
+72
+00:03:12.400 --> 00:03:15.640
+But for now let's think
+about how we might solve
+
+73
+00:03:15.640 --> 00:03:17.200
+this problem without knowing
+
+74
+00:03:17.200 --> 00:03:19.225
+any of the correspondences
+ahead of time.
+
+75
+00:03:19.225 --> 00:03:20.800
+The most popular algorithm for
+
+76
+00:03:20.800 --> 00:03:22.330
+solving this kind of
+problem is called
+
+77
+00:03:22.330 --> 00:03:26.845
+the Iterative Closest Point
+algorithm or ICP for short.
+
+78
+00:03:26.845 --> 00:03:30.595
+The basic intuition
+behind ICP is this,
+
+79
+00:03:30.595 --> 00:03:33.685
+when we find the optimal
+translation and rotation,
+
+80
+00:03:33.685 --> 00:03:36.400
+or if we know something
+about them in advance,
+
+81
+00:03:36.400 --> 00:03:38.080
+and we use them to transform
+
+82
+00:03:38.080 --> 00:03:41.630
+one point cloud into the
+coordinate frame of the other,
+
+83
+00:03:41.630 --> 00:03:43.310
+the pairs of points that truly
+
+84
+00:03:43.310 --> 00:03:45.140
+correspond to each other will be
+
+85
+00:03:45.140 --> 00:03:46.640
+the ones that are closest to each
+
+86
+00:03:46.640 --> 00:03:49.505
+other in a Euclidean sense.
+
+87
+00:03:49.505 --> 00:03:51.620
+This makes sense if you consider
+
+88
+00:03:51.620 --> 00:03:53.780
+the simplified case
+where our LIDAR sensors
+
+89
+00:03:53.780 --> 00:03:55.940
+scans exactly the same points
+
+90
+00:03:55.940 --> 00:03:58.465
+just from two different
+vantage points.
+
+91
+00:03:58.465 --> 00:04:00.530
+In this case,
+there's a one-to-one
+
+92
+00:04:00.530 --> 00:04:02.810
+mapping between points
+in the two scans,
+
+93
+00:04:02.810 --> 00:04:04.250
+and this mapping is completely
+
+94
+00:04:04.250 --> 00:04:06.965
+determined by the motion
+of the sensor.
+
+95
+00:04:06.965 --> 00:04:09.710
+So, that's the ideal case
+for when we found
+
+96
+00:04:09.710 --> 00:04:12.190
+the best possible
+translation and rotation,
+
+97
+00:04:12.190 --> 00:04:13.370
+but what if we don't have
+
+98
+00:04:13.370 --> 00:04:15.530
+the optimal translation
+and rotation,
+
+99
+00:04:15.530 --> 00:04:19.710
+how do we decide which points
+actually go together?
+
+100
+00:04:20.110 --> 00:04:24.035
+Well, with ICP we use
+a simple heuristic,
+
+101
+00:04:24.035 --> 00:04:26.300
+and say that for
+each point in one cloud,
+
+102
+00:04:26.300 --> 00:04:28.700
+the best candidate for
+a corresponding point in
+
+103
+00:04:28.700 --> 00:04:30.350
+the other Cloud is the point
+
+104
+00:04:30.350 --> 00:04:32.705
+that is closest to it right now.
+
+105
+00:04:32.705 --> 00:04:34.940
+The idea here is
+that this heuristic
+
+106
+00:04:34.940 --> 00:04:36.530
+should give us
+the correspondences that
+
+107
+00:04:36.530 --> 00:04:38.255
+let us make our next guess
+
+108
+00:04:38.255 --> 00:04:40.209
+for the translation and rotation,
+
+109
+00:04:40.209 --> 00:04:43.265
+that's a little bit better
+than our current guess.
+
+110
+00:04:43.265 --> 00:04:45.935
+As our guesses get
+better and better,
+
+111
+00:04:45.935 --> 00:04:47.810
+our correspondences should also
+
+112
+00:04:47.810 --> 00:04:49.400
+get better and better until we
+
+113
+00:04:49.400 --> 00:04:52.055
+eventually converge
+to the optimal motion
+
+114
+00:04:52.055 --> 00:04:54.365
+and the optimal correspondences.
+
+115
+00:04:54.365 --> 00:04:57.170
+This iterative
+optimization scheme using
+
+116
+00:04:57.170 --> 00:05:01.460
+the closest point heuristic
+is where ICP gets its name.
+
+117
+00:05:01.460 --> 00:05:03.860
+It's important to
+note that the word
+
+118
+00:05:03.860 --> 00:05:06.170
+closest implies that we
+will find points that
+
+119
+00:05:06.170 --> 00:05:08.180
+lie close together after
+
+120
+00:05:08.180 --> 00:05:11.015
+applying the frame to
+frame transformation only.
+
+121
+00:05:11.015 --> 00:05:12.620
+That is, because the vehicle is
+
+122
+00:05:12.620 --> 00:05:14.720
+moving it's almost never the case
+
+123
+00:05:14.720 --> 00:05:15.875
+that a laser beam will hit
+
+124
+00:05:15.875 --> 00:05:19.380
+exactly the same
+surface point twice.
+
+125
+00:05:19.490 --> 00:05:23.690
+So, let's talk about the steps
+in the ICP algorithm.
+
+126
+00:05:23.690 --> 00:05:26.660
+First and most
+important is that we
+
+127
+00:05:26.660 --> 00:05:29.360
+need an initial guess
+for the transformation.
+
+128
+00:05:29.360 --> 00:05:31.850
+We need this because
+there's no guarantee that
+
+129
+00:05:31.850 --> 00:05:33.545
+the closest point heuristic will
+
+130
+00:05:33.545 --> 00:05:35.780
+actually converge to
+the best solution.
+
+131
+00:05:35.780 --> 00:05:38.435
+It's very easy to get
+stuck in a local minimum
+
+132
+00:05:38.435 --> 00:05:40.895
+in these kinds of
+iterative optimization schemes.
+
+133
+00:05:40.895 --> 00:05:43.570
+So, we'll need
+a good starting guess.
+
+134
+00:05:43.570 --> 00:05:46.745
+Now, the initial guess can
+come from a number of sources.
+
+135
+00:05:46.745 --> 00:05:48.560
+One of the most
+common sources for
+
+136
+00:05:48.560 --> 00:05:50.990
+robotics applications
+like self-driving
+
+137
+00:05:50.990 --> 00:05:52.490
+is a motion model,
+
+138
+00:05:52.490 --> 00:05:54.350
+which could be
+supplied by an IMU as
+
+139
+00:05:54.350 --> 00:05:56.270
+we saw in the
+previous module or by
+
+140
+00:05:56.270 --> 00:05:59.225
+wheel odometry or
+something really simple
+
+141
+00:05:59.225 --> 00:06:02.405
+like a constant velocity or
+even a zero velocity model.
+
+142
+00:06:02.405 --> 00:06:04.970
+How complex the motion model
+needs to be to give us
+
+143
+00:06:04.970 --> 00:06:06.860
+a good initial guess really
+
+144
+00:06:06.860 --> 00:06:09.305
+depends on how smoothly
+the car is driving.
+
+145
+00:06:09.305 --> 00:06:11.150
+If the car is moving
+slowly relative
+
+146
+00:06:11.150 --> 00:06:13.220
+to the scanning rate
+of the LIDAR sensor,
+
+147
+00:06:13.220 --> 00:06:14.510
+one may even use
+
+148
+00:06:14.510 --> 00:06:17.760
+the last known pose
+as the initial guess.
+
+149
+00:06:17.830 --> 00:06:20.780
+For our example, let's say we use
+
+150
+00:06:20.780 --> 00:06:22.160
+a very noisy IMU and
+
+151
+00:06:22.160 --> 00:06:25.250
+emotion model to provide
+the initial guess.
+
+152
+00:06:25.250 --> 00:06:27.410
+The model tells us that
+the sensor translated
+
+153
+00:06:27.410 --> 00:06:30.590
+forward a bit and
+also pitched upwards.
+
+154
+00:06:30.590 --> 00:06:34.850
+In step two, we'll use
+this initial guess to transform
+
+155
+00:06:34.850 --> 00:06:36.620
+the coordinates of the points in
+
+156
+00:06:36.620 --> 00:06:39.350
+one cloud into the reference
+frame of the other,
+
+157
+00:06:39.350 --> 00:06:41.000
+and then match each point in
+
+158
+00:06:41.000 --> 00:06:44.450
+the second cloud to the closest
+point in the first cloud.
+
+159
+00:06:44.450 --> 00:06:46.700
+Here we've shown
+the associations for
+
+160
+00:06:46.700 --> 00:06:49.715
+the first four points and
+the last four points.
+
+161
+00:06:49.715 --> 00:06:52.100
+Note that there's nothing
+stopping two points in
+
+162
+00:06:52.100 --> 00:06:53.600
+one cloud from being
+associated with
+
+163
+00:06:53.600 --> 00:06:56.320
+the same point in
+the other cloud.
+
+164
+00:06:56.320 --> 00:06:58.930
+Step three is to take all of
+
+165
+00:06:58.930 --> 00:07:01.600
+those match points and find
+the transformation that
+
+166
+00:07:01.600 --> 00:07:02.980
+minimizes the sum of
+
+167
+00:07:02.980 --> 00:07:06.790
+squared distances between
+the corresponding points.
+
+168
+00:07:06.790 --> 00:07:09.910
+We'll talk about the math
+behind this step in a minute,
+
+169
+00:07:09.910 --> 00:07:11.620
+but you can visualize
+it as wrapping
+
+170
+00:07:11.620 --> 00:07:14.890
+an elastic band around
+each pair of matched points,
+
+171
+00:07:14.890 --> 00:07:16.840
+and then letting go and
+waiting for the system to
+
+172
+00:07:16.840 --> 00:07:19.780
+find its lowest
+energy configuration.
+
+173
+00:07:19.780 --> 00:07:22.780
+The translation and
+rotation associated with
+
+174
+00:07:22.780 --> 00:07:24.775
+this minimum energy configuration
+
+175
+00:07:24.775 --> 00:07:27.170
+are the optimal solutions.
+
+176
+00:07:27.320 --> 00:07:30.870
+Then, we repeat the process
+using the translation and
+
+177
+00:07:30.870 --> 00:07:34.485
+rotation we just solved for
+as our new initial guess.
+
+178
+00:07:34.485 --> 00:07:38.295
+We keep going until
+the optimization converges.
+
+179
+00:07:38.295 --> 00:07:40.170
+So in the next iteration,
+
+180
+00:07:40.170 --> 00:07:43.110
+we use the new translation
+and rotation to transform
+
+181
+00:07:43.110 --> 00:07:46.364
+the point cloud and then
+find the closest matches,
+
+182
+00:07:46.364 --> 00:07:48.750
+solve for the optimal
+transformation,
+
+183
+00:07:48.750 --> 00:07:50.205
+and keep going until we reach the
+
+184
+00:07:50.205 --> 00:07:53.070
+optimum after a few iterations.
+
+185
+00:07:53.070 --> 00:07:55.140
+How do we actually solve for
+
+186
+00:07:55.140 --> 00:07:57.915
+the optimal transformation
+in step three?
+
+187
+00:07:57.915 --> 00:08:00.300
+Maybe you've already guessed
+that we're going to use
+
+188
+00:08:00.300 --> 00:08:03.195
+our favorite tool, least-squares.
+
+189
+00:08:03.195 --> 00:08:05.940
+Our goal here is to
+find the rotation and
+
+190
+00:08:05.940 --> 00:08:08.925
+translation that best aligns
+the two point clouds.
+
+191
+00:08:08.925 --> 00:08:12.060
+Specifically, you want
+to minimize the sum of
+
+192
+00:08:12.060 --> 00:08:14.355
+squared euclidean
+distances between
+
+193
+00:08:14.355 --> 00:08:15.960
+each pair of matched points,
+
+194
+00:08:15.960 --> 00:08:17.430
+which is one of the loss function
+
+195
+00:08:17.430 --> 00:08:18.750
+that we've defined here.
+
+196
+00:08:18.750 --> 00:08:21.030
+This least squares problem
+is a little bit more
+
+197
+00:08:21.030 --> 00:08:23.610
+complex than the ones
+we've encountered so far.
+
+198
+00:08:23.610 --> 00:08:25.785
+That's because
+the rotation matrix
+
+199
+00:08:25.785 --> 00:08:28.125
+is inside the loss function.
+
+200
+00:08:28.125 --> 00:08:30.330
+It turns out the
+rotation matrices
+
+201
+00:08:30.330 --> 00:08:32.250
+do not behave like vectors.
+
+202
+00:08:32.250 --> 00:08:34.020
+If you add two vectors together,
+
+203
+00:08:34.020 --> 00:08:35.460
+you get another vector.
+
+204
+00:08:35.460 --> 00:08:37.875
+But if you add two
+rotation matrices together,
+
+205
+00:08:37.875 --> 00:08:41.475
+the result is not necessarily
+a valid rotation matrix.
+
+206
+00:08:41.475 --> 00:08:45.000
+In reality, 3D rotations
+belong to something called the
+
+207
+00:08:45.000 --> 00:08:48.600
+special orthogonal group or SO3.
+
+208
+00:08:48.600 --> 00:08:51.330
+We won't dig into what
+that means in this course,
+
+209
+00:08:51.330 --> 00:08:53.070
+but it's important
+to remember that
+
+210
+00:08:53.070 --> 00:08:55.920
+rotations needs
+special treatment.
+
+211
+00:08:55.920 --> 00:08:59.340
+It turns out that there's
+a nice closed form solution to
+
+212
+00:08:59.340 --> 00:09:01.080
+this least-squares
+problem which was
+
+213
+00:09:01.080 --> 00:09:03.360
+discovered in the 1960s.
+
+214
+00:09:03.360 --> 00:09:05.655
+We won't go through
+the derivation here,
+
+215
+00:09:05.655 --> 00:09:07.080
+but the good news
+is that there is
+
+216
+00:09:07.080 --> 00:09:08.580
+a simple four step algorithm
+
+217
+00:09:08.580 --> 00:09:10.620
+you can follow to
+solve this problem.
+
+218
+00:09:10.620 --> 00:09:12.810
+The first two steps are easy.
+
+219
+00:09:12.810 --> 00:09:14.745
+First, we compute the centroid of
+
+220
+00:09:14.745 --> 00:09:16.470
+each point cloud by taking
+
+221
+00:09:16.470 --> 00:09:19.260
+the average over
+the coordinates of each point.
+
+222
+00:09:19.260 --> 00:09:21.420
+This is exactly like calculating
+
+223
+00:09:21.420 --> 00:09:23.640
+the center of mass in physics.
+
+224
+00:09:23.640 --> 00:09:26.520
+Second, we work at
+a three-by-three matrix
+
+225
+00:09:26.520 --> 00:09:29.100
+capturing the spread of
+the two point clouds.
+
+226
+00:09:29.100 --> 00:09:31.980
+You can think of this W matrix
+as something like
+
+227
+00:09:31.980 --> 00:09:35.010
+an inertia matrix you might
+encounter in mechanics.
+
+228
+00:09:35.010 --> 00:09:37.590
+The W matrix is the quantity
+we are going to use
+
+229
+00:09:37.590 --> 00:09:40.590
+to estimate the optimal
+rotation matrix.
+
+230
+00:09:40.590 --> 00:09:42.810
+Step three is actually finding
+
+231
+00:09:42.810 --> 00:09:44.700
+the optimal rotation matrix.
+
+232
+00:09:44.700 --> 00:09:46.665
+This step is the most complex,
+
+233
+00:09:46.665 --> 00:09:48.270
+and it involves taking
+something called
+
+234
+00:09:48.270 --> 00:09:53.505
+the singular value decomposition
+or SVD of the W matrix.
+
+235
+00:09:53.505 --> 00:09:56.175
+If you've never seen
+the SVD before,
+
+236
+00:09:56.175 --> 00:09:58.245
+this step might
+look a bit magical.
+
+237
+00:09:58.245 --> 00:09:59.970
+Let's spend a moment
+talking about what
+
+238
+00:09:59.970 --> 00:10:03.750
+the singular value
+decomposition actually does.
+
+239
+00:10:03.750 --> 00:10:06.330
+The SVD is a way of factorizing
+
+240
+00:10:06.330 --> 00:10:09.210
+a matrix into the product
+of two unitary matrices,
+
+241
+00:10:09.210 --> 00:10:12.525
+U and V, and a diagonal matrix S,
+
+242
+00:10:12.525 --> 00:10:14.250
+whose non-zero entries
+are called the
+
+243
+00:10:14.250 --> 00:10:17.010
+singular values of
+the original matrix.
+
+244
+00:10:17.010 --> 00:10:20.100
+There are several ways
+to interpret the SVD.
+
+245
+00:10:20.100 --> 00:10:22.980
+But for us, it's easiest
+to think about U and V as
+
+246
+00:10:22.980 --> 00:10:26.730
+rotations and the S matrix
+as a scaling matrix.
+
+247
+00:10:26.730 --> 00:10:28.110
+Since we're dealing with rigid
+
+248
+00:10:28.110 --> 00:10:29.670
+body motion in this problem,
+
+249
+00:10:29.670 --> 00:10:32.790
+we don't want any scaling
+in a rotation estimate,
+
+250
+00:10:32.790 --> 00:10:35.040
+so we'll replace
+the S matrix with something
+
+251
+00:10:35.040 --> 00:10:37.530
+like the identity matrix
+to remove the scaling.
+
+252
+00:10:37.530 --> 00:10:39.570
+There's a trick though
+in the way we choose
+
+253
+00:10:39.570 --> 00:10:42.930
+the bottom-right entry of
+the new scaling matrix.
+
+254
+00:10:42.930 --> 00:10:44.670
+It turns out that in some cases,
+
+255
+00:10:44.670 --> 00:10:45.900
+the SVD will give us
+
+256
+00:10:45.900 --> 00:10:49.230
+rotation matrices that
+are not proper rotations.
+
+257
+00:10:49.230 --> 00:10:50.580
+That is, they also have
+
+258
+00:10:50.580 --> 00:10:53.730
+a reflection about
+the axis of rotation.
+
+259
+00:10:53.730 --> 00:10:56.654
+To make sure that we
+get a proper rotation,
+
+260
+00:10:56.654 --> 00:10:58.860
+we choose the bottom
+right term to be
+
+261
+00:10:58.860 --> 00:11:01.830
+the product of
+the determinants of U and
+
+262
+00:11:01.830 --> 00:11:04.830
+V. This number will be either
+
+263
+00:11:04.830 --> 00:11:09.310
+plus one or minus one and will
+cancel out any reflection.
+
+264
+00:11:09.350 --> 00:11:12.180
+Once we have this,
+all we have to do is
+
+265
+00:11:12.180 --> 00:11:14.265
+multiply out the three matrices.
+
+266
+00:11:14.265 --> 00:11:17.505
+This gives us back
+the optimal rotation matrix.
+
+267
+00:11:17.505 --> 00:11:20.055
+Now, that we have
+our rotation estimate,
+
+268
+00:11:20.055 --> 00:11:22.710
+the last step is to
+recover the translation.
+
+269
+00:11:22.710 --> 00:11:25.170
+This part is very
+straightforward and only
+
+270
+00:11:25.170 --> 00:11:27.390
+involves rotating the centroid of
+
+271
+00:11:27.390 --> 00:11:29.400
+one point cloud into
+the reference frame
+
+272
+00:11:29.400 --> 00:11:31.560
+of the other and then
+taking the difference of
+
+273
+00:11:31.560 --> 00:11:33.300
+the coordinate vectors to find
+
+274
+00:11:33.300 --> 00:11:34.560
+the translation that will best
+
+275
+00:11:34.560 --> 00:11:36.375
+align the two point clouds.
+
+276
+00:11:36.375 --> 00:11:38.610
+One other important thing
+to think about,
+
+277
+00:11:38.610 --> 00:11:41.100
+both from a safety standpoint
+and when we start
+
+278
+00:11:41.100 --> 00:11:43.930
+talking about sensor fusion
+in a later module,
+
+279
+00:11:43.930 --> 00:11:45.680
+is how confident we should be in
+
+280
+00:11:45.680 --> 00:11:48.005
+the output of the ICP algorithm.
+
+281
+00:11:48.005 --> 00:11:49.940
+There are a number
+of different ways to
+
+282
+00:11:49.940 --> 00:11:51.500
+estimate the uncertainty or
+
+283
+00:11:51.500 --> 00:11:54.910
+the covariance of
+the estimated motion parameters.
+
+284
+00:11:54.910 --> 00:11:57.075
+An accurate and
+relatively simple method
+
+285
+00:11:57.075 --> 00:11:59.530
+is to use this equation here.
+
+286
+00:11:59.630 --> 00:12:02.610
+This expression tells us
+how the covariance of
+
+287
+00:12:02.610 --> 00:12:04.500
+the estimated motion parameters
+
+288
+00:12:04.500 --> 00:12:06.120
+is related to the covariance
+
+289
+00:12:06.120 --> 00:12:09.300
+of the measurements in
+the two point clouds using
+
+290
+00:12:09.300 --> 00:12:11.040
+certain second-order
+derivatives of
+
+291
+00:12:11.040 --> 00:12:13.140
+the least squares cost function.
+
+292
+00:12:13.140 --> 00:12:16.560
+While its expression is
+accurate and fast to compute,
+
+293
+00:12:16.560 --> 00:12:18.090
+it's a little tricky to derive
+
+294
+00:12:18.090 --> 00:12:19.980
+these second-order
+derivatives when there's
+
+295
+00:12:19.980 --> 00:12:23.280
+a constraint quantity like
+a rotation matrix in the mix.
+
+296
+00:12:23.280 --> 00:12:26.550
+For our purposes, we're
+generally going to hand tune
+
+297
+00:12:26.550 --> 00:12:30.945
+the ICP covariance matrix to
+give us acceptable results.
+
+298
+00:12:30.945 --> 00:12:33.885
+You've now seen
+the basic vanilla algorithm
+
+299
+00:12:33.885 --> 00:12:35.955
+for the iterative
+closest point method,
+
+300
+00:12:35.955 --> 00:12:38.640
+but it's not the only way
+of solving a problem.
+
+301
+00:12:38.640 --> 00:12:41.130
+In fact, this algorithm is
+
+302
+00:12:41.130 --> 00:12:44.775
+just one variant of ICP
+called Point-to-point ICP,
+
+303
+00:12:44.775 --> 00:12:46.230
+which derives its name from
+
+304
+00:12:46.230 --> 00:12:47.880
+the fact that
+our objective function or
+
+305
+00:12:47.880 --> 00:12:50.160
+loss function
+minimizes the distance
+
+306
+00:12:50.160 --> 00:12:53.130
+between pairs of
+corresponding points.
+
+307
+00:12:53.130 --> 00:12:55.200
+Another popular variant that
+
+308
+00:12:55.200 --> 00:12:56.880
+works well in unstructured
+environments like
+
+309
+00:12:56.880 --> 00:13:01.140
+cities or indoors is
+called Point-to-plain ICP.
+
+310
+00:13:01.140 --> 00:13:02.910
+Instead of minimizing
+the distance
+
+311
+00:13:02.910 --> 00:13:04.590
+between pairs of points,
+
+312
+00:13:04.590 --> 00:13:06.270
+we fit a number of planes to
+
+313
+00:13:06.270 --> 00:13:09.000
+the first point cloud and
+then minimize the distance
+
+314
+00:13:09.000 --> 00:13:10.080
+between each point in
+
+315
+00:13:10.080 --> 00:13:11.460
+the second cloud and
+
+316
+00:13:11.460 --> 00:13:13.830
+its closest plane
+in the first cloud.
+
+317
+00:13:13.830 --> 00:13:15.780
+These planes could
+represent things
+
+318
+00:13:15.780 --> 00:13:17.955
+like walls or road surfaces.
+
+319
+00:13:17.955 --> 00:13:19.710
+The challenging part
+of the algorithm is
+
+320
+00:13:19.710 --> 00:13:22.755
+actually figuring out
+where all the planes are.
+
+321
+00:13:22.755 --> 00:13:25.695
+We won't talk about how
+to do this in detail,
+
+322
+00:13:25.695 --> 00:13:27.660
+but you can check out
+the documentation for
+
+323
+00:13:27.660 --> 00:13:29.040
+Point-to-plain ICP in
+
+324
+00:13:29.040 --> 00:13:32.260
+the point cloud library
+for more information.
+
+325
+00:13:34.310 --> 00:13:36.345
+Now, up until this point,
+
+326
+00:13:36.345 --> 00:13:37.740
+we've been assuming
+that the objects
+
+327
+00:13:37.740 --> 00:13:38.970
+seen by our LIDAR are
+
+328
+00:13:38.970 --> 00:13:42.510
+stationary. What
+if they're moving?
+
+329
+00:13:42.510 --> 00:13:45.840
+A common example of this is
+if our car is driving in
+
+330
+00:13:45.840 --> 00:13:47.505
+traffic down a busy highway
+
+331
+00:13:47.505 --> 00:13:49.965
+and scanning the vehicle
+in front of it.
+
+332
+00:13:49.965 --> 00:13:53.400
+Both vehicles are traveling
+at the same speed while
+
+333
+00:13:53.400 --> 00:13:54.900
+our self-driving car is happily
+
+334
+00:13:54.900 --> 00:13:57.430
+collecting LIDAR data points.
+
+335
+00:13:57.830 --> 00:14:00.630
+We ask ourselves again,
+
+336
+00:14:00.630 --> 00:14:04.725
+what motion of the car best
+aligns the two point clouds?
+
+337
+00:14:04.725 --> 00:14:07.545
+The answer we get is that
+we haven't moved at all.
+
+338
+00:14:07.545 --> 00:14:09.315
+But, of course, we did move,
+
+339
+00:14:09.315 --> 00:14:13.080
+just not relative to the vehicle
+directly ahead of us.
+
+340
+00:14:13.080 --> 00:14:16.215
+This is obviously
+a contrived example.
+
+341
+00:14:16.215 --> 00:14:18.480
+In reality, the point
+cloud would also include
+
+342
+00:14:18.480 --> 00:14:20.850
+many stationary
+objects like roads,
+
+343
+00:14:20.850 --> 00:14:22.635
+and buildings, and trees.
+
+344
+00:14:22.635 --> 00:14:25.650
+But naively using ICP in
+the presence of moving
+
+345
+00:14:25.650 --> 00:14:27.810
+objects will tend
+to pull our motion
+
+346
+00:14:27.810 --> 00:14:30.030
+estimates away from
+the true motion.
+
+347
+00:14:30.030 --> 00:14:33.870
+So we need to be
+careful to exclude or
+
+348
+00:14:33.870 --> 00:14:36.150
+mitigate the effects of
+outlying points that
+
+349
+00:14:36.150 --> 00:14:39.240
+violate our assumptions
+of a stationary world.
+
+350
+00:14:39.240 --> 00:14:42.270
+One way to do this is
+by fusing ICP motion
+
+351
+00:14:42.270 --> 00:14:45.315
+estimates with GPS
+and INS estimates.
+
+352
+00:14:45.315 --> 00:14:48.930
+We'll talk about how to do
+this later in the course.
+
+353
+00:14:48.930 --> 00:14:52.860
+Another option is to identify
+and ignore moving objects,
+
+354
+00:14:52.860 --> 00:14:54.590
+which we could do with some
+of the computer vision
+
+355
+00:14:54.590 --> 00:14:57.785
+techniques you'll learn
+about in the next course.
+
+356
+00:14:57.785 --> 00:15:00.320
+But an even simpler
+approach for dealing
+
+357
+00:15:00.320 --> 00:15:02.030
+with outliers like these is to
+
+358
+00:15:02.030 --> 00:15:03.725
+choose a different loss function
+
+359
+00:15:03.725 --> 00:15:05.210
+that is less sensitive to
+
+360
+00:15:05.210 --> 00:15:06.635
+large errors induced by
+
+361
+00:15:06.635 --> 00:15:10.220
+outliers than our standard
+squared error loss.
+
+362
+00:15:10.220 --> 00:15:12.290
+The class of loss functions
+
+363
+00:15:12.290 --> 00:15:13.730
+that have this
+property are called
+
+364
+00:15:13.730 --> 00:15:17.345
+Robust Loss Functions or
+robust cost functions,
+
+365
+00:15:17.345 --> 00:15:19.520
+and there are several
+to choose from.
+
+366
+00:15:19.520 --> 00:15:21.650
+We can write this
+out mathematically
+
+367
+00:15:21.650 --> 00:15:23.330
+by generalizing our least squares
+
+368
+00:15:23.330 --> 00:15:25.775
+loss function so that
+the contribution of
+
+369
+00:15:25.775 --> 00:15:29.210
+each error is not simply
+the square of its magnitude,
+
+370
+00:15:29.210 --> 00:15:32.180
+but rather, some
+other function rho.
+
+371
+00:15:32.180 --> 00:15:34.880
+Some popular choices for
+robust loss functions
+
+372
+00:15:34.880 --> 00:15:37.930
+include the Absolute
+error or L1 norm,
+
+373
+00:15:37.930 --> 00:15:41.615
+the Cauchy loss, and
+the Huber loss shown here.
+
+374
+00:15:41.615 --> 00:15:43.190
+The key difference is that
+
+375
+00:15:43.190 --> 00:15:44.870
+the slope of the
+loss function does
+
+376
+00:15:44.870 --> 00:15:48.395
+not continue to increase as
+the errors become larger,
+
+377
+00:15:48.395 --> 00:15:51.785
+but rather, it remains
+constant or it tapers off.
+
+378
+00:15:51.785 --> 00:15:53.720
+Robust loss functions make
+
+379
+00:15:53.720 --> 00:15:56.750
+the ICP problems slightly
+more difficult because we can
+
+380
+00:15:56.750 --> 00:15:59.840
+no longer derive
+a nice closed form solution
+
+381
+00:15:59.840 --> 00:16:01.615
+for the point cloud
+alignment step,
+
+382
+00:16:01.615 --> 00:16:03.170
+and this means we need to add
+
+383
+00:16:03.170 --> 00:16:07.700
+another iterative optimization
+step inside our main loop.
+
+384
+00:16:07.700 --> 00:16:11.930
+However, the benefits cannot
+weigh the added complexity.
+
+385
+00:16:11.930 --> 00:16:14.870
+To recap, the Iterative
+Closest Point
+
+386
+00:16:14.870 --> 00:16:17.240
+or ICP algorithm is
+a way to determine
+
+387
+00:16:17.240 --> 00:16:19.340
+the motion of
+a self-driving car by
+
+388
+00:16:19.340 --> 00:16:22.975
+aligning point clouds from
+LIDAR or other sensors.
+
+389
+00:16:22.975 --> 00:16:25.640
+ICP works by iteratively
+
+390
+00:16:25.640 --> 00:16:27.680
+minimizing the Euclidean
+distance between
+
+391
+00:16:27.680 --> 00:16:30.005
+neighboring points
+in each point cloud
+
+392
+00:16:30.005 --> 00:16:32.435
+which is where the algorithm
+gets its name.
+
+393
+00:16:32.435 --> 00:16:35.720
+Moving objects can be
+a problem for ICP since they
+
+394
+00:16:35.720 --> 00:16:37.940
+violate the stationary
+world assumption
+
+395
+00:16:37.940 --> 00:16:40.280
+that ICP is based on.
+
+396
+00:16:40.280 --> 00:16:42.380
+Outlier measurements like these
+
+397
+00:16:42.380 --> 00:16:43.700
+can be mitigated with a number
+
+398
+00:16:43.700 --> 00:16:46.625
+of techniques including
+Robust Loss Functions,
+
+399
+00:16:46.625 --> 00:16:48.230
+which assign less weight to
+
+400
+00:16:48.230 --> 00:16:52.320
+large errors than
+the usual squared error loss.
+
+401
+00:16:52.750 --> 00:16:56.330
+Let's recap what we
+learned in this module.
+
+402
+00:16:56.330 --> 00:16:58.610
+LIDAR or Light Detection and
+
+403
+00:16:58.610 --> 00:17:00.260
+Ranging is a way of measuring
+
+404
+00:17:00.260 --> 00:17:02.000
+distances by observing the time
+
+405
+00:17:02.000 --> 00:17:03.875
+of flight of laser pulses.
+
+406
+00:17:03.875 --> 00:17:06.110
+2D and 3D LIDAR sensors can
+
+407
+00:17:06.110 --> 00:17:09.320
+scan large swaths of
+the environment around the car,
+
+408
+00:17:09.320 --> 00:17:11.045
+and the collection of
+points returned from
+
+409
+00:17:11.045 --> 00:17:13.640
+each scan is stored
+as a point cloud,
+
+410
+00:17:13.640 --> 00:17:15.140
+which can be manipulated using
+
+411
+00:17:15.140 --> 00:17:17.390
+standard spatial operations such
+
+412
+00:17:17.390 --> 00:17:20.000
+as translation,
+rotation, and scaling.
+
+413
+00:17:20.000 --> 00:17:22.790
+These operations are
+an important part of
+
+414
+00:17:22.790 --> 00:17:25.865
+the Iterative Closest
+Point or ICP algorithm,
+
+415
+00:17:25.865 --> 00:17:27.860
+which is one common
+technique for using
+
+416
+00:17:27.860 --> 00:17:31.200
+LIDAR to localize
+a self-driving car.
+
+417
+00:17:31.230 --> 00:17:33.330
+In the next module,
+
+418
+00:17:33.330 --> 00:17:34.970
+we'll discuss
+some practical aspects of
+
+419
+00:17:34.970 --> 00:17:37.370
+state estimation and talk
+about how we can use
+
+420
+00:17:37.370 --> 00:17:40.895
+LIDAR and ICP in conjunction
+with other sensors like
+
+421
+00:17:40.895 --> 00:17:43.040
+IMUs and GPS to get
+
+422
+00:17:43.040 --> 00:17:46.700
+an accurate and reliable state
+estimate for the vehicle.

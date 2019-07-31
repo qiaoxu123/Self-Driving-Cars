@@ -1,0 +1,560 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Module3：Safety Assurance for Autonomous Vehicles · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html" />
+    
+    
+    <link rel="prev" href="../Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Part1: Introduction to Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                <a href="../Module0-Welcome to the self-driving cars specialization/module0-welcome-to-the-self-driving-cars-specialization.html">
+            
+                    
+                    Module 0：Welcome to the self-driving cars specialization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                <a href="../Module1-The Requirements for Autonomy/module1-the-requirements-for-autonomy.html">
+            
+                    
+                    Module 1：The Requirements for Autonomy
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                <a href="../Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html">
+            
+                    
+                    Module2：Self-Driving Hardware and Software Architectures
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.4" data-path="module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                <a href="module3-safety-assurance-for-autonomous-vehicles.html">
+            
+                    
+                    Module3：Safety Assurance for Autonomous Vehicles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.5" data-path="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                <a href="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html">
+            
+                    
+                    Module4：Vehicle Dynamic Modeling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.6" data-path="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                <a href="../Module5-Vehicle Longitudinal Control/module-5-vehicle-longitudinal-control.html">
+            
+                    
+                    Module 5：Vehicle Longitudinal Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.7" data-path="../Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                <a href="../Module6-Vehicle Lateral Control/module-6-vehicle-lateral-control.html">
+            
+                    
+                    Module 6：Vehicle Lateral Control
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.8" data-path="../Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                <a href="../Module7-Putting it all together/module-7-putting-it-all-together.html">
+            
+                    
+                    Module 7：Putting it all together
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/">
+            
+                    
+                    Part2：State Estimation and Localization for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 1 - Least Squares/Module 1 - Least Squares.html">
+            
+                    
+                    Module 1：Least Squares
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters/Module 2 - State Estimation - Linear and Nonlinear Kalman Filters.html">
+            
+                    
+                    Module 2 - State Estimation - Linear and Nonlinear Kalman Filters
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 3 - GNSS-INS Sensing for Pose Estimation/Module 3 - GNSS-INS Sensing for Pose Estimation.html">
+            
+                    
+                    Module 3 - GNSSINS Sensing for Pose Estimation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 4 - LIDAR Sensing/Module 4 - LIDAR Sensing.html">
+            
+                    
+                    Module 4 - LIDAR Sensing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                <a href="../../Part2 - State Estimation and Localization for Self-Driving Cars/Module 5 - Putting It together - An Autonomous Vehicle State Estimator/Module 5 - Putting It together - An Autonomous Vehicle State Estimator.html">
+            
+                    
+                    Module 5 - Putting It together - An Autonomous Vehicle State Estimator
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                <a href="../../Part3 - Visual Perception for Self-Driving Cars/">
+            
+                    
+                    Part3：Visual Perception for Self-Driving Cars
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/">
+            
+                    
+                    Part4：Motion Planning for Self-Driving Cars
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 1 - The Planning Problem/Module 1 - The Planning Problem.html">
+            
+                    
+                    Module 1 - The Planning Problem
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                <a href="../../Part4 - Motion Planning for Self-Driving Cars/Module 2 - Mapping for Planning/Module 2 - Mapping for Planning.html">
+            
+                    
+                    Module 2 - Mapping for Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 3 - Mission Planning in Driving Environments/Module 3 - Mission Planning in Driving Environments.md">
+            
+                <span>
+            
+                    
+                    Module 3 - Mission Planning in Driving Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 4 - Dynamic Object Interactions/Module 4 - Dynamic Object Interactions.md">
+            
+                <span>
+            
+                    
+                    Module 4 - Dynamic Object Interactions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 5 - Principles of Behaviour Planning/Module 5 - Principles of Behaviour Planning.md">
+            
+                <span>
+            
+                    
+                    Module 5 - Principles of Behaviour Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 6 - Reactive Planning in Static Environments/Module 6 - Reactive Planning in Static Environments.md">
+            
+                <span>
+            
+                    
+                    Module 6 - Reactive Planning in Static Environments
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../../Part4 - Motion Planning for Self-Driving Cars/Module 7 - Putting it all together - Smooth Local Planning/Module 7 - Putting it all together - Smooth Local Planning.md">
+            
+                <span>
+            
+                    
+                    Module 7 - Putting it all together - Smooth Local Planning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Module3：Safety Assurance for Autonomous Vehicles</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="module3&#xFF1A;safety-assurance-for-autonomous-vehicles">Module3&#xFF1A;Safety Assurance for Autonomous Vehicles</h1>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.html" class="navigation navigation-prev " aria-label="Previous page: Module2：Self-Driving Hardware and Software Architectures">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.html" class="navigation navigation-next " aria-label="Next page: Module4：Vehicle Dynamic Modeling">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Module3：Safety Assurance for Autonomous Vehicles","level":"1.2.4","depth":2,"next":{"title":"Module4：Vehicle Dynamic Modeling","level":"1.2.5","depth":2,"path":"Part1 - Introduction to Self-Driving Cars/Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.md","ref":"Part1 - Introduction to Self-Driving Cars/Module4-Vehicle Dynamic Modeling/module4-vehicle-dynamic-modeling.md","articles":[]},"previous":{"title":"Module2：Self-Driving Hardware and Software Architectures","level":"1.2.3","depth":2,"path":"Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.md","ref":"Part1 - Introduction to Self-Driving Cars/Module2-Self-Driving Hardware and Software Architectures/module2-self-driving-hardware-and-software-architectures.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Part1 - Introduction to Self-Driving Cars/Module3-Safety Assurance for Autonomous Vehicles/module3-safety-assurance-for-autonomous-vehicles.md","mtime":"2019-07-31T02:26:17.180Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T02:26:51.944Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
