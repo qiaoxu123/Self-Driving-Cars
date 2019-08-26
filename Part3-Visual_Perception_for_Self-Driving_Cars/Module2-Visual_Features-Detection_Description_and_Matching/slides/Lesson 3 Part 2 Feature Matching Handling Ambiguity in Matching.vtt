@@ -1,0 +1,505 @@
+WEBVTT
+
+1
+00:00:13.370 --> 00:00:17.265
+So, far this week we've learned
+how to detect features,
+
+2
+00:00:17.265 --> 00:00:19.410
+compute their
+descriptors, and perform
+
+3
+00:00:19.410 --> 00:00:22.200
+brute force matching
+using distance functions.
+
+4
+00:00:22.200 --> 00:00:25.485
+We're almost ready to start
+applying feature detection,
+
+5
+00:00:25.485 --> 00:00:29.475
+description, and matching to
+self-driving car perception.
+
+6
+00:00:29.475 --> 00:00:32.190
+In this video, we will
+explore the issue of
+
+7
+00:00:32.190 --> 00:00:35.130
+ambiguous matches and
+how to make our matches
+
+8
+00:00:35.130 --> 00:00:37.200
+more robust to matching
+errors caused by
+
+9
+00:00:37.200 --> 00:00:39.510
+similar feature
+descriptors through
+
+10
+00:00:39.510 --> 00:00:42.040
+the distance ratio formulation.
+
+11
+00:00:42.040 --> 00:00:44.060
+But first, let's review
+
+12
+00:00:44.060 --> 00:00:45.560
+the two feature matching cases
+
+13
+00:00:45.560 --> 00:00:47.915
+we discussed in the last lesson.
+
+14
+00:00:47.915 --> 00:00:49.925
+In the first case, we have
+
+15
+00:00:49.925 --> 00:00:51.500
+a useful feature descriptor that
+
+16
+00:00:51.500 --> 00:00:53.570
+clearly gives a small distance
+
+17
+00:00:53.570 --> 00:00:55.310
+to the feature f2 and
+
+18
+00:00:55.310 --> 00:00:58.700
+a large distance to other
+features in the second image.
+
+19
+00:00:58.700 --> 00:01:01.370
+In this case we can
+successfully identify
+
+20
+00:01:01.370 --> 00:01:05.135
+the correct match to the
+feature f1 and image one.
+
+21
+00:01:05.135 --> 00:01:07.880
+Our brute force matching
+algorithm works well with
+
+22
+00:01:07.880 --> 00:01:09.860
+this descriptor and as seamlessly
+
+23
+00:01:09.860 --> 00:01:12.710
+capable of finding
+the right match in image two.
+
+24
+00:01:12.710 --> 00:01:14.600
+In the second case,
+
+25
+00:01:14.600 --> 00:01:16.475
+the feature f1 in image one
+
+26
+00:01:16.475 --> 00:01:19.010
+does not have a match
+at all in image two.
+
+27
+00:01:19.010 --> 00:01:22.010
+We modified our brute force
+matching algorithm with
+
+28
+00:01:22.010 --> 00:01:23.915
+a threshold delta to
+
+29
+00:01:23.915 --> 00:01:26.555
+eliminate incorrect
+matches in this case.
+
+30
+00:01:26.555 --> 00:01:29.090
+Since both features
+and image two have
+
+31
+00:01:29.090 --> 00:01:32.000
+a distance greater than the
+distance threshold Delta,
+
+32
+00:01:32.000 --> 00:01:35.015
+the brute force matcher
+rejects both the features f2
+
+33
+00:01:35.015 --> 00:01:38.770
+and f3 as potential matches
+and no match is returned.
+
+34
+00:01:38.770 --> 00:01:41.160
+But, let us consider
+a third case,
+
+35
+00:01:41.160 --> 00:01:43.235
+once again we are trying to match
+
+36
+00:01:43.235 --> 00:01:45.230
+feature f1 in image one to
+
+37
+00:01:45.230 --> 00:01:47.765
+a corresponding
+feature in image two.
+
+38
+00:01:47.765 --> 00:01:50.265
+With the feature
+vectors presented here,
+
+39
+00:01:50.265 --> 00:01:53.190
+feature f1 gets an SSD value of
+
+40
+00:01:53.190 --> 00:01:56.730
+nine with feature
+two in image two.
+
+41
+00:01:56.730 --> 00:01:59.460
+We test another feature f3,
+
+42
+00:01:59.460 --> 00:02:01.685
+and we also get an SSD of nine.
+
+43
+00:02:01.685 --> 00:02:03.950
+Both of these features
+have an SSD less
+
+44
+00:02:03.950 --> 00:02:06.665
+than Delta which was
+20 in this case,
+
+45
+00:02:06.665 --> 00:02:10.600
+and as such are valid matches.
+So what should we do?
+
+46
+00:02:10.600 --> 00:02:13.790
+We refer to feature fi in case
+
+47
+00:02:13.790 --> 00:02:16.790
+three as a feature with
+ambiguous matches.
+
+48
+00:02:16.790 --> 00:02:18.710
+An elegant solution
+to this problem was
+
+49
+00:02:18.710 --> 00:02:21.560
+proposed by David Lowe in 1999.
+
+50
+00:02:21.560 --> 00:02:23.585
+The solution goes as follows.
+
+51
+00:02:23.585 --> 00:02:26.300
+First, we compute
+the distance between
+
+52
+00:02:26.300 --> 00:02:28.355
+feature fi in image one
+
+53
+00:02:28.355 --> 00:02:30.905
+and all the features
+fj in image two,
+
+54
+00:02:30.905 --> 00:02:32.935
+similar to our
+previous algorithm,
+
+55
+00:02:32.935 --> 00:02:35.900
+we choose the feature
+fc in image two with
+
+56
+00:02:35.900 --> 00:02:38.090
+the minimum distance
+to feature fi in
+
+57
+00:02:38.090 --> 00:02:40.850
+image of one as
+our closest match.
+
+58
+00:02:40.850 --> 00:02:44.420
+We then proceed to get
+feature fs the feature in
+
+59
+00:02:44.420 --> 00:02:46.640
+image two with
+the second closest distance
+
+60
+00:02:46.640 --> 00:02:48.110
+to the feature fi.
+
+61
+00:02:48.110 --> 00:02:52.295
+Finally, we find how much
+nearer our closest match
+
+62
+00:02:52.295 --> 00:02:56.915
+fc is over our second
+closest match fs.
+
+63
+00:02:56.915 --> 00:02:59.600
+This can be done through
+the distance ratio.
+
+64
+00:02:59.600 --> 00:03:00.920
+The distance ratio can be
+
+65
+00:03:00.920 --> 00:03:03.170
+defined as the distance
+computed between
+
+66
+00:03:03.170 --> 00:03:05.240
+feature fi in image one and
+
+67
+00:03:05.240 --> 00:03:08.195
+fc the closest match
+in image two.
+
+68
+00:03:08.195 --> 00:03:12.810
+Over the distance computed
+between feature fi and fs,
+
+69
+00:03:12.810 --> 00:03:15.510
+the second closest match
+in image two.
+
+70
+00:03:15.510 --> 00:03:18.380
+If the distance ratio
+is close to one,
+
+71
+00:03:18.380 --> 00:03:19.490
+it means that according to
+
+72
+00:03:19.490 --> 00:03:21.725
+our descriptor and
+distance function,
+
+73
+00:03:21.725 --> 00:03:26.090
+fi matches both fs and fc.
+
+74
+00:03:26.090 --> 00:03:28.190
+In this case, we
+don't want to use
+
+75
+00:03:28.190 --> 00:03:30.590
+this match in
+our processing later on,
+
+76
+00:03:30.590 --> 00:03:33.920
+as it clearly is not known
+to our matcher which
+
+77
+00:03:33.920 --> 00:03:35.075
+location in image two
+
+78
+00:03:35.075 --> 00:03:38.105
+corresponds to the
+feature in image one.
+
+79
+00:03:38.105 --> 00:03:41.330
+Let us update our brute
+force matcher algorithm
+
+80
+00:03:41.330 --> 00:03:43.760
+with the distance
+ratio formulation.
+
+81
+00:03:43.760 --> 00:03:47.120
+The updates replace
+the distance with
+
+82
+00:03:47.120 --> 00:03:50.810
+the ratio of distance as
+our metric to keep matches.
+
+83
+00:03:50.810 --> 00:03:53.705
+We usually set
+the distance ratio threshold
+
+84
+00:03:53.705 --> 00:03:57.445
+which we'll refer to as
+row somewhere around 0.5,
+
+85
+00:03:57.445 --> 00:03:59.060
+which means that we require
+
+86
+00:03:59.060 --> 00:04:01.370
+our best match to
+be at least twice
+
+87
+00:04:01.370 --> 00:04:03.410
+as close as our second best match
+
+88
+00:04:03.410 --> 00:04:05.935
+to our initial
+features descriptor.
+
+89
+00:04:05.935 --> 00:04:09.590
+Revisiting case three,
+we can see that using
+
+90
+00:04:09.590 --> 00:04:10.700
+the distance ratio and
+
+91
+00:04:10.700 --> 00:04:13.940
+a corresponding threshold
+row set to 0.5,
+
+92
+00:04:13.940 --> 00:04:16.160
+we discard our ambiguous matches
+
+93
+00:04:16.160 --> 00:04:18.175
+and retain the good ones.
+
+94
+00:04:18.175 --> 00:04:22.190
+In this video, you've learned
+what ambiguous matches are,
+
+95
+00:04:22.190 --> 00:04:24.155
+and how to handle
+these ambiguous matches
+
+96
+00:04:24.155 --> 00:04:26.810
+through the distance
+ratio formulation.
+
+97
+00:04:26.810 --> 00:04:30.935
+Unfortunately, even with the
+distance ratio formulation,
+
+98
+00:04:30.935 --> 00:04:33.500
+as much as 50 percent
+of typical matches can
+
+99
+00:04:33.500 --> 00:04:36.590
+still be wrong when using
+modern descriptors.
+
+100
+00:04:36.590 --> 00:04:39.125
+This is because,
+repetitive patterns in
+
+101
+00:04:39.125 --> 00:04:42.380
+images and small variations
+in pixel values,
+
+102
+00:04:42.380 --> 00:04:46.070
+are often sufficient to
+confuse the matching process.
+
+103
+00:04:46.070 --> 00:04:49.215
+We call these erroneous
+matches outliers.
+
+104
+00:04:49.215 --> 00:04:50.560
+For our next lesson,
+
+105
+00:04:50.560 --> 00:04:52.160
+I will describe a method to
+
+106
+00:04:52.160 --> 00:04:54.320
+account for and
+eliminate outliers
+
+107
+00:04:54.320 --> 00:04:56.525
+before using are matched features
+
+108
+00:04:56.525 --> 00:04:59.210
+for further perception tasks.

@@ -1,0 +1,661 @@
+WEBVTT
+
+1
+00:00:14.000 --> 00:00:16.140
+In the last video,
+
+2
+00:00:16.140 --> 00:00:18.855
+you were introduced to
+the final course assessment
+
+3
+00:00:18.855 --> 00:00:20.010
+in which you will have to
+
+4
+00:00:20.010 --> 00:00:21.990
+develop three major aspects of
+
+5
+00:00:21.990 --> 00:00:25.095
+the procession stack
+of a self-driving car.
+
+6
+00:00:25.095 --> 00:00:27.120
+This lesson, we
+will expose you to
+
+7
+00:00:27.120 --> 00:00:28.860
+some algorithmic
+concepts that will
+
+8
+00:00:28.860 --> 00:00:31.380
+be useful to finish
+this assessment.
+
+9
+00:00:31.380 --> 00:00:33.330
+The first thing to be aware of
+
+10
+00:00:33.330 --> 00:00:34.920
+while attempting the assignment,
+
+11
+00:00:34.920 --> 00:00:37.500
+is the coordinate frames
+you are working in.
+
+12
+00:00:37.500 --> 00:00:40.175
+All the required 3D estimation
+
+13
+00:00:40.175 --> 00:00:42.920
+will be performed in
+the camera coordinate frame.
+
+14
+00:00:42.920 --> 00:00:44.945
+That includes the ground plane,
+
+15
+00:00:44.945 --> 00:00:48.265
+distance to impact, and
+other 3D quantities.
+
+16
+00:00:48.265 --> 00:00:51.170
+However, the camera as
+a sensor is usually
+
+17
+00:00:51.170 --> 00:00:54.140
+oriented with its y-axis
+pointing downward.
+
+18
+00:00:54.140 --> 00:00:55.580
+What does that mean for you
+
+19
+00:00:55.580 --> 00:00:57.305
+while working on the assessment?
+
+20
+00:00:57.305 --> 00:00:59.780
+The only thing you will
+need to be careful about,
+
+21
+00:00:59.780 --> 00:01:02.590
+is the sign of
+the height value of pixels.
+
+22
+00:01:02.590 --> 00:01:04.310
+Points higher than the camera
+
+23
+00:01:04.310 --> 00:01:05.510
+will have a negative height,
+
+24
+00:01:05.510 --> 00:01:06.590
+while points lower than
+
+25
+00:01:06.590 --> 00:01:08.765
+the camera will have
+a positive height.
+
+26
+00:01:08.765 --> 00:01:11.420
+The second topic you
+should be aware of,
+
+27
+00:01:11.420 --> 00:01:13.550
+is how to solve
+linear least squares
+
+28
+00:01:13.550 --> 00:01:16.610
+problems for plane
+estimation in Python.
+
+29
+00:01:16.610 --> 00:01:18.400
+For this part of the assessment,
+
+30
+00:01:18.400 --> 00:01:20.825
+you will have a couple
+of alternatives.
+
+31
+00:01:20.825 --> 00:01:22.790
+We provide you with
+a function that
+
+32
+00:01:22.790 --> 00:01:24.500
+does the plane estimation for
+
+33
+00:01:24.500 --> 00:01:28.795
+you using singular value
+decomposition or SVD for short.
+
+34
+00:01:28.795 --> 00:01:31.225
+However, if you
+want to challenge,
+
+35
+00:01:31.225 --> 00:01:32.330
+you could try solving
+
+36
+00:01:32.330 --> 00:01:35.120
+the plane estimation problem
+yourself by solving
+
+37
+00:01:35.120 --> 00:01:36.920
+the least squares problem using
+
+38
+00:01:36.920 --> 00:01:40.520
+the NumPy native function lstsq.
+
+39
+00:01:40.520 --> 00:01:42.715
+If you choose this path,
+
+40
+00:01:42.715 --> 00:01:43.910
+be careful to choose
+
+41
+00:01:43.910 --> 00:01:47.240
+more than three points for
+each iteration of RANSAC,
+
+42
+00:01:47.240 --> 00:01:49.175
+as the solver might not provide
+
+43
+00:01:49.175 --> 00:01:50.870
+any useful results in
+
+44
+00:01:50.870 --> 00:01:52.100
+certain edge cases where
+
+45
+00:01:52.100 --> 00:01:54.305
+the system is poorly conditioned.
+
+46
+00:01:54.305 --> 00:01:56.989
+A greater challenge
+would be to implement
+
+47
+00:01:56.989 --> 00:01:59.600
+SVD plane fitting from scratch.
+
+48
+00:01:59.600 --> 00:02:03.515
+SVD almost always provides
+a numerically stable solution.
+
+49
+00:02:03.515 --> 00:02:05.630
+In addition, it
+can be faster than
+
+50
+00:02:05.630 --> 00:02:08.405
+the NumPy lstsq function.
+
+51
+00:02:08.405 --> 00:02:11.945
+It's up to you which path to
+take to estimate the plane.
+
+52
+00:02:11.945 --> 00:02:13.870
+As long as the plane is correct,
+
+53
+00:02:13.870 --> 00:02:17.555
+the method that generated it
+will be given full marks.
+
+54
+00:02:17.555 --> 00:02:20.930
+The second perception task
+that needs to be performed,
+
+55
+00:02:20.930 --> 00:02:22.985
+is lane boundary detection.
+
+56
+00:02:22.985 --> 00:02:26.150
+The output of the Hough
+transform line detection,
+
+57
+00:02:26.150 --> 00:02:29.165
+is any line belonging to
+the boundary of the lane
+
+58
+00:02:29.165 --> 00:02:31.520
+including horizontal ones and
+
+59
+00:02:31.520 --> 00:02:33.955
+lines on the far side
+of sidewalks.
+
+60
+00:02:33.955 --> 00:02:36.890
+Furthermore, each of
+the lane boundaries will have
+
+61
+00:02:36.890 --> 00:02:38.930
+multiple associated output lines
+
+62
+00:02:38.930 --> 00:02:41.405
+from the Hough transform
+line estimator.
+
+63
+00:02:41.405 --> 00:02:45.020
+You are required to filter
+out all irrelevant lines
+
+64
+00:02:45.020 --> 00:02:46.580
+and merge relevant lines to
+
+65
+00:02:46.580 --> 00:02:49.115
+produce one line
+per lane boundary.
+
+66
+00:02:49.115 --> 00:02:51.770
+To filter out the
+horizontal lines,
+
+67
+00:02:51.770 --> 00:02:55.130
+we can rely on the slope
+of the estimated lines.
+
+68
+00:02:55.130 --> 00:02:56.930
+Horizontal lines and images
+
+69
+00:02:56.930 --> 00:02:59.255
+tend to have a slope
+very close to zero.
+
+70
+00:02:59.255 --> 00:03:03.400
+However, we also want to
+remove heavily slanted lines.
+
+71
+00:03:03.400 --> 00:03:06.230
+As such, a threshold
+is introduced as
+
+72
+00:03:06.230 --> 00:03:07.370
+a lower limit of
+
+73
+00:03:07.370 --> 00:03:10.565
+allowed slopes for the output
+of this filtering step.
+
+74
+00:03:10.565 --> 00:03:12.380
+The exact value of
+
+75
+00:03:12.380 --> 00:03:15.220
+this threshold needs to be
+determined empirically,
+
+76
+00:03:15.220 --> 00:03:20.235
+try values between 0.1
+and 0.3 for best results.
+
+77
+00:03:20.235 --> 00:03:22.610
+Having removed horizontal lines
+
+78
+00:03:22.610 --> 00:03:24.620
+from the output of
+the half transform,
+
+79
+00:03:24.620 --> 00:03:27.500
+you will need to cluster
+similar lines and then
+
+80
+00:03:27.500 --> 00:03:30.935
+merge them to produce
+a single line per lane boundary.
+
+81
+00:03:30.935 --> 00:03:34.505
+A simple clustering algorithm
+would be to first choose
+
+82
+00:03:34.505 --> 00:03:35.720
+a cluster center at
+
+83
+00:03:35.720 --> 00:03:38.140
+random from the
+remaining filter lines,
+
+84
+00:03:38.140 --> 00:03:40.970
+then add to the cluster
+any lines that have
+
+85
+00:03:40.970 --> 00:03:44.150
+a similar slope or intercept
+to the cluster line.
+
+86
+00:03:44.150 --> 00:03:46.130
+A line is considered close to
+
+87
+00:03:46.130 --> 00:03:48.530
+the cluster center if
+the difference between
+
+88
+00:03:48.530 --> 00:03:50.270
+its slope and slope of
+
+89
+00:03:50.270 --> 00:03:52.160
+the cluster center is less
+
+90
+00:03:52.160 --> 00:03:54.289
+than a specific slope threshold,
+
+91
+00:03:54.289 --> 00:03:55.610
+and the distance between
+
+92
+00:03:55.610 --> 00:03:57.560
+its intercept and
+the intercept of
+
+93
+00:03:57.560 --> 00:03:59.360
+the cluster center is less than
+
+94
+00:03:59.360 --> 00:04:02.155
+a specific intercept
+threshold as well.
+
+95
+00:04:02.155 --> 00:04:04.300
+The slope difference threshold is
+
+96
+00:04:04.300 --> 00:04:07.059
+usually chosen to be
+a maximum of 0.3,
+
+97
+00:04:07.059 --> 00:04:09.145
+while the intercept
+difference threshold
+
+98
+00:04:09.145 --> 00:04:10.900
+is defined in pixels,
+
+99
+00:04:10.900 --> 00:04:14.305
+and is usually chosen
+between 20 and 50 pixels.
+
+100
+00:04:14.305 --> 00:04:17.080
+You will need to test
+various values before
+
+101
+00:04:17.080 --> 00:04:20.815
+arriving at a satisfactory
+threshold for the assessment.
+
+102
+00:04:20.815 --> 00:04:24.609
+The final step to produce
+one line per lane boundary,
+
+103
+00:04:24.609 --> 00:04:27.715
+is to merge lines
+inside each cluster.
+
+104
+00:04:27.715 --> 00:04:30.640
+The simplest way to do
+so is through averaging
+
+105
+00:04:30.640 --> 00:04:34.240
+the slope and intercept
+of all cluster members.
+
+106
+00:04:34.240 --> 00:04:36.130
+The final concept that you will
+
+107
+00:04:36.130 --> 00:04:37.990
+need to finish the assessment,
+
+108
+00:04:37.990 --> 00:04:40.735
+is how to filter out
+uncertain output of
+
+109
+00:04:40.735 --> 00:04:43.150
+object detectors using the output
+
+110
+00:04:43.150 --> 00:04:45.290
+from the semantic segmentation.
+
+111
+00:04:45.290 --> 00:04:48.905
+The output of object detection
+is usually reliable.
+
+112
+00:04:48.905 --> 00:04:50.195
+But for this assessment,
+
+113
+00:04:50.195 --> 00:04:52.610
+you are given a high
+recall low precision
+
+114
+00:04:52.610 --> 00:04:55.640
+detector that detects
+all objects in the scene,
+
+115
+00:04:55.640 --> 00:04:58.505
+but also provides
+some false positives.
+
+116
+00:04:58.505 --> 00:05:00.230
+You are required to use
+
+117
+00:05:00.230 --> 00:05:02.840
+the output from
+semantic segmentation to
+
+118
+00:05:02.840 --> 00:05:04.940
+eliminate these false positives
+
+119
+00:05:04.940 --> 00:05:08.435
+before estimating the distance
+to the obstacles.
+
+120
+00:05:08.435 --> 00:05:10.910
+The results should
+be bounding boxes
+
+121
+00:05:10.910 --> 00:05:13.300
+that reliably contain obstacles.
+
+122
+00:05:13.300 --> 00:05:15.295
+To perform this filtering,
+
+123
+00:05:15.295 --> 00:05:16.490
+you will need to use
+
+124
+00:05:16.490 --> 00:05:18.440
+the semantic segmentation output
+
+125
+00:05:18.440 --> 00:05:20.450
+to count the number of pixels in
+
+126
+00:05:20.450 --> 00:05:23.420
+the bounding box that
+have the same category
+
+127
+00:05:23.420 --> 00:05:26.980
+as the classification output
+from the 2D object detector.
+
+128
+00:05:26.980 --> 00:05:29.360
+The trick here, is
+that this number will
+
+129
+00:05:29.360 --> 00:05:32.060
+depend on the size
+of the bounding box.
+
+130
+00:05:32.060 --> 00:05:35.570
+You will need to normalize
+the pixel count by the area of
+
+131
+00:05:35.570 --> 00:05:37.340
+the bounding box
+before attempting to
+
+132
+00:05:37.340 --> 00:05:40.475
+filter out the detections
+with a threshold.
+
+133
+00:05:40.475 --> 00:05:42.950
+The final normalized count is
+
+134
+00:05:42.950 --> 00:05:45.410
+equivalent to computing
+the area inside
+
+135
+00:05:45.410 --> 00:05:47.210
+the bounding box occupied by
+
+136
+00:05:47.210 --> 00:05:50.645
+pixels belonging to
+the correct category.
+
+137
+00:05:50.645 --> 00:05:52.730
+At this point, you
+should be ready to
+
+138
+00:05:52.730 --> 00:05:55.145
+tackle the final
+assessment confidently.
+
+139
+00:05:55.145 --> 00:05:56.600
+As a final note,
+
+140
+00:05:56.600 --> 00:05:58.970
+I encourage you to think of
+different ways you could
+
+141
+00:05:58.970 --> 00:06:02.570
+achieve the final output
+for the required tasks,
+
+142
+00:06:02.570 --> 00:06:04.340
+other than the suggested outline.
+
+143
+00:06:04.340 --> 00:06:06.500
+I hope you enjoy this assessment
+
+144
+00:06:06.500 --> 00:06:09.600
+and find it beneficial
+to your learning.

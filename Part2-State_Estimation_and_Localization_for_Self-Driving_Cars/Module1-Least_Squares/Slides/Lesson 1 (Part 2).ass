@@ -1,0 +1,489 @@
+WEBVTT
+
+1
+00:00:13.640 --> 00:00:15.675
+In the last video,
+
+2
+00:00:15.675 --> 00:00:19.305
+we saw how we could use the method
+of least squares to solve for
+
+3
+00:00:19.305 --> 00:00:24.405
+a more correct value of resistance
+given a set of noisy measurements.
+
+4
+00:00:24.405 --> 00:00:27.075
+In this video, we'll ask the question,
+
+5
+00:00:27.075 --> 00:00:29.160
+what can we do if we suspect that some of
+
+6
+00:00:29.160 --> 00:00:31.920
+our measurements are of
+better quality than others?
+
+7
+00:00:31.920 --> 00:00:33.765
+By the end of this video,
+
+8
+00:00:33.765 --> 00:00:36.960
+you'll be able to derive and minimize
+
+9
+00:00:36.960 --> 00:00:39.150
+the weighted least squares criterion
+
+10
+00:00:39.150 --> 00:00:40.710
+that will let us handle measurements of
+
+11
+00:00:40.710 --> 00:00:44.660
+different quality and
+compare this new method to
+
+12
+00:00:44.660 --> 00:00:47.345
+the method of regular or
+ordinary least squares
+
+13
+00:00:47.345 --> 00:00:49.580
+that we discussed in the previous video.
+
+14
+00:00:49.580 --> 00:00:53.045
+Let's begin. One reason
+we may want to trust
+
+15
+00:00:53.045 --> 00:00:54.815
+certain measurements more than others
+
+16
+00:00:54.815 --> 00:00:57.410
+is that they may come
+from a better sensor.
+
+17
+00:00:57.410 --> 00:01:00.980
+For example, a number of
+our resistance measurements
+
+18
+00:01:00.980 --> 00:01:04.765
+could have come from a much more
+expensive multi-meter than the others.
+
+19
+00:01:04.765 --> 00:01:06.645
+Further, from now on,
+
+20
+00:01:06.645 --> 00:01:09.170
+we'll also drop the assumption
+that we're only estimating
+
+21
+00:01:09.170 --> 00:01:13.415
+one parameter and derive
+the more general normal equations.
+
+22
+00:01:13.415 --> 00:01:15.530
+This will allow us to formulate a way to
+
+23
+00:01:15.530 --> 00:01:18.265
+estimate multiple parameters at one time.
+
+24
+00:01:18.265 --> 00:01:23.210
+For example, if we wanted to estimate
+several resistance values at once.
+
+25
+00:01:23.210 --> 00:01:26.795
+Let's begin by using
+the following general notation.
+
+26
+00:01:26.795 --> 00:01:30.230
+We'll have a set of m measurements
+that are related to a set
+
+27
+00:01:30.230 --> 00:01:33.715
+of n unknown parameters
+through a linear model.
+
+28
+00:01:33.715 --> 00:01:36.879
+Recall that H is rj cobian matrix
+
+29
+00:01:36.879 --> 00:01:41.195
+whose form and entries will depend
+on the particular problem at hand.
+
+30
+00:01:41.195 --> 00:01:44.360
+One way to interpret
+the ordinary method of
+
+31
+00:01:44.360 --> 00:01:47.795
+least squares is to say that we
+are implicitly assuming that
+
+32
+00:01:47.795 --> 00:01:52.475
+each noise term v_i is
+an independent random variable
+
+33
+00:01:52.475 --> 00:01:54.650
+across measurements and has
+
+34
+00:01:54.650 --> 00:01:57.875
+an equal variance or
+standard deviation if you prefer,
+
+35
+00:01:57.875 --> 00:02:01.300
+IID as we mentioned in
+the previous video.
+
+36
+00:02:01.300 --> 00:02:06.010
+If we instead assume that each noise
+term has a different variance,
+
+37
+00:02:06.010 --> 00:02:09.950
+we can define our noise
+covariance as follows.
+
+38
+00:02:11.510 --> 00:02:16.885
+With this definition, we can define
+a weighted least squares criterion.
+
+39
+00:02:16.885 --> 00:02:19.030
+By expanding this expression,
+
+40
+00:02:19.030 --> 00:02:22.720
+we can see why we call this
+weighted least squares.
+
+41
+00:02:22.720 --> 00:02:26.170
+Each squared error term
+is now weighted by
+
+42
+00:02:26.170 --> 00:02:30.895
+the inverse of the variance associated
+with the corresponding measurement.
+
+43
+00:02:30.895 --> 00:02:34.600
+In other words, the lower
+the variance of the noise,
+
+44
+00:02:34.600 --> 00:02:35.800
+the more strongly it's
+
+45
+00:02:35.800 --> 00:02:39.535
+associated error term will be
+weighted in the loss function.
+
+46
+00:02:39.535 --> 00:02:44.095
+We care more about errors which
+come from low noise measurements
+
+47
+00:02:44.095 --> 00:02:46.400
+since those should tell us a lot about
+
+48
+00:02:46.400 --> 00:02:49.775
+the true values of our
+unknown parameters.
+
+49
+00:02:49.775 --> 00:02:54.170
+Before we see how we can minimize
+this new weighted criterion,
+
+50
+00:02:54.170 --> 00:02:56.360
+let's look at what
+happens if we set all of
+
+51
+00:02:56.360 --> 00:03:00.690
+the noise standard deviations
+to the same value sigma.
+
+52
+00:03:00.880 --> 00:03:05.735
+In this case, we can factor out
+the variance in the denominator.
+
+53
+00:03:05.735 --> 00:03:08.270
+Since the sigma squared term is
+
+54
+00:03:08.270 --> 00:03:12.005
+constant it will not
+affect the minimization.
+
+55
+00:03:12.005 --> 00:03:15.830
+This means that in the case
+of equal variances,
+
+56
+00:03:15.830 --> 00:03:20.165
+the same parameters that minimize
+our weighted least squares criterion
+
+57
+00:03:20.165 --> 00:03:22.820
+will also minimize
+our ordinary least squares
+
+58
+00:03:22.820 --> 00:03:25.890
+criterion as we should expect.
+
+59
+00:03:26.680 --> 00:03:30.365
+Returning to our weighted
+least squares criterion,
+
+60
+00:03:30.365 --> 00:03:33.445
+we approach it's minimization
+the same way as before,
+
+61
+00:03:33.445 --> 00:03:35.350
+we take a derivative.
+
+62
+00:03:35.350 --> 00:03:37.805
+In the general case where we have
+
+63
+00:03:37.805 --> 00:03:41.240
+n unknown parameters
+in our bold vector x,
+
+64
+00:03:41.240 --> 00:03:44.420
+this derivative will
+actually be a gradient.
+
+65
+00:03:44.420 --> 00:03:47.065
+Setting the gradient of the zero vector,
+
+66
+00:03:47.065 --> 00:03:52.190
+we then solve for our best or
+optimal parameter vector x hat.
+
+67
+00:03:52.190 --> 00:03:54.995
+This leads to another set
+of normal equations
+
+68
+00:03:54.995 --> 00:03:58.770
+this time called the
+weighted normal equations.
+
+69
+00:03:58.780 --> 00:04:01.250
+Let's take a look at an example of
+
+70
+00:04:01.250 --> 00:04:04.650
+how this method of
+weighted least squares works.
+
+71
+00:04:04.900 --> 00:04:08.455
+We'll take the same data
+we collected before,
+
+72
+00:04:08.455 --> 00:04:11.810
+but now assume that the last two
+measurements were actually taken with
+
+73
+00:04:11.810 --> 00:04:15.680
+a multimeter that had
+a much smaller noise variance.
+
+74
+00:04:15.680 --> 00:04:18.860
+Be careful here, the numbers we list are
+
+75
+00:04:18.860 --> 00:04:22.990
+standard deviations which is why
+they have the units of ohms.
+
+76
+00:04:22.990 --> 00:04:25.350
+In order to use them in our formulation,
+
+77
+00:04:25.350 --> 00:04:28.955
+we will need to square
+them to get the variances.
+
+78
+00:04:28.955 --> 00:04:31.790
+Defining our variables and then
+
+79
+00:04:31.790 --> 00:04:34.705
+evaluating our weighted
+least squares solution,
+
+80
+00:04:34.705 --> 00:04:37.940
+we can see that the final
+resistance value we get is much
+
+81
+00:04:37.940 --> 00:04:43.230
+closer to what the more accurate
+multimeter measured as expected.
+
+82
+00:04:45.580 --> 00:04:48.230
+Here's a quick summary of the methods of
+
+83
+00:04:48.230 --> 00:04:50.945
+least squares and weighted least squares.
+
+84
+00:04:50.945 --> 00:04:53.300
+By using weighted least squares,
+
+85
+00:04:53.300 --> 00:04:57.620
+we can vary the importance of
+each measurement to the final estimate.
+
+86
+00:04:57.620 --> 00:05:00.320
+It's important to be
+comfortable working with
+
+87
+00:05:00.320 --> 00:05:02.465
+different measurement variances and
+
+88
+00:05:02.465 --> 00:05:05.660
+also with measurements that
+are sometimes correlated.
+
+89
+00:05:05.660 --> 00:05:09.560
+A self-driving car will have a number
+of different and complex sensors on
+
+90
+00:05:09.560 --> 00:05:15.020
+board and we need to make sure that
+we model our error sources correctly.
+
+91
+00:05:15.020 --> 00:05:19.160
+So, there you have it,
+weighted least squares.
+
+92
+00:05:19.160 --> 00:05:21.680
+In this video, we discussed how
+
+93
+00:05:21.680 --> 00:05:24.080
+certain measurements may
+come from sensors with
+
+94
+00:05:24.080 --> 00:05:26.840
+better noise characteristics
+and should therefore
+
+95
+00:05:26.840 --> 00:05:30.330
+be weighted more heavily in
+our least squares criterion.
+
+96
+00:05:30.330 --> 00:05:35.810
+Using this intuition, we derived the
+weighted least squares criterion and
+
+97
+00:05:35.810 --> 00:05:39.650
+the associated weighted normal equations
+that can be solved to
+
+98
+00:05:39.650 --> 00:05:44.765
+yield the weighted least squares estimate
+of a set of constant parameters.
+
+99
+00:05:44.765 --> 00:05:46.715
+In the next video,
+
+100
+00:05:46.715 --> 00:05:51.005
+we'll look at modifying the method of
+least squares to work recursively,
+
+101
+00:05:51.005 --> 00:05:54.350
+that is to compute an optimal estimate
+based on a stream of
+
+102
+00:05:54.350 --> 00:05:58.430
+measurements without having to
+acquire the entire set beforehand.
+
+103
+00:05:58.430 --> 00:06:01.900
+This will be very important when
+we look at state estimation,
+
+104
+00:06:01.900 --> 00:06:06.420
+or the problem of estimating quantities
+that change continuously over time.

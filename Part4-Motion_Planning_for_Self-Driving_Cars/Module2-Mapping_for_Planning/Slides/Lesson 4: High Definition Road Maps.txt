@@ -1,0 +1,172 @@
+Welcome everyone to
+the final lesson of module two. We will finish
+this week on mapping by looking at another
+essential map type, the High Definition Road Map. In this video, we will define
+a High-Definition Road Map. We will then see how
+this map can effectively be stored by looking at a datatype
+called the lanelet Map. We will then take a look at two main elements
+of the lanelet map; the lanelets and
+the intersection elements, and discuss how
+they are connected. Each of the elements
+will then be broken down into its components, so we can explore the full extent of this mapping data structure. Next, we look at
+the different operations that can be performed on
+lanelet elements. Finally, we will explore
+different methods of recording and
+creating lanelet maps. A High-Definition Road Map
+is similar to traditional paper-based maps
+or online maps. However, the information
+contained within the High Definition map or HD map is significantly
+more detailed. While a traditional map stores the approximate
+locations of roads, the High Definition
+Road Maps stores the precise road
+locations including all lanes down to
+a few centimeters accuracy. Along with this, the High Definition
+Road Maps stores all of the locations of road signs and signals which might effect
+the autonomous vehicle. Due to the detailed and interconnected nature
+of the data, an effective method
+is required to store all information
+contained within the map. The lanelet concept
+was proposed in a 2014 publication entitled, Lanelets: Efficient
+Map Representation for Autonomous Driving
+by Philip Bender, Julius Ziegler, and
+Christoph Stiller. Due to this method's
+effectiveness in storage and communication of the complex set of information
+needed for HD mapping, it is widely used. We'll look at this framework
+for the rest of the course, and they will play a key role in our behavior planning
+methods in particular. The lanelet map has
+two main components, which we will discuss in
+greater detail in this lesson. A lanelet element which stores all information
+connected to a small longitudinal segment of a lane on a road
+which it represents. An intersection element
+which stores all lanelet elements
+which are part of a single intersection for simple retrieval during
+motion planning tasks. This will be followed
+by an explanation of the connectivity between all the different
+lanelet elements. A lanelet elements has
+several sets of information that stores about the segment of
+road that it represents. First, a lanelet stores the left and right boundaries
+of the given lane. Second, a lanelet stores any regulatory elements
+that might be present at the end of
+the lanelet element, such as a stop sign line
+or a static sign line. Note that we only
+store a line for any regulatory element as
+this is the point that the autonomous vehicle treats as the active location for
+that regulatory element. Third, a lanelet stores all regulatory attributes that might affect that
+segment of the road, such as the speed limit. Fourth, a lanelet
+stores the connectivity of itself to other lanelet
+elements around it. This allows for easy traversal
+and calculations through the graph created by the set of lanelets in an HD map. Each lanelet ends as
+a regulatory element or a change to a regulatory
+attribute is encountered. This means that a
+lanelet element can be as short as only a few meters in
+the case of a lanelet, which is part of an intersection, or can be hundreds of meters long for a highway road segment. Boundaries of the lanelet are represented as the edges
+of the lanelet. These boundaries capture
+either marked lane boundaries or curves which inhibit driving. Lane boundaries are
+stored as a set of points creating
+a continuous polygonal line. Each point stores its x, y, and z GPS coordinates. The distance between points can be as fine as a few centimeters, or as course as a few meters depending on the smoothness
+of the polyline in question. Using this polygonal
+line structure, many useful operations
+can be performed to gather data for the task
+of motion planning. The ordering of
+the points defines the direction of travel and
+heading for the lanelet. The road curvature of any part of the lanelet can be precomputed
+from that lanelet as well. A center line between the two boundaries
+can be interpolated, which can be used as
+the desired path of travel for the autonomous
+vehicle in that lane. There are two types of lanelet regulations:
+Regulation Elements, which come at the end
+of the lanelet, and regulation attributes, which affect the entirety
+of the lanelet. Regulatory elements are
+represented as lines which are defined by a set
+of co-linear points. Regulation elements
+usually require an action or decision to be made, such as in the case
+of a traffic light, or the decision to
+proceed must be based on the current state
+of that traffic light. Regulatory attributes persist for the entirety of the lanelet. Examples include speed limits, or whether this lanelet crosses another lanelet as in
+an intersection or merge. Each lanelet has
+four possible connections: Lanelets directly to the left, lanelets directly to
+the right, lanelet preceding it, and lanelet following it. The entire lanelet structure is connected in a directed graph, which is the base structure
+of the HD map. It should be noted there could be more than one lanelet
+preceding the current lanelet, or more than one following lanelet as in the case
+of an intersection. To better understand
+this concept, let's take a look at
+a simple example using this particular set of lanelets for a
+three-way intersection. As you can see, some
+of the lanelets are numbered and represented
+as nodes on the graph, which therefore
+represent only a portion of the complete lanelet graph
+with this intersection. The nodes or vertices are labeled one through five
+on the lane that figure, and form the vertices
+of the lanelet graph. All edges of this graph are directed and are
+labeled to denote the relationship between the two vertices
+the edge connects. An edge marked as zero represents the transition
+to the next lanelet. A one indicates a connection
+to the left lanelet. An edge labeled two represents a connection to
+the right lanelet, and a three represents
+previously lanelets. The lanelet element, which is represented by the number
+one in this picture, has in fact two
+possible next elements. Lanelet element five and
+lanelet element two are two possible next
+lanelets that can be driven on after
+leaving lanelet one, as they are two ways
+through this intersection. Similarly, lanelet
+element four is connected to lanelet
+one with a one edge, as lanelet four is to
+the left of lanelet one. The intersection
+elements simply holds a pointer to
+all regulatory elements, which make up the
+intersection of interest. All lanelet elements
+which are part of an intersection also point to
+this intersection element. This structure acts much
+like a container and simplifies look-ups throughout the lanelet structure
+when assigning behaviors. A big advantage of the lanelet data structure
+is that it makes parts of the motion planning process simpler and more
+computationally efficient. The process of
+path planning through complex multi-lane road networks, which require
+multiple link changes well in advance of turning, are made possible with
+this data structure as each lanelet is treated
+as a separate vertex. Localizing dynamic objects to a known map improves
+path predictions, as we shall see in module four. This type of localization
+ability also improves interactions with
+dynamic objects by providing an easy method to plan the behavior of an autonomous car through a busy intersection, as we'll see in module five. The creation of such a map can
+be done in three ways: The first is creating the map
+offline by driving the road network several times and collecting information, and then fusing both
+segmentation as well as localization
+information to improve the accuracy of the map. In this method,
+hand corrections are also possible if any mistakes are
+noted from the algorithms. The second method is to
+create a lanelet map online while driving a road
+network for the first time. With the use of
+existing traditional maps and heavily relying on segmentation
+and object detection, it is possible to
+create the map as the autonomous vehicle drives through the road network
+for the first time. This method is highly
+computationally expensive both in terms of
+the motion planning task, as well as the perception tasks. Not to mention highly error-prone and thus
+is rarely deployed. The third approach for
+creating HD maps is to create the maps offline and then update them online if
+changes are detected. One such change might be a new construction zone resulting in a new
+regulatory element, and this is something
+that could not have been predicted
+during map creation. In fact, all of these methods use the same underlying
+calculations to identify lanelet elements,
+attributes, and intersections. In practice, offline
+map construction with live confirmation and updating captures the best of both worlds, ensuring high precision on static elements that do
+not change frequently, and yet still capturing
+the novelty in the environment and allowing
+the vehicle to adapt to it. There is much more
+detail that can be included in this discussion
+about HD mapping. So we've added some links to the supplemental materials if you'd like to dive in deeper. Congratulations, you've made it to the end of this module. In this module, you've
+learned all about the creation of two types
+of environment maps, which are required
+for motion planning. We started by looking
+at the construction of occupancy grid maps from rider data for self-driving cars. It's Bayesian log-odds
+update steps, and all the required
+filtering needed to create meaningful maps or
+static objects to be avoided. We also looked at High Definition Road Maps
+using the lanelet model. We discussed the various
+components which make up these maps and how they can be used for fundamental motion
+planning operations. In the next module, we will look into
+the mission planning problem, the first step in
+the task of developing safe and effective trajectories for self-driving cars.
+See you then.

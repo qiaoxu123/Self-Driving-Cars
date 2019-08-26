@@ -1,0 +1,1209 @@
+WEBVTT
+
+1
+00:00:13.460 --> 00:00:16.200
+In the first lesson
+of this module,
+
+2
+00:00:16.200 --> 00:00:18.900
+we define the semantic
+segmentation problem
+
+3
+00:00:18.900 --> 00:00:20.670
+and saw how to evaluate
+
+4
+00:00:20.670 --> 00:00:23.625
+the performance of
+semantic segmentation algorithm
+
+5
+00:00:23.625 --> 00:00:26.235
+by calculating the class IOU.
+
+6
+00:00:26.235 --> 00:00:28.610
+In this video, we
+will learn how to use
+
+7
+00:00:28.610 --> 00:00:30.260
+convolutional neural networks to
+
+8
+00:00:30.260 --> 00:00:32.825
+perform the semantic
+segmentation task.
+
+9
+00:00:32.825 --> 00:00:35.480
+Using confidence for
+semantic segmentation is
+
+10
+00:00:35.480 --> 00:00:37.070
+actually a little easier
+
+11
+00:00:37.070 --> 00:00:38.930
+than using them for
+object detection.
+
+12
+00:00:38.930 --> 00:00:41.550
+Unlike ConvNets for
+object detection,
+
+13
+00:00:41.550 --> 00:00:43.430
+the training and
+inference stages are
+
+14
+00:00:43.430 --> 00:00:45.950
+practically the same for
+semantic segmentation.
+
+15
+00:00:45.950 --> 00:00:48.200
+However, there are
+some intricacies
+
+16
+00:00:48.200 --> 00:00:50.975
+to semantic segmentation
+that we need to be aware of.
+
+17
+00:00:50.975 --> 00:00:53.255
+Let's begin with a quick review
+
+18
+00:00:53.255 --> 00:00:55.565
+of the semantic
+segmentation problem.
+
+19
+00:00:55.565 --> 00:00:59.750
+Semantic segmentation takes
+a camera images input and
+
+20
+00:00:59.750 --> 00:01:01.970
+provides a category
+classification
+
+21
+00:01:01.970 --> 00:01:04.760
+for every pixel in
+that image as output.
+
+22
+00:01:04.760 --> 00:01:06.980
+This problem can be modeled as
+
+23
+00:01:06.980 --> 00:01:08.930
+a function approximation problem,
+
+24
+00:01:08.930 --> 00:01:10.610
+and ConvNets can once again be
+
+25
+00:01:10.610 --> 00:01:13.205
+used to approximate
+the required function.
+
+26
+00:01:13.205 --> 00:01:15.110
+What kind of ConvNet model can we
+
+27
+00:01:15.110 --> 00:01:18.050
+use to perform
+this function approximation?
+
+28
+00:01:18.080 --> 00:01:20.160
+One idea is to use
+
+29
+00:01:20.160 --> 00:01:23.225
+the same ConvNet model we
+used for object detection.
+
+30
+00:01:23.225 --> 00:01:26.840
+That is, a feature extractor
+followed by an output layer.
+
+31
+00:01:26.840 --> 00:01:28.970
+We do not need anchors here as
+
+32
+00:01:28.970 --> 00:01:31.265
+we are not trying to
+localize objects.
+
+33
+00:01:31.265 --> 00:01:33.350
+Let's see how effective
+this architecture
+
+34
+00:01:33.350 --> 00:01:36.125
+is for performing
+semantic segmentation.
+
+35
+00:01:36.125 --> 00:01:39.620
+You'll start by analyzing
+the feature extractor.
+
+36
+00:01:39.620 --> 00:01:42.670
+As with the feature extractor
+used for object detections,
+
+37
+00:01:42.670 --> 00:01:44.975
+we can use the VGG architecture.
+
+38
+00:01:44.975 --> 00:01:47.300
+Let's see what happens
+to the size of
+
+39
+00:01:47.300 --> 00:01:49.895
+M by N by three input image,
+
+40
+00:01:49.895 --> 00:01:52.400
+as we go through
+this feature extractor.
+
+41
+00:01:52.400 --> 00:01:54.290
+As with object detection,
+
+42
+00:01:54.290 --> 00:01:56.030
+our resolution will be reduced by
+
+43
+00:01:56.030 --> 00:01:58.280
+half after every pooling layer.
+
+44
+00:01:58.280 --> 00:02:00.170
+On the other hand, our depth will
+
+45
+00:02:00.170 --> 00:02:02.720
+increase due to
+the convolutional layers.
+
+46
+00:02:02.720 --> 00:02:04.550
+The output feature map of
+
+47
+00:02:04.550 --> 00:02:06.800
+our convolutional feature
+extractor will be
+
+48
+00:02:06.800 --> 00:02:09.500
+downsampled by 16 times.
+
+49
+00:02:09.500 --> 00:02:10.910
+We can add as many
+
+50
+00:02:10.910 --> 00:02:13.430
+convolutional pooling
+blocks as needed,
+
+51
+00:02:13.430 --> 00:02:16.100
+but that will further
+shrink our feature map.
+
+52
+00:02:16.100 --> 00:02:18.380
+However, we want
+our output to have
+
+53
+00:02:18.380 --> 00:02:21.565
+a classification for
+every pixel in the image.
+
+54
+00:02:21.565 --> 00:02:23.945
+So how can we achieve this given
+
+55
+00:02:23.945 --> 00:02:25.850
+a down sampled
+feature map that is
+
+56
+00:02:25.850 --> 00:02:28.910
+16 times smaller than
+our original input?
+
+57
+00:02:28.910 --> 00:02:30.875
+A simple solution would
+be the following.
+
+58
+00:02:30.875 --> 00:02:34.400
+We can first compute the output
+by passing the 16 times
+
+59
+00:02:34.400 --> 00:02:38.480
+downsampled output feature map
+through a softmax layer.
+
+60
+00:02:38.480 --> 00:02:41.810
+We can then determine the
+class of every pixel in
+
+61
+00:02:41.810 --> 00:02:43.940
+the subsampled output by taking
+
+62
+00:02:43.940 --> 00:02:47.960
+the highest class score
+obtained by the softmax layer.
+
+63
+00:02:47.960 --> 00:02:51.259
+The final step would be
+to proceed to upsample,
+
+64
+00:02:51.259 --> 00:02:53.000
+the downsampled output back
+
+65
+00:02:53.000 --> 00:02:55.055
+to the original image resolution.
+
+66
+00:02:55.055 --> 00:02:58.565
+How well do you think the
+described approach will work?
+
+67
+00:02:58.565 --> 00:03:01.250
+To understand why
+naive upsampling
+
+68
+00:03:01.250 --> 00:03:03.189
+might produce inadequate results,
+
+69
+00:03:03.189 --> 00:03:04.505
+let's take a look at how
+
+70
+00:03:04.505 --> 00:03:07.520
+upsampling increases
+the image resolution.
+
+71
+00:03:07.520 --> 00:03:09.620
+We want to use
+the nearest neighbor
+
+72
+00:03:09.620 --> 00:03:12.440
+upsampling on
+a two-by-two image patch.
+
+73
+00:03:12.440 --> 00:03:14.810
+The color of the pixels
+of the image patch
+
+74
+00:03:14.810 --> 00:03:17.405
+represent different
+values of every pixel.
+
+75
+00:03:17.405 --> 00:03:19.010
+We want to upsample
+
+76
+00:03:19.010 --> 00:03:21.740
+our patch to double
+its original size.
+
+77
+00:03:21.740 --> 00:03:25.640
+So have an upsampling
+multiplier S of two.
+
+78
+00:03:25.640 --> 00:03:28.460
+Nearest neighbor
+upsampling generates
+
+79
+00:03:28.460 --> 00:03:31.200
+an empty initial
+upsampled grid by
+
+80
+00:03:31.200 --> 00:03:36.345
+multiplying Win an Hin by
+the upsampling multiplier.
+
+81
+00:03:36.345 --> 00:03:40.460
+Each pixel in the upsampled
+grid is then filled
+
+82
+00:03:40.460 --> 00:03:42.470
+with the value of
+the nearest pixel
+
+83
+00:03:42.470 --> 00:03:44.510
+in the original image patch.
+
+84
+00:03:44.510 --> 00:03:47.780
+This process is repeated
+until all the pixels in
+
+85
+00:03:47.780 --> 00:03:49.340
+the upsampled grid are filled
+
+86
+00:03:49.340 --> 00:03:51.365
+with values from the image patch.
+
+87
+00:03:51.365 --> 00:03:54.050
+The depth of the
+output upsampled grid
+
+88
+00:03:54.050 --> 00:03:57.245
+remains the same as
+the input image patch.
+
+89
+00:03:57.245 --> 00:04:00.020
+The problem induced
+by upsampling is that
+
+90
+00:04:00.020 --> 00:04:03.710
+the upsampled output image
+has very coarse boundaries.
+
+91
+00:04:03.710 --> 00:04:06.260
+As you can remember
+from the last lesson,
+
+92
+00:04:06.260 --> 00:04:07.790
+one of the most
+challenging problems
+
+93
+00:04:07.790 --> 00:04:09.710
+in semantic segmentation is
+
+94
+00:04:09.710 --> 00:04:12.304
+attaining smooth and
+accurate boundaries
+
+95
+00:04:12.304 --> 00:04:14.075
+around the objects.
+
+96
+00:04:14.075 --> 00:04:16.430
+Smooth boundaries are
+hard to attain as in
+
+97
+00:04:16.430 --> 00:04:19.345
+general boundaries in
+the image space are ambiguous,
+
+98
+00:04:19.345 --> 00:04:22.110
+especially for thin objects
+such as pools,
+
+99
+00:04:22.110 --> 00:04:25.590
+similar looking objects such
+as roads and sidewalks,
+
+100
+00:04:25.590 --> 00:04:27.880
+and far away objects.
+
+101
+00:04:27.880 --> 00:04:32.195
+Naive upsampling also induces
+two additional problems.
+
+102
+00:04:32.195 --> 00:04:35.420
+Any object less than
+16 pixels in width or
+
+103
+00:04:35.420 --> 00:04:39.260
+height usually fully disappears
+in their upsampled image.
+
+104
+00:04:39.260 --> 00:04:41.480
+This affects
+both thin objects such
+
+105
+00:04:41.480 --> 00:04:43.640
+as pools and far away objects.
+
+106
+00:04:43.640 --> 00:04:45.830
+As they are below
+the minimum dimensions
+
+107
+00:04:45.830 --> 00:04:47.630
+required for the pixels
+
+108
+00:04:47.630 --> 00:04:50.135
+to appear from
+the original image.
+
+109
+00:04:50.135 --> 00:04:51.890
+To remedy these problems,
+
+110
+00:04:51.890 --> 00:04:53.450
+researchers have
+formulated what is
+
+111
+00:04:53.450 --> 00:04:56.495
+commonly referred to
+as a feature decoder.
+
+112
+00:04:56.495 --> 00:04:58.820
+The feature decoder
+can be thought of as
+
+113
+00:04:58.820 --> 00:05:01.505
+a mirror image of
+the feature extractor.
+
+114
+00:05:01.505 --> 00:05:04.340
+Instead of using
+the convolution pooling paradigm
+
+115
+00:05:04.340 --> 00:05:06.139
+to downsample the resolution,
+
+116
+00:05:06.139 --> 00:05:08.960
+it uses upsampling
+layers followed by
+
+117
+00:05:08.960 --> 00:05:10.670
+a convolutional layer to
+
+118
+00:05:10.670 --> 00:05:13.400
+upsample the resolution
+of the feature map.
+
+119
+00:05:13.400 --> 00:05:15.800
+The upsampling usually using
+
+120
+00:05:15.800 --> 00:05:17.690
+nearest neighbor methods achieves
+
+121
+00:05:17.690 --> 00:05:19.760
+the opposite effect to pooling,
+
+122
+00:05:19.760 --> 00:05:22.085
+but results in
+an inaccurate feature map.
+
+123
+00:05:22.085 --> 00:05:24.215
+The following
+convolutional layers
+
+124
+00:05:24.215 --> 00:05:25.520
+are then used to correct
+
+125
+00:05:25.520 --> 00:05:27.845
+the features in
+the upsampled feature map
+
+126
+00:05:27.845 --> 00:05:29.930
+with learnable filter banks.
+
+127
+00:05:29.930 --> 00:05:31.970
+This correction usually provides
+
+128
+00:05:31.970 --> 00:05:33.950
+the required smooth boundaries as
+
+129
+00:05:33.950 --> 00:05:36.800
+we go forward through
+the feature decoder.
+
+130
+00:05:36.800 --> 00:05:39.950
+Let's now go through an analysis
+of the dimensions of
+
+131
+00:05:39.950 --> 00:05:41.480
+the feature map as it travels
+
+132
+00:05:41.480 --> 00:05:43.490
+forward through
+the feature decoder.
+
+133
+00:05:43.490 --> 00:05:46.940
+As a reminder, the input
+feature map is downsampled
+
+134
+00:05:46.940 --> 00:05:50.375
+16 times with a depth of 512.
+
+135
+00:05:50.375 --> 00:05:52.664
+Similar to the feature extractor,
+
+136
+00:05:52.664 --> 00:05:55.010
+each upsampling convolution block
+
+137
+00:05:55.010 --> 00:05:57.665
+is referred to as
+a deconvolution.
+
+138
+00:05:57.665 --> 00:05:59.600
+There is of course a debate among
+
+139
+00:05:59.600 --> 00:06:01.220
+current researchers on whether
+
+140
+00:06:01.220 --> 00:06:02.950
+this terminology is accurate.
+
+141
+00:06:02.950 --> 00:06:04.940
+But we will use it
+here to refer to
+
+142
+00:06:04.940 --> 00:06:08.630
+the reverse of the
+convolutional pooling block.
+
+143
+00:06:08.630 --> 00:06:12.200
+As we go through
+the first deconvolution block,
+
+144
+00:06:12.200 --> 00:06:13.955
+our input feature map is
+
+145
+00:06:13.955 --> 00:06:16.580
+upsampled to twice
+the input resolution.
+
+146
+00:06:16.580 --> 00:06:19.220
+The depth is controlled
+by how many filters are
+
+147
+00:06:19.220 --> 00:06:22.430
+defined for each successive
+convolutional layer.
+
+148
+00:06:22.430 --> 00:06:25.640
+As we go forward through
+the rest of the decoder,
+
+149
+00:06:25.640 --> 00:06:27.800
+we finally arrive
+at a feature map of
+
+150
+00:06:27.800 --> 00:06:30.515
+similar resolution
+to the input image.
+
+151
+00:06:30.515 --> 00:06:33.020
+For reduced computational
+complexity,
+
+152
+00:06:33.020 --> 00:06:36.200
+we usually shrink the depth
+of the map as we go forward.
+
+153
+00:06:36.200 --> 00:06:37.790
+But this is a design choice
+
+154
+00:06:37.790 --> 00:06:39.590
+that depends on your application.
+
+155
+00:06:39.590 --> 00:06:42.815
+Note, this upsampling
+mechanism is the simplest
+
+156
+00:06:42.815 --> 00:06:44.570
+among many of
+the proposed methods
+
+157
+00:06:44.570 --> 00:06:46.280
+for semantic segmentation.
+
+158
+00:06:46.280 --> 00:06:48.950
+Please take a look at
+the supplementary material
+
+159
+00:06:48.950 --> 00:06:50.585
+provided for more efficient,
+
+160
+00:06:50.585 --> 00:06:52.790
+powerful, and complex upsampling
+
+161
+00:06:52.790 --> 00:06:56.060
+models that have been proposed
+for semantic segmentation.
+
+162
+00:06:56.060 --> 00:06:58.880
+Now that we have
+a similar sized feature map
+
+163
+00:06:58.880 --> 00:07:00.160
+to our input image,
+
+164
+00:07:00.160 --> 00:07:03.545
+we need to generate the
+semantic segmentation output.
+
+165
+00:07:03.545 --> 00:07:06.200
+We can perform
+semantic segmentation
+
+166
+00:07:06.200 --> 00:07:08.089
+through a linear output layer,
+
+167
+00:07:08.089 --> 00:07:10.340
+followed by a softmax function.
+
+168
+00:07:10.340 --> 00:07:12.470
+This layer is very similar to
+
+169
+00:07:12.470 --> 00:07:14.030
+the classification output layer
+
+170
+00:07:14.030 --> 00:07:16.225
+we described in object detection.
+
+171
+00:07:16.225 --> 00:07:18.365
+In fact, this layer provides
+
+172
+00:07:18.365 --> 00:07:20.930
+a k-dimensional vector
+per pixel with
+
+173
+00:07:20.930 --> 00:07:23.570
+the kth element being how
+confident the neural network
+
+174
+00:07:23.570 --> 00:07:27.110
+is that the pixel belongs
+to the kth class.
+
+175
+00:07:27.110 --> 00:07:30.760
+Let's investigate
+the expected output visually.
+
+176
+00:07:30.760 --> 00:07:32.240
+Given an image patch and
+
+177
+00:07:32.240 --> 00:07:34.190
+its corresponding
+ground truth label,
+
+178
+00:07:34.190 --> 00:07:36.230
+we can represent each pixel as
+
+179
+00:07:36.230 --> 00:07:38.885
+a k-dimensional one-hot vector.
+
+180
+00:07:38.885 --> 00:07:41.870
+A one hot vector assigns
+the value of one to
+
+181
+00:07:41.870 --> 00:07:44.950
+the correct class and zero
+to the remaining classes.
+
+182
+00:07:44.950 --> 00:07:48.860
+Since only that one value
+is non-zero or hot.
+
+183
+00:07:48.860 --> 00:07:52.630
+In this case, we have two
+classes and a background class,
+
+184
+00:07:52.630 --> 00:07:53.750
+so we are working with
+
+185
+00:07:53.750 --> 00:07:57.130
+a three-dimensional ground
+truth vector per pixel.
+
+186
+00:07:57.130 --> 00:08:01.085
+The neural network drives
+the output of the softmax
+
+187
+00:08:01.085 --> 00:08:04.460
+to be as close to one as
+possible for the correct class,
+
+188
+00:08:04.460 --> 00:08:06.410
+and is close to zero
+as possible for
+
+189
+00:08:06.410 --> 00:08:09.005
+the rest of the classes
+for each pixel.
+
+190
+00:08:09.005 --> 00:08:11.240
+We then take the index of
+
+191
+00:08:11.240 --> 00:08:13.070
+the maximum score to recover
+
+192
+00:08:13.070 --> 00:08:15.260
+the required output
+representation.
+
+193
+00:08:15.260 --> 00:08:16.790
+Note however, that we only
+
+194
+00:08:16.790 --> 00:08:18.785
+perform this step
+during inference.
+
+195
+00:08:18.785 --> 00:08:23.225
+For training, we use the
+softmax output score directly.
+
+196
+00:08:23.225 --> 00:08:26.150
+The problem of
+semantic segmentation
+
+197
+00:08:26.150 --> 00:08:27.890
+by definition requires
+
+198
+00:08:27.890 --> 00:08:29.450
+the neural network to provide
+
+199
+00:08:29.450 --> 00:08:32.690
+a single class for
+every pixel classification.
+
+200
+00:08:32.690 --> 00:08:35.060
+To learn how to
+perform this task,
+
+201
+00:08:35.060 --> 00:08:37.415
+the cross entropy
+classification loss
+
+202
+00:08:37.415 --> 00:08:40.330
+is used to train
+the neural network once again.
+
+203
+00:08:40.330 --> 00:08:42.800
+This loss is similar
+to the one we
+
+204
+00:08:42.800 --> 00:08:46.340
+used for the object detection
+classification hit.
+
+205
+00:08:46.340 --> 00:08:49.265
+Cross entropy drives
+the neural network
+
+206
+00:08:49.265 --> 00:08:51.200
+to learn a probability
+distribution
+
+207
+00:08:51.200 --> 00:08:53.330
+per pixel that is closest to
+
+208
+00:08:53.330 --> 00:08:56.375
+the ground truth class
+probability distribution.
+
+209
+00:08:56.375 --> 00:08:59.390
+Here, N total is
+the total number of
+
+210
+00:08:59.390 --> 00:09:02.870
+classified pixels in
+all the images of a mini-batch.
+
+211
+00:09:02.870 --> 00:09:04.640
+Usually, a mini-batch would
+
+212
+00:09:04.640 --> 00:09:07.074
+comprise of eight to 16 images,
+
+213
+00:09:07.074 --> 00:09:09.230
+and the choice of
+this number depends on how
+
+214
+00:09:09.230 --> 00:09:11.885
+much memory your GPU has.
+
+215
+00:09:11.885 --> 00:09:15.680
+Finally, the cross
+entropy loss compares Si,
+
+216
+00:09:15.680 --> 00:09:17.150
+the output of
+the neural network for
+
+217
+00:09:17.150 --> 00:09:19.305
+every pixel with Si star,
+
+218
+00:09:19.305 --> 00:09:22.270
+the ground truth
+classification for that pixel.
+
+219
+00:09:22.270 --> 00:09:24.460
+In summary, we arrived at
+
+220
+00:09:24.460 --> 00:09:27.610
+the following ConvNet model
+for semantic segmentation.
+
+221
+00:09:27.610 --> 00:09:30.175
+The feature extractor
+takes the image
+
+222
+00:09:30.175 --> 00:09:32.740
+as an input and
+provides an expressive,
+
+223
+00:09:32.740 --> 00:09:35.770
+but low resolution
+feature map as an output.
+
+224
+00:09:35.770 --> 00:09:37.660
+The decoder then takes
+
+225
+00:09:37.660 --> 00:09:40.030
+this feature map and
+upsamples it to get
+
+226
+00:09:40.030 --> 00:09:41.395
+a final feature map of
+
+227
+00:09:41.395 --> 00:09:44.350
+equal resolution to
+the original input image.
+
+228
+00:09:44.350 --> 00:09:48.145
+Finally, a linear layer
+followed by a softmax function
+
+229
+00:09:48.145 --> 00:09:50.500
+generates the class
+ConvNets vector
+
+230
+00:09:50.500 --> 00:09:52.885
+for each pixel in
+the input image.
+
+231
+00:09:52.885 --> 00:09:55.660
+The architecture we described
+in this lesson is one of
+
+232
+00:09:55.660 --> 00:09:56.920
+the simpler models that can be
+
+233
+00:09:56.920 --> 00:09:58.705
+used for semantic segmentation.
+
+234
+00:09:58.705 --> 00:10:00.280
+A lot of research on
+
+235
+00:10:00.280 --> 00:10:02.020
+the optimal neural network model
+
+236
+00:10:02.020 --> 00:10:04.745
+for semantic segmentation
+has been performed.
+
+237
+00:10:04.745 --> 00:10:07.689
+Ideas such as
+propagating the indices
+
+238
+00:10:07.689 --> 00:10:10.135
+from pooling layers
+in the extractor to
+
+239
+00:10:10.135 --> 00:10:12.085
+upsampling layers in the decoder
+
+240
+00:10:12.085 --> 00:10:13.750
+have shown to provide a boost in
+
+241
+00:10:13.750 --> 00:10:15.550
+performance as well as
+
+242
+00:10:15.550 --> 00:10:18.490
+computational speed for
+semantic segmentation models.
+
+243
+00:10:18.490 --> 00:10:21.430
+We've included a list of
+recent manuscripts describing
+
+244
+00:10:21.430 --> 00:10:23.980
+architecture used for
+semantic segmentation
+
+245
+00:10:23.980 --> 00:10:26.050
+in the supplementary material.
+
+246
+00:10:26.050 --> 00:10:29.800
+Congratulations, you should
+now have grasp the basics
+
+247
+00:10:29.800 --> 00:10:31.360
+of using ConvNets to solve
+
+248
+00:10:31.360 --> 00:10:33.505
+the semantic
+segmentation problem.
+
+249
+00:10:33.505 --> 00:10:35.980
+Most state of the art
+segmentation networks
+
+250
+00:10:35.980 --> 00:10:38.365
+share the structure we
+described in this video.
+
+251
+00:10:38.365 --> 00:10:39.940
+With a feature extractor,
+
+252
+00:10:39.940 --> 00:10:41.260
+a decoder and then
+
+253
+00:10:41.260 --> 00:10:44.140
+an output layer as
+the main building blocks.
+
+254
+00:10:44.140 --> 00:10:45.700
+We provide some links to
+
+255
+00:10:45.700 --> 00:10:47.600
+recent methods as
+a reference if you're
+
+256
+00:10:47.600 --> 00:10:49.340
+interested in diving deeper into
+
+257
+00:10:49.340 --> 00:10:51.485
+current top performing
+algorithms.
+
+258
+00:10:51.485 --> 00:10:54.020
+In the next lesson, we
+will describe how to use
+
+259
+00:10:54.020 --> 00:10:56.150
+the semantic segmentation
+output to help
+
+260
+00:10:56.150 --> 00:10:58.160
+self-driving cars perceive a road
+
+261
+00:10:58.160 --> 00:11:00.610
+seen. See you next time.

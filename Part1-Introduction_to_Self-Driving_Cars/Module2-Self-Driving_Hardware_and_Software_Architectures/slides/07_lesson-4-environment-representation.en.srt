@@ -1,0 +1,627 @@
+1
+00:00:00,000 --> 00:00:10,000
+[MUSIC]
+
+2
+00:00:12,564 --> 00:00:14,487
+[MUSIC]
+
+3
+00:00:14,487 --> 00:00:18,313
+In this lesson we'll take a closer
+look at the maps created to represent
+
+4
+00:00:18,313 --> 00:00:20,370
+the environment around our car.
+
+5
+00:00:20,370 --> 00:00:24,130
+I'll present an overview of the three
+different map types traditionally used for
+
+6
+00:00:24,130 --> 00:00:27,880
+autonomous driving, which you saw
+briefly in the previous video.
+
+7
+00:00:27,880 --> 00:00:31,680
+Then I'll give you a more detailed
+explanation about each of the maps so you
+
+8
+00:00:31,680 --> 00:00:36,060
+can better understand How they're created
+and used throughout the specialization.
+
+9
+00:00:37,550 --> 00:00:40,760
+The first map we will discuss
+is the localization map.
+
+10
+00:00:40,760 --> 00:00:44,230
+This map is created using
+a continuous set of lidar points or
+
+11
+00:00:44,230 --> 00:00:47,570
+camera image features as the car
+moves through the enviromment.
+
+12
+00:00:48,670 --> 00:00:52,400
+This map is then used in
+combination with GPS, IMU and
+
+13
+00:00:52,400 --> 00:00:55,270
+wheel odometry by the localization module
+
+14
+00:00:55,270 --> 00:00:59,210
+To accurately estimate the precise
+location of the vehicle at all times.
+
+15
+00:01:00,730 --> 00:01:03,690
+The second map is the occupancy grid map.
+
+16
+00:01:03,690 --> 00:01:07,780
+The occupancy grid also uses a continuous
+set of LIDAR points to build a map of
+
+17
+00:01:07,780 --> 00:01:12,470
+the environment which indicates
+the location of all static, or stationary,
+
+18
+00:01:12,470 --> 00:01:14,020
+obstacles.
+
+19
+00:01:14,020 --> 00:01:17,480
+This map is used to plan safe,
+collision-free paths for
+
+20
+00:01:17,480 --> 00:01:18,440
+the autonomous vehicle.
+
+21
+00:01:19,590 --> 00:01:25,040
+The third and final map that we'll discuss
+in this video is the detailed road map.
+
+22
+00:01:25,040 --> 00:01:26,940
+It contains detailed positions for
+
+23
+00:01:26,940 --> 00:01:31,640
+all regulatory elements,
+regulatory attributes and lane markings.
+
+24
+00:01:31,640 --> 00:01:35,440
+This map is used to plan a path from the
+current position to the final destination.
+
+25
+00:01:37,060 --> 00:01:39,050
+Let's take a closer look
+at the localization map.
+
+26
+00:01:40,270 --> 00:01:41,780
+As I mentioned previously,
+
+27
+00:01:41,780 --> 00:01:44,960
+the localization map uses
+recorded LIDAR points or
+
+28
+00:01:44,960 --> 00:01:50,460
+images, which are combined to make a point
+cloud representation of the environment.
+
+29
+00:01:50,460 --> 00:01:55,570
+As new LIDAR camera data is received it
+is compared to the localization map and
+
+30
+00:01:55,570 --> 00:01:59,650
+a measurement of the eagle vehicles
+position is created by aligning the new
+
+31
+00:01:59,650 --> 00:02:01,050
+data with the existing map.
+
+32
+00:02:02,100 --> 00:02:06,920
+This measurement is then combined with
+other sensors to estimate eagle motion and
+
+33
+00:02:06,920 --> 00:02:08,599
+ultimately used to control the vehicle
+
+34
+00:02:10,440 --> 00:02:14,480
+Here we have some recorded LIDAR
+data from our self-driving car.
+
+35
+00:02:14,480 --> 00:02:18,700
+The movement of the vehicle is clear based
+on the evolution of the LIDAR points
+
+36
+00:02:18,700 --> 00:02:19,840
+in this video.
+
+37
+00:02:19,840 --> 00:02:23,920
+As the car drives out of a driveway and
+onto the street ahead.
+
+38
+00:02:23,920 --> 00:02:28,250
+This detailed evolving representation
+of the motion of a car through its
+
+39
+00:02:28,250 --> 00:02:31,990
+environment Is extremely valuable for
+the localization module.
+
+40
+00:02:33,450 --> 00:02:38,080
+The localization map can be quite large,
+and many methods exist to compress it's
+
+41
+00:02:38,080 --> 00:02:42,490
+contents and keep only those features
+that are needed for localization.
+
+42
+00:02:42,490 --> 00:02:45,440
+The construction of this map will
+be more rigorously explained
+
+43
+00:02:45,440 --> 00:02:48,090
+in the next course of this specialization.
+
+44
+00:02:48,090 --> 00:02:50,330
+Where we discuss localization in detail.
+
+45
+00:02:52,060 --> 00:02:56,990
+The occupancy grid is a 2D or 3D
+discretized map of the static objects in
+
+46
+00:02:56,990 --> 00:02:59,880
+the environments surrounding
+the eagle vehicle.
+
+47
+00:02:59,880 --> 00:03:04,710
+This map is created to identify all
+static objects around the autonomous car,
+
+48
+00:03:04,710 --> 00:03:07,090
+once again,
+using point clouds as our input.
+
+49
+00:03:08,560 --> 00:03:12,660
+The objects which are classified as
+static include trees, buildings,
+
+50
+00:03:12,660 --> 00:03:16,560
+curbs, and
+all other nondriveable surfaces.
+
+51
+00:03:16,560 --> 00:03:22,080
+For example, in this grid map,
+if all occupied grids were colored in,
+
+52
+00:03:22,080 --> 00:03:24,059
+this is what the occupancy
+grid may look like.
+
+53
+00:03:25,795 --> 00:03:30,182
+As the occupancy grid only represents
+the static objects from the environment,
+
+54
+00:03:30,182 --> 00:03:33,310
+all dynamic objects must first be removed.
+
+55
+00:03:33,310 --> 00:03:37,230
+This is done by removing all lidar points
+that are found within the bounding boxes
+
+56
+00:03:37,230 --> 00:03:40,820
+of detected dynamic objects
+identified by the perception stack.
+
+57
+00:03:42,630 --> 00:03:45,550
+Next, static objects
+which will not interfere
+
+58
+00:03:45,550 --> 00:03:47,770
+with the vehicle are also removed.
+
+59
+00:03:47,770 --> 00:03:52,000
+Such as dryable service or
+any over hanging tree branches.
+
+60
+00:03:52,000 --> 00:03:56,500
+As result of these steps only the relevent
+writer points from static objects from
+
+61
+00:03:56,500 --> 00:03:57,430
+the environment remain.
+
+62
+00:03:58,590 --> 00:04:01,360
+The filtering process is not perfect and
+so
+
+63
+00:04:01,360 --> 00:04:06,529
+it is not possible to blindly trust
+the remaining points are in fact obstacles
+
+64
+00:04:07,730 --> 00:04:11,330
+The occupancy grid, therefore, represents
+the environment probabilistically,
+
+65
+00:04:11,330 --> 00:04:14,750
+by tracking the likelihood that
+a grid cells occupy over time.
+
+66
+00:04:15,830 --> 00:04:21,120
+This map is then relied on to create paths
+for the vehicle which are collusion-free.
+
+67
+00:04:21,120 --> 00:04:24,110
+Both the creation of this map and
+its application
+
+68
+00:04:24,110 --> 00:04:27,390
+to the local planning problem will
+be covered in much greater detail.
+
+69
+00:04:27,390 --> 00:04:29,090
+In course four of the specialization.
+
+70
+00:04:30,620 --> 00:04:34,070
+Let's look at an example of
+an occupancy grid updating over time.
+
+71
+00:04:35,300 --> 00:04:40,160
+Here, we see the occupancy grid
+visualized as the light gray square area,
+
+72
+00:04:40,160 --> 00:04:42,160
+under the autonomous car.
+
+73
+00:04:42,160 --> 00:04:46,149
+Updating the position of static objects
+in the environment with black squares.
+
+74
+00:04:47,440 --> 00:04:50,110
+As the autonomous car moves
+through the environment,
+
+75
+00:04:50,110 --> 00:04:53,960
+all stationary objects in the environment
+such as poles, buildings, and
+
+76
+00:04:53,960 --> 00:04:57,580
+parked cars,
+are shown as occupied grid cells.
+
+77
+00:04:59,470 --> 00:05:03,570
+Finally, the detailed roadmap is
+a map of the full road network
+
+78
+00:05:03,570 --> 00:05:05,240
+which can be driven by
+the self-driving car.
+
+79
+00:05:07,220 --> 00:05:10,690
+This map contains information
+regarding the lanes of a road,
+
+80
+00:05:10,690 --> 00:05:14,200
+as well as any traffic regulation
+elements which may affect them.
+
+81
+00:05:15,230 --> 00:05:17,730
+The detailed road map is
+used to plan a safe and
+
+82
+00:05:17,730 --> 00:05:20,080
+efficient path to be taken
+by the self-driving car.
+
+83
+00:05:21,960 --> 00:05:24,886
+The detailed road map can be
+created in one of three ways.
+
+84
+00:05:24,886 --> 00:05:30,670
+Fully online, fully offline,
+
+85
+00:05:30,670 --> 00:05:33,570
+or created offline and updated online.
+
+86
+00:05:35,400 --> 00:05:40,170
+A map which is created fully online relies
+heavily on the static object proportion
+
+87
+00:05:40,170 --> 00:05:43,080
+of the perception stack
+to accurately label and
+
+88
+00:05:43,080 --> 00:05:46,350
+correctly localize all relevant
+static objects to create the map.
+
+89
+00:05:47,450 --> 00:05:51,480
+This includes all lane boundaries
+in the current driving environment,
+
+90
+00:05:51,480 --> 00:05:55,490
+any regulation elements,
+such as traffic lights or traffic signs,
+
+91
+00:05:55,490 --> 00:05:59,900
+any regulation attributes of the lanes,
+such as right turn markings or crosswalks.
+
+92
+00:06:01,420 --> 00:06:04,820
+This method of map creation is rarely used
+
+93
+00:06:04,820 --> 00:06:07,909
+due to the complexity of
+creating such a map in real time.
+
+94
+00:06:09,820 --> 00:06:14,010
+A map which is created entirely offline
+is usually done by collecting data
+
+95
+00:06:14,010 --> 00:06:16,370
+of a given road several times.
+
+96
+00:06:16,370 --> 00:06:20,820
+Specialized vehicles with high accuracy
+sensors are driven along roadways
+
+97
+00:06:20,820 --> 00:06:23,880
+regularly to construct offline maps.
+
+98
+00:06:23,880 --> 00:06:28,680
+Once the collection is complete, the
+information is then labelled with the use
+
+99
+00:06:28,680 --> 00:06:32,980
+of a mixture of automatic labelling
+from static object perception and
+
+100
+00:06:32,980 --> 00:06:34,400
+human annotation and correction.
+
+101
+00:06:35,430 --> 00:06:38,970
+This method of map creation,
+while producing very detailed and
+
+102
+00:06:38,970 --> 00:06:43,950
+accurate maps, is unable to react or
+adapt to a changing environment.
+
+103
+00:06:43,950 --> 00:06:48,740
+The third method of creating detailed
+roadmaps is to create them offline and
+
+104
+00:06:48,740 --> 00:06:51,840
+then update them online with new,
+relevant information.
+
+105
+00:06:52,920 --> 00:06:56,080
+This method of map creation
+takes advantage of both methods,
+
+106
+00:06:56,080 --> 00:07:00,190
+creating a highly accurate roadmap
+which can be updated while driving.
+
+107
+00:07:01,590 --> 00:07:06,070
+In course four on motion planning, we
+will present a method for storing all of
+
+108
+00:07:06,070 --> 00:07:10,000
+the information present in a detailed
+roadmap called the lane length model.
+
+109
+00:07:11,420 --> 00:07:13,940
+Let's look at an example
+of a detailed roadmap.
+
+110
+00:07:15,020 --> 00:07:20,140
+As you can see, the lane boundaries of
+the detailed roadmap are visualized in red
+
+111
+00:07:20,140 --> 00:07:24,910
+Along with the boundaries, the center
+of each lane is also visualized in red.
+
+112
+00:07:24,910 --> 00:07:26,945
+This information is vitally important for
+
+113
+00:07:26,945 --> 00:07:30,380
+path-following as it provides
+a default path along the lane.
+
+114
+00:07:31,770 --> 00:07:34,300
+As you can see in this video the vehicle,
+
+115
+00:07:34,300 --> 00:07:37,880
+while autonomously driving,
+neatly follows the center of the lane.
+
+116
+00:07:39,660 --> 00:07:42,910
+That completes our discussion of
+mapping for self-driving cars.
+
+117
+00:07:42,910 --> 00:07:47,365
+In this video, you learned about three
+types of maps commonly used for autonomous
+
+118
+00:07:47,365 --> 00:07:53,570
+driving: The localization map, the
+occupancy grid, and the detailed road map.
+
+119
+00:07:53,570 --> 00:07:57,620
+You'll study each of these map types
+further as we dive into localization,
+
+120
+00:07:57,620 --> 00:07:58,780
+collision avoidance, and
+
+121
+00:07:58,780 --> 00:08:02,890
+motion planning In the remaining
+courses of the specialization.
+
+122
+00:08:02,890 --> 00:08:06,120
+Congratulations, you
+completed the second module
+
+123
+00:08:06,120 --> 00:08:09,780
+in this introduction to
+self-driving cars course.
+
+124
+00:08:09,780 --> 00:08:12,720
+In this module,
+you learned how to select sensing and
+
+125
+00:08:12,720 --> 00:08:16,270
+computing hardware in self-driving car,
+
+126
+00:08:16,270 --> 00:08:20,370
+how to design specific sensors [INAUDIBLE]
+based on the requirements of driving.
+
+127
+00:08:21,850 --> 00:08:25,310
+How to decompose the software system for
+autonomous driving.
+
+128
+00:08:27,000 --> 00:08:30,990
+And what the three main types of maps
+are that represent the environment.
+
+129
+00:08:32,710 --> 00:08:36,400
+In the next module, we will take a closer
+look at the vehicle modeling for
+
+130
+00:08:36,400 --> 00:08:38,080
+the purpose of precision control.
+
+131
+00:08:38,080 --> 00:08:46,921
+I'll see you in the next module.
+
+132
+00:08:46,921 --> 00:08:51,793
+[SOUND]

@@ -1,0 +1,782 @@
+WEBVTT
+
+1
+00:00:13.910 --> 00:00:17.500
+Welcome to the last video
+of this module.
+
+2
+00:00:17.500 --> 00:00:19.650
+A brief introduction
+to computer vision.
+
+3
+00:00:19.650 --> 00:00:20.790
+You're almost there.
+
+4
+00:00:20.790 --> 00:00:22.020
+Today, we will learn
+
+5
+00:00:22.020 --> 00:00:23.970
+the last introductory
+piece required to
+
+6
+00:00:23.970 --> 00:00:26.400
+begin developing
+basic perception algorithms
+
+7
+00:00:26.400 --> 00:00:28.110
+for self-driving cars.
+
+8
+00:00:28.110 --> 00:00:30.945
+Specifically, we will
+be talking about
+
+9
+00:00:30.945 --> 00:00:32.280
+image filtering through cross
+
+10
+00:00:32.280 --> 00:00:35.085
+correlation and
+convolution operations.
+
+11
+00:00:35.085 --> 00:00:38.190
+We will also discuss some
+of the common uses for
+
+12
+00:00:38.190 --> 00:00:39.570
+these operations and relate
+
+13
+00:00:39.570 --> 00:00:41.565
+them to the self-driving task.
+
+14
+00:00:41.565 --> 00:00:43.580
+First, let us begin with
+
+15
+00:00:43.580 --> 00:00:46.505
+the motivation on why we
+would use image filtering.
+
+16
+00:00:46.505 --> 00:00:48.320
+The image formation process is
+
+17
+00:00:48.320 --> 00:00:51.035
+susceptible to lots of
+different noise sources.
+
+18
+00:00:51.035 --> 00:00:53.060
+Here you can see the camera man,
+
+19
+00:00:53.060 --> 00:00:55.130
+a very famous photo created at
+
+20
+00:00:55.130 --> 00:00:59.030
+MIT that is used for testing
+computer vision algorithms.
+
+21
+00:00:59.030 --> 00:01:02.330
+Now let us add salt and
+pepper noise to this image,
+
+22
+00:01:02.330 --> 00:01:03.800
+by randomly turning some of
+
+23
+00:01:03.800 --> 00:01:06.350
+its pixels white
+and others black.
+
+24
+00:01:06.350 --> 00:01:08.045
+How can we retrieve
+
+25
+00:01:08.045 --> 00:01:10.130
+a reasonable visual appearance of
+
+26
+00:01:10.130 --> 00:01:12.260
+the original image
+from such a noisy one?
+
+27
+00:01:12.260 --> 00:01:13.460
+Image filtering is
+
+28
+00:01:13.460 --> 00:01:16.535
+as simple and efficient method
+to eliminate noise.
+
+29
+00:01:16.535 --> 00:01:19.080
+You will also see that
+depending on the filter,
+
+30
+00:01:19.080 --> 00:01:20.960
+a variety of operations can be
+
+31
+00:01:20.960 --> 00:01:23.515
+performed on images in
+an efficient manner.
+
+32
+00:01:23.515 --> 00:01:26.360
+But first, let us see
+how image filtering
+
+33
+00:01:26.360 --> 00:01:27.530
+helps reduce salt and
+
+34
+00:01:27.530 --> 00:01:29.765
+pepper noise as
+a motivating example.
+
+35
+00:01:29.765 --> 00:01:31.100
+If we look at the image array,
+
+36
+00:01:31.100 --> 00:01:33.080
+we noticed that salt
+and pepper noise
+
+37
+00:01:33.080 --> 00:01:35.705
+usually results in
+outlier pixels,
+
+38
+00:01:35.705 --> 00:01:38.255
+low-value pixels in
+a high-value neighborhood
+
+39
+00:01:38.255 --> 00:01:41.030
+or high-value pixels in
+a low-value neighborhood.
+
+40
+00:01:41.030 --> 00:01:43.760
+One idea to reduce
+this noise is to
+
+41
+00:01:43.760 --> 00:01:46.370
+compute the mean of
+the whole neighborhood,
+
+42
+00:01:46.370 --> 00:01:49.895
+and replace the outlier pixel
+with this mean value.
+
+43
+00:01:49.895 --> 00:01:54.455
+Let us define G as the output
+of our filter operation.
+
+44
+00:01:54.455 --> 00:01:58.459
+The equation of the mean can
+be described in terms of k,
+
+45
+00:01:58.459 --> 00:02:00.995
+u and v. Here,
+
+46
+00:02:00.995 --> 00:02:03.095
+2k plus one is the filter size.
+
+47
+00:02:03.095 --> 00:02:05.270
+In this case, the size of
+our neighborhood which is
+
+48
+00:02:05.270 --> 00:02:08.635
+three leads to a k
+that's equal to one.
+
+49
+00:02:08.635 --> 00:02:11.900
+u and v are the center pixel
+image coordinates.
+
+50
+00:02:11.900 --> 00:02:14.180
+Computing the mean
+results in 80 for
+
+51
+00:02:14.180 --> 00:02:17.240
+the top neighborhood and
+10 for the bottom one.
+
+52
+00:02:17.240 --> 00:02:20.225
+The final step is to
+replace the center pixel
+
+53
+00:02:20.225 --> 00:02:23.320
+of each of those neighborhoods
+by the corresponding mean.
+
+54
+00:02:23.320 --> 00:02:25.670
+We have successfully
+reduced the noise and
+
+55
+00:02:25.670 --> 00:02:28.895
+smooth the image array values
+in this neighborhood.
+
+56
+00:02:28.895 --> 00:02:31.310
+The mean equation can
+be generalized by
+
+57
+00:02:31.310 --> 00:02:33.620
+adding a weight to every pixel
+in the neighborhood.
+
+58
+00:02:33.620 --> 00:02:36.340
+The weight matrix H
+is called a kernel.
+
+59
+00:02:36.340 --> 00:02:40.205
+This generalized form is
+termed cross-correlation,
+
+60
+00:02:40.205 --> 00:02:42.290
+as it defines a correlation
+
+61
+00:02:42.290 --> 00:02:43.550
+between each pixel and
+
+62
+00:02:43.550 --> 00:02:45.245
+every other pixel in
+the neighborhood.
+
+63
+00:02:45.245 --> 00:02:47.805
+For the mean filter
+defined above,
+
+64
+00:02:47.805 --> 00:02:50.685
+we now represented with
+the following kernel.
+
+65
+00:02:50.685 --> 00:02:54.440
+A three-by-three matrix filled
+with the value one-ninth.
+
+66
+00:02:54.440 --> 00:02:56.615
+Another kernel for
+noise reduction
+
+67
+00:02:56.615 --> 00:02:58.040
+is the Gaussian kernel,
+
+68
+00:02:58.040 --> 00:03:00.320
+where the center pixel
+is weighted more than
+
+69
+00:03:00.320 --> 00:03:01.910
+the neighboring pixels and
+
+70
+00:03:01.910 --> 00:03:04.715
+the weights follow
+a Gaussian distribution.
+
+71
+00:03:04.715 --> 00:03:07.895
+Now let's apply these kernels
+to our camera man image.
+
+72
+00:03:07.895 --> 00:03:09.530
+We can see that our kernels
+
+73
+00:03:09.530 --> 00:03:12.380
+successfully reduces
+the salt and pepper noise.
+
+74
+00:03:12.380 --> 00:03:14.900
+However, it also
+blurred our image,
+
+75
+00:03:14.900 --> 00:03:18.215
+an inevitable consequence
+of these linear filters.
+
+76
+00:03:18.215 --> 00:03:20.420
+This blur can be
+reduced by tuning
+
+77
+00:03:20.420 --> 00:03:23.670
+the parameters specific
+to each type of filter.
+
+78
+00:03:24.100 --> 00:03:26.645
+Now, we will define
+
+79
+00:03:26.645 --> 00:03:29.420
+another useful operation
+used for image filtering.
+
+80
+00:03:29.420 --> 00:03:32.515
+A convolution is
+a cross-correlation,
+
+81
+00:03:32.515 --> 00:03:35.195
+where the filter is
+flipped both horizontally
+
+82
+00:03:35.195 --> 00:03:38.455
+and vertically before being
+applied to the image.
+
+83
+00:03:38.455 --> 00:03:40.125
+To apply the convolution,
+
+84
+00:03:40.125 --> 00:03:42.070
+we take each row of our kernel,
+
+85
+00:03:42.070 --> 00:03:44.060
+flip it and replace it at
+
+86
+00:03:44.060 --> 00:03:47.330
+its corresponding symmetric
+position from the middle row.
+
+87
+00:03:47.330 --> 00:03:49.160
+Mathematically convolution can be
+
+88
+00:03:49.160 --> 00:03:51.505
+described as
+the following equation.
+
+89
+00:03:51.505 --> 00:03:53.450
+Note that we simply manipulated
+
+90
+00:03:53.450 --> 00:03:56.360
+the image coordinates instead
+of flipping the kernel.
+
+91
+00:03:56.360 --> 00:03:58.040
+What are the advantages of
+
+92
+00:03:58.040 --> 00:04:00.250
+using a convolution
+over a kernel?
+
+93
+00:04:00.250 --> 00:04:03.490
+Unlike correlation,
+convolution is associative,
+
+94
+00:04:03.490 --> 00:04:04.760
+meaning the order of
+
+95
+00:04:04.760 --> 00:04:07.760
+multiplication of
+kernels does not matter.
+
+96
+00:04:07.760 --> 00:04:09.620
+We can therefore apply as many
+
+97
+00:04:09.620 --> 00:04:12.140
+consecutive linear kernels
+to an image as we
+
+98
+00:04:12.140 --> 00:04:15.290
+want by precomputing
+the combined convolution
+
+99
+00:04:15.290 --> 00:04:16.505
+of all the kernels,
+
+100
+00:04:16.505 --> 00:04:19.205
+and then performing
+a single convolution
+
+101
+00:04:19.205 --> 00:04:21.935
+of the resulting kernel
+with the image.
+
+102
+00:04:21.935 --> 00:04:25.185
+As an example, we apply
+two linear kernels,
+
+103
+00:04:25.185 --> 00:04:27.165
+H and F, by computing
+
+104
+00:04:27.165 --> 00:04:30.565
+H times F and then
+applying it to the image.
+
+105
+00:04:30.565 --> 00:04:33.980
+This results in a substantial
+reduction in runtime,
+
+106
+00:04:33.980 --> 00:04:35.570
+especially if we need to process
+
+107
+00:04:35.570 --> 00:04:37.745
+images in real-time while
+moving in a vehicle.
+
+108
+00:04:37.745 --> 00:04:40.490
+Now let's present
+some important applications of
+
+109
+00:04:40.490 --> 00:04:43.490
+cross-correlation
+and convolution operations.
+
+110
+00:04:43.490 --> 00:04:46.700
+Cross-correlation can be
+used for template matching.
+
+111
+00:04:46.700 --> 00:04:48.950
+Template matching is
+the problem where
+
+112
+00:04:48.950 --> 00:04:51.050
+we are given a pattern
+or a template,
+
+113
+00:04:51.050 --> 00:04:53.795
+and we want to find
+its location in the image.
+
+114
+00:04:53.795 --> 00:04:56.030
+This can be done by
+finding the location of
+
+115
+00:04:56.030 --> 00:04:59.710
+the highest value of the output
+of cross-correlation,
+
+116
+00:04:59.710 --> 00:05:02.480
+between the template
+and the image.
+
+117
+00:05:02.480 --> 00:05:03.970
+To visualize this better,
+
+118
+00:05:03.970 --> 00:05:06.650
+let's superimpose
+the colorized output
+
+119
+00:05:06.650 --> 00:05:09.635
+of cross-correlation on
+top of our target image.
+
+120
+00:05:09.635 --> 00:05:13.054
+Here red is a high
+cross-correlation response,
+
+121
+00:05:13.054 --> 00:05:15.820
+while blue is
+a very low response.
+
+122
+00:05:15.820 --> 00:05:19.570
+The location of the template
+and the image is then the u,
+
+123
+00:05:19.570 --> 00:05:21.080
+v coordinates of the pixel with
+
+124
+00:05:21.080 --> 00:05:22.310
+the highest value from
+
+125
+00:05:22.310 --> 00:05:24.020
+the output of
+the cross-correlation.
+
+126
+00:05:24.020 --> 00:05:26.600
+We can check that
+our correlation is correct
+
+127
+00:05:26.600 --> 00:05:29.180
+by superimposing
+the template on the u,
+
+128
+00:05:29.180 --> 00:05:31.130
+v coordinates we just found.
+
+129
+00:05:31.130 --> 00:05:32.870
+This method can be used as
+
+130
+00:05:32.870 --> 00:05:35.479
+a starting point for
+the identification of signs,
+
+131
+00:05:35.479 --> 00:05:37.070
+and even for lean detection,
+
+132
+00:05:37.070 --> 00:05:40.375
+although challenges arise with
+the approach in practice.
+
+133
+00:05:40.375 --> 00:05:42.500
+Another important
+application that
+
+134
+00:05:42.500 --> 00:05:44.780
+can be performed
+using convolutions,
+
+135
+00:05:44.780 --> 00:05:47.150
+is image gradient computation.
+
+136
+00:05:47.150 --> 00:05:49.250
+Image gradients
+can be computed by
+
+137
+00:05:49.250 --> 00:05:50.630
+a convolution with a kernel
+
+138
+00:05:50.630 --> 00:05:52.720
+that performs finite difference.
+
+139
+00:05:52.720 --> 00:05:54.470
+We can rotate our kernel in
+
+140
+00:05:54.470 --> 00:05:57.109
+different orientations
+to get vertical,
+
+141
+00:05:57.109 --> 00:05:59.060
+horizontal or even diagonal
+
+142
+00:05:59.060 --> 00:06:01.325
+gradients of an image at a pixel.
+
+143
+00:06:01.325 --> 00:06:03.710
+Image gradients are
+extremely useful for
+
+144
+00:06:03.710 --> 00:06:06.535
+detection of edges and corners,
+
+145
+00:06:06.535 --> 00:06:09.320
+and are used extensively
+in self-driving for
+
+146
+00:06:09.320 --> 00:06:12.850
+image feature and
+object detection, for example.
+
+147
+00:06:12.850 --> 00:06:14.850
+In this lesson, you learned
+
+148
+00:06:14.850 --> 00:06:16.630
+how to perform cross-correlation
+
+149
+00:06:16.630 --> 00:06:18.470
+and convolution as well
+
+150
+00:06:18.470 --> 00:06:20.495
+as some of the uses
+of these operations.
+
+151
+00:06:20.495 --> 00:06:23.630
+These operations will prove
+to be very useful later on in
+
+152
+00:06:23.630 --> 00:06:27.520
+the course when we discuss
+convolution neural networks.
+
+153
+00:06:27.520 --> 00:06:29.400
+Next week we will
+deal deeper into
+
+154
+00:06:29.400 --> 00:06:31.880
+image processing to
+learn how to distill
+
+155
+00:06:31.880 --> 00:06:33.320
+useful information from
+
+156
+00:06:33.320 --> 00:06:36.410
+these high dimensional
+objects. Well done.
+
+157
+00:06:36.410 --> 00:06:39.170
+You've completed
+the first week of this course.
+
+158
+00:06:39.170 --> 00:06:43.355
+By now you should know how to
+represent a digital image.
+
+159
+00:06:43.355 --> 00:06:46.780
+How points in 3D relate
+to pixels in an image.
+
+160
+00:06:46.780 --> 00:06:48.360
+How to compute 3D point
+
+161
+00:06:48.360 --> 00:06:50.774
+coordinates from
+a pair of images,
+
+162
+00:06:50.774 --> 00:06:52.400
+and how to process images using
+
+163
+00:06:52.400 --> 00:06:55.340
+cross-correlation
+and convolution operations.
+
+164
+00:06:55.340 --> 00:06:56.920
+For this week's assignment,
+
+165
+00:06:56.920 --> 00:06:58.970
+we will use what we've learnt as
+
+166
+00:06:58.970 --> 00:07:01.460
+building blocks for
+a simple distance to
+
+167
+00:07:01.460 --> 00:07:03.800
+impact perception module for
+
+168
+00:07:03.800 --> 00:07:06.840
+self-driving cars. Good luck.

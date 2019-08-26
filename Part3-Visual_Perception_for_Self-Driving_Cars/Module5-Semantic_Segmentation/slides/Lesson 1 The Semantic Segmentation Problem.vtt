@@ -1,0 +1,855 @@
+WEBVTT
+
+1
+00:00:19.010 --> 00:00:21.030
+Hello and welcome to
+
+2
+00:00:21.030 --> 00:00:23.130
+the final technical module of
+
+3
+00:00:23.130 --> 00:00:25.995
+the visual perception
+for self-driving course.
+
+4
+00:00:25.995 --> 00:00:28.290
+This module will be dedicated to
+
+5
+00:00:28.290 --> 00:00:30.210
+another important
+perception task for
+
+6
+00:00:30.210 --> 00:00:33.465
+self-driving cars,
+semantic segmentation.
+
+7
+00:00:33.465 --> 00:00:35.940
+Semantic segmentation
+is useful for
+
+8
+00:00:35.940 --> 00:00:38.940
+a range of self-driving
+perception tasks such
+
+9
+00:00:38.940 --> 00:00:41.460
+as identifying where
+the road boundaries are
+
+10
+00:00:41.460 --> 00:00:44.420
+and tracking motion
+relative to lane markings.
+
+11
+00:00:44.420 --> 00:00:45.710
+By the end of this module,
+
+12
+00:00:45.710 --> 00:00:47.150
+you will also be able to use
+
+13
+00:00:47.150 --> 00:00:49.280
+semantic segmentation results to
+
+14
+00:00:49.280 --> 00:00:51.320
+aid in 2D object detection.
+
+15
+00:00:51.320 --> 00:00:53.540
+Semantic segmentation
+is also very
+
+16
+00:00:53.540 --> 00:00:56.465
+important for domains other
+than self-driving cars.
+
+17
+00:00:56.465 --> 00:00:58.460
+Medical image segmentation is
+
+18
+00:00:58.460 --> 00:01:00.440
+a rapidly growing field with
+
+19
+00:01:00.440 --> 00:01:03.770
+recent methods using the models
+you will learn this week
+
+20
+00:01:03.770 --> 00:01:07.280
+to perform tasks ranging from
+tumor segmentation in CAT
+
+21
+00:01:07.280 --> 00:01:11.465
+scans to cavity segmentation
+in tooth x-ray images.
+
+22
+00:01:11.465 --> 00:01:12.830
+In fact, during
+
+23
+00:01:12.830 --> 00:01:14.450
+an international medical imaging
+
+24
+00:01:14.450 --> 00:01:17.015
+segmentation challenge in 2017,
+
+25
+00:01:17.015 --> 00:01:19.490
+ConvNets demonstrated
+abilities within
+
+26
+00:01:19.490 --> 00:01:22.510
+one percent of
+human level performance.
+
+27
+00:01:22.510 --> 00:01:24.320
+The semantic segmentation models
+
+28
+00:01:24.320 --> 00:01:26.180
+we will learn about
+in this course are
+
+29
+00:01:26.180 --> 00:01:28.700
+versatile and usually
+transfer well
+
+30
+00:01:28.700 --> 00:01:31.820
+to tasks outside the domain
+of self-driving cars.
+
+31
+00:01:31.820 --> 00:01:34.040
+In this lesson, you
+will learn how to
+
+32
+00:01:34.040 --> 00:01:36.875
+formulate the problem of
+semantic segmentation.
+
+33
+00:01:36.875 --> 00:01:39.139
+You will also learn
+how to evaluate
+
+34
+00:01:39.139 --> 00:01:41.210
+semantic segmentation
+models using
+
+35
+00:01:41.210 --> 00:01:44.855
+common evaluation metrics
+such as the class IOU.
+
+36
+00:01:44.855 --> 00:01:46.580
+Let's begin by defining
+
+37
+00:01:46.580 --> 00:01:48.760
+the semantic
+segmentation problem.
+
+38
+00:01:48.760 --> 00:01:50.440
+Given an input image,
+
+39
+00:01:50.440 --> 00:01:52.970
+we want to classify each pixel
+
+40
+00:01:52.970 --> 00:01:56.075
+into a set of preset categories.
+
+41
+00:01:56.075 --> 00:01:59.660
+The categories can be static
+road elements such as roads,
+
+42
+00:01:59.660 --> 00:02:01.940
+sidewalk, pole, traffic lights,
+
+43
+00:02:01.940 --> 00:02:04.080
+and traffic signs or
+
+44
+00:02:04.080 --> 00:02:05.760
+dynamic obstacles such as
+
+45
+00:02:05.760 --> 00:02:08.520
+cars, pedestrians, and cyclists.
+
+46
+00:02:08.520 --> 00:02:12.275
+Also, we always have a background
+class that encompasses
+
+47
+00:02:12.275 --> 00:02:16.810
+any category we do not include
+in our preset categories.
+
+48
+00:02:16.810 --> 00:02:18.675
+As with object detection,
+
+49
+00:02:18.675 --> 00:02:21.125
+we realize the semantic
+segmentation
+
+50
+00:02:21.125 --> 00:02:23.030
+through a function estimator.
+
+51
+00:02:23.030 --> 00:02:24.860
+So, how do we adapt
+
+52
+00:02:24.860 --> 00:02:28.055
+our generic neural network
+to work for segmentation?
+
+53
+00:02:28.055 --> 00:02:32.210
+Given an image, we take
+every pixel as an input
+
+54
+00:02:32.210 --> 00:02:35.960
+and output a vector of
+class scores per pixel.
+
+55
+00:02:35.960 --> 00:02:37.730
+A pixel belongs to the class
+
+56
+00:02:37.730 --> 00:02:39.170
+with the highest class score.
+
+57
+00:02:39.170 --> 00:02:41.720
+Therefore, we want
+our estimator to give
+
+58
+00:02:41.720 --> 00:02:42.830
+the highest score to
+
+59
+00:02:42.830 --> 00:02:45.730
+the correct class for
+every pixel in an image.
+
+60
+00:02:45.730 --> 00:02:48.260
+As an example, a road
+pixel should have
+
+61
+00:02:48.260 --> 00:02:49.940
+a very high road score and much
+
+62
+00:02:49.940 --> 00:02:52.310
+lower scores for other classes.
+
+63
+00:02:52.310 --> 00:02:55.520
+When we look at a pixel
+belonging to the sidewalk,
+
+64
+00:02:55.520 --> 00:02:57.575
+the function estimator
+should provide
+
+65
+00:02:57.575 --> 00:03:01.490
+a higher sidewalks score
+than all other class scores.
+
+66
+00:03:01.490 --> 00:03:04.580
+When attempting to perform
+semantic segmentation,
+
+67
+00:03:04.580 --> 00:03:06.020
+we usually face many of
+
+68
+00:03:06.020 --> 00:03:09.005
+the same problems as
+object detection.
+
+69
+00:03:09.005 --> 00:03:13.225
+As such, semantic segmentation
+is a non-trivial problem.
+
+70
+00:03:13.225 --> 00:03:16.495
+Occlusion and
+truncation, for example,
+
+71
+00:03:16.495 --> 00:03:20.060
+make it hard to accurately
+predict object boundaries.
+
+72
+00:03:20.060 --> 00:03:24.170
+Scale is also a major issue
+as we need to handle
+
+73
+00:03:24.170 --> 00:03:26.150
+both close-by objects with fine
+
+74
+00:03:26.150 --> 00:03:28.280
+detail and far away objects
+
+75
+00:03:28.280 --> 00:03:30.665
+captured by only a few pixels.
+
+76
+00:03:30.665 --> 00:03:32.690
+We also need to be able to
+
+77
+00:03:32.690 --> 00:03:34.960
+handle illumination
+changes in the scene.
+
+78
+00:03:34.960 --> 00:03:37.580
+However, semantic
+segmentation also
+
+79
+00:03:37.580 --> 00:03:40.655
+has a major problem
+specific difficulty.
+
+80
+00:03:40.655 --> 00:03:42.860
+This difficulty is caused by
+
+81
+00:03:42.860 --> 00:03:46.280
+an ambiguity of boundaries
+in image space,
+
+82
+00:03:46.280 --> 00:03:49.115
+especially for thin objects
+such as poles,
+
+83
+00:03:49.115 --> 00:03:51.800
+similar looking objects
+such as a road and
+
+84
+00:03:51.800 --> 00:03:55.015
+a sidewalk and far away objects.
+
+85
+00:03:55.015 --> 00:03:57.890
+Later on, we will see how
+to handle this problem when
+
+86
+00:03:57.890 --> 00:04:00.845
+designing semantic
+segmentation algorithms.
+
+87
+00:04:00.845 --> 00:04:02.720
+What algorithms do
+you think we can
+
+88
+00:04:02.720 --> 00:04:05.510
+use to solve semantic
+segmentation?
+
+89
+00:04:05.510 --> 00:04:09.050
+If you answered ConvNets,
+you are correct.
+
+90
+00:04:09.050 --> 00:04:12.230
+Similar to object detection
+ConvNets have proven to be
+
+91
+00:04:12.230 --> 00:04:13.850
+very efficient options for
+
+92
+00:04:13.850 --> 00:04:16.265
+solving semantic
+segmentation problems.
+
+93
+00:04:16.265 --> 00:04:18.080
+We will discuss the details of
+
+94
+00:04:18.080 --> 00:04:20.600
+this solution in
+the next lesson, but first,
+
+95
+00:04:20.600 --> 00:04:22.190
+let's determine how to measure
+
+96
+00:04:22.190 --> 00:04:25.700
+the performance of
+a semantic segmentation network.
+
+97
+00:04:25.700 --> 00:04:27.500
+Let's begin by reviewing
+
+98
+00:04:27.500 --> 00:04:30.035
+some basic
+classification metrics.
+
+99
+00:04:30.035 --> 00:04:33.620
+The first metric to define
+is the true positives.
+
+100
+00:04:33.620 --> 00:04:36.380
+The number of correctly
+classified pixels
+
+101
+00:04:36.380 --> 00:04:39.005
+belonging to a certain class X.
+
+102
+00:04:39.005 --> 00:04:40.730
+The second metric is
+
+103
+00:04:40.730 --> 00:04:42.650
+the number of pixels
+that do not belong
+
+104
+00:04:42.650 --> 00:04:46.300
+to the class X but are
+classified as that class.
+
+105
+00:04:46.300 --> 00:04:49.250
+This metric is termed
+the false positives.
+
+106
+00:04:49.250 --> 00:04:51.275
+Finally, the false negatives
+
+107
+00:04:51.275 --> 00:04:53.120
+are computed as
+the number of pixels that
+
+108
+00:04:53.120 --> 00:04:55.040
+belong to the class X but are
+
+109
+00:04:55.040 --> 00:04:57.335
+not classified as that class.
+
+110
+00:04:57.335 --> 00:04:59.270
+These terms are
+identical to those
+
+111
+00:04:59.270 --> 00:05:01.600
+used in object detection.
+
+112
+00:05:01.600 --> 00:05:03.670
+Using these three metrics,
+
+113
+00:05:03.670 --> 00:05:05.870
+we can compute the
+most commonly used
+
+114
+00:05:05.870 --> 00:05:10.400
+semantic segmentation evaluation
+metric, the class IOU.
+
+115
+00:05:10.400 --> 00:05:12.380
+The class IOU is computed as
+
+116
+00:05:12.380 --> 00:05:14.000
+the total true positives
+
+117
+00:05:14.000 --> 00:05:16.039
+divided by the sum of
+the true positives,
+
+118
+00:05:16.039 --> 00:05:18.800
+false positives, and
+false negatives.
+
+119
+00:05:18.800 --> 00:05:20.210
+Let's take a look at
+
+120
+00:05:20.210 --> 00:05:23.110
+a visual example of
+this calculation.
+
+121
+00:05:23.110 --> 00:05:25.850
+The ground truth
+segmentation data is
+
+122
+00:05:25.850 --> 00:05:28.550
+represented as a single
+class per pixel.
+
+123
+00:05:28.550 --> 00:05:30.530
+Similarly, by taking
+the class with
+
+124
+00:05:30.530 --> 00:05:33.890
+the maximum output score
+as our predicted class,
+
+125
+00:05:33.890 --> 00:05:36.635
+the prediction can be
+put in a similar format.
+
+126
+00:05:36.635 --> 00:05:38.660
+We now begin by computing
+
+127
+00:05:38.660 --> 00:05:41.570
+the class IOU for the road
+class represented by
+
+128
+00:05:41.570 --> 00:05:43.760
+R. The first metric to
+
+129
+00:05:43.760 --> 00:05:46.175
+measure is the number
+of true positives.
+
+130
+00:05:46.175 --> 00:05:48.380
+We can determine the
+true positives by counting
+
+131
+00:05:48.380 --> 00:05:50.150
+the correctly
+classified road pixels
+
+132
+00:05:50.150 --> 00:05:52.310
+in our prediction.
+In this case, three.
+
+133
+00:05:52.310 --> 00:05:53.975
+The second metric,
+
+134
+00:05:53.975 --> 00:05:56.840
+the false positives
+is zero in our case
+
+135
+00:05:56.840 --> 00:05:58.250
+as our algorithm did not
+
+136
+00:05:58.250 --> 00:06:01.495
+classify any of
+the sidewalk pixels as road.
+
+137
+00:06:01.495 --> 00:06:03.830
+Finally, our algorithm classified
+
+138
+00:06:03.830 --> 00:06:05.990
+to road pixels as sidewalk,
+
+139
+00:06:05.990 --> 00:06:08.795
+hence the false-negative
+count is two.
+
+140
+00:06:08.795 --> 00:06:12.995
+Our final IOU for the road
+is then three-fifths.
+
+141
+00:06:12.995 --> 00:06:16.790
+Let's follow this procedure
+for the sidewalk class.
+
+142
+00:06:16.790 --> 00:06:20.705
+We can see that we have four
+correctly classified pixels,
+
+143
+00:06:20.705 --> 00:06:23.170
+hence our true positive
+count as four.
+
+144
+00:06:23.170 --> 00:06:26.090
+Furthermore, our algorithm
+mistakenly assigns
+
+145
+00:06:26.090 --> 00:06:28.850
+two pixels to
+the sidewalk class where,
+
+146
+00:06:28.850 --> 00:06:31.055
+in fact, they belong
+to the road class.
+
+147
+00:06:31.055 --> 00:06:34.135
+Therefore, our false
+positive count is two.
+
+148
+00:06:34.135 --> 00:06:37.910
+Finally, the algorithm did
+not miss any sidewalk pixels,
+
+149
+00:06:37.910 --> 00:06:40.490
+so it's false-negative
+count is zero.
+
+150
+00:06:40.490 --> 00:06:42.920
+We can then compute
+the sidewalk class
+
+151
+00:06:42.920 --> 00:06:45.380
+IOU as four-sixths.
+
+152
+00:06:45.380 --> 00:06:48.725
+We have performed the
+class IOU computation
+
+153
+00:06:48.725 --> 00:06:50.330
+over a single image.
+
+154
+00:06:50.330 --> 00:06:53.240
+When performing this computation
+on multiple images,
+
+155
+00:06:53.240 --> 00:06:55.250
+one has to keep in
+mind to compute
+
+156
+00:06:55.250 --> 00:06:57.500
+the true positives,
+false positives,
+
+157
+00:06:57.500 --> 00:06:59.630
+and false negatives over all of
+
+158
+00:06:59.630 --> 00:07:02.130
+the images and then
+compute the IOU.
+
+159
+00:07:02.130 --> 00:07:05.119
+Computing the IOU per
+image and then averaging
+
+160
+00:07:05.119 --> 00:07:08.890
+will actually give you
+an incorrect class IOU score.
+
+161
+00:07:08.890 --> 00:07:12.560
+Furthermore, it is usually
+a better idea to independently
+
+162
+00:07:12.560 --> 00:07:16.235
+look at each class IOU score
+rather than averaging them.
+
+163
+00:07:16.235 --> 00:07:19.685
+This is because
+a global IOU measure is biased
+
+164
+00:07:19.685 --> 00:07:23.950
+towards object incidences that
+cover a large image area.
+
+165
+00:07:23.950 --> 00:07:27.270
+In street scenes with
+their strong scale variation,
+
+166
+00:07:27.270 --> 00:07:28.975
+this can be problematic.
+
+167
+00:07:28.975 --> 00:07:30.740
+Other metrics such as
+
+168
+00:07:30.740 --> 00:07:35.185
+per instance IOU are usually
+used to remedy this problem.
+
+169
+00:07:35.185 --> 00:07:37.760
+The Cityscapes benchmark is one
+
+170
+00:07:37.760 --> 00:07:39.650
+of the most used benchmarks for
+
+171
+00:07:39.650 --> 00:07:42.170
+evaluating semantic
+segmentation algorithms
+
+172
+00:07:42.170 --> 00:07:43.730
+for self-driving cars.
+
+173
+00:07:43.730 --> 00:07:47.750
+The per class IOU is used
+as the main ranking metric
+
+174
+00:07:47.750 --> 00:07:49.535
+for semantic segmentation models
+
+175
+00:07:49.535 --> 00:07:52.155
+submitted to the
+Cityscapes benchmark.
+
+176
+00:07:52.155 --> 00:07:54.200
+Although, the instance level IOU
+
+177
+00:07:54.200 --> 00:07:56.615
+is also computed for each model.
+
+178
+00:07:56.615 --> 00:07:58.100
+In this lesson, you learned that
+
+179
+00:07:58.100 --> 00:07:59.930
+semantic segmentation consists of
+
+180
+00:07:59.930 --> 00:08:04.010
+providing a class label for
+every pixel in a 2D image.
+
+181
+00:08:04.010 --> 00:08:06.230
+You also learned how to evaluate
+
+182
+00:08:06.230 --> 00:08:10.180
+semantic segmentation models
+using the per class IOU.
+
+183
+00:08:10.180 --> 00:08:12.350
+In the next lesson,
+we will learn how to
+
+184
+00:08:12.350 --> 00:08:14.090
+use convolutional neural networks
+
+185
+00:08:14.090 --> 00:08:18.690
+to solve the semantic segmentation
+problem. See you then.

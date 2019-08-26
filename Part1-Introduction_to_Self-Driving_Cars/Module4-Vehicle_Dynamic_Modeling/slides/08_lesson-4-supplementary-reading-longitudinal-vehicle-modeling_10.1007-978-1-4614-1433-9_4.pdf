@@ -1,0 +1,1147 @@
+<!DOCTYPE HTML>
+<html lang="en-gb" class="no-js">
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=2.5,user-scalable=yes">
+    <meta name="citation_publisher" content="Springer, Boston, MA"/>
+    <meta name="citation_title" content="Longitudinal Vehicle Dynamics"/>
+    <meta name="citation_doi" content="10.1007/978-1-4614-1433-9_4"/>
+    <meta name="citation_language" content="en"/>
+    <meta name="citation_abstract_html_url" content="https://link.springer.com/chapter/10.1007/978-1-4614-1433-9_4"/>
+    <meta name="citation_fulltext_html_url" content="https://link.springer.com/chapter/10.1007/978-1-4614-1433-9_4"/>
+    <meta name="citation_pdf_url" content="https://link.springer.com/content/pdf/10.1007%2F978-1-4614-1433-9_4.pdf"/>
+    <meta name="citation_springer_api_url" content="http://api.springer.com/metadata/pam?q=doi:10.1007/978-1-4614-1433-9_4&amp;api_key="/>
+    <meta name="citation_firstpage" content="87"/>
+    <meta name="citation_lastpage" content="111"/>
+    <meta name="citation_author" content="Rajesh Rajamani"/>
+    <meta name="citation_author_institution" content="University of Minnesota"/>
+    <meta name="citation_author_email" content="rajamani@me.umn.edu"/>
+    <meta name="dc.identifier" content="10.1007/978-1-4614-1433-9_4"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content="The control of longitudinal vehicle motion has been pursued at many different levels by researchers and automotive manufacturers. Common systems involving longitudinal control available on today’s..."/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="Longitudinal Vehicle Dynamics"/>
+    <meta name="twitter:image" content="https://static-content.springer.com/cover/book/978-1-4614-1433-9.jpg"/>
+    <meta name="twitter:image:alt" content="Content cover image"/>
+    <meta name="twitter:site" content="SpringerLink"/>
+    <meta name="twitter:description" content="The control of longitudinal vehicle motion has been pursued at many different levels by researchers and automotive manufacturers. Common systems involving longitudinal control available on today’s..."/>
+    <meta name="citation_inbook_title" content="Vehicle Dynamics and Control"/>
+    <meta name="citation_publication_date" content="2012"/>
+    <meta property="og:title" content="Longitudinal Vehicle Dynamics"/>
+    <meta property="og:type" content="Paper"/>
+    <meta property="og:url" content="https://link.springer.com/chapter/10.1007/978-1-4614-1433-9_4"/>
+    <meta property="og:image" content="https://static-content.springer.com/cover/book/978-1-4614-1433-9.jpg"/>
+    <meta property="og:site_name" content="SpringerLink"/>
+    <meta property="og:description" content="The control of longitudinal vehicle motion has been pursued at many different levels by researchers and automotive manufacturers. Common systems involving longitudinal control available on today’s..."/>
+
+        <title>Longitudinal Vehicle Dynamics | SpringerLink</title>
+        <link rel="canonical" href="https://link.springer.com/chapter/10.1007/978-1-4614-1433-9_4"/>
+        <link rel="shortcut icon" href="/springerlink-static/1421424694/images/favicon/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 48x48" href="/springerlink-static/1421424694/images/favicon/favicon.ico">
+<link rel="icon" sizes="16x16" type="image/png" href="/springerlink-static/1421424694/images/favicon/favicon-16x16.png">
+<link rel="icon" sizes="32x32" type="image/png" href="/springerlink-static/1421424694/images/favicon/favicon-32x32.png">
+<link rel="icon" sizes="48x48" type="image/png" href="/springerlink-static/1421424694/images/favicon/favicon-48x48.png">
+<link rel="apple-touch-icon" href="/springerlink-static/1421424694/images/favicon/app-icon-iphone@3x.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/springerlink-static/1421424694/images/favicon/ic_launcher_hdpi.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/springerlink-static/1421424694/images/favicon/app-icon-ipad.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/springerlink-static/1421424694/images/favicon/app-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/springerlink-static/1421424694/images/favicon/app-icon-iphone@2x.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/springerlink-static/1421424694/images/favicon/ic_launcher_xxhdpi.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/springerlink-static/1421424694/images/favicon/app-icon-ipad@2x.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/springerlink-static/1421424694/images/favicon/app-icon-iphone@3x.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/springerlink-static/1421424694/images/favicon/ic_launcher_xxhdpi.png">
+        <link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//google-analytics.com">
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="dns-prefetch" href="//www.googletagservices.com">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//static-content.springer.com">
+        <link rel="stylesheet" href="/springerlink-static/1421424694/css/basic.css" media="screen">
+<link rel="stylesheet" href="/springerlink-static/1421424694/css/styles.css" class="js-ctm" media="only screen and (-webkit-min-device-pixel-ratio:0) and (min-color-index:0), (-ms-high-contrast: none), only all and (min--moz-device-pixel-ratio:0) and (min-resolution: 3e1dpcm)">
+<link rel="stylesheet" href="/springerlink-static/1421424694/css/print.css" media="print">
+
+
+            <script type="text/javascript">
+        window.Krux||((Krux=function(){Krux.q.push(arguments);}).q=[]);
+        var dataLayer = [{
+                'GA Key':"UA-26408784-1",
+                'Features':["leaderboardadverts","eventtracker"],
+                'Event Category':"Chapter",
+                'Open Access':"N",
+                'Labs':"Y",
+                'DOI':"10.1007/978-1-4614-1433-9_4",
+                'VG Wort Identifier':"pw-vgzm.415900-10.1007-978-1-4614-1433-9_4",
+                'hasAccess':"N",
+                'Full HTML':"N",
+                'Has Body':"Y",
+                'Static Hash':"1421424694",
+                'Has Preview':"N",
+                'user':{"license":{"businessPartnerID":[],"businessPartnerIDString":""}},
+                'content':{"serial":{"eissn":"","pissn":"0941-5122"},"book":{"seriesTitle":"Mechanical Engineering Series","eisbn":"978-1-4614-1433-9","pisbn":"978-1-4614-1432-2","bookProductType":"Monograph","seriesId":"1161","title":"Vehicle Dynamics and Control","doi":"10.1007/978-1-4614-1433-9"},"chapter":{"doi":"10.1007/978-1-4614-1433-9_4"},"category":{"pmc":{"primarySubject":"Engineering","primarySubjectCode":"T","secondarySubjects":{"1":"Mechanical Engineering","2":"Control","3":"Vibration, Dynamical Systems, Control","4":"Automotive Engineering"},"secondarySubjectCodes":{"1":"T17004","2":"T19010","3":"T15036","4":"T17047"}},"sucode":"SUCO11647"},"type":"Chapter"},
+                'Access Type':"noaccess",
+                'Page':"chapter",
+                'Bpids':"",
+                'Bpnames':"",
+                'SubjectCodes':"SCT, SCT17004, SCT19010, SCT15036, SCT17047",
+                'session':{"authentication":{"loginStatus":"N"},"attributes":{"edition":"academic"}},
+                'eventTrackerBaseUrl':"https://event-tracker.springernature.com",
+                'Keywords':"Rolling Resistance, Slip Ratio, Tire Force, Contact Patch, Torque Converter",
+                'Country':"US",
+
+                    'doi': "10.1007-978-1-4614-1433-9_4",
+                    'kwrd': ["Rolling_Resistance","Slip_Ratio","Tire_Force","Contact_Patch","Torque_Converter"],
+                    'pmc': ["T","T17004","T19010","T15036","T17047"],
+                    'BPID': ["1"],
+                    'ksg': Krux.segments,
+                    'kuid': Krux.uid,
+
+        }];
+    </script>
+
+<script type="text/javascript" src="/springerlink-static/1421424694/js/jquery-3.3.1.min.js"></script>
+
+        <script type="text/javascript" src="https://cdn.cookielaw.org/consent/6b2ec9cd-5ace-4387-96d2-963e596401c6.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+    function OptanonWrapper() {
+        dataLayer.push({
+            'event' : 'onetrustActive'
+        });
+    }
+</script>
+
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WCF9Z9');</script>
+
+    </head>
+    <body>
+        <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-WCF9Z9"
+                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div class="skip-to">
+    <a class="skip-to__link pseudo-focus" href="#main-content">Skip to main content</a>
+</div>
+        <div class="page-wrapper">
+            <noscript>
+    <div class="nojs-banner u-interface">
+        <p>This service is more advanced with JavaScript available, learn more at <a
+                href="http://activatejavascript.org" target="_blank" rel="noopener">http://activatejavascript.org</a>
+        </p>
+    </div>
+</noscript>
+                    <div id="leaderboard" class="leaderboard u-hide" data-component="SpringerLink.GoogleAds" data-namespace="leaderboard">
+            <div class="leaderboard__wrapper">
+                <p class="leaderboard__label">Advertisement</p>
+                <button class="leaderboard__hide" title="Hide this advertisement"  data-track="click" data-track-action="Hide advertisement" data-track-label="">Hide</button>
+                <div id="doubleclick-leaderboard-ad" class="leaderboard__ad u-pt-24"></div>
+            </div>
+        </div>
+
+                <header id="header" class="header u-interface">
+        <div class="header__content">
+            <div class="header__menu-container">
+                    <a id="logo" class="site-logo" href="/" title="Go to homepage">
+                <div class="u-screenreader-only">SpringerLink</div>
+    <svg class="site-logo__springer" width="148" height="30" role="img" focusable="false" aria-hidden="true">
+        <image width="148" height="30" alt="" src="/springerlink-static/1421424694/images/png/springerlink.png" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/springerlink-static/1421424694/images/svg/springerlink.svg"></image>
+    </svg>
+
+    </a>
+
+
+                    <nav id="search-container" class="u-inline-block">
+                        <div class="search">
+                            <div class="search__content">
+                                <form class="u-form-single-input" action="/search" method="get" role="search">
+    <label for="search-springerlink">Search SpringerLink</label>
+    <div class="u-relative">
+        <input id="search-springerlink" name="query" type="text" autocomplete="off" value="">
+        <input class="u-hide-text" type="submit" value="Submit" title="Submit">
+        <svg class="u-vertical-align-absolute" width="13" height="13" viewBox="222 151 13 13" version="1.1" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true" role="presentation">
+            <path d="M227 159C228.7 159 230 157.7 230 156 230 154.3 228.7 153 227 153 225.3 153 224 154.3 224 156 224 157.7 225.3 159 227 159L227 159 227 159 227 159ZM230 160.1L231.1 159 233.9 161.7C234.2 162.1 234.2 162.6 233.9 162.9 233.6 163.2 233.1 163.2 232.7 162.9L230 160.1 230 160.1 230 160.1 230 160.1ZM227 161L227 161C224.2 161 222 158.8 222 156 222 153.2 224.2 151 227 151 229.8 151 232 153.2 232 156 232 158.8 229.8 161 227 161L227 161 227 161 227 161 227 161Z" stroke="none" fill-rule="evenodd"/>
+        </svg>
+    </div>
+</form>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <nav class="nav-container u-interface">
+    <div class="global-nav__wrapper">
+        <div class="search-button">
+            <a class="search-button__label" href="#search-container">
+                <span class="search-button__title">Search</span><svg width="12" height="12" viewBox="222 151 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true" role="presentation">
+                    <path d="M227 159C228.7 159 230 157.7 230 156 230 154.3 228.7 153 227 153 225.3 153 224 154.3 224 156 224 157.7 225.3 159 227 159L227 159 227 159 227 159ZM230 160.1L231.1 159 233.9 161.7C234.2 162.1 234.2 162.6 233.9 162.9 233.6 163.2 233.1 163.2 232.7 162.9L230 160.1 230 160.1 230 160.1 230 160.1ZM227 161L227 161C224.2 161 222 158.8 222 156 222 153.2 224.2 151 227 151 229.8 151 232 153.2 232 156 232 158.8 229.8 161 227 161L227 161 227 161 227 161 227 161Z" stroke="none" fill-rule="evenodd"></path>
+                </svg>
+            </a>
+        </div>
+
+        <ul class="global-nav" data-component="SV.Menu" data-title="Navigation menu" data-text="Menu">
+            <li>
+                <a href="/">
+                    <span class="u-overflow-ellipsis">Home</span>
+                </a>
+            </li>
+
+                <li class="global-nav__logged-out">
+                    <a class="test-login-link" href="//link.springer.com/signup-login?previousUrl=https%3A%2F%2Flink.springer.com%2Fchapter%2F10.1007%252F978-1-4614-1433-9_4">
+                        <span class="u-overflow-ellipsis">Log in</span>
+                    </a>
+                </li>
+
+        </ul>
+    </div> 
+</nav> 
+            </div>
+
+        </div>
+    </header>
+
+            
+            <main id="main-content" class="main-wrapper" tabindex="-1">
+                <div class="main-container uptodate-recommendations-off">
+                    <aside class="main-sidebar-left">
+                        <div class="main-sidebar-left__content">
+                            <div class="cover-image test-cover" itemscope>
+                                    <a class="test-cover-link" href="/book/10.1007/978-1-4614-1433-9">
+        <span class="u-screenreader-only">Vehicle Dynamics and Control</span>
+        <img class="test-cover-image" src="https://media.springernature.com/w306/springer-static/cover/book/978-1-4614-1433-9.jpg" itemprop="image" alt=""/>
+    </a>
+
+
+                            </div>
+                        </div>
+                    </aside>
+                    <div class="main-body" data-role="NavigationContainer">
+                        
+
+
+
+                        <article class="main-body__content">
+                            <div xmlns="http://www.w3.org/1999/xhtml" class="FulltextWrapper"><div class="ArticleHeader main-context"><div id="enumeration" class="enumeration"><p class="test-LocationInConferenceProceeding"><span class="BookTitle"><a href="/book/10.1007/978-1-4614-1433-9" data-track="click" data-track-action="Book title" data-track-label="">Vehicle Dynamics and Control</a></span><span class="page-numbers-info">
+                pp 87-111</span><span class="u-inline-block u-ml-4"> |
+                <a href="#citeas" data-track="click" data-track-action="Cite as link" data-track-label="Enumeration section">Cite as</a></span></p></div><div class="MainTitleSection"><h1 class="ChapterTitle" lang="en">Longitudinal Vehicle Dynamics</h1></div><div class="authors u-clearfix" data-component="SpringerLink.Authors"><ul class="u-interface u-inline-list authors__title" data-role="AuthorsNavigation"><li><span>Authors</span></li><li><a href="#authorsandaffiliations" data-track="click" data-track-action="Authors and affiliations tab" data-track-label="">Authors and affiliations</a></li></ul><div class="authors__list" data-role="AuthorsList"><ul class="test-contributor-names"><li itemscope="" itemtype="http://schema.org/Person" class="u-mb-2 u-pt-4 u-pb-4"><span itemprop="name" class="authors__name">Rajesh Rajamani</span><span class="author-information"><span class="authors__contact"><a href="mailto:rajamani@me.umn.edu" title="rajamani@me.umn.edu" itemprop="email" data-track="click" data-track-action="Email author" data-track-label=""><img src="/springerlink-static/images/svg/email.svg" height="24" width="24" alt="Email author" /></a></span></span></li></ul></div></div><div class="main-context__container" data-component="SpringerLink.ArticleMetrics"><div class="main-context__column"><span><span class="test-render-category">Chapter</span></span><div class="article-dates"><span class="article-dates__label">First Online: </span><span class="article-dates__first-online"><time datetime="2011-10-20">20 October 2011</time></span></div></div><div class="main-context__column">    <ul id="book-metrics" class="article-metrics u-sansSerif">
+            <li class="article-metrics__item">
+                    <a class="article-metrics__link gtm-chaptercitations-count" href="http://www.bookmetrix.com/detail/chapter/5b861c27-9049-469a-b4cf-e61f998cdb13#citations" target="_blank" rel="noopener"
+                       title="Visit Bookmetrix for full citation details" id="chaptercitations-link">
+                            <span id="chaptercitations-count-number" class="test-metric-count c-button-circle gtm-chaptercitations-count">2</span>
+                       <span class="test-metric-name article-metrics__label gtm-chaptercitations-count">Citations</span>
+                    </a>
+            </li>
+            <li class="article-metrics__item">
+                    <a class="article-metrics__link gtm-chapterreaders-count" href="http://www.bookmetrix.com/detail/chapter/5b861c27-9049-469a-b4cf-e61f998cdb13#readers" target="_blank" rel="noopener"
+                       title="Visit Bookmetrix for full Mendeley reader details" id="chapterreaders-link">
+                            <span id="chapterreaders-count-number" class="test-metric-count c-button-circle gtm-chapterreaders-count">5</span>
+                       <span class="test-metric-name article-metrics__label gtm-chapterreaders-count">Readers</span>
+                    </a>
+            </li>
+            <li class="article-metrics__item">
+                    <a class="article-metrics__link gtm-chapterdownloads-count" href="http://www.bookmetrix.com/detail/chapter/5b861c27-9049-469a-b4cf-e61f998cdb13#downloads" target="_blank" rel="noopener"
+                       title="Visit Bookmetrix for full download details" id="chapterdownloads-link">
+                            <span id="chapterdownloads-count-number" class="test-metric-count c-button-circle gtm-chapterdownloads-count">10k</span>
+                       <span class="test-metric-name article-metrics__label gtm-chapterdownloads-count">Downloads</span>
+                    </a>
+            </li>
+    </ul>
+</div></div><span id="test-SeriesTitle" class="vol-info">
+                Part of the
+                <a class="gtm-book-series-link" href="/bookseries/1161">Mechanical Engineering Series</a>
+                book series (MES)</span></div><section class="Abstract" id="Abs1_4" tabindex="-1" lang="en"><h2 class="Heading">Abstract</h2><p class="Para">The control of longitudinal vehicle motion has been pursued at many different levels by researchers and automotive manufacturers. Common systems involving longitudinal control available on today’s passenger cars include cruise control, anti-lock brake systems and traction control systems. Other advanced longitudinal control systems that have been the topic of intense research include radar-based collision avoidance systems, adaptive cruise control systems, individual wheel torque control with active differentials and longitudinal control systems for the operation of vehicles in platoons on automated highway systems.</p></section><div class="KeywordGroup" lang="en"><h2 class="Heading">Keywords</h2><span class="Keyword">Rolling Resistance </span><span class="Keyword">Slip Ratio </span><span class="Keyword">Tire Force </span><span class="Keyword">Contact Patch </span><span class="Keyword">Torque Converter </span><div id="test-keyword-message" class="u-interface u-italic">
+							These keywords were added by machine and not by the authors. This process is experimental and the keywords may be updated as the learning algorithm improves.
+						</div></div><div class="note test-pdf-link" id="cobranding-and-download-availability-text"><div id="chapter_no_access_banner">This is a preview of subscription content, <a id="test-login-banner-link" href="/signup-login?previousUrl=https%3A%2F%2Flink.springer.com%2Fchapter%2F10.1007%252F978-1-4614-1433-9_4" data-track="click" data-track-action="Preview banner - Log in" data-track-label="">log in</a> to check access.</div></div><div class="article-actions--inline" id="article-actions--inline" data-component="article-actions--inline"></div><section class="Section1 RenderAsSection1" id="Bib1_4" tabindex="-1"><h2 class="Heading">References</h2><div class="content"><ol class="BibliographyWrapper"><li class="Citation"><div class="CitationContent" id="CR1_4">Cho, D. and Hedrick, J.K., “Automotive Powertrain Modeling for Control,” <em class="EmphasisTypeItalic ">ASME Journal of Dynamic Systems, Measurement and Control</em>, Vol. 111, pp. 568–576, December 1989.<span class="Occurrences"><span class="Occurrence OccurrenceDOI"><a class="gtm-reference" data-reference-type="CrossRef" target="_blank" rel="noopener" href="https://doi.org/10.1115/1.3153093"><span><span>CrossRef</span></span></a></span><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=%E2%80%9CAutomotive%20Powertrain%20Modeling%20for%20Control%2C%E2%80%9D&amp;author=D.%20Cho&amp;author=JK.%20Hedrick&amp;journal=ASME%20Journal%20of%20Dynamic%20Systems%2C%20Measurement%20and%20Control&amp;volume=111&amp;pages=568-576&amp;publication_year=1989"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR2_4">Dugoff, H., Fancher, P.S. and Segal, L., “Tyre performance charecteristics affecting vehicle response to steering and braking control inputs, “<em class="EmphasisTypeItalic ">Final Report, Contract CST-460</em>, Office of Vehicle Systems Research, US National Bureau of Standards, 1969.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=Tyre%20performance%20charecteristics%20affecting%20vehicle%20response%20to%20steering%20and%20braking%20control%20inputs&amp;author=H.%20Dugoff&amp;author=PS.%20Fancher&amp;author=L.%20Segal&amp;publication_year=1969"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR3_4">Kiencke, U. and Nielsen, L., <em class="EmphasisTypeItalic ">Automotive Control Systems for Engine, Driveline and Vehicle</em>, SAE International, ISBN 0-7680-0505-1, 2000.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=Automotive%20Control%20Systems%20for%20Engine%2C%20Driveline%20and%20Vehicle&amp;author=U.%20Kiencke&amp;author=L.%20Nielsen&amp;publication_year=2000"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR4_4">Kotwicki, A.J., “Dynamic Models for Torque Converter Equipped Vehicles,” <em class="EmphasisTypeItalic ">SAE Technical Paper Series</em>, Paper No. 82039, 1982.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="https://scholar.google.com/scholar?q=Kotwicki%2C%20A.J.%2C%20%E2%80%9CDynamic%20Models%20for%20Torque%20Converter%20Equipped%20Vehicles%2C%E2%80%9D%20SAE%20Technical%20Paper%20Series%2C%20Paper%20No.%2082039%2C%201982."><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR5_4">Pacejka, H.B. and Bakker, E., “The Magic Formula Tyre Model,” <em class="EmphasisTypeItalic ">Vehicle System Dynamics</em>, v 21, Supplement, Tyre Models for Vehicle Dynamics Analysis, p 1–18, 1993<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=The%20Magic%20Formula%20Tyre%20Model&amp;author=HB.%20Pacejka&amp;author=E.%20Bakker&amp;journal=Vehicle%20System%20Dynamics&amp;volume=21&amp;pages=1-18&amp;publication_year=1993"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR6_4">Pacejka, H.B., “The Tyre as a Vehicle Component,” <em class="EmphasisTypeItalic ">XXVI FISITA Congress</em>, Prague, June 16–23, 1996.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=The%20Tyre%20as%20a%20Vehicle%20Component&amp;author=HB.%20Pacejka&amp;publication_year=1996"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR7_4">Tugcu, A.K., Hebbale, K.V., Alexandridis, A.A., and Karmel, A.M., “Modeling and Simulation of the Powertrain Dynamics of Vehicles Equipped with Automatic Tarnsmission,” <em class="EmphasisTypeItalic ">Proceedings of the Symposium on Simulation of Ground Vehicles and Transportation Systems</em>, ASME Winter Annual Meeting, Anaheim, December 1986.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=Modeling%20and%20Simulation%20of%20the%20Powertrain%20Dynamics%20of%20Vehicles%20Equipped%20with%20Automatic%20Tarnsmission&amp;author=AK.%20Tugcu&amp;author=KV.%20Hebbale&amp;author=AA.%20Alexandridis&amp;author=AM.%20Karmel&amp;publication_year=1986"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR8_4">Runde, J., “Modeling and Control of an Automatic Transmission,” <em class="EmphasisTypeItalic ">S.M.M.E. Thesis</em>, Department of Mechanical Engineering, M.I.T., January 1986.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=Modeling%20and%20Control%20of%20an%20Automatic%20Transmission&amp;author=J.%20Runde&amp;publication_year=1986"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR9_4">White, R.A. and Korst, H.H., “The Determination of Vehicle Drag Contributions from Coastdown Tests, “<em class="EmphasisTypeItalic ">SAE Transactions</em>, Vol. 81, paper 720099, 1972.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=The%20Determination%20of%20Vehicle%20Drag%20Contributions%20from%20Coastdown%20Tests&amp;author=R.A..%20White&amp;author=H.H..%20Korst&amp;journal=SAE%20Transactions&amp;volume=81&amp;pages=720099&amp;publication_year=1972"><span><span>Google Scholar</span></span></a></span></span></div></li><li class="Citation"><div class="CitationContent" id="CR10_4">Wong, J.Y., <em class="EmphasisTypeItalic ">Theory of Ground Vehicles</em>, Wiley-Interscience, ISBN 0-471-35461-9, Third Edition, 2001.<span class="Occurrences"><span class="Occurrence OccurrenceGS"><a target="_blank" rel="noopener" class="google-scholar-link gtm-reference" data-reference-type="Google Scholar" href="http://scholar.google.com/scholar_lookup?title=Theory%20of%20Ground%20Vehicles&amp;author=JY.%20Wong&amp;publication_year=2001"><span><span>Google Scholar</span></span></a></span></span></div></li></ol></div></section><section class="Section1 RenderAsSection1"><h2 class="Heading" id="copyrightInformation">Copyright information</h2><div class="ArticleCopyright content"><div class="ChapterCopyright">© Rajesh Rajamani 2012</div></div></section><section id="authorsandaffiliations" class="Section1 RenderAsSection1"><h2 class="Heading">Authors and Affiliations</h2><div class="content authors-affiliations u-interface"><ul class="test-contributor-names"><li itemscope="" itemtype="http://schema.org/Person" class="u-mb-2 u-pt-4 u-pb-4"><span itemprop="name" class="authors-affiliations__name">Rajesh Rajamani</span><ul class="authors-affiliations__indexes u-inline-list" data-role="AuthorsIndexes"><li data-affiliation="affiliation-1">1</li></ul><span class="author-information"><span class="author-information__contact u-icon-before"><a href="mailto:rajamani@me.umn.edu" title="rajamani@me.umn.edu" itemprop="email" data-track="click" data-track-action="Email author" data-track-label="">Email author</a></span></span></li></ul><ol class="test-affiliations"><li class="affiliation" data-test="affiliation-1" data-affiliation-highlight="affiliation-1" itemscope="" itemtype="http://schema.org/Organization"><span class="affiliation__count">1.</span><span class="affiliation__item"><span itemprop="department" class="affiliation__department">Department of Mechanical Engineering</span><span itemprop="name" class="affiliation__name">University of Minnesota</span><span itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress" class="affiliation__address"><span itemprop="addressRegion" class="affiliation__city">Minneapolis</span><span itemprop="addressCountry" class="affiliation__country">USA</span></span></span></li></ol></div></section></div>
+                        </article>
+                        <aside class="section section--collapsible" id="AboutThisContent">
+    <h2 class="section__heading" id="aboutcontent">About this chapter</h2>
+    <div class="section__content bibliographic-information">
+        
+        <div class="crossmark__adjacent">
+            <dl class="citation-info u-highlight-target u-mb-16" id="citeas" tabindex="-1">
+    <dt class="test-cite-heading">
+        Cite this chapter as:
+    </dt>
+    <dd id="citethis-text">Rajamani R. (2012) Longitudinal Vehicle Dynamics. In: Vehicle Dynamics and Control. Mechanical Engineering Series. Springer, Boston, MA</dd>
+</dl>
+                <ul class="bibliographic-information__list bibliographic-information__list--inline">
+        <li class="bibliographic-information__item">
+            <span class="bibliographic-information__title">First Online</span>
+            <span class="bibliographic-information__value u-overflow-wrap">20 October 2011</span>
+        </li>
+        <li class="bibliographic-information__item">
+            <span class="bibliographic-information__title">DOI</span>
+            <span class="bibliographic-information__value u-overflow-wrap" id="doi-url">https://doi.org/10.1007/978-1-4614-1433-9_4</span>
+        </li>
+            <li class="bibliographic-information__item">
+                <span class="bibliographic-information__title">Publisher Name</span>
+                <span class="bibliographic-information__value" id="publisher-name">Springer, Boston, MA</span>
+            </li>
+            <li class="bibliographic-information__item">
+                <span class="bibliographic-information__title">Print ISBN</span>
+                <span class="bibliographic-information__value" id="print-isbn">978-1-4614-1432-2</span>
+            </li>
+            <li class="bibliographic-information__item">
+                <span class="bibliographic-information__title">Online ISBN</span>
+                <span class="bibliographic-information__value" id="electronic-isbn">978-1-4614-1433-9</span>
+            </li>
+
+                <li class="bibliographic-information__item">
+            <span class="bibliographic-information__title">eBook Packages</span>
+                <span class="bibliographic-information__value"><a id="ebook-package" href="/search?facet-content-type&#x3D;%22Book%22&amp;package&#x3D;11647&amp;facet-start-year&#x3D;2012&amp;facet-end-year&#x3D;2012">Engineering</a></span>
+        </li>
+
+    </ul>
+
+            <ul class="bibliographic-information__list">
+            <li class="bibliographic-information__item">
+                <a id="about-book" href="//www.springer.com/978-1-4614-1432-2?wt_mc&#x3D;ThirdParty.SpringerLink.3.EPR653.About_eBook" >Buy this book on publisher's site</a>
+            </li>
+        <li class="bibliographic-information__item">
+            <a id="reprintsandpermissions-link" target="_blank" rel="noopener" href="https://s100.copyright.com/AppDispatchServlet?publisherName&#x3D;SpringerNature&amp;orderBeanReset&#x3D;true&amp;orderSource&#x3D;SpringerLink&amp;copyright&#x3D;Rajesh+Rajamani&amp;author&#x3D;Rajesh+Rajamani&amp;contentID&#x3D;10.1007%2F978-1-4614-1433-9_4&amp;endPage&#x3D;111&amp;publicationDate&#x3D;2012&amp;startPage&#x3D;87&amp;title&#x3D;Longitudinal+Vehicle+Dynamics&amp;imprint&#x3D;Rajesh+Rajamani&amp;publication&#x3D;eBook" title="Visit RightsLink for information about reusing this chapter" data-track="click" data-track-action="Reprints and Permissions" data-track-label="">Reprints and Permissions</a>
+        </li>
+</ul>
+
+
+
+        </div>
+      
+      
+          
+    </div>
+</aside>
+
+                        <div class="section section--collapsible uptodate-recommendations gtm-recommendations">
+    <h2 class="uptodate-recommendations__title section__heading gtm-recommendations__title" id="uptodaterecommendations">Personalised recommendations</h2>
+    <div class="section__content">
+        <div class="uptodate-recommendations__container">
+             <link rel="uptodate-inline" href="/springerlink-static/1421424694/css/recommendations.css"/>
+        </div>
+    </div>
+</div>
+                                <div id="doubleclick-native-ad" data-component="SpringerLink.GoogleAds" data-namespace="native"></div>
+
+                        
+
+
+
+    <div class="sticky-banner sticky-banner--buybox u-interface u-hide" data-component="SpringerLink.StickyBanner" data-namespace="hasLink">
+        <div class="sticky-banner__container">
+                <div class="citations" data-component="SV.Dropdown" data-namespace="citationsSticky">
+        <h3 class="u-h4" data-role="button-dropdown__title">
+    <span>Cite</span>
+    <span class="hide-text-small">chapter</span>
+</h3>
+<ul class="citations__content" data-role="button-dropdown__content">
+    <li>
+        <a href="#citeas" data-track="click" data-track-action="Cite as link" data-track-label="Cite dropdown">How to cite?</a>
+    </li>
+        <li>
+            <a href="//citation-needed.springer.com/v2/references/10.1007/978-1-4614-1433-9_4?format&#x3D;refman&amp;flavour&#x3D;citation"
+               title="Download this chapter&#39;s citation as a .RIS file" data-track="click" data-track-action="Export citation" data-track-label="RIS">
+                <span class="citations__extension" data-gtmlabel="RIS">
+                    <svg class="u-vertical-align-absolute" width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M7 7.269v-6.271c0-.551-.448-.998-1-.998-.556 0-1 .447-1 .998v6.271l-1.5-1.547c-.375-.387-1.01-.397-1.401-.006l.016-.016c-.397.397-.391 1.025-.001 1.416l3.178 3.178c.392.392 1.024.391 1.415 0l3.178-3.178c.392-.392.391-1.025-.001-1.416l.016.016c-.397-.397-1.018-.388-1.401.006l-1.5 1.547zm-7 5.731c0-.552.456-1 1.002-1h9.995c.554 0 1.002.444 1.002 1 0 .552-.456 1-1.002 1h-9.995c-.554 0-1.002-.444-1.002-1z" fill="#004aa7"/></svg>
+                    .RIS
+                </span>
+                <span class="citations__types">
+                        <span>
+                            Papers
+                        </span>
+                        <span>
+                            Reference Manager
+                        </span>
+                        <span>
+                            RefWorks
+                        </span>
+                        <span>
+                            Zotero
+                        </span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="//citation-needed.springer.com/v2/references/10.1007/978-1-4614-1433-9_4?format&#x3D;endnote&amp;flavour&#x3D;citation"
+               title="Download this chapter&#39;s citation as a .ENW file" data-track="click" data-track-action="Export citation" data-track-label="ENW">
+                <span class="citations__extension" data-gtmlabel="ENW">
+                    <svg class="u-vertical-align-absolute" width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M7 7.269v-6.271c0-.551-.448-.998-1-.998-.556 0-1 .447-1 .998v6.271l-1.5-1.547c-.375-.387-1.01-.397-1.401-.006l.016-.016c-.397.397-.391 1.025-.001 1.416l3.178 3.178c.392.392 1.024.391 1.415 0l3.178-3.178c.392-.392.391-1.025-.001-1.416l.016.016c-.397-.397-1.018-.388-1.401.006l-1.5 1.547zm-7 5.731c0-.552.456-1 1.002-1h9.995c.554 0 1.002.444 1.002 1 0 .552-.456 1-1.002 1h-9.995c-.554 0-1.002-.444-1.002-1z" fill="#004aa7"/></svg>
+                    .ENW
+                </span>
+                <span class="citations__types">
+                        <span>
+                            EndNote
+                        </span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="//citation-needed.springer.com/v2/references/10.1007/978-1-4614-1433-9_4?format&#x3D;bibtex&amp;flavour&#x3D;citation"
+               title="Download this chapter&#39;s citation as a .BIB file" data-track="click" data-track-action="Export citation" data-track-label="BIB">
+                <span class="citations__extension" data-gtmlabel="BIB">
+                    <svg class="u-vertical-align-absolute" width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M7 7.269v-6.271c0-.551-.448-.998-1-.998-.556 0-1 .447-1 .998v6.271l-1.5-1.547c-.375-.387-1.01-.397-1.401-.006l.016-.016c-.397.397-.391 1.025-.001 1.416l3.178 3.178c.392.392 1.024.391 1.415 0l3.178-3.178c.392-.392.391-1.025-.001-1.416l.016.016c-.397-.397-1.018-.388-1.401.006l-1.5 1.547zm-7 5.731c0-.552.456-1 1.002-1h9.995c.554 0 1.002.444 1.002 1 0 .552-.456 1-1.002 1h-9.995c-.554 0-1.002-.444-1.002-1z" fill="#004aa7"/></svg>
+                    .BIB
+                </span>
+                <span class="citations__types">
+                        <span>
+                            BibTeX
+                        </span>
+                        <span>
+                            JabRef
+                        </span>
+                        <span>
+                            Mendeley
+                        </span>
+                </span>
+            </a>
+        </li>
+</ul>
+    </div>
+
+                
+
+
+
+                <div class="sticky-banner__buybox-link sticky-banner__buybox-link--sticky">
+        <a href="#buy" class="gtm-buybox-anchor">
+            Buy options
+        </a>
+    </div>
+
+        </div>
+    </div>
+
+
+                    </div>
+                    <aside class="main-sidebar-right u-interface">
+                        <div data-role="sticky-wrapper">
+                            <div class="main-sidebar-right__content u-composite-layer" data-component="SpringerLink.StickySidebar">
+                                <div class="article-actions" id="article-actions">
+                                    <h2 class="u-screenreader-only" aria-hidden="true">Actions</h2>
+
+                                        <div id="buy">
+                                            
+
+<style type="text/css">
+    .buybox {
+        margin: 16px 0 0;
+        position: relative;
+    }
+    .buybox {
+        font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        font-size: 1.4rem;
+    }
+    .buybox {
+        zoom: 1;
+    }
+    .buybox:after,
+    .buybox:before {
+        content: '';
+        display: table;
+    }
+    .buybox:after {
+        clear: both;
+    }
+    /*---------------------------------*/
+    .buybox .buybox__header {
+        border: 1px solid #b3b3b3;
+        border-bottom: 0;
+        padding: 8px;
+        position: relative;
+        background-color: #f2f2f2;
+    }
+    .buybox__header .buybox__login {
+        font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        font-size: 1.4rem;
+        letter-spacing: .017em;
+        display: inline-block;
+        line-height: 1.2;
+        padding: 0;
+    }
+    .buybox__header .buybox__login:before {
+        position: absolute;
+        top: 50%;
+        -webkit-transform: perspective(1px) translateY(-50%);
+        transform: perspective(1px) translateY(-50%);
+        content: '\A';
+        width: 34px;
+        height: 34px;
+        left: 10px;
+    }
+    /*---------------------------------*/
+    .buybox .buybox__body {
+        padding: 0;
+        padding-bottom: 16px;
+        position: relative;
+        text-align: center;
+        background-color: #fcfcfc;
+        border: 1px solid #b3b3b3;
+    }
+    /******/
+    .buybox__body .buybox__section {
+        padding: 16px 12px 0 12px;
+        text-align: left;
+    }
+    .buybox__section .buybox__buttons {
+        text-align: center;
+        width: 100%;
+    }
+    /********** mycopy buybox specific **********/
+    .buybox.mycopy__buybox .buybox__body {
+        background-color: transparent;
+    }
+    .buybox.mycopy__buybox .buybox__section .buybox__buttons {
+        border-top: 0;
+        padding-top: 0;
+    }
+    /******/
+    .buybox__section:nth-child(2) .buybox__buttons {
+        border-top: 1px solid #b3b3b3;
+        padding-top: 20px;
+    }
+    .buybox__buttons .buybox__buy-button {
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 5px;
+        padding: 6px 12px;
+        max-width: 180px
+    }
+    .buybox__buttons .buybox__price {
+        white-space: nowrap;
+        text-align: center;
+        font-size: larger;
+        padding-top: 6px;
+    }
+    .buybox__section .buybox__meta {
+        letter-spacing: 0;
+        padding-top: 12px;
+    }
+    .buybox__section .buybox__meta:only-of-type {
+        padding-top: 0;
+        position: relative;
+        bottom: 6px;
+    }
+    /********** mycopy buybox specific **********/
+    .buybox.mycopy__buybox .buybox__section .buybox__meta {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    /******/
+    .buybox__meta .buybox__product-title {
+        display: inline;
+        font-weight: bold;
+    }
+    .buybox__meta .buybox__list {
+        line-height: 1.3;
+    }
+    .buybox__meta .buybox__list li {
+        position: relative;
+        padding-left: 1em;
+        list-style: none;
+        margin-bottom: 5px;
+    }
+    .buybox__meta .buybox__list li:before {
+        font-size: 1em;
+        content: '\2022';
+        float: left;
+        position: relative;
+        top: .1em;
+        font-family: serif;
+        font-weight: 600;
+        text-align: center;
+        line-height: inherit;
+        color: #666;
+        width: auto;
+        margin-left: -1em;
+    }
+    .buybox__meta .buybox__list li:last-child {
+        margin-bottom: 0;
+    }
+    /********** chapter buybox specific **********/
+    .buybox.chapter__buybox .buybox__section .buybox__meta {
+        border-top: 1px solid #d3d3d3;
+        padding-top: 12px;
+    }
+    .buybox.chapter__buybox .buybox__section .buybox__buy-ebook {
+        margin-bottom: 12px;
+    }
+    /******/
+    /*---------------------------------*/
+    .buybox .buybox__footer {
+        border: 1px solid #b3b3b3;
+        border-top: 0;
+        padding: 8px;
+        position: relative;
+        border-style: dashed;
+        line-height: 1.3;
+    }
+    .buybox .deepdyve {
+        display: none;
+        text-align: left;
+        margin: 8px 12px 0 12px;
+        padding-top: 5px;
+        border-top: 1px solid #d3d3d3;
+    }
+    /*-----------------------------------------------------------------*/
+    @media screen and (min-width: 460px) and (max-width: 1074px) {
+        .buybox__body .buybox__section {
+            display: inline-block;
+            vertical-align: top;
+            padding: 12px 12px;
+            padding-bottom: 0;
+            text-align: left;
+            width: 48%;
+        }
+        .buybox__body .buybox__section {
+            padding-top: 16px;
+            padding-left: 0;
+        }
+        .buybox__section:nth-of-type(2) .buybox__meta {
+            border-left: 1px solid #d3d3d3;
+            padding-left: 28px;
+        }
+        .buybox__section:nth-of-type(2) .buybox__buttons {
+            border-top: 0;
+            padding-top: 0;
+            padding-left: 16px ;
+        }
+        .buybox__buttons .buybox__buy-button {
+        }
+        /********** article buybox specific **********/
+        .buybox.article__buybox .buybox__section:nth-of-type(2) {
+            margin-top: 16px;
+            padding-top: 0;
+        }
+        .buybox.article__buybox .buybox__section:nth-of-type(2) .buybox__meta {
+            margin-top: 40px;
+            padding-top: 0;
+            padding-bottom: 45px;
+        }
+        .buybox.article__buybox .buybox__section:nth-of-type(2) .buybox__meta:only-of-type {
+            margin-top: 8px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+        /********** mycopy buybox specific **********/
+        .buybox.mycopy__buybox .buybox__section:first-child {
+            width: 69%;
+            padding-left: 12px ;
+        }
+        .buybox.mycopy__buybox .buybox__section:last-child {
+            width: 29%;
+        }
+        /********** chapter buybox specific **********/
+        .buybox.chapter__buybox .buybox__body {
+            display: flex;
+            align-items: stretch;
+            padding-left: 12px;
+            padding-top: 12px;
+        }
+        .buybox.chapter__buybox .buybox__section .buybox__meta {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            border-top: 0;
+            padding-top: 0;
+        }
+        /******/
+    }
+    /*-----------------------------------------------------------------*/
+    @media screen and (max-width: 459px) {
+        /********** mycopy buybox specific **********/
+        .buybox.mycopy__buybox .buybox__body {
+            padding-bottom: 5px;
+        }
+        .buybox.mycopy__buybox .buybox__section:last-child {
+            text-align: center;
+            width: 100%;
+        }
+        .buybox.mycopy__buybox .buybox__buttons {
+            display: inline-block;
+            width: 150px ;
+        }
+        /******/
+    }
+    /*-----------------------------------------------------------------*/
+</style>
+
+<div class="buybox chapter__buybox" data-webtrekkTrackId="196033507532344" data-webtrekkContentId="SL-chapter">
+    <div class="buybox__header">
+        <span class="buybox__login">Log in to check access</span>
+    </div>
+    <div class="buybox__body">
+        <div class="buybox__section">
+            <div class="buybox__buttons">
+            
+                <div class="buybox__buy-ebook">
+                    <a
+                        data-product-id="978-1-4614-1433-9_Vehicle Dynamics and Control"
+                        data-tracking-category="ebook"
+                        data-eCommerceParam_11="chapter-page"
+                        href="https://checkout.springer.com/checkout/add?utm_source=springerlink&amp;utm_medium=referral&amp;utm_campaign=sl-buybox_chapterPage_ebook&isbn=978-1-4614-1433-9"
+                        class="buybox__buy-button c-button c-button--blue"
+                        data-gtm="buybox__buy-button-ebook">
+                        <span class="buybox__buy" data-gtm="buybox__buy-button">Buy eBook</span>
+                    </a>
+                    <div class="buybox__price" data-gtm="buybox__buy-button">
+                        USD&nbsp;119.00
+                    </div>
+                </div>
+            
+            
+                <form class="buybox__form" action="https://order.springer.com/public/checkout?utm_source=springerlink&amp;utm_medium=referral&amp;utm_campaign=sl-buybox_chapterPage_chapter" method="POST">
+                    
+                        <input type="hidden" name="type" value="chapter"/>
+                    
+                        <input type="hidden" name="doi" value="10.1007/978-1-4614-1433-9_4"/>
+                    
+                        <input type="hidden" name="isxn" value="978-1-4614-1433-9"/>
+                    
+                        <input type="hidden" name="contenttitle" value="Longitudinal Vehicle Dynamics"/>
+                    
+                        <input type="hidden" name="copyrightyear" value="2012"/>
+                    
+                        <input type="hidden" name="year" value="2011"/>
+                    
+                        <input type="hidden" name="authors" value="Dr. Rajesh Rajamani"/>
+                    
+                        <input type="hidden" name="title" value="Vehicle Dynamics and Control"/>
+                    
+                        <input type="hidden" name="mac" value="733bf920b7e302de74951a371987364c"/>
+                    
+                        <input type="hidden" name="returnurl" value="https://link.springer.com/chapter/10.1007%2F978-1-4614-1433-9_4"/>
+                    
+                    <button
+                    data-product-id="10.1007/978-1-4614-1433-9_4_Longitudinal Vehicle Dynamics"
+                    data-tracking-category="ppv"
+                    data-eCommerceParam_11="chapter-page"
+                    type="submit"
+                    class="buybox__buy-button c-button c-button--blue"
+                    data-gtm="buybox__buy-button">
+                        <span class="buybox__buy" data-gtm="buybox__buy-button">Buy chapter (PDF)</span>
+                    </button>
+                    <div class="buybox__price" data-gtm="buybox__buy-button">
+                        USD&nbsp;29.95
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
+        <div class="buybox__section">
+            <div class="buybox__meta">
+                <ul class="buybox__list">
+                    <li>Instant download</li>
+                    <li>Readable on all devices</li>
+                    <li>Own it forever</li>
+                    <li>Local sales tax included if applicable</li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    <div class="buybox__footer">
+    <a class="js-buybox__inst-sub-link" data-gtm="buybox__inst-sub-link" href="https://www.springernature.com/gp/librarians/licensing/license-options?utm_source=springerlink&utm_medium=referral&utm_campaign=sl-buybox_chapterPage_institutionalCustomers">
+        Learn about institutional subscriptions</a>
+</div>
+
+    
+
+</div>
+
+<script>
+(function () {
+    var forEach = function (array, callback, scope) {
+        for (var i = 0; i < array.length; i++) {
+            callback.call(scope, i, array[i]);
+        }
+    };
+
+    var trackDomain = 'springergmbh01.webtrekk.net';
+    var domain = 'link.springer.com';
+    var loadEventSent = false;
+
+    var buyboxRoot = document.getElementsByClassName('buybox')[0];
+    var webtrekkTrackId = buyboxRoot.getAttribute('data-webtrekkTrackId');
+    var webtrekkContentId = buyboxRoot.getAttribute('data-webtrekkContentId');
+
+    function LinkTrack(webtrekkTrackId) {
+        if (!webtrekkTrackId) return;
+
+        var data = {
+            trackDomain: trackDomain,
+            trackId: webtrekkTrackId,
+            domain: domain,
+            contentId: 'springer_com.buybox',
+            customSessionParameter: {
+                2: getBusinessPartnerIds()
+            }
+        };
+
+        if (!window.webtrekkV3 && console) {
+            console.log('No webtrekk found.', data);
+            return;
+        }
+
+        return new webtrekkV3(data);
+    }
+
+    function Track(product, webtrekkTrackId, eCommerceParam_11, action) {
+        if (!product) return;
+
+        var data = {
+            trackDomain: trackDomain,
+            trackId: webtrekkTrackId,
+            domain: domain,
+            contentId: webtrekkContentId,
+            product: product.id,
+            productStatus: action,
+            productCategory: {
+                1: product.trackingCategory
+            },
+            customEcommerceParameter: {
+                9: domain,
+                11: eCommerceParam_11
+            },
+            customSessionParameter: {
+                2: getBusinessPartnerIds()
+            }
+        };
+
+        if (!window.webtrekkV3 && console) {
+            console.log('No webtrekk found.', data);
+            return;
+        }
+
+        return new webtrekkV3(data);
+    }
+
+    function track(trackingConfig) {
+        return function(payload) {
+            if (!trackingConfig) return
+            if (payload) {
+                trackingConfig.sendinfo(payload)
+            } else {
+                trackingConfig.sendinfo()
+            }
+            return true
+        }
+    }
+
+    function trackAddToCart(trackingConfig) {
+        return track(trackingConfig)()
+    }
+
+    function trackOnLoad(trackingConfig) {
+        if (loadEventSent) return;
+        loadEventSent = true;
+        return track(trackingConfig)()
+    }
+
+    function trackSubscription(trackingConfig) {
+        return track(trackingConfig)({linkId: 'inst. subscription info'})
+    }
+
+    function trackDeepDyve(trackingConfig) {
+        return track(trackingConfig)({linkId: 'Rent Article'})
+    }
+
+    function getBusinessPartnerIds() {
+        var businessPartnerIDs = [];
+        try {
+            var ids = window.dataLayer[0]["user"]["license"]["businessPartnerID"];
+            if(ids && ids.length) businessPartnerIDs = ids;
+        } catch(e) {}
+        return businessPartnerIDs.join(";");
+    }
+
+    var bindClickLinkHandle = function (link) {
+        if (!link) return;
+
+        link.addEventListener('click', function (event) {
+            trackSubscription(LinkTrack(webtrekkTrackId));
+        });
+    };
+
+    var bindLoadButtonHandle = function (button) {
+        if (!button) return;
+
+        var productId = button.getAttribute('data-product-id');
+        var trackingCategory = button.getAttribute('data-tracking-category');
+        var eCommerceParam_11 = button.getAttribute('data-eCommerceParam_11');
+
+        window.addEventListener('load', function (event) {
+            trackOnLoad(Track({
+                id: productId,
+                trackingCategory: trackingCategory
+            }, webtrekkTrackId, eCommerceParam_11, 'view'));
+        });
+    };
+
+    var bindClickButtonHandle = function (button) {
+        if (!button) return;
+
+        var productId = button.getAttribute('data-product-id');
+        var trackingCategory = button.getAttribute('data-tracking-category');
+        var eCommerceParam_11 = button.getAttribute('data-eCommerceParam_11');
+
+        button.addEventListener('click', function (event) {
+            trackAddToCart(Track({
+                id: productId,
+                trackingCategory: trackingCategory
+            }, webtrekkTrackId, eCommerceParam_11, 'add'));
+        });
+    };
+
+    var buyButtons = document.getElementsByClassName('buybox__buy-button');
+    forEach(buyButtons, function (index, button) {
+        bindLoadButtonHandle(button);
+        bindClickButtonHandle(button);
+    });
+
+    var sublinks = document.getElementsByClassName('js-buybox__inst-sub-link');
+    forEach(sublinks, function (index, link) {
+        bindClickLinkHandle(link);
+    });
+
+    var bindDeepDyveClickHandle = function (link) {
+        if (!link) return
+
+        link.addEventListener('click', function (event) {
+            trackDeepDyve(LinkTrack(webtrekkTrackId))
+        })
+    }
+
+    var deepDyveLink = document.getElementById('deepdyve-link')
+    bindDeepDyveClickHandle(deepDyveLink)
+})();
+</script>
+
+                                        </div>
+
+                                    <div class="u-js-hide u-js-show-two-col">
+                                        
+        
+
+
+
+
+                                            <div class="citations" data-component="SV.Dropdown" data-namespace="citations">
+        <h3 class="u-h4" data-role="button-dropdown__title">
+    <span>Cite</span>
+    <span class="hide-text-small">chapter</span>
+</h3>
+<ul class="citations__content" data-role="button-dropdown__content">
+    <li>
+        <a href="#citeas" data-track="click" data-track-action="Cite as link" data-track-label="Cite dropdown">How to cite?</a>
+    </li>
+        <li>
+            <a href="//citation-needed.springer.com/v2/references/10.1007/978-1-4614-1433-9_4?format&#x3D;refman&amp;flavour&#x3D;citation"
+               title="Download this chapter&#39;s citation as a .RIS file" data-track="click" data-track-action="Export citation" data-track-label="RIS">
+                <span class="citations__extension" data-gtmlabel="RIS">
+                    <svg class="u-vertical-align-absolute" width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M7 7.269v-6.271c0-.551-.448-.998-1-.998-.556 0-1 .447-1 .998v6.271l-1.5-1.547c-.375-.387-1.01-.397-1.401-.006l.016-.016c-.397.397-.391 1.025-.001 1.416l3.178 3.178c.392.392 1.024.391 1.415 0l3.178-3.178c.392-.392.391-1.025-.001-1.416l.016.016c-.397-.397-1.018-.388-1.401.006l-1.5 1.547zm-7 5.731c0-.552.456-1 1.002-1h9.995c.554 0 1.002.444 1.002 1 0 .552-.456 1-1.002 1h-9.995c-.554 0-1.002-.444-1.002-1z" fill="#004aa7"/></svg>
+                    .RIS
+                </span>
+                <span class="citations__types">
+                        <span>
+                            Papers
+                        </span>
+                        <span>
+                            Reference Manager
+                        </span>
+                        <span>
+                            RefWorks
+                        </span>
+                        <span>
+                            Zotero
+                        </span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="//citation-needed.springer.com/v2/references/10.1007/978-1-4614-1433-9_4?format&#x3D;endnote&amp;flavour&#x3D;citation"
+               title="Download this chapter&#39;s citation as a .ENW file" data-track="click" data-track-action="Export citation" data-track-label="ENW">
+                <span class="citations__extension" data-gtmlabel="ENW">
+                    <svg class="u-vertical-align-absolute" width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M7 7.269v-6.271c0-.551-.448-.998-1-.998-.556 0-1 .447-1 .998v6.271l-1.5-1.547c-.375-.387-1.01-.397-1.401-.006l.016-.016c-.397.397-.391 1.025-.001 1.416l3.178 3.178c.392.392 1.024.391 1.415 0l3.178-3.178c.392-.392.391-1.025-.001-1.416l.016.016c-.397-.397-1.018-.388-1.401.006l-1.5 1.547zm-7 5.731c0-.552.456-1 1.002-1h9.995c.554 0 1.002.444 1.002 1 0 .552-.456 1-1.002 1h-9.995c-.554 0-1.002-.444-1.002-1z" fill="#004aa7"/></svg>
+                    .ENW
+                </span>
+                <span class="citations__types">
+                        <span>
+                            EndNote
+                        </span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="//citation-needed.springer.com/v2/references/10.1007/978-1-4614-1433-9_4?format&#x3D;bibtex&amp;flavour&#x3D;citation"
+               title="Download this chapter&#39;s citation as a .BIB file" data-track="click" data-track-action="Export citation" data-track-label="BIB">
+                <span class="citations__extension" data-gtmlabel="BIB">
+                    <svg class="u-vertical-align-absolute" width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M7 7.269v-6.271c0-.551-.448-.998-1-.998-.556 0-1 .447-1 .998v6.271l-1.5-1.547c-.375-.387-1.01-.397-1.401-.006l.016-.016c-.397.397-.391 1.025-.001 1.416l3.178 3.178c.392.392 1.024.391 1.415 0l3.178-3.178c.392-.392.391-1.025-.001-1.416l.016.016c-.397-.397-1.018-.388-1.401.006l-1.5 1.547zm-7 5.731c0-.552.456-1 1.002-1h9.995c.554 0 1.002.444 1.002 1 0 .552-.456 1-1.002 1h-9.995c-.554 0-1.002-.444-1.002-1z" fill="#004aa7"/></svg>
+                    .BIB
+                </span>
+                <span class="citations__types">
+                        <span>
+                            BibTeX
+                        </span>
+                        <span>
+                            JabRef
+                        </span>
+                        <span>
+                            Mendeley
+                        </span>
+                </span>
+            </a>
+        </li>
+</ul>
+    </div>
+
+                                            
+
+
+
+                                    </div>
+                                </div>
+                                
+
+                            </div>
+                                <div class="skyscraper-ad u-hide" data-component="SpringerLink.GoogleAds" data-namespace="skyscraper">
+        <div class="skyscraper-ad__wrapper">
+            <p class="skyscraper-ad__label">Advertisement</p>
+            <button class="skyscraper-ad__hide" title="Hide this advertisement" data-track="click" data-track-action="Hide advertisement" data-track-label="">Hide</button>
+            <div id="doubleclick-ad" class="skyscraper-ad__ad"></div>
+        </div>
+    </div>
+
+                        </div>
+                    </aside>
+                </div>
+            </main>
+                <footer class="footer u-interface">
+        <div class="footer__aside-wrapper">
+            <div class="footer__content">
+                <div class="footer__aside">
+                    <p class="footer__strapline">Over 10 million scientific documents at your fingertips</p>
+                                <div class="footer__edition" data-component="SV.EditionSwitcher">
+                                    <h3 class="u-hide" data-role="button-dropdown__title" data-btn-text="Switch between Academic &#38; Corporate Edition">Switch Edition</h3>
+                                    <ul data-role="button-dropdown__content">
+                                        <li  class="selected"><a href="/siteEdition/link?previousUrl=/chapter/10.1007%2F978-1-4614-1433-9_4&id=siteedition-academic-link" id="siteedition-academic-link">Academic Edition</a></li>
+                                        <li ><a href="/siteEdition/rd?previousUrl=/chapter/10.1007%2F978-1-4614-1433-9_4&id=siteedition-corporate-link" id="siteedition-corporate-link">Corporate Edition</a></li>
+                                    </ul>
+                                </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer__content">
+            <ul class="footer__nav">
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/impressum">Impressum</a>
+                </li>
+                <li>
+                    <a href="/termsandconditions">Legal information</a>
+                </li>
+                <li>
+                    <a href="/privacystatement">Privacy statement</a>
+                </li>
+                <li>
+                    <a href="/cookiepolicy">How we use cookies</a>
+                </li>
+                <li>
+                    <a href="/accessibility">Accessibility</a>
+                </li>
+                <li>
+                    <a id="contactus-footer-link" href="/contactus">Contact us</a>
+                </li>
+            </ul>
+            <a class="parent-logo"
+               target="_blank" rel="noopener"
+               href="//www.springernature.com"
+               title="Go to Springer Nature">
+                <span class="u-screenreader-only">Springer Nature</span>
+                <svg width="125" height="12" focusable="false" aria-hidden="true">
+                    <image width="125" height="12"
+                           src="/springerlink-static/1421424694/images/png/springernature.png"
+                           xmlns:xlink="http://www.w3.org/1999/xlink"
+                           xlink:href="/springerlink-static/1421424694/images/svg/springernature.svg">
+                    </image>
+                </svg>
+            </a>
+
+            <p class="footer__copyright">&copy; 2018 Springer Nature Switzerland AG. Part of <a target="_blank" rel="noopener" href="//www.springernature.com">Springer Nature</a>.</p>
+                <p class="footer__user-access-info">
+                    <span>Not logged in</span>
+                    <span>Not affiliated</span>
+                    <span>45.76.17.109</span>
+                </p>
+        </div>
+    </footer>
+
+        </div>
+        <script type="text/javascript">
+    (function() {
+        var linkEl = document.querySelector('.js-ctm');
+        var scriptsList = [];
+        var polyfillFeatures = '';
+
+        window.SpringerLink = window.SpringerLink || {};
+        window.SpringerLink.staticLocation = '/springerlink-static/1421424694';
+        window.eventTrackerInstance = null;
+
+        if (window.matchMedia && window.matchMedia(linkEl.media).matches) {
+            (function(h){h.className = h.className.replace('no-js', 'js')})(document.documentElement);
+
+            polyfillFeatures = 'default,fetch,Promise,Object.setPrototypeOf,Object.entries,Number.isInteger,MutationObserver,startsWith,Array.prototype.includes,Array.from,IntersectionObserver';
+
+            scriptsList = [
+                'https://cdn.polyfill.io/v2/polyfill.min.js?features=' + polyfillFeatures + '&flags=gated',
+                window.SpringerLink.staticLocation + '/js/main.js'
+            ];
+
+            scriptsList.forEach(function(script) {
+                var tag = document.createElement('script');
+                tag.async = false;
+                tag.src = script;
+
+                document.body.appendChild(tag);
+            });
+        }
+    })();
+</script>
+
+    <script>
+    (function() {
+        var linkEl = document.querySelector('.js-ctm');
+        if (window.matchMedia && window.matchMedia(linkEl.media).matches) {
+            var scriptMathJax = document.createElement('script');
+            scriptMathJax.async = false;
+            scriptMathJax.src = '/springerlink-static/1421424694/js/mathJax.js';
+            var s0 = document.getElementsByTagName('script')[0];
+            s0.parentNode.insertBefore(scriptMathJax, s0);
+        }
+    })();
+</script>
+
+
+    <script type="text/javascript" id="googletag-push">
+        
+            var adSlot = '270604982/springerlink/book/chapter';
+        
+
+        var definedSlots = [
+                {slot: [728, 90], containerName: 'doubleclick-leaderboard-ad'},
+                {slot: [160, 600], containerName: 'doubleclick-ad'},
+            {slot: [2, 2], containerName: 'doubleclick-native-ad'}
+        ];
+    </script>
+
+
+        
+        <span id="chat-widget" class="u-hide"></span>
+        
+    </body>
+</html>

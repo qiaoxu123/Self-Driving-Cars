@@ -1,0 +1,479 @@
+<meta charset="utf-8"/>
+<co-content>
+ <p>
+  In this project, you will write and implement a controller for the CARLA simulator. Your goal is to control the vehicle to follow a race track by navigating through preset waypoints. The vehicle needs to reach these waypoints at certain desired speeds, so both longitudinal and lateral control will be required.
+ </p>
+ <p>
+  To do this assignment, the CARLA simulator along with the assignment code needs to be installed. Please follow these instructions:
+ </p>
+ <p>
+  1) Follow the CARLA Installation guide from a previous reading to install the CARLA simulator
+ </p>
+ <p>
+  2) Download the following "Course1FinalProject.zip" file and unpack into the  subfolder folder "PythonClient" inside the "CarlaSimulator" (root) folder. This will create a subfolder "Course1FinalProject" under "PythonClient" which contains the assignment files.
+ </p>
+ <asset assettype="generic" extension="zip" id="ZQFoJyNEEem3Cw5hhdQCGg" name="Course1FinalProject">
+ </asset>
+ <p>
+  It is very important to have the contents of "Course1FinalProject.zip" be under the folder "PythonClient\Course1FinalProject" (for Windows) or "PythonClient/Course1FinalProject" (for Ubuntu). Installing it into another directory might cause runtime issues.
+ </p>
+ <p>
+  After successfully downloading CARLA and the assessment script, you can now begin the assignment.
+ </p>
+ <p>
+  3) Edit the "controller2d.py" class file (found inside the "Course1FinalProject" folder, under "PythonClient"). This is where your controller will be implemented.
+ </p>
+ <p>
+  The "controller2d.py" file contains a controller object. You will implement the controller in the update_controls method labeled by the comment blocks (find all comment blocks that contain "MODULE 7" - these serves as anchor points for you to implement your code below them).
+ </p>
+ <p>
+  The controller provides you with the following relevant information required for its implementation. All units are in
+  <strong>
+   SI
+  </strong>
+  (meters, seconds, radians), and CARLA works in the
+  <strong>
+   left-handed coordinate system
+  </strong>
+  (due to the Unreal Engine adopting the left-handed coordinate system
+  <strong>
+   )
+  </strong>
+  . This generally shouldn't be an issue for this assignment since the controller operates in the x, y and yaw space.
+ </p>
+ <p>
+  The waypoints variable is a Python list of waypoints to track where each row denotes a waypoint of format [x, y, v], which are the x and y positions as well as the desired speed at that position, respectively. An example of accessing the third waypoint's y position is:
+ </p>
+ <pre language="python">waypoints[2][1] # Remember that Python's indexing begins at 0</pre>
+ <p>
+  More details on the structure of the waypoint variable is written in the comments of the controller2d.py file.
+ </p>
+ <p>
+  Along with the other variables, the waypoints will update on each simulation step - so please do not assume the waypoint variable never changes. Here the waypoints are a
+  <strong>
+   linearly interpolated (for location and speed) subset of the entire set of waypoints
+  </strong>
+  (from racetrack_waypoints.txt). In other words the waypoints variable is an enhanced (finer resolution) portion of the entire set of waypoints that is near the vehicle. This is done to reduce the computation time and the performance of the controller.
+ </p>
+ <p>
+  The desired speed is computed to be the waypoint speed at the closest waypoint to the vehicle.
+ </p>
+ <table columns="3" rows="7">
+  <thead>
+   <tr>
+    <th>
+     <p>
+      Description
+     </p>
+    </th>
+    <th>
+     <p>
+      Variable Name
+     </p>
+    </th>
+    <th>
+     <p>
+      Units
+     </p>
+    </th>
+   </tr>
+  </thead>
+  <tr>
+   <td>
+    <p>
+     Vehicle Location
+    </p>
+   </td>
+   <td>
+    <p>
+     [x, y]
+    </p>
+   </td>
+   <td>
+    <p>
+     [meters, meters]
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     Vehicle Orientation
+    </p>
+   </td>
+   <td>
+    <p>
+     yaw
+    </p>
+   </td>
+   <td>
+    <p>
+     radians
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     Vehicle Speed
+    </p>
+   </td>
+   <td>
+    <p>
+     v
+    </p>
+   </td>
+   <td>
+    <p>
+     meters per second
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     In-Game Time
+    </p>
+   </td>
+   <td>
+    <p>
+     t
+    </p>
+   </td>
+   <td>
+    <p>
+     seconds
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     Desired Speed
+    </p>
+   </td>
+   <td>
+    <p>
+     v_desired
+    </p>
+   </td>
+   <td>
+    <p>
+     meters per second
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     Waypoints to track (x, y, v)
+    </p>
+   </td>
+   <td>
+    <p>
+     waypoints
+    </p>
+   </td>
+   <td>
+    <p>
+     [meters, meters, meters per second]
+    </p>
+   </td>
+  </tr>
+ </table>
+ <p>
+  Using this information for your controller, you will output vehicle throttle, steer, and brake. Details about these outputs in "controller2d.py" are as follows.
+ </p>
+ <table columns="3" rows="4">
+  <thead>
+   <tr>
+    <th>
+     <p>
+      Description
+     </p>
+    </th>
+    <th>
+     <p>
+      Variable Name
+     </p>
+    </th>
+    <th>
+     <p>
+      Limits
+     </p>
+    </th>
+   </tr>
+  </thead>
+  <tr>
+   <td>
+    <p>
+     Throttle
+    </p>
+   </td>
+   <td>
+    <p>
+     throttle_output
+    </p>
+   </td>
+   <td>
+    <p>
+     0 to 1 (in percentage)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     Steering
+    </p>
+   </td>
+   <td>
+    <p>
+     steer_output
+    </p>
+   </td>
+   <td>
+    <p>
+     -1.22 to 1.22 (in radians, from left to right)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     Brake
+    </p>
+   </td>
+   <td>
+    <p>
+     brake_output
+    </p>
+   </td>
+   <td>
+    <p>
+     0 to 1 (in percentage)
+    </p>
+   </td>
+  </tr>
+ </table>
+ <p>
+  You may also treat all measurements from CARLA to be with respect to the center position of the vehicle. If required, the distance between the center position to the front axle of the vehicle is 1.5 meters.
+ </p>
+ <p>
+  4) In one terminal, start the CARLA simulator at a 30hz fixed time-step:
+ </p>
+ <p>
+  <strong>
+   Ubuntu:
+  </strong>
+ </p>
+ <pre language="sh">./CarlaUE4.sh /Game/Maps/RaceTrack -windowed -carla-server -benchmark -fps=30</pre>
+ <p>
+  <strong>
+   Windows:
+  </strong>
+ </p>
+ <pre language="sh">CarlaUE4.exe /Game/Maps/RaceTrack -windowed -carla-server -benchmark -fps=30</pre>
+ <p>
+  5) In another terminal, change the directory to go into the "Course1FinalProject" folder, under the "PythonClient" folder.
+ </p>
+ <p>
+  Run your controller, execute the following command while CARLA is open:
+ </p>
+ <p>
+  <strong>
+   Ubuntu
+  </strong>
+  (use alternative python commands if the command below does not work, as described in the CARLA install guide)
+  <strong>
+   :
+  </strong>
+ </p>
+ <pre language="sh">python3 module_7.py</pre>
+ <p>
+  <strong>
+   Windows
+  </strong>
+  (use alternative python commands if the command below does not work, as described in the CARLA install guide)
+  <strong>
+   :
+  </strong>
+ </p>
+ <pre language="sh">python module_7.py</pre>
+ <p>
+  The simulator will begin to run if the module_7 client connects to the server properly. It will open two new feedback windows (unless live_plotting is disabled - see the editing of
+  <strong>
+   options.cfg
+  </strong>
+  below for more details), one of which shows the trajectory and the other which shows the controls feedback.
+ </p>
+ <p>
+  The trajectory feedback will contain the car, start and end positions, entire path/path traveled and a small shaded region which denotes the subset of interpolated points to be sent into the controller for control updates. Linear interpolation is used between waypoints to provide a finer resolution path/speed requests for the controller. The X and Y axes are in meters.
+ </p>
+ <p>
+  The controls feedback shows the throttle, steering and brake outputs, as well as the speed response for the simulation (desired speed and current speed in the single plot). This is a general feedback for viewing what the client is sending to the CARLA server in terms of control commands. The desired speed is set to the closest interpolated speed point to the current position of the car. The speeds are in meters per second and the throttle (0 to 1), brake (0 to 1) and steering (-1 to 1, or left to right turn) are unitless. Note that the steering command output inside controller2d.py is automatically converted from radians (-1.22 to 1.22 rad) to a percentage (-1 to 1) before the command is sent to the CARLA server. The X axis for all four plots in the controls feedback is the in-game time, in seconds.
+ </p>
+ <p>
+  If the simulation runs slowly, you can try increasing the period at which the live plotter refreshes the plots, or disabling the live plotting altogether. Disabling the live plotting does not affect the plot outputs at the end of the simulation.
+ </p>
+ <p>
+  To do this, edit the
+  <strong>
+   options.cfg
+  </strong>
+  file found in the "Course1FinalProject" folder for the relevant parameters. The following table below explains each option:
+ </p>
+ <table columns="3" rows="3">
+  <thead>
+   <tr>
+    <th>
+     <p>
+      Parameter
+     </p>
+    </th>
+    <th>
+     <p>
+      Description
+     </p>
+    </th>
+    <th>
+     <p>
+      Value
+     </p>
+    </th>
+   </tr>
+  </thead>
+  <tr>
+   <td>
+    <p>
+     live_plotting
+    </p>
+   </td>
+   <td>
+    <p>
+     Enable or disable live plotting.
+    </p>
+   </td>
+   <td>
+    <p>
+     true/false
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p>
+     live_plotting_period
+    </p>
+   </td>
+   <td>
+    <p>
+     Period (in seconds) which the live plot will refresh on screen. Set to "0" for an update every simulation timestep.
+    </p>
+   </td>
+   <td>
+    <p>
+     [seconds]
+    </p>
+   </td>
+  </tr>
+ </table>
+ <p>
+ </p>
+ <p>
+  6) The client will close once you reach the final waypoint, or after around 200 to 250 in-game seconds have passed. After the simulation completes, a text file containing the trajectory generated by your controller is saved. This file is called "trajectory.txt" and it is located inside the "controller_output" folder under the "Course1FinalProject" folder. The plots for speed, throttle, brake, steering and the executed 2D trajectory are also saved into this folder.
+ </p>
+ <p>
+  A grading script (provided below) compares your trajectory to the waypoints and scores its performance. Extract this grader into the "Course1FinalProject" folder.
+ </p>
+ <asset assettype="generic" extension="py" id="v3QypfEkEeiTKQ5ajE7PqA" name="grade_c1m7">
+ </asset>
+ <p>
+  To run the grading script, execute the following command from the "Course1FinalProject" directory in a new terminal:
+ </p>
+ <p>
+  <strong>
+   Ubuntu
+  </strong>
+  (use alternative python commands if the command below does not work, as described in the CARLA install guide)
+  <strong>
+   :
+  </strong>
+ </p>
+ <pre language="sh">python3 grade_c1m7.py racetrack_waypoints.txt /controller_output/trajectory.txt</pre>
+ <p>
+  <strong>
+   Windows
+  </strong>
+  (use alternative python commands if the command below does not work, as described in the CARLA install guide)
+  <strong>
+   :
+  </strong>
+ </p>
+ <pre language="sh">python grade_c1m7.py racetrack_waypoints.txt /controller_output/trajectory.txt</pre>
+ <p>
+  The grading script plots your trajectory along with the velocity at each waypoint. The distance and velocity error bounds are also shown on the plots. Your trajectory passes the assignment if it successfully reaches 50% or more waypoints.
+ </p>
+ <p>
+  7) Once your trajectory passes the grading script, you may upload its file (trajectory.txt) to Coursera for official evaluation.
+ </p>
+ <p>
+  8) Finally, for an even greater challenge, try modifying the reference speeds or path to see how quickly can you complete the track. No points or grading for this exercise, but feel free to post your results on the forums!
+ </p>
+ <p>
+  To modify the reference path and speed, edit the "racetrack_waypoints.txt" file. This file will contain the path and reference speed for each waypoint in the path.
+ </p>
+ <p>
+  The rows of the txt file is each waypoint in sequence, and the columns are in the following format: "X position (meters), Y position (meters), reference speed (meters per second". You may modify the reference speed by changing the third column of the file, and the path by modifying the path by changing the first and second columns.
+ </p>
+ <p>
+ </p>
+</co-content>
+<style>
+ body {
+    padding: 50px 85px 50px 85px;
+}
+
+table th, table td {
+    border: 1px solid #e0e0e0;
+    padding: 5px 20px;
+    text-align: left;
+}
+input {
+    margin: 10px;
+}
+}
+th {
+    font-weight: bold;
+}
+td, th {
+    display: table-cell;
+    vertical-align: inherit;
+}
+img {
+    height: auto;
+    max-width: 100%;
+}
+pre {
+    display: block;
+    margin: 20px;
+    background: #424242;
+    color: #fff;
+    font-size: 13px;
+    white-space: pre-wrap;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    border: 1px solid #ccc;
+}
+</style>
+<script async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+ MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$$','$$'], ['$','$'] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    }
+  });
+</script>

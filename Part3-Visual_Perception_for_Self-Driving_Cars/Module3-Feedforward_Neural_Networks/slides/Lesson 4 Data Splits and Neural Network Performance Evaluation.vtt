@@ -1,0 +1,920 @@
+WEBVTT
+
+1
+00:00:13.850 --> 00:00:16.140
+So far, in this module,
+
+2
+00:00:16.140 --> 00:00:18.720
+we've discussed what
+a neural network is and
+
+3
+00:00:18.720 --> 00:00:21.420
+how to arrive at the best
+weights given training data.
+
+4
+00:00:21.420 --> 00:00:23.790
+However, we still
+need to explore more
+
+5
+00:00:23.790 --> 00:00:26.475
+deeply how to train
+neural networks efficiently.
+
+6
+00:00:26.475 --> 00:00:28.950
+This lesson will
+discuss how to split
+
+7
+00:00:28.950 --> 00:00:32.250
+your data for an unbiased
+estimate of performance on
+
+8
+00:00:32.250 --> 00:00:33.630
+your neural network model
+
+9
+00:00:33.630 --> 00:00:35.670
+and what insights
+you can get from
+
+10
+00:00:35.670 --> 00:00:37.950
+observing your neural
+network's performance
+
+11
+00:00:37.950 --> 00:00:39.690
+on various data splits.
+
+12
+00:00:39.690 --> 00:00:42.410
+Let's begin by describing
+the usual data splits
+
+13
+00:00:42.410 --> 00:00:45.620
+we use to evaluate
+a machine learning system.
+
+14
+00:00:45.620 --> 00:00:49.250
+Let's take as an example
+a real life problem.
+
+15
+00:00:49.250 --> 00:00:52.040
+We're given a dataset
+of 10,000 images of
+
+16
+00:00:52.040 --> 00:00:55.560
+traffic signs with corresponding
+classification labels.
+
+17
+00:00:55.560 --> 00:00:57.590
+We want to train
+our neural network to
+
+18
+00:00:57.590 --> 00:00:59.750
+perform traffic sign
+classification.
+
+19
+00:00:59.750 --> 00:01:01.745
+How do we approach this problem?
+
+20
+00:01:01.745 --> 00:01:03.890
+Do we train on all
+the data and then
+
+21
+00:01:03.890 --> 00:01:05.950
+deploy our traffic
+sign classifier?
+
+22
+00:01:05.950 --> 00:01:07.580
+That approach is guaranteed
+
+23
+00:01:07.580 --> 00:01:09.245
+to fail for the following reason.
+
+24
+00:01:09.245 --> 00:01:11.160
+Given a large enough
+neural network,
+
+25
+00:01:11.160 --> 00:01:14.780
+we are almost guaranteed to
+get a very low training loss.
+
+26
+00:01:14.780 --> 00:01:17.450
+This is due to the very large
+number of parameters in
+
+27
+00:01:17.450 --> 00:01:20.330
+a typical deep neural
+network allowing it to
+
+28
+00:01:20.330 --> 00:01:22.130
+memorize the training data to
+
+29
+00:01:22.130 --> 00:01:23.750
+a large extent given
+
+30
+00:01:23.750 --> 00:01:26.615
+a large enough number
+of training iterations.
+
+31
+00:01:26.615 --> 00:01:30.830
+A better approach is to split
+this data into three parts,
+
+32
+00:01:30.830 --> 00:01:33.950
+the training split,
+the validation split,
+
+33
+00:01:33.950 --> 00:01:35.735
+and the testing split.
+
+34
+00:01:35.735 --> 00:01:37.190
+As the name suggests,
+
+35
+00:01:37.190 --> 00:01:39.020
+the training split is directly
+
+36
+00:01:39.020 --> 00:01:41.615
+observed by the model during
+neural network training.
+
+37
+00:01:41.615 --> 00:01:43.460
+The loss function is directly
+
+38
+00:01:43.460 --> 00:01:45.365
+minimized on this training set.
+
+39
+00:01:45.365 --> 00:01:47.135
+But as we've stated earlier,
+
+40
+00:01:47.135 --> 00:01:49.310
+we are expecting the value
+of this function
+
+41
+00:01:49.310 --> 00:01:51.805
+to be very low over the set.
+
+42
+00:01:51.805 --> 00:01:55.030
+The validation split is
+used by developers to test
+
+43
+00:01:55.030 --> 00:01:56.650
+the performance of
+the neural network
+
+44
+00:01:56.650 --> 00:01:58.765
+when hyperparameters are changed.
+
+45
+00:01:58.765 --> 00:02:01.930
+Hyperparameters are those
+parameters that either modify
+
+46
+00:02:01.930 --> 00:02:05.630
+our network structure or
+affect our training process,
+
+47
+00:02:05.630 --> 00:02:06.910
+but are not a part of
+
+48
+00:02:06.910 --> 00:02:09.625
+the network parameters
+learned during training.
+
+49
+00:02:09.625 --> 00:02:12.055
+Examples include;
+the learning rate,
+
+50
+00:02:12.055 --> 00:02:13.495
+the number of layers,
+
+51
+00:02:13.495 --> 00:02:15.170
+the number of units per layer,
+
+52
+00:02:15.170 --> 00:02:17.485
+and the activation function type.
+
+53
+00:02:17.485 --> 00:02:20.470
+The final split is
+called the testing split
+
+54
+00:02:20.470 --> 00:02:23.725
+and is used to get an unbiased
+estimate of performance.
+
+55
+00:02:23.725 --> 00:02:26.170
+The test splits should
+be off limits when
+
+56
+00:02:26.170 --> 00:02:28.750
+developing a neural network
+architecture so that
+
+57
+00:02:28.750 --> 00:02:31.330
+the neural network never
+sees this data during
+
+58
+00:02:31.330 --> 00:02:34.440
+the training or hyperparameter
+optimization process.
+
+59
+00:02:34.440 --> 00:02:36.580
+The only use of
+the test set should
+
+60
+00:02:36.580 --> 00:02:38.590
+be to evaluate the performance of
+
+61
+00:02:38.590 --> 00:02:40.749
+the final architecture
+and hyperparameter
+
+62
+00:02:40.749 --> 00:02:44.050
+set before it is deployed
+on a self-driving vehicle.
+
+63
+00:02:44.050 --> 00:02:45.430
+Let us now determine
+
+64
+00:02:45.430 --> 00:02:48.340
+what percentage of data
+goes into each split.
+
+65
+00:02:48.340 --> 00:02:50.085
+Before the big data error,
+
+66
+00:02:50.085 --> 00:02:51.910
+it was common to have datasets on
+
+67
+00:02:51.910 --> 00:02:53.965
+the order of thousands
+of examples.
+
+68
+00:02:53.965 --> 00:02:55.450
+In that case, the default
+
+69
+00:02:55.450 --> 00:02:56.935
+percentage of data that goes into
+
+70
+00:02:56.935 --> 00:03:00.935
+each split was approximately
+60 percent for training,
+
+71
+00:03:00.935 --> 00:03:03.090
+20 percent for validation,
+
+72
+00:03:03.090 --> 00:03:05.715
+and 20 percent held in
+reserve for testing.
+
+73
+00:03:05.715 --> 00:03:07.650
+However, nowadays, it is not
+
+74
+00:03:07.650 --> 00:03:10.230
+uncommon to have
+datasets on the order of
+
+75
+00:03:10.230 --> 00:03:12.220
+millions of examples having
+
+76
+00:03:12.220 --> 00:03:15.560
+20 percent of the data in
+the validation and test sets is
+
+77
+00:03:15.560 --> 00:03:18.650
+unnecessary as the
+validation and test would
+
+78
+00:03:18.650 --> 00:03:21.950
+contain far more samples than
+are needed for the purpose.
+
+79
+00:03:21.950 --> 00:03:23.930
+In such cases, we
+would find that a
+
+80
+00:03:23.930 --> 00:03:25.940
+training set of 98 percent of
+
+81
+00:03:25.940 --> 00:03:28.190
+the data with
+a validation and test set
+
+82
+00:03:28.190 --> 00:03:30.740
+of one percent of the data
+each is not uncommon.
+
+83
+00:03:30.740 --> 00:03:33.620
+Let us go back to our traffic
+sign detection problem.
+
+84
+00:03:33.620 --> 00:03:36.170
+We assume that
+our traffic sign dataset is
+
+85
+00:03:36.170 --> 00:03:39.185
+comprised of 10,000
+labeled examples.
+
+86
+00:03:39.185 --> 00:03:41.060
+We can separate our dataset into
+
+87
+00:03:41.060 --> 00:03:43.160
+a training validation and testing
+
+88
+00:03:43.160 --> 00:03:47.240
+split according to the 602020
+small dataset heuristic.
+
+89
+00:03:47.240 --> 00:03:49.250
+We now evaluate
+the performance of
+
+90
+00:03:49.250 --> 00:03:50.660
+our neural network on each of
+
+91
+00:03:50.660 --> 00:03:52.865
+these splits using
+the loss function.
+
+92
+00:03:52.865 --> 00:03:54.950
+For a classification problem,
+
+93
+00:03:54.950 --> 00:03:57.530
+the loss function is defined
+as the cross entropy
+
+94
+00:03:57.530 --> 00:04:01.070
+between the prediction and
+the ground truth labels.
+
+95
+00:04:01.070 --> 00:04:03.410
+Cross entropy is strictly
+greater than zero,
+
+96
+00:04:03.410 --> 00:04:04.850
+so the higher its value,
+
+97
+00:04:04.850 --> 00:04:07.325
+the worse the performance
+of our classifier.
+
+98
+00:04:07.325 --> 00:04:09.365
+Keep in mind that
+the neural network
+
+99
+00:04:09.365 --> 00:04:11.480
+only directly observes
+the training set.
+
+100
+00:04:11.480 --> 00:04:14.060
+All the developers use
+the validation set to
+
+101
+00:04:14.060 --> 00:04:16.940
+determine the best
+hyperparameters to use.
+
+102
+00:04:16.940 --> 00:04:19.280
+The ultimate goal of
+the training is still
+
+103
+00:04:19.280 --> 00:04:22.340
+minimizing the error on
+the test set since it is
+
+104
+00:04:22.340 --> 00:04:24.350
+an unbiased estimate
+of performance of
+
+105
+00:04:24.350 --> 00:04:26.000
+our system and the data has
+
+106
+00:04:26.000 --> 00:04:27.890
+never been observed
+by the network.
+
+107
+00:04:27.890 --> 00:04:30.620
+Let us first consider
+the following scenario.
+
+108
+00:04:30.620 --> 00:04:33.020
+Let us assume that
+our estimator gave
+
+109
+00:04:33.020 --> 00:04:37.625
+a cross entropy loss of
+0.21 on the training set,
+
+110
+00:04:37.625 --> 00:04:40.850
+and a loss of 0.25 on
+the validation set,
+
+111
+00:04:40.850 --> 00:04:44.285
+and finally, a loss of
+0.3 on the test set.
+
+112
+00:04:44.285 --> 00:04:47.749
+Furthermore, due to errors in
+the labels of the dataset,
+
+113
+00:04:47.749 --> 00:04:49.760
+the minimum cross
+entropy loss that
+
+114
+00:04:49.760 --> 00:04:52.555
+we can expect is 0.18.
+
+115
+00:04:52.555 --> 00:04:55.595
+In this case, we have
+quite a good classifier
+
+116
+00:04:55.595 --> 00:04:57.890
+as the loss on
+the three sets are fairly
+
+117
+00:04:57.890 --> 00:05:00.380
+consistent and
+the loss is close to
+
+118
+00:05:00.380 --> 00:05:03.350
+the minimum achievable loss
+on the entire task.
+
+119
+00:05:03.350 --> 00:05:05.615
+Let's consider a second scenario
+
+120
+00:05:05.615 --> 00:05:07.010
+where the training loss is now
+
+121
+00:05:07.010 --> 00:05:11.420
+1.9 around ten times that
+of the minimum loss.
+
+122
+00:05:11.420 --> 00:05:13.370
+As we discussed in
+the previous lesson,
+
+123
+00:05:13.370 --> 00:05:15.170
+we expect any reasonably
+
+124
+00:05:15.170 --> 00:05:16.580
+sized neural network
+to be able to
+
+125
+00:05:16.580 --> 00:05:20.360
+almost perfectly fit the data
+given enough training time.
+
+126
+00:05:20.360 --> 00:05:23.270
+But in this case, the network
+was not able to do so.
+
+127
+00:05:23.270 --> 00:05:26.270
+We call this scenario where
+the neural network fails
+
+128
+00:05:26.270 --> 00:05:29.540
+to bring the training loss
+down underfitting.
+
+129
+00:05:29.540 --> 00:05:32.165
+One other scenario we
+might face is when we have
+
+130
+00:05:32.165 --> 00:05:34.340
+a low training set loss but
+
+131
+00:05:34.340 --> 00:05:36.860
+a high validation and
+testing set loss.
+
+132
+00:05:36.860 --> 00:05:39.380
+For example, we might
+arrive at the case where
+
+133
+00:05:39.380 --> 00:05:40.910
+the validation loss is around
+
+134
+00:05:40.910 --> 00:05:42.950
+ten times that of
+the training loss.
+
+135
+00:05:42.950 --> 00:05:46.280
+This case is referred to as
+overfitting and is caused by
+
+136
+00:05:46.280 --> 00:05:48.470
+the neural network
+optimizing its parameters to
+
+137
+00:05:48.470 --> 00:05:51.425
+precisely reproduce
+the training data output.
+
+138
+00:05:51.425 --> 00:05:53.760
+When we deploy on
+the validation set,
+
+139
+00:05:53.760 --> 00:05:56.645
+the network cannot generalize
+well to the new data.
+
+140
+00:05:56.645 --> 00:05:58.430
+The gap between training and
+
+141
+00:05:58.430 --> 00:06:01.730
+validation loss is called
+the generalization gap.
+
+142
+00:06:01.730 --> 00:06:04.415
+We want this gap to
+be as low as possible
+
+143
+00:06:04.415 --> 00:06:07.115
+while still having
+low enough training loss.
+
+144
+00:06:07.115 --> 00:06:10.084
+Let's see how we can try to
+go from the underfitting
+
+145
+00:06:10.084 --> 00:06:12.950
+or overfitting regime
+to a good estimator.
+
+146
+00:06:12.950 --> 00:06:15.815
+We begin with how to
+remedy underfitting.
+
+147
+00:06:15.815 --> 00:06:17.510
+The first option to remedy
+
+148
+00:06:17.510 --> 00:06:20.075
+underfitting is to train longer.
+
+149
+00:06:20.075 --> 00:06:23.090
+If the architecture is
+suitable for the task at hand,
+
+150
+00:06:23.090 --> 00:06:25.940
+training longer usually leads
+to a lower training loss.
+
+151
+00:06:25.940 --> 00:06:27.770
+If the architecture is too small,
+
+152
+00:06:27.770 --> 00:06:29.420
+training longer might not help.
+
+153
+00:06:29.420 --> 00:06:32.240
+In that case, you would
+want to add more layers
+
+154
+00:06:32.240 --> 00:06:35.375
+to your neural network or add
+more parameters per layer.
+
+155
+00:06:35.375 --> 00:06:38.390
+If both of the above
+options don't help,
+
+156
+00:06:38.390 --> 00:06:39.830
+your architecture might not be
+
+157
+00:06:39.830 --> 00:06:41.990
+suitable for the task
+at hand and you
+
+158
+00:06:41.990 --> 00:06:44.300
+would want to try
+a different architecture
+
+159
+00:06:44.300 --> 00:06:45.970
+to reduce underfitting.
+
+160
+00:06:45.970 --> 00:06:47.510
+Now, let's proceed to
+
+161
+00:06:47.510 --> 00:06:50.120
+the most common approaches
+to reduce overfitting.
+
+162
+00:06:50.120 --> 00:06:51.410
+In the case of overfitting,
+
+163
+00:06:51.410 --> 00:06:54.325
+the easiest thing to do is
+to just collect more data.
+
+164
+00:06:54.325 --> 00:06:56.040
+Unfortunately, for
+self-driving cars,
+
+165
+00:06:56.040 --> 00:06:58.130
+collecting training data is very
+
+166
+00:06:58.130 --> 00:07:00.560
+expensive as it requires
+engineering time for
+
+167
+00:07:00.560 --> 00:07:03.230
+data collection and
+a tremendous amount of
+
+168
+00:07:03.230 --> 00:07:06.510
+annotator time to properly
+define the true outputs.
+
+169
+00:07:06.510 --> 00:07:10.370
+Another solution for
+overfitting is regularization.
+
+170
+00:07:10.370 --> 00:07:13.010
+Regularization is
+any modification
+
+171
+00:07:13.010 --> 00:07:14.930
+made to the learning
+algorithm with
+
+172
+00:07:14.930 --> 00:07:16.250
+an intention to lower
+
+173
+00:07:16.250 --> 00:07:19.550
+the generalization gap but
+not the training loss.
+
+174
+00:07:19.550 --> 00:07:20.730
+If all else fails,
+
+175
+00:07:20.730 --> 00:07:22.940
+the final solution is to revisit
+
+176
+00:07:22.940 --> 00:07:24.710
+the architecture and check if
+
+177
+00:07:24.710 --> 00:07:26.690
+it is suitable for
+the task at hand.
+
+178
+00:07:26.690 --> 00:07:29.270
+In this lesson, we have
+learned how to interpret
+
+179
+00:07:29.270 --> 00:07:30.950
+the different
+performance scenarios
+
+180
+00:07:30.950 --> 00:07:32.929
+of our neural network
+on the training,
+
+181
+00:07:32.929 --> 00:07:35.495
+validation, and test splits.
+
+182
+00:07:35.495 --> 00:07:38.240
+If it is determined that
+our network is underfitting,
+
+183
+00:07:38.240 --> 00:07:40.100
+the easiest solution
+is to train for
+
+184
+00:07:40.100 --> 00:07:43.055
+a longer time or to use
+a larger neural network.
+
+185
+00:07:43.055 --> 00:07:45.755
+However, a much more
+commonly faced scenario
+
+186
+00:07:45.755 --> 00:07:48.630
+in self-driving car
+perception is overfitting
+
+187
+00:07:48.630 --> 00:07:50.210
+where good performance on
+
+188
+00:07:50.210 --> 00:07:51.710
+the training data does not always
+
+189
+00:07:51.710 --> 00:07:55.145
+translate to good performance
+on actual robots.
+
+190
+00:07:55.145 --> 00:07:56.570
+In the next lesson, we'll
+
+191
+00:07:56.570 --> 00:07:58.460
+focus on how to
+mitigate the effects of
+
+192
+00:07:58.460 --> 00:08:02.060
+overfitting with various
+regularization strategies.
+
+193
+00:08:02.060 --> 00:08:03.530
+These strategies will allow
+
+194
+00:08:03.530 --> 00:08:05.930
+perception algorithms
+trained to excel
+
+195
+00:08:05.930 --> 00:08:08.825
+unlabeled datasets to
+continue to work well
+
+196
+00:08:08.825 --> 00:08:12.840
+when driving through the
+ever-changing world around us.

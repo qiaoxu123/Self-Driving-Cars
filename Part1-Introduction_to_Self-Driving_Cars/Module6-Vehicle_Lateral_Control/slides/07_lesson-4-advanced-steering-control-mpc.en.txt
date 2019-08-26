@@ -1,0 +1,172 @@
+Welcome back. In the last video, we studied the Stanley controller for lateral path tracking control. In this video, we will explore an advanced applied control strategy, known as Model Predictive
+Control or MPC, to understand how to incorporate dynamic modeling into
+controller design. Specifically in this video, we will describe the MPC architecture and the concept of
+receding horizon control, formulate an MPC optimization problem for both linear and nonlinear models, and apply MPC to joint longitudinal
+and lateral vehicle control. Let's dive in. First, let's quickly go through the key aspects
+of Model Predictive Control. MPC refers to the control
+design approach that numerically solves an optimization
+problem at each time-step. Because solving an
+optimization problem at each time step can take time, MPC was originally applied to slow processes such as
+industrial chemical processing. However, the ever-improving
+performance of today's computing hardware has made MPC a viable approach even
+on embedded hardware. More and more automotive
+applications are turning to MPC as a way to improve performance and expand
+operating range for a suite of different
+embedded controllers, from traction control
+and stability control, to emission reduction,
+and idle speed control. Longitudinal and lateral control
+for autonomous vehicles is another extremely suitable
+application for MPC. Model Predictive Control is often interchangeably referred to
+as Receding Horizon Control, since the controller generates
+an actuator signal based on a fixed finite length horizon at each time-step which receives
+as time moves forward. The key advantages to solving online optimizations as part of
+the controller are as follows: The formulation of
+an MPC controller is straightforward requiring
+the definition of an objective function
+and relevant constraints that are then optimized using
+well-established solvers. The states and control signals
+can be constrained to stay within safe operating bounds
+and controls can be selected to maximize
+multiple objectives simultaneously. Both hard constraints and
+soft penalties can be employed, leading to a rich set of solutions for constrained control problems. As many automotive subsystems have rigid actuator constraints and
+diverse performance objectives, MPC has emerged as a major tool
+for vehicle control. The controller can be
+explicitly applied to the linear or non-linear models of
+the vehicle and its subsystems, meaning that we can
+use the same approach even as our models change
+or improve over time. The trade-off these advantages
+must be weighed against, is that MPC requires significantly more
+computational resources than a Static Control Law. It is certainly possible to create optimization formulations
+that are too expensive to compute at the high update rates required
+for smooth vehicle control. Careful implementation is needed
+to avoid overloading processors. Before we start designing
+MPC controllers, let's take a closer look at
+the concept of Receding Horizon. Receding Horizon Control solves a fixed size optimization
+at each time-step, which identifies
+optimal control inputs to apply from the current time to the end of the horizon based on the objectives constraints and
+current state of the vehicle. One issue that arises in
+implementation however, is that because optimization
+can take some amount of time, the state of the vehicle when
+starting the optimization, will be different from the state of the vehicle when completing
+the optimization. As a results, we must
+use a predicted state in the optimization for
+the time at which the control input will
+actually be applied. Let's step through the process
+and clarify the notation needed. First, we define the receding
+horizon length t. Then, we set the initial state for the optimization to be
+the predicted state at the end of the optimization x at time t. Next, we solve the optimization
+as the vehicle moves from its current
+state at time t minus one to x of t using the control input identified
+in the previous optimization. Although we won't exactly arrive at the predicted state at
+time t due to disturbances, we do expect to be reasonably close
+if the time interval is short. Finally, we apply the control
+signal from the first time step of the receding horizon optimization and repeat the process
+for the next time step. We can visualize the Receding
+Horizon or MPC Algorithm, using the following block
+diagram for a control. We have two main blocks,
+an optimizer block, which is the core MPC component or a Receding Horizon
+Control component, and the dynamic model. The model takes in
+the past inputs and state from time t minus one and takes in the output of the optimizer which is the current sequence of inputs U
+at each time step in the horizon. The model then outputs predicted
+states at the next time-step, which are compared to
+the reference trajectory and passed into the optimizer as
+the future or predicted error. The optimizer also receives updated constraints and
+the cost function to use, which can be fixed in advanced or varied based on changing
+operating modes. The optimizer then solves its optimization and
+the process repeats. Now, let's take a look at
+the linear MPC design in particular. We use the state space
+formulation which represents a motion
+model in discrete form. The future states
+are linearly related to the current states and
+the actuator signals. Note that, A and B are the coefficient matrices and are
+assumed to be time-invariant. MPC seeks to find a control policy U of inputs
+over a finite horizon. If all the states are
+to be driven to zero, the objective function or cost
+function when we minimize, can be defined as follows:
+with quadratic error on both deviations of the state from zero and on non-zero control inputs. This is similar to
+the optimization problem of optimal control theory and trades off control performance and
+input aggressiveness. Note that, the matrices Q
+and R are called weight matrices and can be selected to achieve a particular
+type of response. If instead we need to track a reference signals such
+as a desired trajectory, we modify the formulation to include the error delta x relative
+to the desired state. This is a famous
+optimization formulation and has a closed form solution, the Linear Quadratic
+Regulator or LQR. The closed form solution
+uses full state feedback, meaning that all states are
+used in the control response. The LQR solution defines
+a control gain matrix K, which can be computed from
+the A and B matrices of the state-space model and the Q and R matrices
+of the cost function. We've included links in
+the supplemental materials to this fascinating result of
+states-pace control theory. In the more general case, the objective function is any differentiable
+non-linear function of a state and inputs over
+the receding horizon. The constraints imposed on
+the optimization can include; non-linear dynamic models of motion, state and input bounds that capture things like
+maximum steering angles, and any other inequality
+constraints g are equality constraints
+h that affect our system. For such a general
+optimization problem however, no closed form solution exists. So, we must rely on numerical
+optimization to find a solution. Even the kinematic bicycle
+model falls into this category. So, almost all MPC controllers for autonomous driving will
+be solved numerically. Let's now look at
+the implementation of an MPC controller for trajectory
+tracking on a self-driving car. MPC will be used in the same feedback
+structure presented earlier, but we include the conversion from the tire forces to throttle, break, and steering commands as a low
+level controller inside the loop. The inputs to the MPC block
+or the reference trajectory, which include the reference
+path and velocity, as well as the vehicle states
+at each time step. The outputs of the MPC block are the lateral and longitudinal forces needed to follow
+the desired trajectory. These forces are then translated
+into throttle, breaking, and steering commands, as the output
+of the low-level control. Finally, the actuation signals are applied to the vehicle
+at each time-step, and a new vehicle state is achieved
+closing the feedback loop. The MPC optimization
+will be set up as follows to perform
+a double lane change maneuver. First, we define a cost for
+tracking the desired trajectory, which includes deviation from the desired trajectory and minimization of control
+command magnitude. Next, we define motion
+constraints on the vehicle, which rely on the lateral
+and longitudinal models developed in earlier videos. We also impose maximum limits on the tire forces
+to restrict them to fall within the linear tire region to avoid extreme responses
+to control our errors. These costs and constraints define the optimization used in our example, which then gets converted into actual vehicle commands by
+the low-level controller. It is also possible to incorporate the low-level control into
+the MPC optimization, which would involve including
+as constraints, the engine map, full vehicle dynamic models, actuator forces, and
+tire force models. The result is a large
+optimization problem that may be challenging
+to solve in real time, but let's have a look at the results. This simulation is done for
+the double lane change scenario, where the vehicle first accelerates
+to a steady-state speed of 17 meters per second or
+60 kilometers per hour, then maneuvers
+four meters to the left, and returns four meters to
+the right immediately thereafter. The following plots
+show the results of the simulated maneuver
+with MPC control, with the reference trajectory in blue and the actual
+vehicle trajectory in red. We can see that
+the tracking performance with the MPC controller is excellent, lagging slightly, but without
+overshoot or oscillation. This is perhaps not
+surprising as the simulation and MPC use the same
+model and parameters. The output of model
+predictive controllers, the lateral and longitudinal forces, can be seen to be smoothly
+varying and well-behaved. Also, the vehicle yaw rate during the double lane change
+maneuver is plotted, revealing precise tracking
+throughout the states of a vehicle. MPC shows a lot of promises a control technique for
+autonomous driving and can be used without modification
+for a wide range of operating conditions and
+a large variety of scenarios. This flexibility and
+convenience comes at the cost of increased computational
+requirements and relies on the availability of
+robust optimization solvers to always return feasible solutions
+in the available time window. Let's summarize what we've
+discussed in this video. We first explored the definition
+of Model Predictive Control and the Receding Horizon and constructed the closed loop block diagram
+for an MPC system. We then define the costs and
+constraints used in MPC. Finally, we applied MPC to the trajectory tracking problem
+for self-driving cars. Congratulations, you've made
+it to the end of the module. In this module, you learned how to define the lateral
+path tracking problem, applied two geometric path
+tracking controllers, the pure pursuit and Stanley controllers to
+the path tracking problem, and defined a Model Predictive
+Controller for joint, lateral, and longitudinal control. In the final module in this course, you'll get your first hands on look at the Carlos simulator where you'll design lateral and
+longitudinal controllers to navigate a vehicle
+around a race track.

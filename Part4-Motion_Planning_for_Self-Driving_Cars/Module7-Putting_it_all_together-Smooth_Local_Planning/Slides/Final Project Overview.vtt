@@ -1,0 +1,499 @@
+WEBVTT
+
+1
+00:00:13.880 --> 00:00:16.155
+Congratulations.
+
+2
+00:00:16.155 --> 00:00:17.460
+You've almost completed
+
+3
+00:00:17.460 --> 00:00:20.355
+this specialization
+on self-driving cars.
+
+4
+00:00:20.355 --> 00:00:21.960
+Now it's time to take everything
+
+5
+00:00:21.960 --> 00:00:23.745
+you've learned in
+the fourth course
+
+6
+00:00:23.745 --> 00:00:27.615
+on planning and apply it
+in a real-world project.
+
+7
+00:00:27.615 --> 00:00:29.450
+In this project we'll be tying
+
+8
+00:00:29.450 --> 00:00:31.610
+together many of
+the concepts we've discussed
+
+9
+00:00:31.610 --> 00:00:33.380
+throughout this course to create
+
+10
+00:00:33.380 --> 00:00:36.530
+a fully functional motion
+planner for an autonomous car.
+
+11
+00:00:36.530 --> 00:00:38.645
+By doing this, you
+will have created
+
+12
+00:00:38.645 --> 00:00:41.390
+a complete motion planner
+that is able to handle
+
+13
+00:00:41.390 --> 00:00:44.210
+real-world scenarios
+that are consistently
+
+14
+00:00:44.210 --> 00:00:48.175
+encountered by autonomous
+vehicles every day.
+
+15
+00:00:48.175 --> 00:00:51.215
+In particular, by
+the end of this project
+
+16
+00:00:51.215 --> 00:00:52.400
+you should be able to use
+
+17
+00:00:52.400 --> 00:00:55.970
+the polynomial spiral
+optimization formulation we've
+
+18
+00:00:55.970 --> 00:00:58.370
+covered in Module seven lectures
+
+19
+00:00:58.370 --> 00:01:01.480
+to generate paths for
+an autonomous car.
+
+20
+00:01:01.480 --> 00:01:03.770
+From these paths, you
+should be able to
+
+21
+00:01:03.770 --> 00:01:05.840
+perform static obstacle avoidance
+
+22
+00:01:05.840 --> 00:01:08.195
+using a circle-based
+collision checking method
+
+23
+00:01:08.195 --> 00:01:10.300
+we developed in Module four.
+
+24
+00:01:10.300 --> 00:01:12.760
+From a feasible
+collision-free path
+
+25
+00:01:12.760 --> 00:01:14.515
+you should then be
+able to generate
+
+26
+00:01:14.515 --> 00:01:16.660
+a velocity profile that takes
+
+27
+00:01:16.660 --> 00:01:19.690
+a leading dynamic obstacles
+into consideration.
+
+28
+00:01:19.690 --> 00:01:22.165
+Finally, you should
+be able to implement
+
+29
+00:01:22.165 --> 00:01:24.790
+a state machine
+behavioral planner that can
+
+30
+00:01:24.790 --> 00:01:26.725
+handle a stop sign scenario
+
+31
+00:01:26.725 --> 00:01:30.040
+using the concepts
+discussed in Module six.
+
+32
+00:01:30.040 --> 00:01:31.450
+The main objective of
+
+33
+00:01:31.450 --> 00:01:33.910
+this project is to integrate
+the knowledge that we've
+
+34
+00:01:33.910 --> 00:01:36.400
+discussed throughout
+the modules of this course
+
+35
+00:01:36.400 --> 00:01:38.110
+to create a full motion planner
+
+36
+00:01:38.110 --> 00:01:39.550
+for an autonomous vehicle.
+
+37
+00:01:39.550 --> 00:01:41.200
+To do this, you will be writing
+
+38
+00:01:41.200 --> 00:01:44.260
+Python code to interact
+with the CARLA simulator,
+
+39
+00:01:44.260 --> 00:01:45.550
+and which we've prepared
+
+40
+00:01:45.550 --> 00:01:47.965
+a scenario that
+you must navigate.
+
+41
+00:01:47.965 --> 00:01:50.200
+We will be reusing the controller
+
+42
+00:01:50.200 --> 00:01:53.000
+developed in course one for
+our autonomous vehicle,
+
+43
+00:01:53.000 --> 00:01:54.730
+so we can focus solely on
+
+44
+00:01:54.730 --> 00:01:56.620
+the planning aspects for the car.
+
+45
+00:01:56.620 --> 00:01:59.710
+We will also be assuming that
+all relevant knowledge of
+
+46
+00:01:59.710 --> 00:02:01.480
+our surroundings is available to
+
+47
+00:02:01.480 --> 00:02:04.030
+us as the car traverses
+the scenario.
+
+48
+00:02:04.030 --> 00:02:06.250
+This means we will
+not be integrating
+
+49
+00:02:06.250 --> 00:02:08.980
+the sensing and image
+processing methods developed
+
+50
+00:02:08.980 --> 00:02:12.100
+in course two on state
+estimation and localization,
+
+51
+00:02:12.100 --> 00:02:15.260
+and in course three
+on visual perception.
+
+52
+00:02:15.260 --> 00:02:18.250
+In this project, you will
+be following a set of
+
+53
+00:02:18.250 --> 00:02:20.185
+way-points in
+a given road network
+
+54
+00:02:20.185 --> 00:02:21.820
+until you reach a goal.
+
+55
+00:02:21.820 --> 00:02:23.920
+There are three
+main challenges in
+
+56
+00:02:23.920 --> 00:02:24.940
+this scenario that you will
+
+57
+00:02:24.940 --> 00:02:26.860
+face before reaching the goal.
+
+58
+00:02:26.860 --> 00:02:29.635
+The first will be
+a static parked obstacle
+
+59
+00:02:29.635 --> 00:02:31.705
+that will be blocking
+your current lane.
+
+60
+00:02:31.705 --> 00:02:33.700
+You'll be given discrete samples
+
+61
+00:02:33.700 --> 00:02:35.455
+of the footprint of the obstacle,
+
+62
+00:02:35.455 --> 00:02:37.460
+and you will need
+to use circles to
+
+63
+00:02:37.460 --> 00:02:40.625
+approximate the footprint
+of the ego vehicle along
+
+64
+00:02:40.625 --> 00:02:43.580
+each plan path in order to
+quickly compute whether
+
+65
+00:02:43.580 --> 00:02:46.955
+or not the path is in
+collision with the obstacle.
+
+66
+00:02:46.955 --> 00:02:49.250
+By removing the paths
+in collision with
+
+67
+00:02:49.250 --> 00:02:51.710
+this obstacle from
+our planning process,
+
+68
+00:02:51.710 --> 00:02:55.195
+you will be able to avoid
+the obstacle entirely.
+
+69
+00:02:55.195 --> 00:02:58.235
+Next, you will encounter
+a lead vehicle.
+
+70
+00:02:58.235 --> 00:03:01.150
+This vehicle will be moving
+below the speed limit,
+
+71
+00:03:01.150 --> 00:03:03.440
+and as such you will
+have to regulate
+
+72
+00:03:03.440 --> 00:03:07.180
+your velocity profile accordingly
+to prevent a collision.
+
+73
+00:03:07.180 --> 00:03:08.940
+Finally, you will reach
+
+74
+00:03:08.940 --> 00:03:11.330
+a stop-sign controlled
+intersection.
+
+75
+00:03:11.330 --> 00:03:12.620
+You will need to develop
+
+76
+00:03:12.620 --> 00:03:15.250
+a state machine that can
+handle the stop sign,
+
+77
+00:03:15.250 --> 00:03:16.580
+which means it must have
+
+78
+00:03:16.580 --> 00:03:18.890
+the ability to
+decelerate to a stop,
+
+79
+00:03:18.890 --> 00:03:20.810
+briefly weight once stopped,
+
+80
+00:03:20.810 --> 00:03:23.510
+and then proceed through
+the intersection.
+
+81
+00:03:23.510 --> 00:03:25.060
+Once this is complete,
+
+82
+00:03:25.060 --> 00:03:26.630
+you will have fully progressed
+
+83
+00:03:26.630 --> 00:03:28.460
+through our simulation scenario,
+
+84
+00:03:28.460 --> 00:03:31.070
+and you will have constructed
+emotion planner that can
+
+85
+00:03:31.070 --> 00:03:32.630
+handle many of the challenges
+
+86
+00:03:32.630 --> 00:03:34.880
+that are present in
+autonomous driving.
+
+87
+00:03:34.880 --> 00:03:37.130
+Your vehicle will
+be operating in one
+
+88
+00:03:37.130 --> 00:03:38.840
+of CARLA tests environments,
+
+89
+00:03:38.840 --> 00:03:40.640
+so don't hesitate to build out
+
+90
+00:03:40.640 --> 00:03:42.230
+your planning solution to handle
+
+91
+00:03:42.230 --> 00:03:44.060
+vehicles at other intersections,
+
+92
+00:03:44.060 --> 00:03:46.910
+or to navigate from a start
+to a goal location,
+
+93
+00:03:46.910 --> 00:03:48.290
+or even to pass
+
+94
+00:03:48.290 --> 00:03:50.960
+a lead vehicle if
+the roadway is clear ahead.
+
+95
+00:03:50.960 --> 00:03:53.150
+There are many more
+scenarios that you can
+
+96
+00:03:53.150 --> 00:03:55.830
+consider based on what you've
+learned in this course,
+
+97
+00:03:55.830 --> 00:03:58.190
+and we encourage you
+to explore as many of
+
+98
+00:03:58.190 --> 00:04:01.235
+the concepts from
+this specialization as you wish.
+
+99
+00:04:01.235 --> 00:04:03.350
+If you have any questions that
+
+100
+00:04:03.350 --> 00:04:05.180
+I didn't answer in this video,
+
+101
+00:04:05.180 --> 00:04:06.620
+there are further instructions in
+
+102
+00:04:06.620 --> 00:04:08.455
+the programming
+assignment itself,
+
+103
+00:04:08.455 --> 00:04:11.975
+and you can always ask in
+the discussion forums as well.
+
+104
+00:04:11.975 --> 00:04:14.450
+I hope you have fun with
+this final project.
+
+105
+00:04:14.450 --> 00:04:16.880
+I'll see you again
+once it's completed to
+
+106
+00:04:16.880 --> 00:04:20.215
+close out the course and
+the overall specialization.
+
+107
+00:04:20.215 --> 00:04:22.460
+Best of luck on
+this final project
+
+108
+00:04:22.460 --> 00:04:24.570
+of this specialization.

@@ -1,0 +1,667 @@
+1
+00:00:13,610 --> 00:00:18,180
+Hello and welcome to this video on tire slip and modeling.
+
+2
+00:00:18,180 --> 00:00:22,380
+In this video, we will explore the concepts of the slip angle and slip
+
+3
+00:00:22,380 --> 00:00:28,575
+ratio and introduce some well-known tire models to complete our dynamic vehicle models.
+
+4
+00:00:28,575 --> 00:00:30,310
+In the previous video,
+
+5
+00:00:30,310 --> 00:00:32,945
+we saw how to model the steering, throttle,
+
+6
+00:00:32,945 --> 00:00:34,700
+and brake systems from
+
+7
+00:00:34,700 --> 00:00:39,715
+human or autonomous command to wheel angle and drive break torques.
+
+8
+00:00:39,715 --> 00:00:43,505
+These actuation models drive the state of the tire
+
+9
+00:00:43,505 --> 00:00:47,045
+and are therefore the inputs to the tire model we will develop.
+
+10
+00:00:47,045 --> 00:00:50,870
+A tire is the interface between the vehicle and the road,
+
+11
+00:00:50,870 --> 00:00:53,930
+and the external forces that are exerted on the vehicle are
+
+12
+00:00:53,930 --> 00:00:57,470
+entirely defined by the tire's abilities to generate them.
+
+13
+00:00:57,470 --> 00:01:00,515
+So, to analyze the vehicle dynamics fully
+
+14
+00:01:00,515 --> 00:01:03,565
+and develop controllers based on dynamic models,
+
+15
+00:01:03,565 --> 00:01:07,250
+it is really important to have a good tire model to capture
+
+16
+00:01:07,250 --> 00:01:11,765
+the force-generating behavior of the tire throughout its operating range.
+
+17
+00:01:11,765 --> 00:01:15,160
+Let's remind ourselves of two important definitions,
+
+18
+00:01:15,160 --> 00:01:18,055
+the slip angle and the slip ratio.
+
+19
+00:01:18,055 --> 00:01:21,730
+The slip angle is the angle between the forward direction
+
+20
+00:01:21,730 --> 00:01:25,345
+of the vehicle in the actual direction of its motion,
+
+21
+00:01:25,345 --> 00:01:28,220
+which we denote Beta.
+
+22
+00:01:28,560 --> 00:01:34,600
+The vehicle slip angle can be represented as the inverse tan of the lateral velocity,
+
+23
+00:01:34,600 --> 00:01:38,650
+V_y divided by the longitudinal velocity, V_x.
+
+24
+00:01:38,650 --> 00:01:40,510
+For small slip angles,
+
+25
+00:01:40,510 --> 00:01:43,690
+we can use the small angle approximation and
+
+26
+00:01:43,690 --> 00:01:47,500
+determine the slip angle Beta as the ratio between the lateral velocity,
+
+27
+00:01:47,500 --> 00:01:51,310
+V_y and the longitudinal velocity, V_x directly.
+
+28
+00:01:51,310 --> 00:01:56,560
+We can expand the slip angle concept and define the slip angle for each tire.
+
+29
+00:01:56,560 --> 00:02:00,485
+Here, the tire slip angles for the front and rear wheels
+
+30
+00:02:00,485 --> 00:02:04,520
+are defined as Alpha F and Alpha R respectively.
+
+31
+00:02:04,520 --> 00:02:08,690
+Tire slip angles are the angle between the direction in which the wheel
+
+32
+00:02:08,690 --> 00:02:12,680
+is pointing and the direction in which it is actually traveling,
+
+33
+00:02:12,680 --> 00:02:14,975
+analogous to the vehicle slip angle.
+
+34
+00:02:14,975 --> 00:02:20,660
+The tire slip angles play an important part in defining the complete tire model.
+
+35
+00:02:20,660 --> 00:02:25,790
+We can relate the tire slip angles to the vehicle slip angles, the velocity,
+
+36
+00:02:25,790 --> 00:02:29,390
+and the yaw rate where the distance between the vehicle center of
+
+37
+00:02:29,390 --> 00:02:35,845
+mass and front and rear tires are represented by L_f and L_r respectively.
+
+38
+00:02:35,845 --> 00:02:39,010
+The other important definition needed when describing
+
+39
+00:02:39,010 --> 00:02:43,045
+tire slip is the longitudinal slip or slip ratio.
+
+40
+00:02:43,045 --> 00:02:46,120
+The slip ratio captures the relationship between
+
+41
+00:02:46,120 --> 00:02:50,645
+the deformation of the tire and the longitudinal forces acting upon it.
+
+42
+00:02:50,645 --> 00:02:53,000
+When accelerating or breaking,
+
+43
+00:02:53,000 --> 00:02:56,200
+the observed angular velocity of the tire does not
+
+44
+00:02:56,200 --> 00:03:01,330
+match the expected velocity for the pure rolling motion,
+
+45
+00:03:01,330 --> 00:03:06,320
+which means there is sliding between the tire and the road in addition to rolling.
+
+46
+00:03:06,320 --> 00:03:11,020
+The difference between the rotation speed of the tire and the longitudinal speed of
+
+47
+00:03:11,020 --> 00:03:15,820
+the car can be expressed as a ratio relative to the pure rolling speed,
+
+48
+00:03:15,820 --> 00:03:18,530
+and it's called the slip ratio.
+
+49
+00:03:18,530 --> 00:03:21,290
+There are three cases of differences between
+
+50
+00:03:21,290 --> 00:03:24,950
+the vehicle velocity and the angular tire velocity.
+
+51
+00:03:24,950 --> 00:03:28,430
+First, when the vehicle velocity, v,
+
+52
+00:03:28,430 --> 00:03:30,950
+is greater than the tire velocity, r,
+
+53
+00:03:30,950 --> 00:03:33,430
+times w. In this case,
+
+54
+00:03:33,430 --> 00:03:34,910
+the wheels are skidding.
+
+55
+00:03:34,910 --> 00:03:38,300
+This happens during deceleration of the vehicle.
+
+56
+00:03:38,300 --> 00:03:40,700
+Second, when the vehicle velocity,
+
+57
+00:03:40,700 --> 00:03:43,895
+v is less than the tire velocity, R_w.
+
+58
+00:03:43,895 --> 00:03:46,610
+In this case, the wheels are spinning.
+
+59
+00:03:46,610 --> 00:03:52,595
+This happens often in low friction driving on icy roads or when drifting of course.
+
+60
+00:03:52,595 --> 00:03:58,355
+Third, when the tire velocity is zero and the vehicle velocity is non-zero.
+
+61
+00:03:58,355 --> 00:04:00,940
+In this case, the wheels are locked.
+
+62
+00:04:00,940 --> 00:04:06,140
+This is an extension of our first case and can occur during emergency braking.
+
+63
+00:04:06,140 --> 00:04:10,130
+However, modern anti-lock braking systems seek to avoid
+
+64
+00:04:10,130 --> 00:04:14,935
+this regime due to its poor stopping performance and loss of steering control.
+
+65
+00:04:14,935 --> 00:04:18,140
+So, let's look at some modeling methods for how
+
+66
+00:04:18,140 --> 00:04:21,485
+the tire generates forces throughout its operating range.
+
+67
+00:04:21,485 --> 00:04:25,385
+The tire model takes as inputs the vehicle slip angle,
+
+68
+00:04:25,385 --> 00:04:29,210
+the tire ratio, the road coefficient of friction,
+
+69
+00:04:29,210 --> 00:04:33,110
+and the normal force in the vertical direction acting on the tire.
+
+70
+00:04:33,110 --> 00:04:37,925
+It then computes forces in the lateral and longitudinal directions.
+
+71
+00:04:37,925 --> 00:04:42,020
+Additional inputs can bring improved accuracy of course,
+
+72
+00:04:42,020 --> 00:04:44,435
+such as tire material properties,
+
+73
+00:04:44,435 --> 00:04:45,875
+and the camber angle;
+
+74
+00:04:45,875 --> 00:04:49,130
+the angle between the tire rotation plane and the road.
+
+75
+00:04:49,130 --> 00:04:53,630
+These additional inputs can help expand the set of forces and moments that can be
+
+76
+00:04:53,630 --> 00:04:59,630
+modeled to include the self alignment moment or the moment about the steering axis,
+
+77
+00:04:59,630 --> 00:05:02,875
+that's self aligns a tire with the direction of travel,
+
+78
+00:05:02,875 --> 00:05:05,365
+the rolling resistance moment,
+
+79
+00:05:05,365 --> 00:05:08,465
+and even an overturning moment.
+
+80
+00:05:08,465 --> 00:05:12,095
+Tire modeling is a deep and well-established field
+
+81
+00:05:12,095 --> 00:05:14,780
+and many different kinds of models have been developed.
+
+82
+00:05:14,780 --> 00:05:20,585
+We can categorize these models into three main modeling approaches: analytical,
+
+83
+00:05:20,585 --> 00:05:23,945
+numerical, and parameterized models.
+
+84
+00:05:23,945 --> 00:05:26,750
+Analytical models are models that have been
+
+85
+00:05:26,750 --> 00:05:29,695
+defined from physics-based modeling of the tire,
+
+86
+00:05:29,695 --> 00:05:35,180
+which normally leads to simple and fast models that are suitable for control development.
+
+87
+00:05:35,180 --> 00:05:38,370
+Although appealing from a computational perspective,
+
+88
+00:05:38,370 --> 00:05:43,640
+these models don't often perform well over the full operating range of the tire.
+
+89
+00:05:43,640 --> 00:05:48,305
+The Brush and Fiala models are some examples from this group.
+
+90
+00:05:48,305 --> 00:05:52,550
+Numerical models come from the detailed solution of
+
+91
+00:05:52,550 --> 00:05:56,270
+finite difference and finite element multidimensional models
+
+92
+00:05:56,270 --> 00:06:00,095
+of a tire and are represented as a set of tables.
+
+93
+00:06:00,095 --> 00:06:03,440
+These models are more accurate than the previous group,
+
+94
+00:06:03,440 --> 00:06:06,725
+but difficult to use for model-based control development.
+
+95
+00:06:06,725 --> 00:06:09,995
+Many simulators use numerical models
+
+96
+00:06:09,995 --> 00:06:13,420
+to improve the fidelity of their vehicle dynamics however,
+
+97
+00:06:13,420 --> 00:06:16,400
+allowing for accurate assessment of stability and
+
+98
+00:06:16,400 --> 00:06:19,940
+traction control systems prior to deployment.
+
+99
+00:06:19,940 --> 00:06:23,315
+Parameterized models are models that define
+
+100
+00:06:23,315 --> 00:06:26,765
+a tire curve family through a parameterized function.
+
+101
+00:06:26,765 --> 00:06:29,600
+The function parameters are then identified through
+
+102
+00:06:29,600 --> 00:06:33,815
+extensive measurement and each tire must be assessed separately.
+
+103
+00:06:33,815 --> 00:06:36,965
+Famous parameterized models such as the Linear,
+
+104
+00:06:36,965 --> 00:06:41,835
+Pacejka and Dugoff models are used extensively in vehicle dynamic modeling
+
+105
+00:06:41,835 --> 00:06:47,660
+as they offer a combination of accurate force prediction and convenient computation.
+
+106
+00:06:47,660 --> 00:06:49,760
+These models can be easily
+
+107
+00:06:49,760 --> 00:06:53,300
+implemented and are suitable for model-based control development.
+
+108
+00:06:53,300 --> 00:06:57,770
+Let's now look at two parameterized models in a bit more detail.
+
+109
+00:06:57,770 --> 00:07:01,055
+We'll start with the simple linear tire model.
+
+110
+00:07:01,055 --> 00:07:06,425
+The Linear model has two parts represented by a piecewise linear curve.
+
+111
+00:07:06,425 --> 00:07:12,290
+The first part corresponds to the linear tire region which relates the tire force,
+
+112
+00:07:12,290 --> 00:07:14,315
+either longitudinal or lateral,
+
+113
+00:07:14,315 --> 00:07:19,400
+directly to the tire slip ratio or slip angle through a force coefficient,
+
+114
+00:07:19,400 --> 00:07:25,975
+C. The second part corresponds to the saturation region where the tire exerts
+
+115
+00:07:25,975 --> 00:07:29,260
+a constant maximum tire force for all
+
+116
+00:07:29,260 --> 00:07:33,380
+slip ratios or angles above the maximum slip ratio or angle.
+
+117
+00:07:33,380 --> 00:07:36,320
+The maximum slip ratio, S max,
+
+118
+00:07:36,320 --> 00:07:39,220
+leads to a maximum longitudinal tire force,
+
+119
+00:07:39,220 --> 00:07:42,385
+F_x max, and the maximum slip angle,
+
+120
+00:07:42,385 --> 00:07:47,495
+Alpha max, leads to a maximum lateral tire force, F_y max.
+
+121
+00:07:47,495 --> 00:07:50,110
+In general, the Linear tire model is
+
+122
+00:07:50,110 --> 00:07:54,010
+a good approximation for a significant portion of the linear region,
+
+123
+00:07:54,010 --> 00:07:57,790
+but drops in accuracy as we enter saturation.
+
+124
+00:07:57,790 --> 00:08:00,400
+For nominal self-driving however,
+
+125
+00:08:00,400 --> 00:08:02,860
+linear models are a good approximation
+
+126
+00:08:02,860 --> 00:08:06,605
+since the tire mostly operates in the linear region.
+
+127
+00:08:06,605 --> 00:08:09,770
+The second model we'll look at is one of
+
+128
+00:08:09,770 --> 00:08:12,890
+the most important and most widely used tire models
+
+129
+00:08:12,890 --> 00:08:15,755
+in vehicle dynamics in model-based control.
+
+130
+00:08:15,755 --> 00:08:19,460
+It is called the Pacejka tire model and is also called
+
+131
+00:08:19,460 --> 00:08:24,770
+the magic formula because of how well it represents longitudinal and lateral tire forces.
+
+132
+00:08:24,770 --> 00:08:27,830
+So, here is the magic formula to calculate
+
+133
+00:08:27,830 --> 00:08:31,815
+the longitudinal tire force as a function of the slip ratio,
+
+134
+00:08:31,815 --> 00:08:33,560
+the tire normal force,
+
+135
+00:08:33,560 --> 00:08:36,050
+and the road coefficient of friction.
+
+136
+00:08:36,050 --> 00:08:39,280
+We define system parameters B, C, D,
+
+137
+00:08:39,280 --> 00:08:41,290
+and E from experiments,
+
+138
+00:08:41,290 --> 00:08:44,290
+and these will differ from one tire to another.
+
+139
+00:08:44,290 --> 00:08:47,330
+The typical longitudinal tire force versus
+
+140
+00:08:47,330 --> 00:08:52,355
+longitudinal slip at different road friction coefficients is shown in the figure.
+
+141
+00:08:52,355 --> 00:08:57,635
+Finally, let's look at some data collected from tire road testing.
+
+142
+00:08:57,635 --> 00:09:01,730
+The following plots show the normalized longitudinal tire force on
+
+143
+00:09:01,730 --> 00:09:05,750
+the left and the normalized lateral tire force on the right,
+
+144
+00:09:05,750 --> 00:09:10,540
+plotted with respect to their slip ratio and slip angle respectively.
+
+145
+00:09:10,540 --> 00:09:12,230
+Overlaid on top of
+
+146
+00:09:12,230 --> 00:09:17,030
+the experimental data points are the linear model and the Pacejka model.
+
+147
+00:09:17,030 --> 00:09:22,925
+We can see that both models are good representations of the data in the low slip regions,
+
+148
+00:09:22,925 --> 00:09:27,110
+but that the linear model does poorly as the slip increases.
+
+149
+00:09:27,110 --> 00:09:32,370
+This data also gives us a good idea of the difficulty of modeling tire forces
+
+150
+00:09:32,370 --> 00:09:38,775
+exactly as the spread in the measured forces is quite pronounced relative to the models.
+
+151
+00:09:38,775 --> 00:09:42,350
+Nonetheless, both models are extremely useful for
+
+152
+00:09:42,350 --> 00:09:45,590
+creating simulated vehicles whose dynamics can be computed
+
+153
+00:09:45,590 --> 00:09:48,740
+efficiently and for developing control laws
+
+154
+00:09:48,740 --> 00:09:53,430
+based on the dynamic models of the vehicle and its many subsystems.
+
+155
+00:09:53,430 --> 00:09:55,880
+In this video, we looked at one of
+
+156
+00:09:55,880 --> 00:10:00,490
+the most important components in vehicle dynamics modeling; the tire model.
+
+157
+00:10:00,490 --> 00:10:05,150
+We revisited the definitions of tire slip and tire ratio and
+
+158
+00:10:05,150 --> 00:10:07,220
+explored different tire models that produce
+
+159
+00:10:07,220 --> 00:10:10,510
+force estimates based on the characteristics of the tire.
+
+160
+00:10:10,510 --> 00:10:13,250
+Congratulations, you've made it to the end of
+
+161
+00:10:13,250 --> 00:10:17,495
+the third module in our introduction to self-driving cars course.
+
+162
+00:10:17,495 --> 00:10:23,915
+In this module, you developed your skills in kinematic and dynamic modeling of vehicles.
+
+163
+00:10:23,915 --> 00:10:27,485
+You derived the kinematic bicycle model of a car.
+
+164
+00:10:27,485 --> 00:10:32,285
+You explored lateral and longitudinal dynamic modeling of vehicles.
+
+165
+00:10:32,285 --> 00:10:33,740
+In the next module,
+
+166
+00:10:33,740 --> 00:10:36,740
+we will use these detailed vehicle models to design
+
+167
+00:10:36,740 --> 00:10:42,270
+controllers that regulate longitudinal vehicle motion. See you then.

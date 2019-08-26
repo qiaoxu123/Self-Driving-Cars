@@ -1,0 +1,123 @@
+[MUSIC] [SOUND] [MUSIC] Hello and welcome to Week 3 of the course. This week, you will learn about a topic
+that has changed the way we think about autonomous perception,
+artificial neural networks. Throughout this module, you will learn
+how these algorithms can be used to build a self-driving car perception stack, and you'll learn the different components to
+design and train a deep neural network. Now we won't be able to teach you
+everything you need to know about artificial neural networks, but this module is a good
+introduction to the field. If artificial neural networks is
+a topic that you're interested in, feel free to check out some
+of the deep learning and machine learning courses
+offered on Coursera. In this lesson, you will learn
+about the building blocks of feedforward neural networks, a very useful
+basic type of artificial neural network. Specifically, we'll look at the hidden
+layers of a feedforward neural network. The hidden layers are important, as they
+differentiate the mode of action of neural networks from the rest of
+machine learning algorithms. We'll begin by looking at the mathematical
+definition of feedforward neural networks, so you can start to understand
+how to build these algorithms for the perception stack. A feedforward neural network
+defines a mapping from an input x to an output y through
+a function f of x and theta. For example, we use neural networks
+to produce outputs such as the location of all
+cars in a camera image. The function f takes an input x, and
+uses a set of learned parameters theta, to interact with x,
+resulting in the output y. The concept of learned parameters is
+important here, as we do not start with the correct form of the function f, which
+maps our inputs to our outputs directly. Instead, we must construct an
+approximation to the true function using a generic neural network. This means that neural networks can be
+thought of as function approximators. Usually we describe a feedforward neural
+network as a function composition. In a sense,
+each function f of i is a layer on top of the previous function, f of i- 1. Usually we have N functions in our
+compositions where N is a large number, stacking layer upon layer for
+improved representation. This layering led to
+the name deep learning for the field describing these
+sequences of functions. Now let us describe this
+function composition visually. Here you can see a four-layer
+feedforward neural network. This neural network has an input layer
+which describes the data input x to the function approximator. Here x can be a scalar,
+a vector, a matrix or even a n-dimensional
+tensor such as images. The input gets processed by the first
+layer of the neural network, the function f1 of x. We call this layer the first hidden layer. Similarly, the second hidden layer
+processes the output of the first hidden layer through the function f2 of x. We can add as many hidden layers as we'd
+like, but each layer adds additional parameters to be learned, and more
+computations to be performed at run time. We will discuss how the number of hidden
+layers affects the performance of our system later on in the course. The final layer of the neural
+network is called the output layer. It takes the output of
+the last hidden layer and transforms it to a desired output Y. Now, we should have the intuition on why
+these networks are called feedforward. This is because information flows from the
+input x through some intermediate steps, all the way to the output Y
+without any feedback connections. The terms are used in the same
+way as we use them in Course 1, when describing control for
+our self-driving car. Now let us go back to
+the network definition and check out how our visual representation
+matches our function composition. In this expression we see x,
+which is called the input layer. We see the outer most function f sub N,
+which is the output layer. And we see each of the functions
+f1 to f N-1 in between, which are the hidden layers. Now before we delve deeper into these
+fascinating function approximators, let's look at a few examples of how we
+can use them for autonomous driving. Remember, this course is
+on visual perception, so we'll restrict our input
+x to always be an image. The most basic perception task
+is that of classification. Here we require the neural network to
+tell us what is in the image via a label. We can make this task more complicated
+by trying to estimate a location as well as a label for objects in the scene. This is called object detection. Another set of tasks we might be
+interested in are pixel-wise tasks. As an example we might want to estimate a
+depth value for every pixel in the image. This will help us determine
+where objects are. Or, we might want to determine
+which class each pixel belongs to. This task is called semantic segmentation,
+and we'll discuss this in depth along with
+object detection later in the course. In each case, we can use a neural network
+to learn the complex mapping between the raw pixel values from the image
+to the perception outputs we're trying to generate, without having to
+explicitly model how that mapping works. This flexibility to represent
+hard-to-model processes is what makes neural networks so popular. Now let's take a look at how to learn
+the parameters needed to create robust perception models. During a process referred to
+as Neural Network Training, we drive the neural network function f of
+(x) and theta to match a true function f*(x) by modifying the parameters
+theta that describe the network. The modification of theta is done by
+providing the network pairs of input x and its corresponding true out output f*(x). We can then compare the true output to
+the output produced by the network and optimize the network parameters
+to reduce the output error. Since only the output of the neural
+network is specified for each example, the training data does not specify what
+the network should do with its hidden layers. The network itself must decide how
+to modify these layers to best implement an approximation of f*(x). As a matter of fact, hidden units are what
+make neural networks unique when compared to other machine learning models. So let us define more clearly
+the hidden layer structure. The hidden layer is comprised of
+an affine transformation followed by an element wise non-linear function g. This non-linear function is
+called the activation function. The input to the nth
+hidden layer is h of n- 1, the output from the previous hidden layer. In the case where the layer
+is the first hidden layer, its input is simply the input image x. The affine transformation is
+comprised of a multiplicative weight matrix W, and
+an additive bias Matrix B. These weights and biases are the learn parameters theta in
+the definition of the neural network. Finally, the transformed input is passed
+through the activation function g. Most of the time, g does not contain
+parameters to be learned by the network. As an example, let us take a look at
+the rectified linear unit, or ReLU, the default choice of activation functions
+in most neural networks nowadays. ReLUs use the maximum between zero and the output of the affine transformation as
+their element-wise non-linear function. Since they are very similar to linear
+units, they're quite easy to optimize. Let us go through an example of
+a ReLU hidden-layer computation. We are given the output of
+the previous hidden layer hn- 1, the weight matrix W,
+and the bias matrix b. We first need to evaluate
+the affine transformation. Remember, the weight matrix is
+transposed in the computation. Let's take a look at the dimensions of
+each of the matrices in this expression. hn- 1 is a 2x3 matrix in this case. W is a 2x5 matrix. The final result of our affine
+transformation is a 5 by 3 matrix. Now, let us pass this matrix
+through the ReLU non-lineary. We can see that the ReLU prevents
+any negative outputs from the affine transformation from
+passing through to the next layer. There are many additional activation
+functions that can be used as element wise non-linearities in hidden layers for
+neural networks. In fact, the design of hidden units is
+another extremely active area of research in the field and does not yet
+have many guiding theoretical principles. As an example, certain neural network architectures
+use the sigmoid non-linearity, the hyperbolic tangent non-linearity,
+and the generalization of ReLU, the maxout non-linearity as their
+hidden layer activation functions. If you're interested in learning more
+about neural network architectures, I strongly encourage you to check out
+some of the deep learning courses offered on Coursera. They're amazing. In this lesson, you learned the main building blocks
+of feedfoward neural networks including the hidden layers that comprise the core
+of the machine learning models we use. You also learned different types of
+activation functions with ReLUs being the default choice for
+many practitioners in the field. In the next lesson,
+we'll explore the output layers and then study how to learn the weights and
+bias matrices from training data, setting the stage for training our first
+neural network later on in the module. [MUSIC]

@@ -1,0 +1,1189 @@
+WEBVTT
+
+1
+00:00:13.400 --> 00:00:16.845
+Welcome to the final lesson
+for this week.
+
+2
+00:00:16.845 --> 00:00:18.090
+In the previous lesson,
+
+3
+00:00:18.090 --> 00:00:20.970
+we learned how to perform
+semantic segmentation
+
+4
+00:00:20.970 --> 00:00:23.280
+using convolutional
+neural networks.
+
+5
+00:00:23.280 --> 00:00:26.273
+In this video, we will
+learn how to use the output
+
+6
+00:00:26.273 --> 00:00:30.000
+of these networks for scene
+understanding of road scenes.
+
+7
+00:00:30.000 --> 00:00:32.930
+Specifically, you will
+learn how to use the output
+
+8
+00:00:32.930 --> 00:00:34.730
+of semantic segmentation models
+
+9
+00:00:34.730 --> 00:00:39.140
+to estimate the drivable space
+and lane boundaries.
+
+10
+00:00:39.140 --> 00:00:41.780
+Let's quickly review
+what we expect
+
+11
+00:00:41.780 --> 00:00:44.735
+as an output from
+a semantic segmentation model.
+
+12
+00:00:44.735 --> 00:00:48.875
+A semantic segmentation model
+takes an image as an input,
+
+13
+00:00:48.875 --> 00:00:50.720
+and provides us output,
+
+14
+00:00:50.720 --> 00:00:54.110
+a category classification
+for every pixel.
+
+15
+00:00:54.110 --> 00:00:56.240
+Now let's use
+this output to perform
+
+16
+00:00:56.240 --> 00:00:58.835
+some useful tasks for
+self-driving cars.
+
+17
+00:00:58.835 --> 00:01:02.150
+The first task we will be
+discussing is the estimation
+
+18
+00:01:02.150 --> 00:01:03.440
+of a drivable surface
+
+19
+00:01:03.440 --> 00:01:06.730
+from semantic segmentation
+output in 3D.
+
+20
+00:01:06.730 --> 00:01:09.290
+Drivable space is
+defined as the region
+
+21
+00:01:09.290 --> 00:01:12.380
+in front of the vehicle
+where it is safe to drive.
+
+22
+00:01:12.380 --> 00:01:15.075
+In the context of
+semantic segmentation,
+
+23
+00:01:15.075 --> 00:01:18.625
+the drivable surface includes
+all pixels from the road,
+
+24
+00:01:18.625 --> 00:01:22.045
+crosswalks, lane markings,
+parking spots,
+
+25
+00:01:22.045 --> 00:01:24.400
+and even sometimes rail tracks.
+
+26
+00:01:24.400 --> 00:01:26.440
+Estimating a drivable surface
+
+27
+00:01:26.440 --> 00:01:29.020
+is very important as it
+is one of the main steps
+
+28
+00:01:29.020 --> 00:01:32.980
+for constructing occupancy grids
+from 3D depth sensors.
+
+29
+00:01:32.980 --> 00:01:36.250
+You will learn more about
+occupancy grids in course 4,
+
+30
+00:01:36.250 --> 00:01:39.130
+where they will be used to
+represent where obstacles are
+
+31
+00:01:39.130 --> 00:01:42.805
+located in the environment
+during collision avoidance.
+
+32
+00:01:42.805 --> 00:01:45.280
+But for now, let's
+describe how to perform
+
+33
+00:01:45.280 --> 00:01:47.320
+drivable surface estimation from
+
+34
+00:01:47.320 --> 00:01:49.280
+the semantic segmentation output.
+
+35
+00:01:49.280 --> 00:01:52.060
+First, we use
+a ConvNet to generate
+
+36
+00:01:52.060 --> 00:01:55.235
+the semantic segmentation output
+of an image frame,
+
+37
+00:01:55.235 --> 00:01:57.875
+we then generate 3D coordinates
+
+38
+00:01:57.875 --> 00:01:59.840
+of some of the pixels
+in this frame,
+
+39
+00:01:59.840 --> 00:02:02.360
+either from stereo data or by
+
+40
+00:02:02.360 --> 00:02:05.390
+projecting a lighter point cloud
+to the image plane.
+
+41
+00:02:05.390 --> 00:02:09.385
+With a known extrinsic
+calibration between sensors,
+
+42
+00:02:09.385 --> 00:02:11.330
+we can project lidar points into
+
+43
+00:02:11.330 --> 00:02:12.860
+the image plane and match them
+
+44
+00:02:12.860 --> 00:02:14.895
+to the corresponding pixels.
+
+45
+00:02:14.895 --> 00:02:17.630
+We then proceed to
+choose 3D points
+
+46
+00:02:17.630 --> 00:02:20.315
+that belong to the
+drivable surface category.
+
+47
+00:02:20.315 --> 00:02:21.980
+As we mentioned earlier,
+
+48
+00:02:21.980 --> 00:02:24.560
+this category should at
+least include the road,
+
+49
+00:02:24.560 --> 00:02:27.050
+lane markings, and
+pedestrian crossings.
+
+50
+00:02:27.050 --> 00:02:29.750
+In certain scenarios,
+other classes such as
+
+51
+00:02:29.750 --> 00:02:32.825
+railroad tracks for example
+might also be included,
+
+52
+00:02:32.825 --> 00:02:34.960
+depending on the driving context.
+
+53
+00:02:34.960 --> 00:02:37.550
+All other classes
+are excluded even
+
+54
+00:02:37.550 --> 00:02:40.445
+if their height is similar
+to the drivable surface.
+
+55
+00:02:40.445 --> 00:02:42.560
+Finally, we use this subset of
+
+56
+00:02:42.560 --> 00:02:45.650
+3D points to estimate
+a drivable surface model.
+
+57
+00:02:45.650 --> 00:02:48.260
+The complexity of
+this model can range from
+
+58
+00:02:48.260 --> 00:02:52.700
+a simple plane to more complex
+spline surface models.
+
+59
+00:02:52.700 --> 00:02:55.265
+Let's describe how
+to robustly fits
+
+60
+00:02:55.265 --> 00:02:57.650
+a planar drivable
+surface model given
+
+61
+00:02:57.650 --> 00:03:00.620
+segmented image data
+and lidar points.
+
+62
+00:03:00.620 --> 00:03:04.040
+We first define the model
+of a plane as ax
+
+63
+00:03:04.040 --> 00:03:08.240
+plus by plus z equals
+d, where x, y,
+
+64
+00:03:08.240 --> 00:03:10.460
+z is any point on the plane,
+
+65
+00:03:10.460 --> 00:03:12.260
+the coefficients a, b,
+
+66
+00:03:12.260 --> 00:03:14.800
+and 1 define the plane
+normal vector,
+
+67
+00:03:14.800 --> 00:03:17.085
+and d is a constant offset.
+
+68
+00:03:17.085 --> 00:03:20.330
+We can form a set of
+linear equations to estimate
+
+69
+00:03:20.330 --> 00:03:23.525
+the parameters of this plane
+model using as measurements,
+
+70
+00:03:23.525 --> 00:03:25.310
+each of the points identified
+
+71
+00:03:25.310 --> 00:03:27.515
+as belonging to
+the drivable surface.
+
+72
+00:03:27.515 --> 00:03:29.270
+The parameters of the model are
+
+73
+00:03:29.270 --> 00:03:31.685
+now summarized by the vector p,
+
+74
+00:03:31.685 --> 00:03:33.560
+and the measurements
+are separated
+
+75
+00:03:33.560 --> 00:03:35.935
+into the matrices A and B.
+
+76
+00:03:35.935 --> 00:03:37.920
+As formulated in course 2,
+
+77
+00:03:37.920 --> 00:03:40.220
+we can find a solution
+for this system of
+
+78
+00:03:40.220 --> 00:03:43.385
+linear equations using
+the method of least squares.
+
+79
+00:03:43.385 --> 00:03:46.760
+As a result, our plane
+parameter vector p is
+
+80
+00:03:46.760 --> 00:03:50.195
+equal to the pseudoinverse
+of A times B.
+
+81
+00:03:50.195 --> 00:03:52.880
+This model has
+three free parameters
+
+82
+00:03:52.880 --> 00:03:54.890
+to be estimated, and as such,
+
+83
+00:03:54.890 --> 00:03:56.990
+we need at least
+three non-colinear
+
+84
+00:03:56.990 --> 00:03:59.660
+3D points to fit the plane.
+
+85
+00:03:59.660 --> 00:04:01.220
+In practice, we will have
+
+86
+00:04:01.220 --> 00:04:03.610
+many more points
+than are necessary,
+
+87
+00:04:03.610 --> 00:04:05.000
+so we can apply the method of
+
+88
+00:04:05.000 --> 00:04:07.040
+least squares once
+again to identify
+
+89
+00:04:07.040 --> 00:04:09.920
+parameters that minimize
+the mean square distance
+
+90
+00:04:09.920 --> 00:04:11.945
+of all points from the plane.
+
+91
+00:04:11.945 --> 00:04:14.150
+Of course, some points
+will be labeled
+
+92
+00:04:14.150 --> 00:04:15.680
+incorrectly and may not
+
+93
+00:04:15.680 --> 00:04:17.855
+truly belong to
+the drivable surface.
+
+94
+00:04:17.855 --> 00:04:21.420
+So how can we avoid
+incorrect semantic labels
+
+95
+00:04:21.420 --> 00:04:23.770
+negatively affecting
+the quality of
+
+96
+00:04:23.770 --> 00:04:26.680
+a drivable surface
+plane estimation?
+
+97
+00:04:26.680 --> 00:04:29.000
+Fortunately for us, we learned
+
+98
+00:04:29.000 --> 00:04:31.430
+a very powerful and
+robust estimation method
+
+99
+00:04:31.430 --> 00:04:33.055
+in week 2 of this course.
+
+100
+00:04:33.055 --> 00:04:34.610
+Specifically, we can use
+
+101
+00:04:34.610 --> 00:04:37.370
+the RANSAC algorithm
+to robustly fit
+
+102
+00:04:37.370 --> 00:04:39.770
+a drivable surface
+plane model even
+
+103
+00:04:39.770 --> 00:04:42.770
+with some errors in our
+semantic segmentation output.
+
+104
+00:04:42.770 --> 00:04:45.200
+Let's go through
+the RANSAC algorithm for
+
+105
+00:04:45.200 --> 00:04:48.230
+the drivable surface
+estimation as a refresher.
+
+106
+00:04:48.230 --> 00:04:50.270
+First, we randomly select
+
+107
+00:04:50.270 --> 00:04:51.680
+the minimum number of data points
+
+108
+00:04:51.680 --> 00:04:53.390
+required to fit our model.
+
+109
+00:04:53.390 --> 00:04:57.640
+In this case, we randomly
+choose three points in 3D.
+
+110
+00:04:57.640 --> 00:05:00.290
+Second, we use these three points
+
+111
+00:05:00.290 --> 00:05:02.480
+to compute the model
+parameters a, b,
+
+112
+00:05:02.480 --> 00:05:04.910
+and d, and use the method of
+
+113
+00:05:04.910 --> 00:05:08.240
+least squares to solve
+for our plane parameters.
+
+114
+00:05:08.240 --> 00:05:10.370
+We then proceed to
+determine the number of
+
+115
+00:05:10.370 --> 00:05:13.685
+3D points that satisfy
+these model parameters.
+
+116
+00:05:13.685 --> 00:05:16.265
+Usually for drivable
+surface estimation,
+
+117
+00:05:16.265 --> 00:05:18.665
+most of the outliers
+are a result of
+
+118
+00:05:18.665 --> 00:05:21.050
+the erroneous
+segmentation outputs
+
+119
+00:05:21.050 --> 00:05:23.320
+located at the boundaries.
+
+120
+00:05:23.320 --> 00:05:25.680
+If the number of outliers is low,
+
+121
+00:05:25.680 --> 00:05:29.060
+we terminate and return
+the computed plane parameters.
+
+122
+00:05:29.060 --> 00:05:31.760
+Otherwise, we sample
+three new points
+
+123
+00:05:31.760 --> 00:05:34.580
+at random and repeat the process.
+
+124
+00:05:34.580 --> 00:05:38.600
+Then once the algorithm meets
+its termination condition,
+
+125
+00:05:38.600 --> 00:05:41.240
+we calculate the final
+planar surface model of
+
+126
+00:05:41.240 --> 00:05:42.800
+the road from all of
+
+127
+00:05:42.800 --> 00:05:45.455
+the inliers in
+the largest inlier set.
+
+128
+00:05:45.455 --> 00:05:47.690
+The use of a planar
+surface model works
+
+129
+00:05:47.690 --> 00:05:49.715
+well if the road
+is actually flat,
+
+130
+00:05:49.715 --> 00:05:52.685
+a valid assumption in
+many driving scenarios.
+
+131
+00:05:52.685 --> 00:05:54.335
+For more complex scenarios,
+
+132
+00:05:54.335 --> 00:05:57.320
+such as entering a steeply
+climbing highway entrance
+
+133
+00:05:57.320 --> 00:05:59.465
+from a flat roadway for example,
+
+134
+00:05:59.465 --> 00:06:02.405
+more complex models are needed.
+
+135
+00:06:02.405 --> 00:06:05.180
+Although we estimate
+the drivable surface,
+
+136
+00:06:05.180 --> 00:06:06.950
+we still have not
+determined where
+
+137
+00:06:06.950 --> 00:06:09.710
+the car is allowed to
+drive on this surface.
+
+138
+00:06:09.710 --> 00:06:12.860
+Usually, a vehicle should
+stay within its lane,
+
+139
+00:06:12.860 --> 00:06:15.995
+determined by lane markings
+or the road boundaries.
+
+140
+00:06:15.995 --> 00:06:19.160
+Lane estimation is the task
+of estimating where
+
+141
+00:06:19.160 --> 00:06:23.060
+a self-driving car can drive
+given a drivable surface.
+
+142
+00:06:23.060 --> 00:06:24.530
+Many methods exist in
+
+143
+00:06:24.530 --> 00:06:26.675
+the literature to
+accomplish this task.
+
+144
+00:06:26.675 --> 00:06:30.020
+For example, some methods
+directly estimate
+
+145
+00:06:30.020 --> 00:06:32.000
+lane markings from ConvNets
+
+146
+00:06:32.000 --> 00:06:34.360
+to determine where
+the car can drive.
+
+147
+00:06:34.360 --> 00:06:37.305
+However, for higher-level
+decision-making,
+
+148
+00:06:37.305 --> 00:06:39.500
+a self-driving car should also be
+
+149
+00:06:39.500 --> 00:06:42.620
+aware of what is at
+the boundary of the lane.
+
+150
+00:06:42.620 --> 00:06:45.260
+Classes at the boundary
+of the lame can
+
+151
+00:06:45.260 --> 00:06:47.580
+range from a curb, a road,
+
+152
+00:06:47.580 --> 00:06:49.815
+where opposite traffic resides
+
+153
+00:06:49.815 --> 00:06:52.615
+or dynamic in parked vehicles.
+
+154
+00:06:52.615 --> 00:06:55.550
+The self-driving car has
+to base its maneuvers
+
+155
+00:06:55.550 --> 00:06:58.460
+on what objects occur at
+the boundary of the lane,
+
+156
+00:06:58.460 --> 00:07:01.075
+especially during
+emergency pull overs.
+
+157
+00:07:01.075 --> 00:07:04.310
+We will refer to the task of
+estimating the lane and what
+
+158
+00:07:04.310 --> 00:07:08.195
+occurs at its boundaries as
+semantic lane estimation.
+
+159
+00:07:08.195 --> 00:07:10.355
+Notice that if we
+estimate the lane
+
+160
+00:07:10.355 --> 00:07:13.010
+using the output of
+semantic segmentation,
+
+161
+00:07:13.010 --> 00:07:15.755
+we get boundary
+classification for free.
+
+162
+00:07:15.755 --> 00:07:17.870
+Let's go through
+a simple approach to
+
+163
+00:07:17.870 --> 00:07:21.320
+this problem to clarify
+the lane estimation task.
+
+164
+00:07:21.320 --> 00:07:24.685
+Given the output of
+a semantic segmentation model,
+
+165
+00:07:24.685 --> 00:07:28.190
+we first extract
+a binary mask of the pixels
+
+166
+00:07:28.190 --> 00:07:31.925
+belonging to classes that
+occur as lane separators.
+
+167
+00:07:31.925 --> 00:07:34.805
+Such classes can include curbs,
+
+168
+00:07:34.805 --> 00:07:37.730
+lane markings, or
+rails for example.
+
+169
+00:07:37.730 --> 00:07:41.645
+Then we apply an edge detector
+to the binary mask.
+
+170
+00:07:41.645 --> 00:07:44.420
+As you remember from
+the first week of this course,
+
+171
+00:07:44.420 --> 00:07:46.340
+edge detectors can be as simple
+
+172
+00:07:46.340 --> 00:07:49.060
+as estimating gradients
+from convolutions.
+
+173
+00:07:49.060 --> 00:07:51.900
+Here, we use
+a famous edge detector,
+
+174
+00:07:51.900 --> 00:07:53.565
+the canny edge detector.
+
+175
+00:07:53.565 --> 00:07:56.315
+The output are
+pixels classified as
+
+176
+00:07:56.315 --> 00:07:59.930
+edges that will be used to
+estimate the lane boundaries.
+
+177
+00:07:59.930 --> 00:08:02.180
+The final step is to determine
+
+178
+00:08:02.180 --> 00:08:05.075
+which model is to be used
+to estimate the lanes.
+
+179
+00:08:05.075 --> 00:08:08.375
+The choice of models defines
+what the next step will be.
+
+180
+00:08:08.375 --> 00:08:10.550
+Here we choose
+a linear lane model,
+
+181
+00:08:10.550 --> 00:08:12.020
+where each lane is assumed
+
+182
+00:08:12.020 --> 00:08:14.410
+to be made up of a single line.
+
+183
+00:08:14.410 --> 00:08:17.435
+To detect lines in
+the output edge map,
+
+184
+00:08:17.435 --> 00:08:19.225
+we need aligned detector.
+
+185
+00:08:19.225 --> 00:08:22.330
+The Hough transform line
+detection algorithm is widely
+
+186
+00:08:22.330 --> 00:08:23.950
+used and capable of
+
+187
+00:08:23.950 --> 00:08:26.965
+detecting multiple lines
+in an edge map.
+
+188
+00:08:26.965 --> 00:08:28.450
+Given an edge map,
+
+189
+00:08:28.450 --> 00:08:31.270
+the Hough transform can
+generate a set of lines that
+
+190
+00:08:31.270 --> 00:08:34.990
+link pixels belonging to
+edges in the edge map.
+
+191
+00:08:34.990 --> 00:08:37.600
+The minimum length of
+the required lines
+
+192
+00:08:37.600 --> 00:08:40.000
+can be set as
+a hyperparameter to force
+
+193
+00:08:40.000 --> 00:08:42.055
+the algorithm to only detect
+
+194
+00:08:42.055 --> 00:08:45.415
+lines that are long enough
+to be part of lane markings.
+
+195
+00:08:45.415 --> 00:08:47.500
+Further refinement can be applied
+
+196
+00:08:47.500 --> 00:08:49.495
+based on the scenario at hand.
+
+197
+00:08:49.495 --> 00:08:52.630
+For example, we know that
+our lane should not be
+
+198
+00:08:52.630 --> 00:08:54.700
+a horizontal line
+if our camera is
+
+199
+00:08:54.700 --> 00:08:57.850
+placed forward facing in
+the direction of motion.
+
+200
+00:08:57.850 --> 00:08:59.815
+Furthermore, we can remove
+
+201
+00:08:59.815 --> 00:09:01.540
+any line that does not belong to
+
+202
+00:09:01.540 --> 00:09:03.220
+the drivable surface to get
+
+203
+00:09:03.220 --> 00:09:06.170
+a final set of
+lane boundary primitives.
+
+204
+00:09:06.170 --> 00:09:08.980
+The last step would be
+to determine the classes
+
+205
+00:09:08.980 --> 00:09:11.680
+that occur at
+both sides of the lane,
+
+206
+00:09:11.680 --> 00:09:14.365
+which can easily be done
+by considering the classes
+
+207
+00:09:14.365 --> 00:09:17.540
+on both sides of
+the estimated lane lines.
+
+208
+00:09:17.540 --> 00:09:19.540
+We will not discuss
+edge detectors
+
+209
+00:09:19.540 --> 00:09:21.250
+and Hough transforms in detail,
+
+210
+00:09:21.250 --> 00:09:22.765
+as these topics deserve
+
+211
+00:09:22.765 --> 00:09:26.840
+a separate discussion outside
+the scope of this course.
+
+212
+00:09:26.840 --> 00:09:30.010
+However, powerful computer
+vision libraries such as
+
+213
+00:09:30.010 --> 00:09:32.860
+Open CV, have open-source
+implementations,
+
+214
+00:09:32.860 --> 00:09:34.570
+and tutorials on how to detect
+
+215
+00:09:34.570 --> 00:09:36.750
+lines using the Hough transform,
+
+216
+00:09:36.750 --> 00:09:40.365
+and how to detect edges using
+the Canny edge detector.
+
+217
+00:09:40.365 --> 00:09:42.320
+If interested, take a look
+
+218
+00:09:42.320 --> 00:09:44.000
+at how these
+algorithms are used in
+
+219
+00:09:44.000 --> 00:09:45.350
+practice using the links
+
+220
+00:09:45.350 --> 00:09:48.035
+provided in the
+supplementary material.
+
+221
+00:09:48.035 --> 00:09:50.960
+In summary, semantic
+segmentation can
+
+222
+00:09:50.960 --> 00:09:53.470
+be used to estimate
+the drivable space,
+
+223
+00:09:53.470 --> 00:09:55.100
+to determine what occurs at
+
+224
+00:09:55.100 --> 00:09:57.080
+the boundary of
+the drivable space,
+
+225
+00:09:57.080 --> 00:10:00.440
+and to estimate lanes on
+the drivable surface.
+
+226
+00:10:00.440 --> 00:10:02.510
+The applications discussed so
+
+227
+00:10:02.510 --> 00:10:04.955
+far are very active
+areas of research,
+
+228
+00:10:04.955 --> 00:10:07.040
+and what you've learned
+during this lesson provides
+
+229
+00:10:07.040 --> 00:10:09.140
+a solid starting point and
+
+230
+00:10:09.140 --> 00:10:11.240
+competitive baselines
+for the task of
+
+231
+00:10:11.240 --> 00:10:14.785
+semantic lane detection and
+drivable surface estimation.
+
+232
+00:10:14.785 --> 00:10:17.120
+Furthermore,
+semantic lane detection
+
+233
+00:10:17.120 --> 00:10:19.100
+and drivable surface
+estimation are
+
+234
+00:10:19.100 --> 00:10:20.720
+the most prominent uses for
+
+235
+00:10:20.720 --> 00:10:22.910
+semantic segmentation models in
+
+236
+00:10:22.910 --> 00:10:25.345
+the context of self-driving cars.
+
+237
+00:10:25.345 --> 00:10:27.800
+However, semantic
+segmentation has
+
+238
+00:10:27.800 --> 00:10:29.630
+many more useful applications.
+
+239
+00:10:29.630 --> 00:10:31.010
+Most importantly, aiding
+
+240
+00:10:31.010 --> 00:10:32.630
+the self-driving car
+in performing
+
+241
+00:10:32.630 --> 00:10:36.160
+both 2D object detection
+and localization.
+
+242
+00:10:36.160 --> 00:10:39.470
+With information about
+which pixels to evaluate for
+
+243
+00:10:39.470 --> 00:10:41.450
+objects or weather features
+
+244
+00:10:41.450 --> 00:10:43.580
+are on static or moving objects,
+
+245
+00:10:43.580 --> 00:10:45.920
+the robustness of
+the perception system
+
+246
+00:10:45.920 --> 00:10:47.825
+can be significantly improved.
+
+247
+00:10:47.825 --> 00:10:51.470
+It can act as a sanity check
+or a filter to avoid
+
+248
+00:10:51.470 --> 00:10:53.435
+including incorrect information
+
+249
+00:10:53.435 --> 00:10:55.940
+in other perception tasks.
+
+250
+00:10:55.940 --> 00:10:59.210
+Semantic segmentation
+is a powerful tool for
+
+251
+00:10:59.210 --> 00:11:01.160
+self-driving cars and a core
+
+252
+00:11:01.160 --> 00:11:03.980
+component of the high
+level perception stack.
+
+253
+00:11:03.980 --> 00:11:06.530
+You will have the chance
+to validate its usefulness
+
+254
+00:11:06.530 --> 00:11:08.225
+next week when we discuss
+
+255
+00:11:08.225 --> 00:11:11.460
+our final assignment.
+See you then.

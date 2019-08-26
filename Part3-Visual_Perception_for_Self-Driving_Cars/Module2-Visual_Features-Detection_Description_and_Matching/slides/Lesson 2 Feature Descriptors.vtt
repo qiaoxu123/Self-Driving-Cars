@@ -1,0 +1,447 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.043 --> 00:00:17.217
+In the last video,
+we described feature detection or
+
+3
+00:00:17.217 --> 00:00:22.350
+the process of identifying feature
+points in an image in a variety ways.
+
+4
+00:00:22.350 --> 00:00:26.720
+However, remember that our end goal
+is to use match features between
+
+5
+00:00:26.720 --> 00:00:30.350
+two different images for
+localization, object detection, and
+
+6
+00:00:30.350 --> 00:00:35.630
+other perception tasks that require depth
+estimation to points in the environment.
+
+7
+00:00:35.630 --> 00:00:39.270
+To do so, we need to describe
+features in a way that it allows for
+
+8
+00:00:39.270 --> 00:00:44.500
+feature comparison to determine
+the best match between frames.
+
+9
+00:00:44.500 --> 00:00:48.250
+We therefore assign a descriptor to
+every feature point in an image.
+
+10
+00:00:49.390 --> 00:00:52.944
+In this video, you will learn what
+makes a good feature descriptor for
+
+11
+00:00:52.944 --> 00:00:54.642
+computer vision applications.
+
+12
+00:00:54.642 --> 00:00:57.982
+You'll learn how to derive these
+descriptors from images so
+
+13
+00:00:57.982 --> 00:01:00.930
+we can use them in autonomous driving.
+
+14
+00:01:00.930 --> 00:01:04.490
+Let's begin by defining what
+a feature descriptor is.
+
+15
+00:01:04.490 --> 00:01:08.510
+Mathematically, we define a feature
+point by its coordinates u and
+
+16
+00:01:08.510 --> 00:01:09.770
+v in the image frame.
+
+17
+00:01:11.210 --> 00:01:15.830
+We describe a descriptor f as an n
+dimensional vector associated with
+
+18
+00:01:15.830 --> 00:01:16.500
+each feature.
+
+19
+00:01:17.540 --> 00:01:22.100
+The descriptor has the task of providing
+a summary of the image information
+
+20
+00:01:22.100 --> 00:01:26.780
+in the vicinity of the feature itself,
+and can take on many forms.
+
+21
+00:01:26.780 --> 00:01:30.910
+Similar to the design of feature
+detectors we also have some favorable
+
+22
+00:01:30.910 --> 00:01:35.230
+characteristics required for
+the design of descriptors to allow for
+
+23
+00:01:35.230 --> 00:01:36.640
+robust feature matching.
+
+24
+00:01:37.710 --> 00:01:42.260
+As with feature detectors descriptors
+should be repeatable, that means that
+
+25
+00:01:42.260 --> 00:01:47.090
+regardless of shifts in position,
+scale, and illumination, the same
+
+26
+00:01:47.090 --> 00:01:52.260
+point of interest in two images should
+have approximately the same descriptor.
+
+27
+00:01:52.260 --> 00:01:55.330
+This invariance in transformations
+is one of the most
+
+28
+00:01:55.330 --> 00:01:58.980
+researched topics when it
+comes to descriptor design.
+
+29
+00:01:58.980 --> 00:02:03.090
+And a large amount of work has been done
+to provide descriptors that are invariant
+
+30
+00:02:03.090 --> 00:02:07.170
+to scale, illumination, and
+other variables in image formation.
+
+31
+00:02:08.570 --> 00:02:13.720
+The second important characteristic of
+a feature descriptor is distinctiveness.
+
+32
+00:02:13.720 --> 00:02:17.830
+Two nearby features should
+not have similar descriptors,
+
+33
+00:02:17.830 --> 00:02:21.650
+as this will confuse our feature
+matching process later on.
+
+34
+00:02:21.650 --> 00:02:26.140
+Finally, descriptors should be compact and
+efficient to compute.
+
+35
+00:02:26.140 --> 00:02:30.660
+This is because we will usually require
+matching to be performed in real time for
+
+36
+00:02:30.660 --> 00:02:32.200
+autonomous driving applications.
+
+37
+00:02:33.670 --> 00:02:38.240
+A wide variety of effective descriptors
+have been developed for feature matching.
+
+38
+00:02:38.240 --> 00:02:42.610
+So let's take a look at a specific case
+study on the design of a single feature
+
+39
+00:02:42.610 --> 00:02:45.699
+descriptors to give you sense for
+descriptors work.
+
+40
+00:02:45.699 --> 00:02:50.461
+We will describe how to compute the shift
+features descriptors specifically
+
+41
+00:02:50.461 --> 00:02:52.740
+designed by David Lowe in 1999.
+
+42
+00:02:52.740 --> 00:02:57.180
+The procedure for computing shift
+feature descriptors is as follows.
+
+43
+00:02:58.210 --> 00:03:03.150
+Given a feature in the image,
+the shift descriptor takes a 16 by 16
+
+44
+00:03:03.150 --> 00:03:08.200
+window of pixels around it, we call this
+window the features local neighborhood.
+
+45
+00:03:09.890 --> 00:03:12.468
+We then separate this window in to four,
+
+46
+00:03:12.468 --> 00:03:17.514
+4 by 4 cells such that each
+cell contains 16 pixels.
+
+47
+00:03:17.514 --> 00:03:22.100
+Next we compute the edges and
+edge orientation of each pixel in
+
+48
+00:03:22.100 --> 00:03:26.100
+each cell using the gradient
+filters we discussed in module one.
+
+49
+00:03:27.236 --> 00:03:28.910
+For stability of the descriptor,
+
+50
+00:03:28.910 --> 00:03:33.880
+we suppress weak edges using a predefined
+threshold as they are likely to vary
+
+51
+00:03:33.880 --> 00:03:37.920
+significantly in orientation with
+small amounts of noise between images.
+
+52
+00:03:39.350 --> 00:03:45.370
+Finally, we compute a 32 dimensional
+histogram of orientations for each cell.
+
+53
+00:03:45.370 --> 00:03:51.010
+And concatenate the histograms for all
+four cells to get a final 128 dimensional
+
+54
+00:03:51.010 --> 00:03:56.760
+histogram for the feature at hand,
+we call this histogram or descriptor.
+
+55
+00:03:56.760 --> 00:04:01.673
+Some additional post processing is
+done as well in that it helps the 128
+
+56
+00:04:01.673 --> 00:04:06.271
+dimensional vector retain stable
+values under variable contrast,
+
+57
+00:04:06.271 --> 00:04:09.220
+game, and other fundametric variations.
+
+58
+00:04:10.280 --> 00:04:14.850
+SIFT is an example of a very well human
+engineered feature descriptor, and
+
+59
+00:04:14.850 --> 00:04:17.640
+is used in many state-of-the-art systems.
+
+60
+00:04:17.640 --> 00:04:22.020
+It is usually computed over multiple
+scales and orientations for
+
+61
+00:04:22.020 --> 00:04:25.160
+better scale and rotation invariants.
+
+62
+00:04:25.160 --> 00:04:29.060
+Finally, when combined with a scale
+invariant feature detector,
+
+63
+00:04:29.060 --> 00:04:31.380
+such as the difference
+of Gaussian's detector,
+
+64
+00:04:32.620 --> 00:04:35.850
+it results in a highly robust feature
+detector and descriptor pair.
+
+65
+00:04:37.430 --> 00:04:40.920
+It is worth mentioning that there
+is huge literature out there for
+
+66
+00:04:40.920 --> 00:04:43.640
+feature detectors and descriptors.
+
+67
+00:04:43.640 --> 00:04:47.550
+The surf descriptive for
+example uses similar concepts to SIFT
+
+68
+00:04:47.550 --> 00:04:49.778
+while being significantly
+faster to compute.
+
+69
+00:04:49.778 --> 00:04:53.709
+Many other variants exist
+in the literature including
+
+70
+00:04:53.709 --> 00:04:58.756
+the Gradient Location-Orientation
+Histogram or GLOH descriptor.
+
+71
+00:04:58.756 --> 00:05:03.340
+The Binary Robust Independent
+Elementary Features descriptor or
+
+72
+00:05:03.340 --> 00:05:09.010
+BRIEF, and the Oriented Fast and
+Rotated Brief descriptor or ORB.
+
+73
+00:05:09.010 --> 00:05:11.000
+This is a lot of acronyms to remember, but
+
+74
+00:05:11.000 --> 00:05:14.280
+don't worry, we don't expect
+you to remember all of these.
+
+75
+00:05:14.280 --> 00:05:16.920
+But you may see them in
+the implementations available for
+
+76
+00:05:16.920 --> 00:05:20.450
+use in
+Open Source Computer Vision Libraries.
+
+77
+00:05:20.450 --> 00:05:24.800
+We've now completed our discussion on
+feature detectors and descriptors.
+
+78
+00:05:24.800 --> 00:05:29.491
+Although most of the discussed algorithms
+have open source implementations,
+
+79
+00:05:29.491 --> 00:05:31.801
+some like SIFT and SURF are patented and
+
+80
+00:05:31.801 --> 00:05:35.735
+should not be used commercially
+without approval of the authors.
+
+81
+00:05:35.735 --> 00:05:40.854
+Fortunately, the feature detector and
+descriptor literature up there is vast and
+
+82
+00:05:40.854 --> 00:05:45.824
+some really good algorithms such as ORB
+match the performance of SIFT and SURF and
+
+83
+00:05:45.824 --> 00:05:48.040
+are free to use even commercially.
+
+84
+00:05:49.660 --> 00:05:53.600
+In this lesson, you learned what
+comprises a feature descriptor,
+
+85
+00:05:53.600 --> 00:05:57.750
+what characteristics are favorable
+when designing these descriptors.
+
+86
+00:05:57.750 --> 00:06:01.500
+And different algorithms that
+are available in the open source libraries
+
+87
+00:06:01.500 --> 00:06:04.080
+to extract feature
+descriptors as you need them.
+
+88
+00:06:05.200 --> 00:06:09.360
+In combination with the feature extractors
+we talked about in the previous video,
+
+89
+00:06:09.360 --> 00:06:11.890
+you're now ready to take
+on the challenging tasks of
+
+90
+00:06:11.890 --> 00:06:16.110
+matching features between images
+using their computed descriptors.
+
+91
+00:06:16.110 --> 00:06:18.675
+You'll learn more about
+this in the next video.
+
+92
+00:06:18.675 --> 00:06:20.857
+See you then.
+
+93
+00:06:20.857 --> 00:06:28.252
+[MUSIC]

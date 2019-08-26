@@ -1,0 +1,696 @@
+WEBVTT
+
+1
+00:00:14.120 --> 00:00:16.439
+In the last two videos,
+
+2
+00:00:16.439 --> 00:00:20.280
+we learned about the extended
+Kalman filter or EKF and how we
+
+3
+00:00:20.280 --> 00:00:24.690
+can use it to adapt the linear
+Kalman filter to non-linear systems.
+
+4
+00:00:24.690 --> 00:00:27.850
+While the EKF works well for
+many practical problems,
+
+5
+00:00:27.850 --> 00:00:30.530
+there are some important limitations
+to keep in mind when
+
+6
+00:00:30.530 --> 00:00:33.860
+deciding if the EKF is
+the right algorithm for you.
+
+7
+00:00:33.860 --> 00:00:37.705
+In this video, we'll discuss
+some of these limitations.
+
+8
+00:00:37.705 --> 00:00:41.240
+Recall that the EKF works
+by linearizing our systems
+
+9
+00:00:41.240 --> 00:00:44.030
+non-linear motion and
+observation models to
+
+10
+00:00:44.030 --> 00:00:47.135
+update both the mean and
+covariance of our state estimate.
+
+11
+00:00:47.135 --> 00:00:48.560
+A linearized model is
+
+12
+00:00:48.560 --> 00:00:52.360
+just a local linear approximation
+of the true non-linear model.
+
+13
+00:00:52.360 --> 00:00:54.050
+We call the difference between
+
+14
+00:00:54.050 --> 00:00:57.875
+the approximation and the true model,
+the linearization error.
+
+15
+00:00:57.875 --> 00:01:02.690
+In general, the linearization error for
+any function depends on two things.
+
+16
+00:01:02.690 --> 00:01:06.760
+The first thing is how non-linear
+the original function is to begin with.
+
+17
+00:01:06.760 --> 00:01:11.360
+If our nonlinear function very slowly
+or is quite flat much of the time,
+
+18
+00:01:11.360 --> 00:01:14.630
+linear approximation is going
+to be a pretty good fit.
+
+19
+00:01:14.630 --> 00:01:17.585
+On the other hand, if
+the function varies quickly,
+
+20
+00:01:17.585 --> 00:01:20.780
+linear approximation is not
+going to do a great job of
+
+21
+00:01:20.780 --> 00:01:24.620
+capturing the true shape of
+the function over most of its domain.
+
+22
+00:01:24.620 --> 00:01:26.900
+The second thing
+linearization error depends
+
+23
+00:01:26.900 --> 00:01:30.380
+on is how far away from
+the operating point you are.
+
+24
+00:01:30.380 --> 00:01:32.720
+The further away you move
+from the operating point,
+
+25
+00:01:32.720 --> 00:01:35.000
+the more likely the linear approximation
+
+26
+00:01:35.000 --> 00:01:37.100
+is to diverge from the true function.
+
+27
+00:01:37.100 --> 00:01:39.110
+These properties of linearization error
+
+28
+00:01:39.110 --> 00:01:41.500
+have important implications for the EKF.
+
+29
+00:01:41.500 --> 00:01:43.340
+So, let's look at an example of how
+
+30
+00:01:43.340 --> 00:01:46.144
+linearization error affects
+the mean and covariance
+
+31
+00:01:46.144 --> 00:01:47.794
+of two random variables
+
+32
+00:01:47.794 --> 00:01:51.110
+transformed by a common pair
+of non-linear functions.
+
+33
+00:01:51.110 --> 00:01:54.980
+Specifically, let's look at
+the non-linear transformation from
+
+34
+00:01:54.980 --> 00:02:00.245
+polar coordinates r and Theta to
+Cartesian coordinates, x and y.
+
+35
+00:02:00.245 --> 00:02:03.140
+This kind of transformation
+is commonly used to work
+
+36
+00:02:03.140 --> 00:02:05.945
+with laser scanners or LIDARs,
+
+37
+00:02:05.945 --> 00:02:08.425
+to report range and bearing measurements,
+
+38
+00:02:08.425 --> 00:02:11.525
+just as the scanners on
+many self-driving cars do.
+
+39
+00:02:11.525 --> 00:02:13.820
+Let's take a number of samples from
+
+40
+00:02:13.820 --> 00:02:15.830
+a uniform distribution
+over an interval of
+
+41
+00:02:15.830 --> 00:02:18.710
+polar coordinates and
+consider what happens when we
+
+42
+00:02:18.710 --> 00:02:21.890
+transform the samples into
+Cartesian coordinates.
+
+43
+00:02:21.890 --> 00:02:23.895
+To illustrate what this looks like,
+
+44
+00:02:23.895 --> 00:02:25.820
+we've plotted the random samples from
+
+45
+00:02:25.820 --> 00:02:29.200
+the uniform distribution as
+blue dots you see on the left.
+
+46
+00:02:29.200 --> 00:02:31.235
+When we transform each
+of these sample points
+
+47
+00:02:31.235 --> 00:02:33.589
+into the corresponding
+Cartesian coordinates,
+
+48
+00:02:33.589 --> 00:02:37.785
+we see that the transform distribution
+takes on a banana shape,
+
+49
+00:02:37.785 --> 00:02:39.360
+shown on the right.
+
+50
+00:02:39.360 --> 00:02:42.350
+Clearly, the shape of
+the banana distribution is not
+
+51
+00:02:42.350 --> 00:02:45.920
+captured completely by using
+a mean and a covariance only.
+
+52
+00:02:45.920 --> 00:02:49.960
+But let's see what happens to the mean
+and covariance of the original PDF.
+
+53
+00:02:49.960 --> 00:02:51.460
+In the left-hand plot,
+
+54
+00:02:51.460 --> 00:02:53.810
+the true mean of
+the uniform distribution is
+
+55
+00:02:53.810 --> 00:02:56.420
+shown as the green dot in the middle,
+
+56
+00:02:56.420 --> 00:03:00.035
+and the true covariance is
+represented by the green ellipse.
+
+57
+00:03:00.035 --> 00:03:03.770
+After transforming the uniform
+distribution into Cartesian coordinates,
+
+58
+00:03:03.770 --> 00:03:06.830
+the mean of the output
+distribution ends up here,
+
+59
+00:03:06.830 --> 00:03:09.545
+and its covariance looks like this.
+
+60
+00:03:09.545 --> 00:03:11.840
+Now, consider what
+happens if we linearize
+
+61
+00:03:11.840 --> 00:03:14.210
+the polar to Cartesian transformation
+
+62
+00:03:14.210 --> 00:03:16.760
+about the mean of
+the original distribution and
+
+63
+00:03:16.760 --> 00:03:19.630
+then transform
+all the sample points again.
+
+64
+00:03:19.630 --> 00:03:21.560
+The linearized transformation gives us
+
+65
+00:03:21.560 --> 00:03:23.345
+an output distribution that looks like
+
+66
+00:03:23.345 --> 00:03:25.835
+another uniform distribution and bears
+
+67
+00:03:25.835 --> 00:03:29.495
+almost no resemblance to the
+banana-shaped distribution we saw before.
+
+68
+00:03:29.495 --> 00:03:31.655
+If we look at the mean
+of this distribution,
+
+69
+00:03:31.655 --> 00:03:33.400
+represented by a red dot,
+
+70
+00:03:33.400 --> 00:03:35.775
+it lands somewhere up here,
+
+71
+00:03:35.775 --> 00:03:39.950
+and the linearized covariance
+looks quite different as well.
+
+72
+00:03:39.950 --> 00:03:43.565
+Let's compare the linearized and
+non-linear output distributions.
+
+73
+00:03:43.565 --> 00:03:45.020
+You can see that the mean of
+
+74
+00:03:45.020 --> 00:03:46.910
+the linearized distribution is in
+
+75
+00:03:46.910 --> 00:03:49.340
+a very different place
+from the true mean,
+
+76
+00:03:49.340 --> 00:03:52.370
+and the linearized covariance
+seriously underestimates
+
+77
+00:03:52.370 --> 00:03:56.185
+the spread of the true output
+distribution along the y dimension.
+
+78
+00:03:56.185 --> 00:03:57.290
+So, in this case,
+
+79
+00:03:57.290 --> 00:03:59.840
+we can see that linearization
+error can cause
+
+80
+00:03:59.840 --> 00:04:03.860
+our belief about the output distribution
+to completely miss the mark,
+
+81
+00:04:03.860 --> 00:04:07.190
+and this can cause
+big problems in our estimator.
+
+82
+00:04:07.190 --> 00:04:11.470
+For example, the estimated position
+of lane markers produced from
+
+83
+00:04:11.470 --> 00:04:15.710
+a laser scanner might differ
+significantly from the actual positions,
+
+84
+00:04:15.710 --> 00:04:18.470
+leading our car to drive
+over the center line.
+
+85
+00:04:18.470 --> 00:04:21.625
+So when is linearization
+a problem for the EKF?
+
+86
+00:04:21.625 --> 00:04:24.335
+There are two situations
+to watch out for.
+
+87
+00:04:24.335 --> 00:04:27.845
+The first is when your system dynamics
+are highly nonlinear.
+
+88
+00:04:27.845 --> 00:04:31.250
+If your emotion and measurement models
+are close to linear,
+
+89
+00:04:31.250 --> 00:04:33.970
+linearization error
+won't be a big problem.
+
+90
+00:04:33.970 --> 00:04:37.340
+But if they're not,
+your linearized estimator won't
+
+91
+00:04:37.340 --> 00:04:40.400
+do a good job of capturing
+the true behavior of the system.
+
+92
+00:04:40.400 --> 00:04:42.890
+The second situation is
+related to how far away from
+
+93
+00:04:42.890 --> 00:04:46.405
+the operating point you're trying
+to use the linearized model.
+
+94
+00:04:46.405 --> 00:04:48.440
+For self-driving cars moving very
+
+95
+00:04:48.440 --> 00:04:51.680
+fast relative to the sampling
+time of your sensors,
+
+96
+00:04:51.680 --> 00:04:55.400
+you're going to get more linearization
+error than if it's moving slowly.
+
+97
+00:04:55.400 --> 00:04:57.170
+Mathematically speaking, there are
+
+98
+00:04:57.170 --> 00:05:00.835
+two important consequences of
+linearization error in the EKF,
+
+99
+00:05:00.835 --> 00:05:03.795
+both of which we saw in
+the previous example.
+
+100
+00:05:03.795 --> 00:05:06.040
+One is that the estimated mean can
+
+101
+00:05:06.040 --> 00:05:08.605
+become very different
+from the true state,
+
+102
+00:05:08.605 --> 00:05:11.830
+and the other is that
+the estimated covariance may
+
+103
+00:05:11.830 --> 00:05:15.595
+not accurately capture
+the true uncertainty in the state.
+
+104
+00:05:15.595 --> 00:05:18.940
+In other words, this means that
+linearization error can cause
+
+105
+00:05:18.940 --> 00:05:23.155
+our estimator to be overconfident
+in a completely wrong answer.
+
+106
+00:05:23.155 --> 00:05:24.570
+In the worst case,
+
+107
+00:05:24.570 --> 00:05:26.415
+the estimator may diverge,
+
+108
+00:05:26.415 --> 00:05:31.210
+that is, become completely lost
+and fail to provide useful output.
+
+109
+00:05:31.210 --> 00:05:35.810
+Worse, once an estimator such
+as the EKF has diverged,
+
+110
+00:05:35.810 --> 00:05:38.775
+it can't be pulled back on track.
+
+111
+00:05:38.775 --> 00:05:42.085
+Often, you're forced to
+re-initialize if you can.
+
+112
+00:05:42.085 --> 00:05:43.720
+This is a huge problem for
+
+113
+00:05:43.720 --> 00:05:46.630
+safety when we're dealing
+with self-driving cars.
+
+114
+00:05:46.630 --> 00:05:49.819
+If your car's estimator
+diverges while driving,
+
+115
+00:05:49.819 --> 00:05:51.980
+it could easily drive off the road into
+
+116
+00:05:51.980 --> 00:05:55.445
+a ditch or cause a collision
+with another vehicle.
+
+117
+00:05:55.445 --> 00:05:59.140
+So, linearization error is the main
+theoretical limitation of the EKF.
+
+118
+00:05:59.140 --> 00:06:01.310
+But there are other common
+problems that we will
+
+119
+00:06:01.310 --> 00:06:03.695
+encounter in our implementations.
+
+120
+00:06:03.695 --> 00:06:06.770
+Probably the most common problem in
+practice is that it's very easy to
+
+121
+00:06:06.770 --> 00:06:09.920
+make mistakes when we
+compute Jacobian matrices,
+
+122
+00:06:09.920 --> 00:06:13.340
+especially if we're dealing with
+a complicated nonlinear system.
+
+123
+00:06:13.340 --> 00:06:16.070
+I cannot tell you the number
+of times my students and
+
+124
+00:06:16.070 --> 00:06:19.520
+I have missed a minus sign
+while deriving a Jacobian.
+
+125
+00:06:19.520 --> 00:06:22.370
+This can lead to
+many many hours of debugging.
+
+126
+00:06:22.370 --> 00:06:23.690
+Some people try to get around
+
+127
+00:06:23.690 --> 00:06:26.000
+this problem by using
+numerical differentiation at
+
+128
+00:06:26.000 --> 00:06:29.610
+runtime or automatic
+differentiation at compile time.
+
+129
+00:06:29.610 --> 00:06:33.695
+But these had their own pitfalls and
+can sometimes behave unpredictably.
+
+130
+00:06:33.695 --> 00:06:35.900
+On top of that, what happens if one or
+
+131
+00:06:35.900 --> 00:06:38.270
+more of our models isn't
+even differentiable,
+
+132
+00:06:38.270 --> 00:06:41.075
+like the step function response
+of a stepper motor.
+
+133
+00:06:41.075 --> 00:06:44.240
+All of these drawbacks lead
+us to a question: Do we
+
+134
+00:06:44.240 --> 00:06:48.340
+really need linearization to
+do nonlinear Kalman filtering?
+
+135
+00:06:48.340 --> 00:06:50.725
+To summarize this video,
+
+136
+00:06:50.725 --> 00:06:52.550
+the extended Kalman filter has
+
+137
+00:06:52.550 --> 00:06:57.515
+several limitations based on its use
+of analytical local linearization.
+
+138
+00:06:57.515 --> 00:07:00.440
+If the dynamics of the system
+being modeled are highly
+
+139
+00:07:00.440 --> 00:07:03.630
+non-linear or the
+linearization error is large,
+
+140
+00:07:03.630 --> 00:07:05.520
+the filter may diverge.
+
+141
+00:07:05.520 --> 00:07:08.120
+The EKF requires Jacobian matrices to be
+
+142
+00:07:08.120 --> 00:07:12.340
+computed which is often
+a tedious and error-prone process.
+
+143
+00:07:12.340 --> 00:07:15.140
+Nonetheless, the EKF is a proven tool for
+
+144
+00:07:15.140 --> 00:07:17.270
+state estimation and you will no doubt
+
+145
+00:07:17.270 --> 00:07:20.255
+encounter it often as
+a self-driving car engineer.
+
+146
+00:07:20.255 --> 00:07:22.295
+In the next video, we'll discuss
+
+147
+00:07:22.295 --> 00:07:25.700
+another common filter variant
+called the unscented Kalman filter,
+
+148
+00:07:25.700 --> 00:07:29.700
+which largely addresses
+these limitations of the EKF.

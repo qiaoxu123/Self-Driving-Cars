@@ -1,0 +1,942 @@
+1
+00:00:00,000 --> 00:00:10,000
+[MUSIC]
+
+2
+00:00:14,073 --> 00:00:18,367
+In the previous videos, we discussed
+sensors, computing hardware, and
+
+3
+00:00:18,367 --> 00:00:21,446
+hardware configurations for
+autonomous vehicles.
+
+4
+00:00:21,446 --> 00:00:24,800
+In this video we will learn
+about a representative modular
+
+5
+00:00:24,800 --> 00:00:27,543
+software architecture for
+self driving cars.
+
+6
+00:00:27,543 --> 00:00:32,868
+The architecture will use the information
+provided by the hardware components and
+
+7
+00:00:32,868 --> 00:00:36,222
+allow us to achieve our
+goal of autonomous driving.
+
+8
+00:00:36,222 --> 00:00:41,702
+Let's go over a detailed decomposition
+of each module of the software stack.
+
+9
+00:00:41,702 --> 00:00:46,015
+This will allow us to discuss each
+segment more carefully by taking
+
+10
+00:00:46,015 --> 00:00:48,633
+a look at the inputs which they receive,
+
+11
+00:00:48,633 --> 00:00:53,346
+the computations they need to make,
+and the outputs that they provide.
+
+12
+00:00:53,346 --> 00:00:57,766
+We will discuss the following
+five software modules,
+
+13
+00:00:57,766 --> 00:01:03,438
+environment perception,
+environment mapping, motion planning,
+
+14
+00:01:03,438 --> 00:01:07,967
+vehicle control, and
+finally the system supervisor.
+
+15
+00:01:07,967 --> 00:01:12,853
+While this overview of the software stack
+will not provide implementation detail,
+
+16
+00:01:12,853 --> 00:01:17,737
+it should give you a good understanding of
+all of the software components required to
+
+17
+00:01:17,737 --> 00:01:19,764
+make a self driving car function.
+
+18
+00:01:19,764 --> 00:01:24,009
+The entire specialization is
+organized around this structure so
+
+19
+00:01:24,009 --> 00:01:26,100
+we'll return to it regularly.
+
+20
+00:01:26,100 --> 00:01:31,399
+Also note this is not the only software
+architecture used in autonomous driving,
+
+21
+00:01:31,399 --> 00:01:35,239
+but is a good representation
+of the necessary functions for
+
+22
+00:01:35,239 --> 00:01:36,878
+full vehicle autonomy.
+
+23
+00:01:36,878 --> 00:01:39,951
+Let's take a look at the high
+level software architecture for
+
+24
+00:01:39,951 --> 00:01:41,910
+a self driving car's software stack.
+
+25
+00:01:41,910 --> 00:01:44,338
+As discussed in a previous video,
+
+26
+00:01:44,338 --> 00:01:49,543
+the car observes the environment
+around it, using a variety of sensors.
+
+27
+00:01:49,543 --> 00:01:54,365
+The raw sensor measurements are passed
+into two sets of modules dedicated
+
+28
+00:01:54,365 --> 00:01:57,721
+to understanding
+the environment around the car.
+
+29
+00:01:57,721 --> 00:02:03,110
+The environment perception modules
+have two key responsibilities, first,
+
+30
+00:02:03,110 --> 00:02:08,009
+identifying the current location of
+the autonomous vehicle in space,
+
+31
+00:02:08,009 --> 00:02:10,050
+and second, classifying and
+
+32
+00:02:10,050 --> 00:02:14,963
+locating important elements of
+the environment for the driving task.
+
+33
+00:02:14,963 --> 00:02:19,904
+Examples of these elements include other
+cars, bikes, pedestrians, the road,
+
+34
+00:02:19,904 --> 00:02:25,000
+road markings, and road signs, anything
+that directly affects the act of driving.
+
+35
+00:02:25,000 --> 00:02:29,865
+The environment mapping module creates
+a set of maps which locate objects in
+
+36
+00:02:29,865 --> 00:02:34,883
+the environment around the autonomous
+vehicle for a range of different uses,
+
+37
+00:02:34,883 --> 00:02:39,461
+from collision avoidance to egomotion
+tracking and motion planning.
+
+38
+00:02:39,461 --> 00:02:42,360
+The third module is known
+as motion planning.
+
+39
+00:02:42,360 --> 00:02:47,562
+The motion planning module makes all the
+decisions about what actions to take and
+
+40
+00:02:47,562 --> 00:02:52,459
+where to drive based on all of the
+information provided by the perception and
+
+41
+00:02:52,459 --> 00:02:53,700
+mapping modules.
+
+42
+00:02:53,700 --> 00:02:58,117
+The motion planning module's main
+output is a safe, efficient and
+
+43
+00:02:58,117 --> 00:03:02,549
+comfortable planned path that moves
+the vehicle towards its goal.
+
+44
+00:03:02,549 --> 00:03:08,444
+The planned path is then executed by
+the fourth module, the controller.
+
+45
+00:03:08,444 --> 00:03:13,514
+The controller module takes the path and
+decides on the best steering angle,
+
+46
+00:03:13,514 --> 00:03:16,712
+throttle position,
+brake pedal position, and
+
+47
+00:03:16,712 --> 00:03:20,229
+gear settings to precisely
+follow the planned path.
+
+48
+00:03:20,229 --> 00:03:23,966
+The fifth and
+final module is the system supervisor.
+
+49
+00:03:23,966 --> 00:03:28,594
+The system supervisor monitors all
+parts of the software stack, as well as
+
+50
+00:03:28,594 --> 00:03:33,377
+the hardware output, to make sure that
+all systems are working as intended.
+
+51
+00:03:33,377 --> 00:03:36,419
+The system supervisor
+is also responsible for
+
+52
+00:03:36,419 --> 00:03:40,715
+informing the safety driver of
+any problems found in the system.
+
+53
+00:03:40,715 --> 00:03:44,859
+Now that we have a general idea of
+the function of the main modules,
+
+54
+00:03:44,859 --> 00:03:48,344
+let's take a closer look at
+each module individually.
+
+55
+00:03:48,344 --> 00:03:52,435
+First, let's start with
+environment perception.
+
+56
+00:03:52,435 --> 00:03:56,878
+As discussed previously, there are two
+important parts of the perception stack,
+
+57
+00:03:56,878 --> 00:04:00,433
+localizing the ego-vehicle in space,
+as well as classifying and
+
+58
+00:04:00,433 --> 00:04:03,370
+locating the important
+elements of the environment.
+
+59
+00:04:03,370 --> 00:04:08,052
+The localization module takes in
+multiple streams of information,
+
+60
+00:04:08,052 --> 00:04:13,069
+such as the current GPS location,
+IMU measurements and wheel odometry.
+
+61
+00:04:13,069 --> 00:04:17,074
+It then combines them to output
+an accurate vehicle location.
+
+62
+00:04:17,074 --> 00:04:18,723
+For greater accuracy,
+
+63
+00:04:18,723 --> 00:04:23,513
+some localization modules also
+incorporate LIDAR and camera data.
+
+64
+00:04:23,513 --> 00:04:27,240
+This localization problem will
+be discussed in much greater
+
+65
+00:04:27,240 --> 00:04:31,633
+detail in the next course of this
+specialization on state estimation.
+
+66
+00:04:31,633 --> 00:04:34,597
+Typically, the problem
+of classification and
+
+67
+00:04:34,597 --> 00:04:39,340
+localization of the environmental
+elements is divided into two segments,
+
+68
+00:04:39,340 --> 00:04:43,712
+first, detecting dynamic objects
+in the environment, and second,
+
+69
+00:04:43,712 --> 00:04:46,915
+detecting the static
+objects in the environment.
+
+70
+00:04:46,915 --> 00:04:51,935
+The dynamic object detection module
+uses a set of camera inputs as well as
+
+71
+00:04:51,935 --> 00:04:57,879
+LIDAR point clouds to create 3D bounding
+boxes around dynamic objects in the scene.
+
+72
+00:04:57,879 --> 00:05:02,710
+The 3D bounding boxes encode the class or
+type of object as well
+
+73
+00:05:02,710 --> 00:05:07,374
+as the exact position,
+orientation and size of the object.
+
+74
+00:05:07,374 --> 00:05:12,786
+Once detected, the dynamic objects are
+tracked over time by a tracking module.
+
+75
+00:05:12,786 --> 00:05:17,752
+The tracker module provides not only the
+current position of the dynamic objects
+
+76
+00:05:17,752 --> 00:05:21,342
+but also the history of its
+path through the environment.
+
+77
+00:05:21,342 --> 00:05:25,979
+The history of the path is used
+along with the roadmaps In order
+
+78
+00:05:25,979 --> 00:05:29,827
+to predict the future path
+of all dynamic objects.
+
+79
+00:05:29,827 --> 00:05:33,252
+This is usually handled
+by a prediction module,
+
+80
+00:05:33,252 --> 00:05:37,845
+which combines all information
+regarding the dynamic object and
+
+81
+00:05:37,845 --> 00:05:42,704
+the current environment to predict
+the path of all dynamic objects.
+
+82
+00:05:42,704 --> 00:05:47,550
+The static object detection module
+also relies on a combination of camera
+
+83
+00:05:47,550 --> 00:05:52,487
+input and LIDAR data to identify
+significant static objects in the scene.
+
+84
+00:05:52,487 --> 00:05:56,948
+Such important data include the current
+lane in which the self-driving vehicle is
+
+85
+00:05:56,948 --> 00:06:01,424
+found, and the location of regulatory
+elements such as signs and traffic lights.
+
+86
+00:06:01,424 --> 00:06:06,060
+The problem of environment perception
+will be the focus of course three in this
+
+87
+00:06:06,060 --> 00:06:08,460
+specialization on visual perception.
+
+88
+00:06:08,460 --> 00:06:12,280
+Now that we have a better idea of
+how the perception stack works,
+
+89
+00:06:12,280 --> 00:06:15,416
+let's move on to
+the environment mapping modules.
+
+90
+00:06:15,416 --> 00:06:19,768
+Environment maps create several
+different types of representation of
+
+91
+00:06:19,768 --> 00:06:23,038
+the current environment
+around the autonomous car.
+
+92
+00:06:23,038 --> 00:06:27,712
+There are three types of maps that we
+discuss briefly, the occupancy grid map,
+
+93
+00:06:27,712 --> 00:06:30,590
+the localization map and
+the detailed road map.
+
+94
+00:06:30,590 --> 00:06:35,356
+The occupancy grid is a map of all
+static objects in the environment
+
+95
+00:06:35,356 --> 00:06:37,323
+surrounding the vehicle.
+
+96
+00:06:37,323 --> 00:06:41,645
+LIDAR is predominantly used to
+construct the occupancy grid map.
+
+97
+00:06:41,645 --> 00:06:45,976
+A set of filters are first applied to
+the LIDAR data to make it usable by
+
+98
+00:06:45,976 --> 00:06:47,332
+the occupancy grid.
+
+99
+00:06:47,332 --> 00:06:51,924
+For example, the drivable surface points
+and dynamic object points are removed.
+
+100
+00:06:51,924 --> 00:06:57,322
+The occupancy grid map represents
+the environment as a set of grid cells and
+
+101
+00:06:57,322 --> 00:07:01,275
+associates a probability
+that each cell is occupied.
+
+102
+00:07:01,275 --> 00:07:05,522
+This allows us to handle uncertainty
+in the measurement data and
+
+103
+00:07:05,522 --> 00:07:07,337
+improve the map over time.
+
+104
+00:07:07,337 --> 00:07:12,847
+The localization map, which is
+constructed from LIDAR, or camera data,
+
+105
+00:07:12,847 --> 00:07:18,539
+is used by the localization module in
+order to improve eco state estimation.
+
+106
+00:07:18,539 --> 00:07:23,375
+Sensor data is compared to this
+map while driving to determine
+
+107
+00:07:23,375 --> 00:07:27,746
+the motion of the car relative
+to the localization map.
+
+108
+00:07:29,665 --> 00:07:33,888
+This motion is then combined
+with other proprioceptor sensor
+
+109
+00:07:33,888 --> 00:07:37,632
+information to accurately
+localize the eco vehicle.
+
+110
+00:07:37,632 --> 00:07:41,902
+The detailed road map provides a map of
+road segments which represent the driving
+
+111
+00:07:41,902 --> 00:07:45,810
+environment that the autonomous
+vehicle is currently driving through.
+
+112
+00:07:45,810 --> 00:07:50,708
+It captures signs and lane markings
+in a manner that can be used for
+
+113
+00:07:50,708 --> 00:07:52,143
+motion planning.
+
+114
+00:07:52,143 --> 00:07:56,907
+This map is traditionally a combination
+of prerecorded data as well as
+
+115
+00:07:56,907 --> 00:08:01,592
+incoming information from the current
+static environment gathered
+
+116
+00:08:01,592 --> 00:08:03,381
+by the perception stack.
+
+117
+00:08:03,381 --> 00:08:06,724
+The environment mapping and
+perception modules
+
+118
+00:08:06,724 --> 00:08:11,541
+interact significantly to improve
+the performance of both modules.
+
+119
+00:08:11,541 --> 00:08:15,808
+For example, the perception module
+provides the static environment
+
+120
+00:08:15,808 --> 00:08:20,289
+information needed to update the detailed
+road map, which is then used by
+
+121
+00:08:20,289 --> 00:08:25,005
+the prediction module to create more
+accurate dynamic object predictions.
+
+122
+00:08:25,005 --> 00:08:30,378
+Next, we'll take a closer look at how the
+output from both the environment maps and
+
+123
+00:08:30,378 --> 00:08:32,990
+the perception modules are combined and
+
+124
+00:08:32,990 --> 00:08:38,012
+used by the motion planning module to
+create a path through the environment.
+
+125
+00:08:38,012 --> 00:08:41,452
+Motion planning for self-driving
+cars is a challenging task, and
+
+126
+00:08:41,452 --> 00:08:44,120
+it's hard to solve in
+a single integrated process.
+
+127
+00:08:44,120 --> 00:08:48,810
+Instead, most self-driving cars today
+use a decomposition that divides
+
+128
+00:08:48,810 --> 00:08:52,615
+the problem into several layers
+of abstraction as follows.
+
+129
+00:08:52,615 --> 00:08:56,947
+At the top level, the mission planner
+handles long term planning and
+
+130
+00:08:56,947 --> 00:09:01,055
+defines the mission over the entire
+horizon of the driving task,
+
+131
+00:09:01,055 --> 00:09:06,150
+from the current location, through
+the road network to its final destination.
+
+132
+00:09:06,150 --> 00:09:10,944
+To find the complete mission,
+the mission planner determines the optimal
+
+133
+00:09:10,944 --> 00:09:15,660
+sequence of road segments that connect
+your origin and destination, and
+
+134
+00:09:15,660 --> 00:09:17,953
+then passes this to the next layer.
+
+135
+00:09:17,953 --> 00:09:21,792
+The behavior planner is
+the next level of abstraction,
+
+136
+00:09:21,792 --> 00:09:24,576
+solving short term planning problems.
+
+137
+00:09:24,576 --> 00:09:29,220
+The behaviour planner is responsible for
+establishing a set of safe actions or
+
+138
+00:09:29,220 --> 00:09:33,242
+maneuvers to be executed while
+travelling along the mission path.
+
+139
+00:09:33,242 --> 00:09:37,904
+An example of the behaviour planner
+decisions would be whether the vehicle
+
+140
+00:09:37,904 --> 00:09:41,752
+should merge into an adjacent
+lane given the desired speed and
+
+141
+00:09:41,752 --> 00:09:44,648
+the predicted behaviors
+of nearby vehicles.
+
+142
+00:09:44,648 --> 00:09:47,228
+Along with the maneuver of decisions,
+
+143
+00:09:47,228 --> 00:09:52,781
+the behavior planner also provides a set
+of constrains to execute with each action,
+
+144
+00:09:52,781 --> 00:09:57,022
+such as how long to remain in
+the current lane before switching.
+
+145
+00:09:57,022 --> 00:10:01,630
+Finally, the local planner performs
+immediate or reactive planning, and
+
+146
+00:10:01,630 --> 00:10:06,248
+is responsible for defining a specific
+path and velocity profile to drive.
+
+147
+00:10:06,248 --> 00:10:10,624
+The local plan must be smooth,
+safe, and efficient given all
+
+148
+00:10:10,624 --> 00:10:15,432
+the current constraints imposed
+by the environment and maneuver.
+
+149
+00:10:15,432 --> 00:10:18,332
+In order to create such a plan,
+the local planner
+
+150
+00:10:18,332 --> 00:10:22,865
+combines information provided by
+the behavior planner, occupancy grid,
+
+151
+00:10:22,865 --> 00:10:27,639
+the vehicle operating limits, and
+other dynamic objects in the environment.
+
+152
+00:10:27,639 --> 00:10:32,576
+The output of the local planner is
+a planned trajectory which is a combined
+
+153
+00:10:32,576 --> 00:10:37,764
+desired path and velocity profile for
+a short period of time into the future.
+
+154
+00:10:37,764 --> 00:10:42,810
+The fourth course of this specialization
+is dedicated to motion planning.
+
+155
+00:10:42,810 --> 00:10:48,914
+Next, let's see how a typical vehicle
+controller takes the given trajectory and
+
+156
+00:10:48,914 --> 00:10:54,505
+turns it into a set of precise actuation
+commands for the vehicle to apply.
+
+157
+00:10:54,505 --> 00:10:59,416
+A typical controller separates the control
+problem into a longitudinal control and
+
+158
+00:10:59,416 --> 00:11:00,601
+a lateral control.
+
+159
+00:11:00,601 --> 00:11:04,933
+The lateral controller outputs
+the steering angle required to maintain
+
+160
+00:11:04,933 --> 00:11:09,409
+the planned trajectory, whereas
+the longitudinal controller regulates
+
+161
+00:11:09,409 --> 00:11:13,897
+the throttle, gears and braking system
+to achieve the correct velocity.
+
+162
+00:11:13,897 --> 00:11:16,906
+Both controllers calculate
+current errors and
+
+163
+00:11:16,906 --> 00:11:19,763
+tracking performance of the local plan,
+and
+
+164
+00:11:19,763 --> 00:11:24,744
+adjust the current actuation commands
+to minimize the errors going forward.
+
+165
+00:11:24,744 --> 00:11:27,872
+We'll dig into vehicle
+control later in this course.
+
+166
+00:11:27,872 --> 00:11:33,871
+Finally, let's take a closer look at
+the system supervisor and its functions.
+
+167
+00:11:33,871 --> 00:11:38,425
+The system supervisor is the module that
+continuously monitors all aspects of
+
+168
+00:11:38,425 --> 00:11:39,736
+the autonomous car and
+
+169
+00:11:39,736 --> 00:11:43,680
+gives the appropriate warning in
+the event of a subsystem failure.
+
+170
+00:11:43,680 --> 00:11:49,318
+There are two parts, the hardware
+supervisor, and the software supervisor.
+
+171
+00:11:49,318 --> 00:11:53,481
+The hardware supervisor continuously
+monitors all hardware components to
+
+172
+00:11:53,481 --> 00:11:57,577
+check for any faults, such as a broken
+sensor, a missing measurement, or
+
+173
+00:11:57,577 --> 00:11:58,956
+degraded information.
+
+174
+00:11:58,956 --> 00:12:03,465
+Another responsibility of the hardware
+supervisor is to continuously
+
+175
+00:12:03,465 --> 00:12:08,122
+analyze the hardware outputs for
+any outputs which do not match the domain
+
+176
+00:12:08,122 --> 00:12:12,119
+which the self-driving car was
+programmed to perform under.
+
+177
+00:12:12,119 --> 00:12:16,418
+For example, if one of the camera
+sensors is blocked by a paper bag or
+
+178
+00:12:16,418 --> 00:12:20,350
+if snow is falling and
+corrupting the LIDAR point cloud data.
+
+179
+00:12:20,350 --> 00:12:25,249
+The software supervisor has the
+responsibility of validating this software
+
+180
+00:12:25,249 --> 00:12:29,015
+stack to make sure that all
+elements are running as intended
+
+181
+00:12:29,015 --> 00:12:32,802
+at the right frequencies and
+providing complete outputs.
+
+182
+00:12:32,802 --> 00:12:36,171
+The software supervisor
+also is responsible for
+
+183
+00:12:36,171 --> 00:12:40,698
+analyzing inconsistencies between
+the outputs of all modules.
+
+184
+00:12:40,698 --> 00:12:45,248
+In this video, we looked at the basic
+software architecture of a typical
+
+185
+00:12:45,248 --> 00:12:47,420
+self-driving software system.
+
+186
+00:12:47,420 --> 00:12:51,692
+In fact, we looked at the decomposition
+of five major modules and
+
+187
+00:12:51,692 --> 00:12:53,486
+their responsibilities.
+
+188
+00:12:53,486 --> 00:12:58,741
+These included: environment perception,
+environment mapping,
+
+189
+00:12:58,741 --> 00:13:04,914
+motion planning, vehicle controller and,
+finally, the system supervisor.
+
+190
+00:13:07,099 --> 00:13:10,991
+In the next video, we'll take
+a closer look at environment mapping.
+
+191
+00:13:10,991 --> 00:13:14,945
+We'll look at the three maps used
+throughout the software architecture,
+
+192
+00:13:14,945 --> 00:13:18,784
+the occupancy grid, the localization map,
+and the detailed road map.
+
+193
+00:13:18,784 --> 00:13:20,334
+See you in the next video.
+
+194
+00:13:20,334 --> 00:13:30,334
+[MUSIC]

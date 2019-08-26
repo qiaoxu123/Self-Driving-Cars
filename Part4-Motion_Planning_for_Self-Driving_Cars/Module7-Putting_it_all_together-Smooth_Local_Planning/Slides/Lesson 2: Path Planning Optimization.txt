@@ -1,0 +1,184 @@
+Hi everyone. In this lesson, we will discuss how to incorporate some of the
+objectives and constraints we discussed in module one with the cubic spirals in
+boundary conditions we introduced in the last lesson to create a path planning
+optimization problem. By solving this problem, we'll be able to generate smooth, feasible paths that satisfy
+all of our constraints. By the end of this video, you should be able to: Identify the boundary
+conditions and constraints required for smooth path planning
+using polynomial spirals, approximate some of
+the required constraints to improve the tractability of
+the optimization problem, and know how to map the required
+parameters in such a way that the optimization problem converges quickly to
+a feasible solution. Let's get started. If you recall from the previous lesson, our boundary conditions described the absolute minimum
+requirements for a path being planned
+between two points. Essentially, they
+require that for a given starting position
+heading and curvature, our planned path ends at a specific position heading
+and curvature as well. This will give us our first set
+of constraints on our optimization problem known as boundary conditions
+which we can see here. Unfortunately, as we discussed in the last lesson that cubic spiral does not have
+a closed form solution for the position at
+the end of the spiral. To write our constraints in terms of the parameters of the spiral, we will need to use a numerical
+integration technique. Many exist, but we'll apply Simpson's rule which we briefly mentioned in
+the previous lesson. Let's look a bit more
+closely at Simpson's rule. Simpson's rule is a commonly used numerical
+integration technique that is generally
+more precise than other simpler numerical methods. This is because it
+evaluates the integral of the quadratic interpolation
+of the given function rather than the integral of the linear interpolation as in some methods such as
+midpoint and trapezoidal rules. Simpson's rule proceeds
+by defining a number of equally spaced divisions of the integration domain
+defined by n, and then summing terms at each division and boundary point. For example, if we
+choose n equal to four, then we are splitting
+the integration domain into four equally sized segments, and we therefore have five
+points to include in our sum. Each term in the sum is
+the function evaluated at the division point multiplied by the appropriate coefficient. In the interior of
+the Simpson's rule equation, we can see that we have alternating coefficients
+of four and two for each term except for the endpoint terms which
+have a coefficient of one. As one would expect, as n increases, we get a more accurate approximation
+to our integral. Let's apply this to
+our specific planning problem. If we take n equals eight in the Simpson's rule
+approximation, our approximation will be accurate enough for
+the optimizations we'll be performing without being too computationally
+expensive. Since the heading
+Theta is just the integral of the cubic
+spiral function, we can explicitly define
+a closed form solution for it which is a fourth order polynomial
+which is shown here. We can then use the values of Theta at each division point in a Simpson's rule approximation to compute the x and y positions
+of the cubic spiral. The integrands to be
+integrated for x and y are cosine of Theta of s and sine
+of theta of s respectively, which are substituted in for f in the Simpson's rule to form
+the following expressions. We now have a useful
+approximation to the X and Y position of the spiral at any given arc
+length point defined by our arc length
+parameter s. We will denote the approximations
+to x and y as computed using Simpson's
+rule as x sub s and y sub s. Returning to
+our boundary conditions, we now have an approximation
+for the path ending location and we can write out
+the boundary conditions in terms of the known
+parameters of the spiral. We can now generate a spiral from one point to another
+that satisfies the given boundary conditions
+by iteratively optimizing the parameters of the spiral as well as its total arc length Sf. Before we do that, however, let's go over
+the kinematic constraints we would like to enforce. Specifically for autonomous
+driving path planning, we're going to be focusing
+on curvature constraints. Cars have an absolute
+minimum turning radius and need to stay within lateral acceleration limits to maintain wheel traction and
+ride comfort in the vehicle. We'll discuss these constraints in more detail in future lessons. For now, let's assume
+that our car can achieve a minimum turning
+radius of two meters. This corresponds to
+a maximum curvature of 0.5 arc meters. Now, it's quite
+difficult to write out this curvature constraint at every single point
+along the spiral. However, because of the
+polynomial nature of the spiral, we only have to constrain
+a few evenly spaced points. Because the polynomial
+function of curvature is continuous
+and well-behaved, we're likely to generate
+a spiral that satisfies our curvature requirements when performing the optimization. For simplicity, let's
+constrain the curvature at the one-third and two-third
+points of the curve. The start and end
+point curvatures were already constrained in
+the boundary conditions. Once we've done this, we now have our curvature constraints as a function of the
+parameters of the spiral, and we have all of our required constraints to solve the optimization problem. The final piece of the puzzle is the actual objective function
+we wish to minimize. We want to encourage smoothness and comfort along
+our planned path. One way to do so is to distribute the absolute curvature
+evenly along the path. This can be done by minimizing the bending energy of
+our planned parametric curve. The bending energy of
+a curve is the integral of its squared curvature along the entire arc length
+of the path. Since we have
+a polynomial function of curvature describing
+our cubic spiral, the bending energy integral has a closed form solution in terms of the spiral's parameters. In addition, its gradient also has a closed form solution. Both of these expressions
+have many terms however so it's best left to a symbolic
+solver to create them. The fact that
+the objective function and its gradient have closed
+form solutions make it an objective function that
+is highly conducive to nonlinear programming which we will discuss in our next lesson. Now that we have
+our objective function, we can put everything
+together into our path planning optimization
+problems shown here. For our purposes, we're going to assume the initial boundary
+conditions are zero, which means that we are defining our local planning problem in the vehicle frame and results in the simplified expressions
+for the heading and x and y approximations using Simpson's rule we've
+defined in this video. This means that the initial boundary value constraints can be removed since they are already accounted for in
+our integral calculations. Now we could very well
+stop here and use this as our path generating
+optimization problem. However, there is
+a practical issue with how this optimization problem
+is set up that may slow it down or cause it not to
+converge at all when solved using canonical
+non-linear programming solvers. Let's try to address this now. The main issue we can
+see here has to do with the equality constraints of the final position and heading. Because equality constraints
+must be satisfied exactly, it is quite hard for
+a numerical optimizer to generate a feasible
+solution from an infeasible starting point
+which is often what is given to the optimizer for
+an arbitrary problem instance. To alleviate this issue, it is common in optimization to soft inequality constraints to improve optimizer performance. Soft constraints convert
+a strict constraint into a heavily penalized term
+in the objective function. By heavily penalized,
+we mean that the constraint penalty
+term coefficient should be at least an
+order of magnitude larger than the general
+optimization objective. Although this allows
+the optimizer to violate the boundary condition
+equality constraints, the optimizer will be strongly encouraged to converge
+to a solution that is as close as possible to
+the boundary conditions before the bending energy
+penalty term will be large enough to
+influence the optimizer. We will also assume that our initial curvature is
+known and is usually set to zero which corresponds to
+a naught equal to zero. This reduces the number of
+optimization variables by one. After softening
+these constraints, our new optimization problem
+is as follows. We have one further issue
+we need to address before defining the final version of our optimization
+to be implemented. The final issue we
+can address has to do with the optimization
+parameters. While there is
+more intuition to using the cubic spiral coefficients
+in our objective function, we can actually reduce
+the number of parameters we are searching over
+by taking the final curvature boundary constraint
+into consideration. Let's redefine our cubic spiral using a different set
+of parameters denoted by the vector p
+where p has five elements. First, we have p
+naught through p3, which denote the curvature
+at the start, one-third point and two-thirds
+point and the endpoint. The final term p4 is the
+final arc length of the path. Conveniently, we have
+a closed form mapping between the curvature parameter and the spiral parameters
+as shown here. We can therefore
+easily compute all of our constraints and
+objective terms as a function of
+these new p variables instead of the coefficients
+of the spiral. Once the optimization is solved, we can use the
+equations here to map the results back to
+the spiral coefficients. Since we already know
+the initial and final curvature, we can eliminate two
+of the variables, p naught and p3. This leaves us with
+only three variables in our optimization
+problem p1, p2, and p4. By using the boundary conditions, we've reduced
+the dimensionality of the optimization
+problem which will result in a significant
+computational speedup. The resulting final optimization
+problem is as follows. We've replaced the function
+of the spiral parameters by the equivalent functions after remapping to our p parameters. Note that the initial and
+final path curvature p naught and p3 are constants. So the optimization
+variables are now only p1, p2, and p4. This simplification was possible due to the boundary conditions of the curvature being known at the start and
+the end of the path. Now that we've made
+these modifications, we can solve the path planning
+problem efficiently and with greatly reduced chance of getting stuck in
+poor local minima. Let's summarize what we've
+learned in this video. First, we reviewed
+the required boundary conditions and constraints for this problem. We then discussed how
+to numerically compute the n positions of a spiral
+using Simpson's rule. We then introduced the bending energy objective to encourage smoothness and formed a generic spiral
+optimization problem. Finally, we re-map
+the parameters of the optimization
+function to ensure fast convergence to
+a feasible solution. Well, that was a lot of
+new information to take in. We hope that this lesson
+has given you an in-depth look at how to
+perform smooth path planning. This lesson has tied
+together many of the topics that we discussed
+in modules one and four. So if you felt like some of this material was challenging, feel free to review those modules before working
+through this lesson again. In our next lesson, we will be discussing
+how to perform optimization in Python in order to prepare you to implement a full path planner.
+See you next time.

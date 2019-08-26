@@ -1,0 +1,1537 @@
+WEBVTT
+
+1
+00:00:19.010 --> 00:00:21.990
+Hello, and welcome
+to week four of
+
+2
+00:00:21.990 --> 00:00:24.825
+our Visual Perception for
+Autonomous Driving Course.
+
+3
+00:00:24.825 --> 00:00:27.570
+This week, we'll dive
+into object detection,
+
+4
+00:00:27.570 --> 00:00:28.800
+a core requirement for
+
+5
+00:00:28.800 --> 00:00:31.455
+any self-driving car
+perception stack.
+
+6
+00:00:31.455 --> 00:00:34.050
+Object detection is
+a top level module
+
+7
+00:00:34.050 --> 00:00:36.845
+required to identify
+the locations of vehicles,
+
+8
+00:00:36.845 --> 00:00:39.160
+pedestrians, signs, and lights,
+
+9
+00:00:39.160 --> 00:00:42.385
+so our car knows where
+and how it can drive.
+
+10
+00:00:42.385 --> 00:00:44.870
+This week, we will
+be going in depth to
+
+11
+00:00:44.870 --> 00:00:47.690
+define the 2D object
+detection problem,
+
+12
+00:00:47.690 --> 00:00:50.330
+how to apply ConvNets
+to tackle it,
+
+13
+00:00:50.330 --> 00:00:54.065
+and why the problem of 2D
+object detection is difficult.
+
+14
+00:00:54.065 --> 00:00:56.480
+We will then explain
+how object detection is
+
+15
+00:00:56.480 --> 00:01:00.470
+used as input for
+the 2D object tracking problem,
+
+16
+00:01:00.470 --> 00:01:02.510
+and how to perform
+the tracking task in
+
+17
+00:01:02.510 --> 00:01:04.970
+the context of self-driving cars.
+
+18
+00:01:04.970 --> 00:01:06.650
+This lesson will formulate
+
+19
+00:01:06.650 --> 00:01:08.990
+the object detection
+problem in 2D.
+
+20
+00:01:08.990 --> 00:01:10.760
+You will also learn how to
+
+21
+00:01:10.760 --> 00:01:12.800
+evaluate 2D object
+detectors using
+
+22
+00:01:12.800 --> 00:01:15.095
+standard performance
+metrics established
+
+23
+00:01:15.095 --> 00:01:18.445
+by researchers in the field.
+Let's get started.
+
+24
+00:01:18.445 --> 00:01:23.120
+The history of 2D object
+detection begins in 2001 when
+
+25
+00:01:23.120 --> 00:01:25.340
+Paul Viola and
+Michael Jones invented
+
+26
+00:01:25.340 --> 00:01:27.905
+a very efficient algorithm
+for face detection.
+
+27
+00:01:27.905 --> 00:01:30.170
+This algorithm now
+called the Viola,
+
+28
+00:01:30.170 --> 00:01:32.480
+Jones Object Detection Framework,
+
+29
+00:01:32.480 --> 00:01:34.415
+was the first object
+detection framework
+
+30
+00:01:34.415 --> 00:01:35.659
+to provide reliable,
+
+31
+00:01:35.659 --> 00:01:39.770
+real-time 2D object detections
+from a simple webcam.
+
+32
+00:01:39.770 --> 00:01:42.170
+The next big breakthrough
+in object detection
+
+33
+00:01:42.170 --> 00:01:44.780
+happened four years later
+when Navneet Dalal
+
+34
+00:01:44.780 --> 00:01:46.519
+and Bill Triggs formulated
+
+35
+00:01:46.519 --> 00:01:49.870
+the histogram of oriented
+gradient feature descriptor.
+
+36
+00:01:49.870 --> 00:01:51.620
+Their algorithm applied to
+
+37
+00:01:51.620 --> 00:01:53.840
+the 2D pedestrian
+detection problem,
+
+38
+00:01:53.840 --> 00:01:57.005
+outperformed all other
+proposed methods at the time.
+
+39
+00:01:57.005 --> 00:01:59.750
+The Dalal, Triggs algorithm
+remained on the top of
+
+40
+00:01:59.750 --> 00:02:03.009
+the charts until 2012
+when Alex Krizhevsky,
+
+41
+00:02:03.009 --> 00:02:05.540
+Ilya Sutskever and
+Geoffrey Hinton from
+
+42
+00:02:05.540 --> 00:02:07.100
+the Computer Science
+Department here
+
+43
+00:02:07.100 --> 00:02:08.720
+at the University of Toronto,
+
+44
+00:02:08.720 --> 00:02:10.370
+shook the computer
+vision world with
+
+45
+00:02:10.370 --> 00:02:13.280
+their convolutional neural
+network dubbed AlexNet.
+
+46
+00:02:13.280 --> 00:02:15.470
+AlexNet won the ImageNet Large
+
+47
+00:02:15.470 --> 00:02:17.630
+Scale Visual Recognition
+Challenge in
+
+48
+00:02:17.630 --> 00:02:20.345
+2012 with a wide margin
+
+49
+00:02:20.345 --> 00:02:22.415
+over the algorithm that
+took second place.
+
+50
+00:02:22.415 --> 00:02:23.900
+In 2012, it was
+
+51
+00:02:23.900 --> 00:02:27.035
+the only deep learning-based
+entry in the challenge.
+
+52
+00:02:27.035 --> 00:02:28.880
+But since then, all winning
+
+53
+00:02:28.880 --> 00:02:31.190
+entries in this
+competition are based on
+
+54
+00:02:31.190 --> 00:02:33.470
+convolutional neural
+networks with the entry
+
+55
+00:02:33.470 --> 00:02:35.885
+surpassing the human
+recognition rate
+
+56
+00:02:35.885 --> 00:02:38.105
+of 95 percent recently.
+
+57
+00:02:38.105 --> 00:02:40.160
+This performance extended from
+
+58
+00:02:40.160 --> 00:02:43.444
+2D object recognition
+to 2D object detection
+
+59
+00:02:43.444 --> 00:02:45.530
+with current day
+detectors being almost
+
+60
+00:02:45.530 --> 00:02:48.995
+exclusively based on
+convolutional neural networks.
+
+61
+00:02:48.995 --> 00:02:51.260
+Before we go through how to use
+
+62
+00:02:51.260 --> 00:02:54.335
+ConvNets for object detection
+and self-driving cars,
+
+63
+00:02:54.335 --> 00:02:57.935
+let's formulate the general
+2D object detection problem.
+
+64
+00:02:57.935 --> 00:03:00.485
+Given a 2D image's input,
+
+65
+00:03:00.485 --> 00:03:04.010
+we are required to estimate
+the location defined by
+
+66
+00:03:04.010 --> 00:03:08.075
+a bounding box and the class
+of all objects in the scene.
+
+67
+00:03:08.075 --> 00:03:10.445
+Usually, we choose classes
+
+68
+00:03:10.445 --> 00:03:12.380
+that are relevant
+to our application.
+
+69
+00:03:12.380 --> 00:03:15.140
+For self-driving cars,
+we usually are
+
+70
+00:03:15.140 --> 00:03:18.245
+most interested in
+object classes that are dynamic,
+
+71
+00:03:18.245 --> 00:03:20.540
+that is ones that move
+through the scene.
+
+72
+00:03:20.540 --> 00:03:22.160
+These include vehicles in
+
+73
+00:03:22.160 --> 00:03:25.595
+their subclasses,
+pedestrians, and cyclists.
+
+74
+00:03:25.595 --> 00:03:28.835
+The problem of 2D object
+detection is not trivial.
+
+75
+00:03:28.835 --> 00:03:31.640
+The extent of objects
+we require to estimate
+
+76
+00:03:31.640 --> 00:03:34.565
+are not always fully
+observed in the image space.
+
+77
+00:03:34.565 --> 00:03:37.280
+As an example,
+background objects are
+
+78
+00:03:37.280 --> 00:03:40.010
+usually occluded by
+foreground objects.
+
+79
+00:03:40.010 --> 00:03:42.440
+This requires any algorithm
+we use to be able to
+
+80
+00:03:42.440 --> 00:03:44.330
+hallucinate the extent of
+
+81
+00:03:44.330 --> 00:03:46.610
+objects to properly detect them.
+
+82
+00:03:46.610 --> 00:03:48.560
+Furthermore, objects
+that are near
+
+83
+00:03:48.560 --> 00:03:50.945
+the edge of the image
+are usually truncated.
+
+84
+00:03:50.945 --> 00:03:53.915
+This phenomenon creates
+huge variability
+
+85
+00:03:53.915 --> 00:03:55.624
+in the bounding box sizes,
+
+86
+00:03:55.624 --> 00:03:58.040
+where the size of
+the estimated bounding box
+
+87
+00:03:58.040 --> 00:04:01.270
+depends on how truncated
+the object is.
+
+88
+00:04:01.270 --> 00:04:03.440
+Another issue faced by
+
+89
+00:04:03.440 --> 00:04:06.860
+2D object detection algorithms
+is that of scale.
+
+90
+00:04:06.860 --> 00:04:08.720
+Objects tend to appear very
+
+91
+00:04:08.720 --> 00:04:11.740
+small as they go further
+away from our censor.
+
+92
+00:04:11.740 --> 00:04:14.120
+Our algorithm is
+expected to determine
+
+93
+00:04:14.120 --> 00:04:17.420
+the class of these objects
+at variable scales.
+
+94
+00:04:17.420 --> 00:04:19.970
+Finally, our algorithm
+should also be
+
+95
+00:04:19.970 --> 00:04:22.205
+able to handle
+illumination changes.
+
+96
+00:04:22.205 --> 00:04:24.170
+This is especially important in
+
+97
+00:04:24.170 --> 00:04:26.300
+the context of self-driving cars,
+
+98
+00:04:26.300 --> 00:04:27.770
+where images can be affected by
+
+99
+00:04:27.770 --> 00:04:30.245
+whole image
+illumination variations
+
+100
+00:04:30.245 --> 00:04:32.765
+from bright sun to night driving,
+
+101
+00:04:32.765 --> 00:04:35.615
+and partial variations
+due to reflections,
+
+102
+00:04:35.615 --> 00:04:39.875
+shadows, precipitation, and
+other nuisance effects.
+
+103
+00:04:39.875 --> 00:04:41.750
+Now that we've intuitively
+
+104
+00:04:41.750 --> 00:04:43.520
+understood what
+object detection is,
+
+105
+00:04:43.520 --> 00:04:46.385
+let us formalize
+the problem mathematically.
+
+106
+00:04:46.385 --> 00:04:48.740
+Object detection can be defined
+
+107
+00:04:48.740 --> 00:04:50.855
+as a function estimation problem.
+
+108
+00:04:50.855 --> 00:04:53.150
+Given an input image x,
+
+109
+00:04:53.150 --> 00:04:55.220
+we want to find the function f of
+
+110
+00:04:55.220 --> 00:04:57.905
+x in Theta that produces
+
+111
+00:04:57.905 --> 00:04:59.750
+an output vector that
+
+112
+00:04:59.750 --> 00:05:03.455
+includes the coordinates of
+the top-left of the box,
+
+113
+00:05:03.455 --> 00:05:05.600
+xmin and ymin, and
+
+114
+00:05:05.600 --> 00:05:08.390
+the coordinates of the lower
+right corner of the box,
+
+115
+00:05:08.390 --> 00:05:14.360
+xmax and ymax, and a class
+score Sclass1 to Sclassk.
+
+116
+00:05:14.360 --> 00:05:17.445
+Sclassi specifies how confident
+
+117
+00:05:17.445 --> 00:05:20.870
+our algorithm is that the object
+belongs to the class i,
+
+118
+00:05:20.870 --> 00:05:22.940
+and i ranges from one to k,
+
+119
+00:05:22.940 --> 00:05:26.255
+where k is the number
+of classes of interest.
+
+120
+00:05:26.255 --> 00:05:30.230
+Can you think of any way
+to estimate this function?
+
+121
+00:05:30.230 --> 00:05:32.765
+Convolutional neural networks,
+
+122
+00:05:32.765 --> 00:05:34.250
+which we described last week are
+
+123
+00:05:34.250 --> 00:05:37.730
+an excellent tool for estimating
+this kind of function.
+
+124
+00:05:37.730 --> 00:05:39.350
+For object detection,
+
+125
+00:05:39.350 --> 00:05:42.020
+the input data is
+defined on a 2D grid,
+
+126
+00:05:42.020 --> 00:05:43.850
+and as such, we use ConvNets as
+
+127
+00:05:43.850 --> 00:05:47.330
+our chosen function estimators
+to perform this task.
+
+128
+00:05:47.330 --> 00:05:49.160
+We will discuss how to perform
+
+129
+00:05:49.160 --> 00:05:52.150
+2D object detection with
+ConvNets in the next lesson.
+
+130
+00:05:52.150 --> 00:05:54.410
+But first, we need
+to figure out how to
+
+131
+00:05:54.410 --> 00:05:57.620
+measure the performance
+of our algorithm.
+
+132
+00:05:57.620 --> 00:06:01.790
+Given the output of
+a 2D object detector in red,
+
+133
+00:06:01.790 --> 00:06:03.470
+we want to be able to compare how
+
+134
+00:06:03.470 --> 00:06:05.650
+well it fits the true output,
+
+135
+00:06:05.650 --> 00:06:07.800
+usually labeled by humans.
+
+136
+00:06:07.800 --> 00:06:12.155
+We call the true output our
+ground truth bounding box.
+
+137
+00:06:12.155 --> 00:06:15.650
+The first step of our evaluation
+process is to compare
+
+138
+00:06:15.650 --> 00:06:17.930
+our detector
+localization output to
+
+139
+00:06:17.930 --> 00:06:19.579
+the ground truth boxes
+
+140
+00:06:19.579 --> 00:06:22.250
+via the Intersection-Over-Union
+metric,
+
+141
+00:06:22.250 --> 00:06:24.395
+or IOU for short.
+
+142
+00:06:24.395 --> 00:06:28.160
+IOU is defined as the area
+of the intersection of
+
+143
+00:06:28.160 --> 00:06:32.020
+two polygons divided by
+the area of their union.
+
+144
+00:06:32.020 --> 00:06:34.730
+However, calculating the
+intersection-over-union does
+
+145
+00:06:34.730 --> 00:06:38.105
+not take into consideration
+the class scores.
+
+146
+00:06:38.105 --> 00:06:40.460
+To account for class scores,
+
+147
+00:06:40.460 --> 00:06:42.625
+we define true positives.
+
+148
+00:06:42.625 --> 00:06:46.190
+True positives are output
+bounding boxes that have an IOU
+
+149
+00:06:46.190 --> 00:06:48.395
+greater than
+a predefined threshold
+
+150
+00:06:48.395 --> 00:06:50.645
+with any ground truth
+bounding box.
+
+151
+00:06:50.645 --> 00:06:53.870
+In addition, the class
+of those output boxes
+
+152
+00:06:53.870 --> 00:06:55.520
+should also match the class
+
+153
+00:06:55.520 --> 00:06:57.545
+of their corresponding
+ground truth.
+
+154
+00:06:57.545 --> 00:07:00.290
+That means that
+the 2D detector should give
+
+155
+00:07:00.290 --> 00:07:03.380
+the highest class score
+to the correct class,
+
+156
+00:07:03.380 --> 00:07:07.135
+have a score that is greater
+than a score threshold.
+
+157
+00:07:07.135 --> 00:07:09.770
+On the other hand,
+false positives are
+
+158
+00:07:09.770 --> 00:07:11.120
+the output boxes that have
+
+159
+00:07:11.120 --> 00:07:13.444
+a score greater than
+the score threshold,
+
+160
+00:07:13.444 --> 00:07:15.230
+but an IOU less than
+
+161
+00:07:15.230 --> 00:07:19.070
+the IOU threshold with all
+ground truth bounding boxes.
+
+162
+00:07:19.070 --> 00:07:20.990
+This can be easily computed as
+
+163
+00:07:20.990 --> 00:07:22.999
+the total number of
+detected objects
+
+164
+00:07:22.999 --> 00:07:24.530
+after the application of
+
+165
+00:07:24.530 --> 00:07:28.265
+the score threshold minus
+the number of true positives.
+
+166
+00:07:28.265 --> 00:07:30.830
+The final base quantity
+we would like to
+
+167
+00:07:30.830 --> 00:07:33.385
+estimate is the number
+of false negatives.
+
+168
+00:07:33.385 --> 00:07:35.440
+False negatives are
+the ground truth
+
+169
+00:07:35.440 --> 00:07:36.560
+bounding boxes that have
+
+170
+00:07:36.560 --> 00:07:40.495
+no detections associated
+with them through IOU.
+
+171
+00:07:40.495 --> 00:07:43.140
+Once we have determined
+the true positives,
+
+172
+00:07:43.140 --> 00:07:45.060
+false positives, and
+false negatives;
+
+173
+00:07:45.060 --> 00:07:47.640
+we can determine
+the precision and recall of
+
+174
+00:07:47.640 --> 00:07:50.525
+our 2D object detector
+according to the following.
+
+175
+00:07:50.525 --> 00:07:53.855
+The precision is the number
+of true positives
+
+176
+00:07:53.855 --> 00:07:55.330
+divided by the sum of
+
+177
+00:07:55.330 --> 00:07:58.215
+the true positives and
+the false positives.
+
+178
+00:07:58.215 --> 00:08:00.730
+The recall on the other hand
+is the number of
+
+179
+00:08:00.730 --> 00:08:02.435
+true positives divided by
+
+180
+00:08:02.435 --> 00:08:05.065
+the total number of
+ground truth objects,
+
+181
+00:08:05.065 --> 00:08:07.245
+which is equal to the number
+of true positives
+
+182
+00:08:07.245 --> 00:08:10.190
+added to the number
+of false negatives.
+
+183
+00:08:10.190 --> 00:08:13.005
+Once we determine
+the precision and recall,
+
+184
+00:08:13.005 --> 00:08:16.050
+we can vary the
+object class score threshold
+
+185
+00:08:16.050 --> 00:08:18.800
+to get a precision recall curve,
+
+186
+00:08:18.800 --> 00:08:20.640
+and finally, we determine
+
+187
+00:08:20.640 --> 00:08:22.620
+the average precision as
+
+188
+00:08:22.620 --> 00:08:25.345
+the area under
+the precision-recall curve.
+
+189
+00:08:25.345 --> 00:08:27.365
+The area under the curve can be
+
+190
+00:08:27.365 --> 00:08:29.640
+computed using
+numerical integration,
+
+191
+00:08:29.640 --> 00:08:32.880
+but is usually approximated
+using an average of
+
+192
+00:08:32.880 --> 00:08:34.120
+the precision values at
+
+193
+00:08:34.120 --> 00:08:37.500
+11 recall points ranging
+from zero to one.
+
+194
+00:08:37.500 --> 00:08:40.020
+I know these are
+quite a few concepts
+
+195
+00:08:40.020 --> 00:08:41.350
+to understand
+the first time through.
+
+196
+00:08:41.350 --> 00:08:42.930
+But don't worry, as you'll
+
+197
+00:08:42.930 --> 00:08:44.590
+soon get a chance to work through
+
+198
+00:08:44.590 --> 00:08:47.250
+a step-by-step practice
+notebook on how to code
+
+199
+00:08:47.250 --> 00:08:50.645
+all of these methods in
+Python in the assessments.
+
+200
+00:08:50.645 --> 00:08:52.745
+Let's work through an example on
+
+201
+00:08:52.745 --> 00:08:54.460
+how to assess the performance of
+
+202
+00:08:54.460 --> 00:08:58.230
+a 2D object detection network
+using the learned metrics.
+
+203
+00:08:58.230 --> 00:09:02.030
+We are interested in detecting
+only cars in a road scene.
+
+204
+00:09:02.030 --> 00:09:04.825
+That means that we have
+a single class of interest,
+
+205
+00:09:04.825 --> 00:09:08.145
+and therefore only one set
+of scores to consider.
+
+206
+00:09:08.145 --> 00:09:11.315
+We are given ground truth
+bounding boxes of cars
+
+207
+00:09:11.315 --> 00:09:14.930
+labeled by human beings
+and shown in green.
+
+208
+00:09:14.930 --> 00:09:18.065
+We process our image
+with a confinet to
+
+209
+00:09:18.065 --> 00:09:21.195
+get the detection output
+bounding boxes, shown in red.
+
+210
+00:09:21.195 --> 00:09:23.520
+You can notice that
+the network mistakenly
+
+211
+00:09:23.520 --> 00:09:26.900
+detects the front of
+a large truck as a car.
+
+212
+00:09:26.900 --> 00:09:28.630
+Looking at the scores,
+
+213
+00:09:28.630 --> 00:09:30.280
+we see that our confinet gave
+
+214
+00:09:30.280 --> 00:09:33.715
+this miss detection quite a
+high score of being a car.
+
+215
+00:09:33.715 --> 00:09:35.800
+Let's now evaluate
+the performance of
+
+216
+00:09:35.800 --> 00:09:38.310
+our confinet using
+average precision.
+
+217
+00:09:38.310 --> 00:09:40.840
+The first step is to take all of
+
+218
+00:09:40.840 --> 00:09:42.640
+our estimated bounding boxes and
+
+219
+00:09:42.640 --> 00:09:45.500
+sort them according to
+object class score.
+
+220
+00:09:45.500 --> 00:09:49.010
+We then proceed to
+compute the IOU between
+
+221
+00:09:49.010 --> 00:09:50.700
+each predicted box and
+
+222
+00:09:50.700 --> 00:09:53.135
+the corresponding
+ground truth box.
+
+223
+00:09:53.135 --> 00:09:56.565
+If a box does not intersect
+any ground-truth boxes,
+
+224
+00:09:56.565 --> 00:09:58.740
+it's IOU is set to zero.
+
+225
+00:09:58.740 --> 00:10:03.355
+First, we said a class score
+threshold, let's say 0.9.
+
+226
+00:10:03.355 --> 00:10:04.970
+This threshold means that we
+
+227
+00:10:04.970 --> 00:10:07.064
+only trust our
+network prediction,
+
+228
+00:10:07.064 --> 00:10:09.985
+if it returns a score that
+is greater than nine,
+
+229
+00:10:09.985 --> 00:10:12.160
+and we eliminate
+any bounding boxes
+
+230
+00:10:12.160 --> 00:10:14.695
+with a score less than 0.9.
+
+231
+00:10:14.695 --> 00:10:17.380
+Next, we set an IOU threshold,
+
+232
+00:10:17.380 --> 00:10:20.790
+we'll use 0.7 in
+this case and proceed to
+
+233
+00:10:20.790 --> 00:10:22.720
+eliminate any
+remaining predictions
+
+234
+00:10:22.720 --> 00:10:25.140
+with an IOU less than 0.7.
+
+235
+00:10:25.140 --> 00:10:27.400
+In this case, both the
+remaining predictions
+
+236
+00:10:27.400 --> 00:10:29.300
+have an IOU of greater than 0.7,
+
+237
+00:10:29.300 --> 00:10:31.470
+and so we don't eliminate any.
+
+238
+00:10:31.470 --> 00:10:33.605
+We can now compute the number of
+
+239
+00:10:33.605 --> 00:10:35.555
+true positives as the number of
+
+240
+00:10:35.555 --> 00:10:37.540
+remaining bounding boxes after
+
+241
+00:10:37.540 --> 00:10:41.340
+the application of both the
+score and the IOU thresholds,
+
+242
+00:10:41.340 --> 00:10:43.410
+which in this case is two.
+
+243
+00:10:43.410 --> 00:10:46.565
+The number of false positives
+is zero in this case,
+
+244
+00:10:46.565 --> 00:10:49.355
+since all boxes remaining
+after the application of
+
+245
+00:10:49.355 --> 00:10:51.485
+the score thresholds also
+
+246
+00:10:51.485 --> 00:10:54.890
+remain after the application
+of the IOU threshold.
+
+247
+00:10:54.890 --> 00:10:58.030
+Finally, the number of
+false negatives are
+
+248
+00:10:58.030 --> 00:11:00.690
+boxes in the ground truth
+that have no detections
+
+249
+00:11:00.690 --> 00:11:03.030
+associated with them
+after the application of
+
+250
+00:11:03.030 --> 00:11:06.125
+both the score and
+the IOU thresholds.
+
+251
+00:11:06.125 --> 00:11:10.350
+In this case, the number
+of false negatives is two.
+
+252
+00:11:10.350 --> 00:11:12.540
+The precision of
+our neural network
+
+253
+00:11:12.540 --> 00:11:13.810
+is computed as the number of
+
+254
+00:11:13.810 --> 00:11:15.930
+true positives divided by
+
+255
+00:11:15.930 --> 00:11:19.220
+their sum with the number
+of false positives.
+
+256
+00:11:19.220 --> 00:11:22.150
+In this case, we don't
+have false positives.
+
+257
+00:11:22.150 --> 00:11:26.180
+So the precision is
+2 over 2 equal to 1.
+
+258
+00:11:26.180 --> 00:11:28.005
+To compute the recall,
+
+259
+00:11:28.005 --> 00:11:30.030
+we divide the number
+of true positives by
+
+260
+00:11:30.030 --> 00:11:32.250
+the number of ground truth
+bounding boxes,
+
+261
+00:11:32.250 --> 00:11:33.630
+which is equal to the number of
+
+262
+00:11:33.630 --> 00:11:34.930
+false positives summed with
+
+263
+00:11:34.930 --> 00:11:36.535
+the number of false negatives.
+
+264
+00:11:36.535 --> 00:11:40.445
+The recall in
+this case is 2 over 4.
+
+265
+00:11:40.445 --> 00:11:42.520
+The detector in this case is
+
+266
+00:11:42.520 --> 00:11:45.300
+a high precision low
+recall detector.
+
+267
+00:11:45.300 --> 00:11:46.810
+This means that the detector
+
+268
+00:11:46.810 --> 00:11:48.885
+misses some objects in the scene,
+
+269
+00:11:48.885 --> 00:11:50.615
+but when it does
+detect an object,
+
+270
+00:11:50.615 --> 00:11:52.660
+it makes very few mistakes in
+
+271
+00:11:52.660 --> 00:11:56.875
+category classification
+and bounding box location.
+
+272
+00:11:56.875 --> 00:11:59.280
+Let's see how the performance of
+
+273
+00:11:59.280 --> 00:12:01.325
+our detector changes
+when we decrease
+
+274
+00:12:01.325 --> 00:12:05.385
+the score threshold
+from 0.9 to 0.7.
+
+275
+00:12:05.385 --> 00:12:09.125
+All bounding boxes have
+a score greater than 0.7,
+
+276
+00:12:09.125 --> 00:12:10.515
+so we do not eliminate
+
+277
+00:12:10.515 --> 00:12:12.680
+any of them through
+score thresholding.
+
+278
+00:12:12.680 --> 00:12:16.260
+However, when we examine
+the IOU of the remaining boxes,
+
+279
+00:12:16.260 --> 00:12:20.600
+we can see that two of them
+have an IOU less than 0.7.
+
+280
+00:12:20.600 --> 00:12:22.805
+By eliminating these two boxes,
+
+281
+00:12:22.805 --> 00:12:25.050
+we get three true positives.
+
+282
+00:12:25.050 --> 00:12:27.475
+To compute the number
+of false positives,
+
+283
+00:12:27.475 --> 00:12:29.280
+we need to look at
+how many detections
+
+284
+00:12:29.280 --> 00:12:32.620
+remained after the application
+of the score threshold,
+
+285
+00:12:32.620 --> 00:12:36.320
+but before the application
+of the IOU threshold.
+
+286
+00:12:36.320 --> 00:12:40.025
+In this case, the number
+of false positives is two.
+
+287
+00:12:40.025 --> 00:12:42.300
+Finally, we take a look
+at the number of
+
+288
+00:12:42.300 --> 00:12:44.150
+ground truth bounding
+boxes that have
+
+289
+00:12:44.150 --> 00:12:47.180
+remained without
+an associated detection
+
+290
+00:12:47.180 --> 00:12:48.520
+after the application of
+
+291
+00:12:48.520 --> 00:12:49.720
+both the IOU and
+
+292
+00:12:49.720 --> 00:12:51.450
+score thresholds to get
+
+293
+00:12:51.450 --> 00:12:53.750
+one as the number
+of false negatives.
+
+294
+00:12:53.750 --> 00:12:56.045
+Notice that the precision
+has dropped after
+
+295
+00:12:56.045 --> 00:12:59.985
+decreasing the score threshold
+from one to 0.6,
+
+296
+00:12:59.985 --> 00:13:04.610
+while the recall has
+increased from 0.5 to 0.75.
+
+297
+00:13:04.610 --> 00:13:06.670
+We can conclude
+that the effect of
+
+298
+00:13:06.670 --> 00:13:08.375
+lowering the score threshold is
+
+299
+00:13:08.375 --> 00:13:11.020
+less accurate
+detection results at
+
+300
+00:13:11.020 --> 00:13:14.735
+the expense of detecting
+more objects in the scene.
+
+301
+00:13:14.735 --> 00:13:17.795
+If we continue
+this process and estimate
+
+302
+00:13:17.795 --> 00:13:21.065
+the score threshold at
+decrements of 0.01,
+
+303
+00:13:21.065 --> 00:13:23.450
+we arrive at the following table.
+
+304
+00:13:23.450 --> 00:13:26.865
+We then proceed to plot
+the precision-recall curve,
+
+305
+00:13:26.865 --> 00:13:29.440
+using the precision values
+on the y-axis
+
+306
+00:13:29.440 --> 00:13:32.700
+and the recall values
+on the x-axis.
+
+307
+00:13:32.700 --> 00:13:36.660
+Note that we also add
+the precision recall points of
+
+308
+00:13:36.660 --> 00:13:40.075
+one and zero as the
+first in the plot,
+
+309
+00:13:40.075 --> 00:13:43.135
+and zero one as
+the final point in the plot.
+
+310
+00:13:43.135 --> 00:13:44.910
+This allows us to approximate
+
+311
+00:13:44.910 --> 00:13:47.315
+the average precision
+by calculating
+
+312
+00:13:47.315 --> 00:13:49.170
+the area under
+the P-R curve using
+
+313
+00:13:49.170 --> 00:13:51.810
+11 recall points
+between zero and one,
+
+314
+00:13:51.810 --> 00:13:54.480
+at 0.01 recall increments.
+
+315
+00:13:54.480 --> 00:13:57.510
+Computing this average
+produces an AP of
+
+316
+00:13:57.510 --> 00:14:00.510
+0.75 for a car detector.
+
+317
+00:14:00.510 --> 00:14:02.495
+The value of the
+average precision of
+
+318
+00:14:02.495 --> 00:14:04.865
+the detector can be thought
+of as an average of
+
+319
+00:14:04.865 --> 00:14:08.140
+performance over
+all score thresholds
+
+320
+00:14:08.140 --> 00:14:10.380
+allowing objective comparison of
+
+321
+00:14:10.380 --> 00:14:13.085
+the performance of
+detectors without having to
+
+322
+00:14:13.085 --> 00:14:15.490
+consider the exact
+score threshold
+
+323
+00:14:15.490 --> 00:14:17.935
+that generated those detections.
+
+324
+00:14:17.935 --> 00:14:20.860
+In this video, you
+learned how to formulate
+
+325
+00:14:20.860 --> 00:14:23.250
+the 2D object detection
+problem and how to
+
+326
+00:14:23.250 --> 00:14:25.929
+evaluate a 2D object
+detectors performance
+
+327
+00:14:25.929 --> 00:14:28.920
+using the average precision
+performance metric.
+
+328
+00:14:28.920 --> 00:14:32.045
+Next lesson, you will learn
+how to use confinet as
+
+329
+00:14:32.045 --> 00:14:36.490
+2D object detectors for
+self-driving cars. See you then.

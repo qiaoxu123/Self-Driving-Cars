@@ -1,0 +1,696 @@
+WEBVTT
+
+1
+00:00:20.330 --> 00:00:24.090
+Welcome back. In module two,
+
+2
+00:00:24.090 --> 00:00:26.625
+we'll learn about one of
+the most famous algorithms
+
+3
+00:00:26.625 --> 00:00:29.820
+in all of engineering; the Kalman filter.
+
+4
+00:00:29.820 --> 00:00:32.570
+In today's world of
+advanced machine learning,
+
+5
+00:00:32.570 --> 00:00:34.790
+the Kalman filter remains
+an important tool
+
+6
+00:00:34.790 --> 00:00:37.280
+to fuse measurements
+from several sensors to
+
+7
+00:00:37.280 --> 00:00:39.620
+estimate in real-time the state of
+
+8
+00:00:39.620 --> 00:00:42.680
+a robotic system such
+as a self-driving car.
+
+9
+00:00:42.680 --> 00:00:45.920
+In this module, we'll learn
+some of the history of
+
+10
+00:00:45.920 --> 00:00:49.895
+the Kalman filter and introduce
+its basic linear formulation.
+
+11
+00:00:49.895 --> 00:00:51.710
+We'll present why the Kalman filter is
+
+12
+00:00:51.710 --> 00:00:54.770
+the best linear unbiased
+estimator and then
+
+13
+00:00:54.770 --> 00:01:00.120
+extend the linear formulation to
+nonlinear systems through linearization.
+
+14
+00:01:00.120 --> 00:01:04.870
+Discuss limitations of this
+linearization approach, and finally,
+
+15
+00:01:04.870 --> 00:01:06.620
+present a modern alternative to
+
+16
+00:01:06.620 --> 00:01:10.370
+linearization through
+the unscented transform.
+
+17
+00:01:10.370 --> 00:01:15.590
+By the end of this lesson, you'll be
+able to describe the common filter as
+
+18
+00:01:15.590 --> 00:01:20.870
+a state estimator that works in
+two stages; prediction and correction.
+
+19
+00:01:20.870 --> 00:01:24.835
+Understand the difference between
+motion and measurement models,
+
+20
+00:01:24.835 --> 00:01:27.575
+and then use the
+Kalman filter formulation
+
+21
+00:01:27.575 --> 00:01:30.425
+in a simple 1D localization example.
+
+22
+00:01:30.425 --> 00:01:32.735
+Let's begin with a bit of history.
+
+23
+00:01:32.735 --> 00:01:38.635
+The Kalman filter algorithm was
+published in 1960 by Rudolf E. Kalman,
+
+24
+00:01:38.635 --> 00:01:41.750
+a Hungarian born professor
+and engineer who was
+
+25
+00:01:41.750 --> 00:01:44.450
+working at the Research Institute
+for Advanced Studies
+
+26
+00:01:44.450 --> 00:01:46.115
+in Baltimore Maryland.
+
+27
+00:01:46.115 --> 00:01:48.860
+Years later in 2009,
+
+28
+00:01:48.860 --> 00:01:52.010
+American President Barack
+Obama awarded Kalman
+
+29
+00:01:52.010 --> 00:01:55.580
+the prestigious National Medal
+of Science for his work on
+
+30
+00:01:55.580 --> 00:01:56.735
+the Kalman filter and
+
+31
+00:01:56.735 --> 00:02:00.270
+other contributions to the field
+of control engineering.
+
+32
+00:02:00.760 --> 00:02:04.100
+After its publication in 1960,
+
+33
+00:02:04.100 --> 00:02:05.720
+the Kalman filter was adopted by
+
+34
+00:02:05.720 --> 00:02:09.080
+NASA for use in
+the Apollo guidance computer.
+
+35
+00:02:09.080 --> 00:02:12.770
+It was this ground-breaking innovation
+that played a pivotal role in
+
+36
+00:02:12.770 --> 00:02:16.580
+successfully getting
+the Apollo spacecraft to the moon,
+
+37
+00:02:16.580 --> 00:02:19.175
+and to our first steps on another world.
+
+38
+00:02:19.175 --> 00:02:21.050
+The filter helped guide
+
+39
+00:02:21.050 --> 00:02:24.920
+the Apollo spacecraft accurately
+through its circumlunar orbit.
+
+40
+00:02:24.920 --> 00:02:27.815
+The engineers at
+NASA's Ames Research Center,
+
+41
+00:02:27.815 --> 00:02:32.285
+adopted Kalman's linear theory and
+extended it to nonlinear models.
+
+42
+00:02:32.285 --> 00:02:35.705
+We'll look at this specific extension
+in upcoming module.
+
+43
+00:02:35.705 --> 00:02:39.500
+But first, let's talk about
+the basic linear Kalman filter.
+
+44
+00:02:39.500 --> 00:02:42.260
+The Kalman filter is very
+similar to the linear
+
+45
+00:02:42.260 --> 00:02:46.130
+recursive least squares
+filter we discussed earlier.
+
+46
+00:02:46.130 --> 00:02:50.585
+While recursive least squares updates
+the estimate of a static parameter,
+
+47
+00:02:50.585 --> 00:02:54.920
+but Kalman filter is able to update
+and estimate of an evolving state.
+
+48
+00:02:54.920 --> 00:02:57.325
+The goal of the Kalman filter is to take
+
+49
+00:02:57.325 --> 00:02:59.740
+a probabilistic estimate
+of this state and
+
+50
+00:02:59.740 --> 00:03:05.210
+update it in real time using
+two steps; prediction and correction.
+
+51
+00:03:05.400 --> 00:03:08.440
+To make these ideas more concrete,
+
+52
+00:03:08.440 --> 00:03:13.090
+let's consider a problem of estimating
+the 1D position of the vehicle.
+
+53
+00:03:13.090 --> 00:03:18.115
+Starting from an initial probabilistic
+estimate at time k minus 1,
+
+54
+00:03:18.115 --> 00:03:21.940
+our goal is to use a motion model
+which could be derived from
+
+55
+00:03:21.940 --> 00:03:27.410
+wheel odometry or inertial sensor
+measurements to predict our new state.
+
+56
+00:03:27.410 --> 00:03:32.995
+Then, we'll use the observation model
+derived from GPS for example,
+
+57
+00:03:32.995 --> 00:03:36.415
+to correct that prediction
+of vehicle position at time
+
+58
+00:03:36.415 --> 00:03:41.275
+k. Each of these components,
+the initial estimate,
+
+59
+00:03:41.275 --> 00:03:45.280
+the predicted state, and
+the final corrected state are all
+
+60
+00:03:45.280 --> 00:03:50.305
+random variables that we will specify
+by their means and covariances.
+
+61
+00:03:50.305 --> 00:03:54.760
+In this way, we can think of the
+Kalman filter as a technique to fuse
+
+62
+00:03:54.760 --> 00:03:57.280
+information from
+different sensors to produce
+
+63
+00:03:57.280 --> 00:04:00.130
+a final estimate of some unknown state,
+
+64
+00:04:00.130 --> 00:04:04.525
+taking into account, uncertainty
+in motion and in our measurements.
+
+65
+00:04:04.525 --> 00:04:06.490
+For the Kalman filter algorithm,
+
+66
+00:04:06.490 --> 00:04:10.120
+we had been able to write
+the motion model in the following way;
+
+67
+00:04:10.120 --> 00:04:12.820
+the estimate at time step k is
+
+68
+00:04:12.820 --> 00:04:17.020
+a linear combination of the estimate
+at time step k minus 1,
+
+69
+00:04:17.020 --> 00:04:20.835
+a control input and some zero-mean noise.
+
+70
+00:04:20.835 --> 00:04:23.540
+The input is an external signal that
+
+71
+00:04:23.540 --> 00:04:26.015
+affects the evolution
+of our system state.
+
+72
+00:04:26.015 --> 00:04:28.444
+In the context of self-driving vehicles,
+
+73
+00:04:28.444 --> 00:04:30.230
+this may be a wheel torque applied to
+
+74
+00:04:30.230 --> 00:04:33.130
+speed up and change lanes, for example.
+
+75
+00:04:33.130 --> 00:04:37.745
+Next, we will also need to define
+a linear measurement model.
+
+76
+00:04:37.745 --> 00:04:41.840
+Finally, we'll need a measurement
+noise as before and
+
+77
+00:04:41.840 --> 00:04:44.660
+a process noise that
+governs how certain we are
+
+78
+00:04:44.660 --> 00:04:47.660
+that our linear dynamical system
+is actually correct,
+
+79
+00:04:47.660 --> 00:04:49.820
+or equivalently, how uncertain
+
+80
+00:04:49.820 --> 00:04:53.015
+we are about the effects
+of our control inputs.
+
+81
+00:04:53.015 --> 00:04:55.210
+Once we have our system in hand,
+
+82
+00:04:55.210 --> 00:04:57.610
+we can use an approach
+very similar to that we
+
+83
+00:04:57.610 --> 00:05:00.385
+discussed in the recursive
+least squares video.
+
+84
+00:05:00.385 --> 00:05:04.080
+Except this time, we'll
+do it in two steps.
+
+85
+00:05:04.080 --> 00:05:10.025
+First, we use the process model to
+predict how our states, remember,
+
+86
+00:05:10.025 --> 00:05:12.620
+that we're now typically talking
+about evolving states and
+
+87
+00:05:12.620 --> 00:05:16.810
+non-state parameters evolved
+since the last time step,
+
+88
+00:05:16.810 --> 00:05:19.435
+and will propagate our uncertainty.
+
+89
+00:05:19.435 --> 00:05:23.810
+Second, we'll use our measurement
+to correct that prediction
+
+90
+00:05:23.810 --> 00:05:28.775
+based on our measurement residual
+or innovation and our optimal gain.
+
+91
+00:05:28.775 --> 00:05:31.880
+Finally, we'll use
+the gain to also propagate
+
+92
+00:05:31.880 --> 00:05:37.085
+the state covariance from our prediction
+to our corrected estimate.
+
+93
+00:05:37.085 --> 00:05:39.985
+In our notation, the hat
+
+94
+00:05:39.985 --> 00:05:43.300
+indicates a corrected prediction
+at a particular time step.
+
+95
+00:05:43.300 --> 00:05:45.430
+Whereas a check indicates
+
+96
+00:05:45.430 --> 00:05:48.400
+a prediction before
+the measurement is incorporated.
+
+97
+00:05:48.400 --> 00:05:51.070
+If you've worked with the
+Kalman filter before,
+
+98
+00:05:51.070 --> 00:05:53.440
+you may also have seen this
+written with plus and minus
+
+99
+00:05:53.440 --> 00:05:57.670
+signs for the corrected and
+predicted quantities, respectively.
+
+100
+00:05:57.670 --> 00:06:02.170
+Let's recap. We start with
+a probability density over
+
+101
+00:06:02.170 --> 00:06:07.045
+our states and also maybe parameters
+at time step k minus 1,
+
+102
+00:06:07.045 --> 00:06:10.045
+which we represent as
+a multivariate Gaussian.
+
+103
+00:06:10.045 --> 00:06:13.750
+We then predict the states
+at time step k using
+
+104
+00:06:13.750 --> 00:06:15.490
+our linear prediction model and
+
+105
+00:06:15.490 --> 00:06:17.949
+propagate both the mean
+and the uncertainty;
+
+106
+00:06:17.949 --> 00:06:20.845
+the covariance, forward in time.
+
+107
+00:06:20.845 --> 00:06:25.090
+Finally, using our probabilistic
+measurement model,
+
+108
+00:06:25.090 --> 00:06:27.670
+we correct our initial
+prediction by optimally
+
+109
+00:06:27.670 --> 00:06:31.090
+fusing the information from
+our measurement together with
+
+110
+00:06:31.090 --> 00:06:37.480
+the prior prediction through our optimal
+gain matrix k. Our end result is
+
+111
+00:06:37.480 --> 00:06:41.020
+an updated probabilistic estimate
+for our states at time
+
+112
+00:06:41.020 --> 00:06:44.410
+step k. The best way
+
+113
+00:06:44.410 --> 00:06:47.230
+to become comfortable with the
+Kalman filter is to use it.
+
+114
+00:06:47.230 --> 00:06:49.585
+Let's look at a simple example.
+
+115
+00:06:49.585 --> 00:06:51.130
+Consider again the case of
+
+116
+00:06:51.130 --> 00:06:54.250
+the self-driving vehicle
+estimating its own position.
+
+117
+00:06:54.250 --> 00:06:56.140
+Our state vector will include
+
+118
+00:06:56.140 --> 00:06:59.875
+the vehicle position and
+its first derivative velocity.
+
+119
+00:06:59.875 --> 00:07:03.950
+Our input will be a scalar acceleration
+that could come from
+
+120
+00:07:03.950 --> 00:07:08.695
+a control system that commands our car
+to accelerate forward or backwards.
+
+121
+00:07:08.695 --> 00:07:11.900
+For our measurement, we'll assume
+that we're able to determine
+
+122
+00:07:11.900 --> 00:07:16.055
+the vehicle position directly using
+something like a GPS receiver.
+
+123
+00:07:16.055 --> 00:07:19.160
+Finally, we'll define
+our noise variances as
+
+124
+00:07:19.160 --> 00:07:25.640
+follows: Given this initial
+estimate and our data,
+
+125
+00:07:25.640 --> 00:07:28.550
+what is our corrected position
+estimate after we perform
+
+126
+00:07:28.550 --> 00:07:32.710
+one prediction step and one correction
+step using the Kalman filter?
+
+127
+00:07:32.710 --> 00:07:35.540
+Here's, how we can use
+these definitions to solve for
+
+128
+00:07:35.540 --> 00:07:39.120
+our corrected position
+and velocity estimates.
+
+129
+00:07:44.080 --> 00:07:46.310
+Pay attention to the fact that
+
+130
+00:07:46.310 --> 00:07:49.820
+our final corrected state
+covariance is smaller.
+
+131
+00:07:49.820 --> 00:07:51.980
+That is we are more certain about
+
+132
+00:07:51.980 --> 00:07:55.490
+the car's position after we
+incorporate the position measurement.
+
+133
+00:07:55.490 --> 00:07:58.010
+This uncertainty reduction occurs
+
+134
+00:07:58.010 --> 00:08:00.890
+because our measurement model
+is fairly accurate.
+
+135
+00:08:00.890 --> 00:08:04.715
+That is, the measurement noise
+variance is quite small.
+
+136
+00:08:04.715 --> 00:08:07.070
+Try increasing
+the measurement variance and
+
+137
+00:08:07.070 --> 00:08:09.940
+observe what happens to
+the final state estimate.
+
+138
+00:08:09.940 --> 00:08:14.614
+To summarize, the Kalman filter is
+similar to recursively squares,
+
+139
+00:08:14.614 --> 00:08:19.775
+but also adds a motion model that
+defines how our state evolves over time.
+
+140
+00:08:19.775 --> 00:08:23.190
+The Kalman filter works
+in two stages: First,
+
+141
+00:08:23.190 --> 00:08:26.000
+predicting the next state
+using the motion model,
+
+142
+00:08:26.000 --> 00:08:30.095
+and second, correcting
+this prediction using a measurement.
+
+143
+00:08:30.095 --> 00:08:32.690
+But how can we be sure
+that the Kalman filter is
+
+144
+00:08:32.690 --> 00:08:35.045
+giving us an accurate state estimate?
+
+145
+00:08:35.045 --> 00:08:36.595
+In the next video,
+
+146
+00:08:36.595 --> 00:08:39.080
+we'll discuss a few appealing
+theoretical properties of
+
+147
+00:08:39.080 --> 00:08:43.560
+the Kalman filter that have made it
+such a staple in the engineering field.

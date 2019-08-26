@@ -1,0 +1,73 @@
+So, far this week we've learned
+how to detect features, compute their
+descriptors, and perform brute force matching
+using distance functions. We're almost ready to start
+applying feature detection, description, and matching to
+self-driving car perception. In this video, we will
+explore the issue of ambiguous matches and
+how to make our matches more robust to matching
+errors caused by similar feature
+descriptors through the distance ratio formulation. But first, let's review the two feature matching cases we discussed in the last lesson. In the first case, we have a useful feature descriptor that clearly gives a small distance to the feature f2 and a large distance to other
+features in the second image. In this case we can
+successfully identify the correct match to the
+feature f1 and image one. Our brute force matching
+algorithm works well with this descriptor and as seamlessly capable of finding
+the right match in image two. In the second case, the feature f1 in image one does not have a match
+at all in image two. We modified our brute force
+matching algorithm with a threshold delta to eliminate incorrect
+matches in this case. Since both features
+and image two have a distance greater than the
+distance threshold Delta, the brute force matcher
+rejects both the features f2 and f3 as potential matches
+and no match is returned. But, let us consider
+a third case, once again we are trying to match feature f1 in image one to a corresponding
+feature in image two. With the feature
+vectors presented here, feature f1 gets an SSD value of nine with feature
+two in image two. We test another feature f3, and we also get an SSD of nine. Both of these features
+have an SSD less than Delta which was
+20 in this case, and as such are valid matches.
+So what should we do? We refer to feature fi in case three as a feature with
+ambiguous matches. An elegant solution
+to this problem was proposed by David Lowe in 1999. The solution goes as follows. First, we compute
+the distance between feature fi in image one and all the features
+fj in image two, similar to our
+previous algorithm, we choose the feature
+fc in image two with the minimum distance
+to feature fi in image of one as
+our closest match. We then proceed to get
+feature fs the feature in image two with
+the second closest distance to the feature fi. Finally, we find how much
+nearer our closest match fc is over our second
+closest match fs. This can be done through
+the distance ratio. The distance ratio can be defined as the distance
+computed between feature fi in image one and fc the closest match
+in image two. Over the distance computed
+between feature fi and fs, the second closest match
+in image two. If the distance ratio
+is close to one, it means that according to our descriptor and
+distance function, fi matches both fs and fc. In this case, we
+don't want to use this match in
+our processing later on, as it clearly is not known
+to our matcher which location in image two corresponds to the
+feature in image one. Let us update our brute
+force matcher algorithm with the distance
+ratio formulation. The updates replace
+the distance with the ratio of distance as
+our metric to keep matches. We usually set
+the distance ratio threshold which we'll refer to as
+row somewhere around 0.5, which means that we require our best match to
+be at least twice as close as our second best match to our initial
+features descriptor. Revisiting case three,
+we can see that using the distance ratio and a corresponding threshold
+row set to 0.5, we discard our ambiguous matches and retain the good ones. In this video, you've learned
+what ambiguous matches are, and how to handle
+these ambiguous matches through the distance
+ratio formulation. Unfortunately, even with the
+distance ratio formulation, as much as 50 percent
+of typical matches can still be wrong when using
+modern descriptors. This is because,
+repetitive patterns in images and small variations
+in pixel values, are often sufficient to
+confuse the matching process. We call these erroneous
+matches outliers. For our next lesson, I will describe a method to account for and
+eliminate outliers before using are matched features for further perception tasks.

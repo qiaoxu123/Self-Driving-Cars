@@ -1,0 +1,343 @@
+1
+00:00:18,050 --> 00:00:25,310
+Welcome to the final module of the first course in our self-driving cars specialization.
+
+2
+00:00:25,310 --> 00:00:29,150
+In this module, you'll get the chance to bring together and apply
+
+3
+00:00:29,150 --> 00:00:34,090
+the concepts we've discussed throughout this course and test them in simulation.
+
+4
+00:00:34,090 --> 00:00:38,825
+We'll start by discussing various self-driving car simulation environments.
+
+5
+00:00:38,825 --> 00:00:41,120
+Then I'll show you the simulator that you'll
+
+6
+00:00:41,120 --> 00:00:44,540
+use in this course and throughout this specialization.
+
+7
+00:00:44,540 --> 00:00:47,330
+A realistic simulation environment is
+
+8
+00:00:47,330 --> 00:00:50,570
+an essential tool for developing a self-driving car,
+
+9
+00:00:50,570 --> 00:00:53,090
+because it allows us to ensure that our vehicle will
+
+10
+00:00:53,090 --> 00:00:57,025
+operate safely before we even step foot in it.
+
+11
+00:00:57,025 --> 00:01:00,010
+Using a simulator, we can test all of
+
+12
+00:01:00,010 --> 00:01:03,730
+the different modules that make up our system including perception,
+
+13
+00:01:03,730 --> 00:01:07,645
+planning, and control, either together or independently.
+
+14
+00:01:07,645 --> 00:01:13,600
+We can run sophisticated scenarios involving many AI controlled vehicles and pedestrians,
+
+15
+00:01:13,600 --> 00:01:16,030
+and we can run variations on these scenarios,
+
+16
+00:01:16,030 --> 00:01:18,730
+hundreds or even thousands of times to
+
+17
+00:01:18,730 --> 00:01:22,105
+ensure our car consistently makes the correct decision.
+
+18
+00:01:22,105 --> 00:01:25,180
+Most importantly, we can test our car in
+
+19
+00:01:25,180 --> 00:01:29,725
+situations that would be too dangerous for us to test on actual roads.
+
+20
+00:01:29,725 --> 00:01:32,830
+There are a wide range of simulators available,
+
+21
+00:01:32,830 --> 00:01:36,175
+developed by teams from industry and academia alike.
+
+22
+00:01:36,175 --> 00:01:39,910
+For this course, we'll be using the simulator called Carla.
+
+23
+00:01:39,910 --> 00:01:43,400
+Carla is a simulator developed by a team with members from
+
+24
+00:01:43,400 --> 00:01:48,020
+the Computer Vision Center at the Autonomous University of Barcelona,
+
+25
+00:01:48,020 --> 00:01:54,275
+Intel and the Toyota Research Institute and built using the Unreal game engine.
+
+26
+00:01:54,275 --> 00:01:58,039
+It features highly detailed virtual worlds with roadways,
+
+27
+00:01:58,039 --> 00:02:01,880
+buildings, weather, and vehicle and pedestrian agents.
+
+28
+00:02:01,880 --> 00:02:06,800
+Images of these environments can be captured in various formats including
+
+29
+00:02:06,800 --> 00:02:09,650
+depth maps and segmented images which
+
+30
+00:02:09,650 --> 00:02:13,220
+you'll learn more about in the third course of this specialization.
+
+31
+00:02:13,220 --> 00:02:16,010
+The entire simulation can be controlled with
+
+32
+00:02:16,010 --> 00:02:20,360
+an external client which can be used to send commands to the vehicle,
+
+33
+00:02:20,360 --> 00:02:23,060
+record data and automatically execute
+
+34
+00:02:23,060 --> 00:02:26,285
+scenarios for evaluating the performance of your car.
+
+35
+00:02:26,285 --> 00:02:29,210
+Best of all, Carla is open source.
+
+36
+00:02:29,210 --> 00:02:32,270
+So, anyone is free to modify any aspect of
+
+37
+00:02:32,270 --> 00:02:36,620
+the code in order to meet their particular simulation requirements.
+
+38
+00:02:36,620 --> 00:02:40,760
+For this specialization, we've developed a customized version of
+
+39
+00:02:40,760 --> 00:02:46,220
+Carla with some extra tools to help you implement and test your code and simulation.
+
+40
+00:02:46,220 --> 00:02:50,810
+Let's take a look at how you might interact with and use the simulator.
+
+41
+00:02:50,810 --> 00:02:52,880
+Don't worry about the following along.
+
+42
+00:02:52,880 --> 00:02:55,880
+There's a detailed guide about how to set up Carla and
+
+43
+00:02:55,880 --> 00:02:59,465
+run the Python clients in the assessment instructions.
+
+44
+00:02:59,465 --> 00:03:02,180
+We've already downloaded and installed everything.
+
+45
+00:03:02,180 --> 00:03:05,290
+So, let's jump right into the simulator itself.
+
+46
+00:03:05,290 --> 00:03:09,695
+The easiest way to start Carla is to use the launch script provided.
+
+47
+00:03:09,695 --> 00:03:11,840
+The script itself is used to load
+
+48
+00:03:11,840 --> 00:03:15,475
+the Carla session with a map or scenario of our choosing.
+
+49
+00:03:15,475 --> 00:03:20,825
+Here, I choose the town environment provided in Carla for our demonstration.
+
+50
+00:03:20,825 --> 00:03:25,790
+We can also change various configurations for our simulator session,
+
+51
+00:03:25,790 --> 00:03:28,460
+such as the simulation window size and
+
+52
+00:03:28,460 --> 00:03:32,015
+setting a fixed time step to be either small or large.
+
+53
+00:03:32,015 --> 00:03:35,780
+A Carla session can also be loaded in server mode.
+
+54
+00:03:35,780 --> 00:03:39,820
+This allows a programmable client to connect to the server,
+
+55
+00:03:39,820 --> 00:03:42,275
+and send commands to control the car
+
+56
+00:03:42,275 --> 00:03:45,620
+or receive information about the simulation environment.
+
+57
+00:03:45,620 --> 00:03:50,810
+Being able to program our client opens up a diverse range of possibilities.
+
+58
+00:03:50,810 --> 00:03:52,460
+From the simulator feedback,
+
+59
+00:03:52,460 --> 00:03:55,205
+we can know where every car is on the map,
+
+60
+00:03:55,205 --> 00:03:59,810
+develop a controller and planner to smoothly navigate our car around or
+
+61
+00:03:59,810 --> 00:04:04,895
+even use depth and segmented images to learn to detect cars and pedestrians.
+
+62
+00:04:04,895 --> 00:04:09,140
+Simulation results from the client can also be post-processed to
+
+63
+00:04:09,140 --> 00:04:13,775
+evaluate the performance of our current software algorithms and methods.
+
+64
+00:04:13,775 --> 00:04:16,490
+This provides insight on improvements and
+
+65
+00:04:16,490 --> 00:04:20,175
+limitations to both the simulator and algorithms.
+
+66
+00:04:20,175 --> 00:04:22,225
+For our upcoming course project,
+
+67
+00:04:22,225 --> 00:04:24,920
+we use these results as a way to evaluate
+
+68
+00:04:24,920 --> 00:04:29,810
+your algorithm's performance and to encourage exploration of the strengths,
+
+69
+00:04:29,810 --> 00:04:34,320
+as well as the weaknesses of the algorithms you are developing.
+
+70
+00:04:34,660 --> 00:04:39,520
+We've talked about why simulation is useful and what you can use it for,
+
+71
+00:04:39,520 --> 00:04:41,000
+and we've met Carla,
+
+72
+00:04:41,000 --> 00:04:44,060
+the simulator that we'll use throughout this specialization.
+
+73
+00:04:44,060 --> 00:04:46,700
+We've also seen some of the capabilities of
+
+74
+00:04:46,700 --> 00:04:50,205
+Carla which you'll use in the upcoming course project.
+
+75
+00:04:50,205 --> 00:04:53,420
+Now, before we move on to the details of the project,
+
+76
+00:04:53,420 --> 00:04:55,850
+it's time for you to take a closer look at
+
+77
+00:04:55,850 --> 00:04:59,390
+the simulator itself and to set it up on your own computer.
+
+78
+00:04:59,390 --> 00:05:00,980
+Now's the time to follow
+
+79
+00:05:00,980 --> 00:05:05,600
+those detailed instructions that will take you through the full process.
+
+80
+00:05:05,600 --> 00:05:11,210
+I also encourage you to consult the discussion forums if you run into any problems,
+
+81
+00:05:11,210 --> 00:05:14,780
+chances are someone's had the same issue as you before.
+
+82
+00:05:14,780 --> 00:05:17,420
+Once you have the simulator up and running and you're
+
+83
+00:05:17,420 --> 00:05:20,000
+comfortable launching and running a client,
+
+84
+00:05:20,000 --> 00:05:23,320
+you'll be ready to start using it for the course project.
+
+85
+00:05:23,320 --> 00:05:28,460
+In the next video, we'll go over the final project requirements and get you ready to
+
+86
+00:05:28,460 --> 00:05:34,170
+start designing controllers for your simulated self-driving vehicle. See you there.

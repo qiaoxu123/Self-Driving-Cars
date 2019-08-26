@@ -1,0 +1,1003 @@
+WEBVTT
+
+1
+00:00:19.580 --> 00:00:23.805
+Welcome everyone to the
+second module of this course.
+
+2
+00:00:23.805 --> 00:00:25.770
+In this module, we will discuss
+
+3
+00:00:25.770 --> 00:00:28.440
+the creation of
+two environmental maps;
+
+4
+00:00:28.440 --> 00:00:31.995
+the occupancy grid map and
+the high-definition road map.
+
+5
+00:00:31.995 --> 00:00:34.350
+Both of the maps we
+will discuss play
+
+6
+00:00:34.350 --> 00:00:36.960
+a critical role in the task
+of motion planning,
+
+7
+00:00:36.960 --> 00:00:39.595
+as we will see
+throughout this course.
+
+8
+00:00:39.595 --> 00:00:41.390
+We will start by defining
+
+9
+00:00:41.390 --> 00:00:43.310
+the occupancy grid map in detail,
+
+10
+00:00:43.310 --> 00:00:44.810
+and understand how it can be
+
+11
+00:00:44.810 --> 00:00:47.060
+created on an autonomous vehicle.
+
+12
+00:00:47.060 --> 00:00:50.330
+We will then try to understand
+the noise inherent in
+
+13
+00:00:50.330 --> 00:00:51.650
+measurement data used for
+
+14
+00:00:51.650 --> 00:00:54.155
+the creation of an
+occupancy grid map.
+
+15
+00:00:54.155 --> 00:00:56.570
+Finally, you will
+see how to handle
+
+16
+00:00:56.570 --> 00:00:58.700
+this noise in
+the measurement data,
+
+17
+00:00:58.700 --> 00:01:00.965
+by learning about
+Bayesian updates of
+
+18
+00:01:00.965 --> 00:01:04.055
+occupancy grid beliefs.
+Let's get started.
+
+19
+00:01:04.055 --> 00:01:07.190
+An occupancy grid is
+a discretized grid
+
+20
+00:01:07.190 --> 00:01:10.310
+which surrounds the current
+ego vehicle position.
+
+21
+00:01:10.310 --> 00:01:12.320
+This discretization can be
+
+22
+00:01:12.320 --> 00:01:14.830
+done in two or three dimensions.
+
+23
+00:01:14.830 --> 00:01:17.000
+The methods we discussed
+can be applied
+
+24
+00:01:17.000 --> 00:01:19.445
+to both two and
+three-dimensional problems.
+
+25
+00:01:19.445 --> 00:01:22.360
+However, to simplify
+both the explanations as
+
+26
+00:01:22.360 --> 00:01:25.450
+well as the computational
+requirements in this module,
+
+27
+00:01:25.450 --> 00:01:28.550
+we will only be focusing
+on the 2D version.
+
+28
+00:01:28.550 --> 00:01:32.140
+Each grid square of the
+occupancy grid indicates if
+
+29
+00:01:32.140 --> 00:01:34.090
+a static or stationary object
+
+30
+00:01:34.090 --> 00:01:36.325
+is present in that grid location.
+
+31
+00:01:36.325 --> 00:01:40.255
+If so, that grid location
+is classified as occupied.
+
+32
+00:01:40.255 --> 00:01:42.940
+An example of static
+objects that would be
+
+33
+00:01:42.940 --> 00:01:46.135
+classified as occupying a grid
+cell can include trees,
+
+34
+00:01:46.135 --> 00:01:48.745
+buildings, road signs,
+and light poles.
+
+35
+00:01:48.745 --> 00:01:50.980
+In the domain of
+autonomous vehicles,
+
+36
+00:01:50.980 --> 00:01:54.310
+other objects which you might
+not think of as obstacles,
+
+37
+00:01:54.310 --> 00:01:57.580
+should also be classified
+as occupying space,
+
+38
+00:01:57.580 --> 00:01:59.770
+including all non
+drivable surfaces
+
+39
+00:01:59.770 --> 00:02:02.185
+such as lawns or sidewalks.
+
+40
+00:02:02.185 --> 00:02:06.135
+Each square of the
+occupancy grid noted by Mi,
+
+41
+00:02:06.135 --> 00:02:08.935
+maps to a binary value
+in which one
+
+42
+00:02:08.935 --> 00:02:11.925
+indicates that the square is
+occupied by a static object,
+
+43
+00:02:11.925 --> 00:02:14.485
+and zero indicates
+that it is not.
+
+44
+00:02:14.485 --> 00:02:17.290
+In this map, we can see
+that the squares with
+
+45
+00:02:17.290 --> 00:02:20.310
+trees and grass cover
+are labeled as one,
+
+46
+00:02:20.310 --> 00:02:22.625
+whereas the road is labeled zero.
+
+47
+00:02:22.625 --> 00:02:25.015
+The resulting map
+looks like this.
+
+48
+00:02:25.015 --> 00:02:27.880
+All the occupied squares
+of the grid are purple,
+
+49
+00:02:27.880 --> 00:02:29.680
+and the rest of the map
+corresponding to
+
+50
+00:02:29.680 --> 00:02:32.830
+the drivable surfaces
+is left transparent.
+
+51
+00:02:32.830 --> 00:02:36.040
+We will now look at the set
+of assumptions that are
+
+52
+00:02:36.040 --> 00:02:39.685
+made in order to create
+an accurate occupancy grid.
+
+53
+00:02:39.685 --> 00:02:42.010
+First, the environment that
+
+54
+00:02:42.010 --> 00:02:43.570
+is currently measured to create
+
+55
+00:02:43.570 --> 00:02:47.460
+this occupancy grid only
+corresponds with static objects.
+
+56
+00:02:47.460 --> 00:02:50.960
+Meaning, all dynamic objects
+or moving objects must be
+
+57
+00:02:50.960 --> 00:02:52.835
+removed from the sensor data
+
+58
+00:02:52.835 --> 00:02:55.885
+before it is used for
+occupancy grid mapping.
+
+59
+00:02:55.885 --> 00:03:00.170
+Second, each grid cell is
+independent of all others.
+
+60
+00:03:00.170 --> 00:03:02.270
+This assumption is
+made to simplify
+
+61
+00:03:02.270 --> 00:03:05.590
+the update functions needed
+to create the occupancy grid.
+
+62
+00:03:05.590 --> 00:03:09.110
+Finally, the current
+vehicle state is exactly
+
+63
+00:03:09.110 --> 00:03:10.370
+known in relation to
+
+64
+00:03:10.370 --> 00:03:12.920
+the occupancy map
+at every time step.
+
+65
+00:03:12.920 --> 00:03:15.800
+In the domain of
+self-driving cars to
+
+66
+00:03:15.800 --> 00:03:17.840
+observe distance between the car
+
+67
+00:03:17.840 --> 00:03:19.320
+and the current state
+of the world,
+
+68
+00:03:19.320 --> 00:03:22.880
+the LIDAR sensor is
+used most frequently.
+
+69
+00:03:22.880 --> 00:03:24.700
+As a quick reminder,
+
+70
+00:03:24.700 --> 00:03:27.225
+the LIDAR sensor uses
+pulses of light to
+
+71
+00:03:27.225 --> 00:03:30.680
+measure the distance to
+all objects surrounding the car,
+
+72
+00:03:30.680 --> 00:03:32.390
+and returns a point cloud of
+
+73
+00:03:32.390 --> 00:03:35.095
+measurements throughout
+its field of view.
+
+74
+00:03:35.095 --> 00:03:39.125
+In this video, we can see
+the output of the LIDAR sensor.
+
+75
+00:03:39.125 --> 00:03:42.350
+Several components of the LIDAR
+data need to be filtered
+
+76
+00:03:42.350 --> 00:03:44.090
+out before this data can be
+
+77
+00:03:44.090 --> 00:03:46.480
+used to construct
+an occupancy grid.
+
+78
+00:03:46.480 --> 00:03:48.480
+The first step is to filter
+
+79
+00:03:48.480 --> 00:03:51.680
+all LIDAR points which
+comprise the ground plane.
+
+80
+00:03:51.680 --> 00:03:53.510
+In this case, the ground plane is
+
+81
+00:03:53.510 --> 00:03:54.770
+the road surface which
+
+82
+00:03:54.770 --> 00:03:57.350
+the autonomous car
+can safely drive on.
+
+83
+00:03:57.350 --> 00:04:00.560
+Next, all points
+which appear above
+
+84
+00:04:00.560 --> 00:04:03.515
+the highest point of the vehicle
+are also filtered out.
+
+85
+00:04:03.515 --> 00:04:06.260
+This set of LIDAR points
+can be ignored as
+
+86
+00:04:06.260 --> 00:04:07.820
+they will not impede
+the progression
+
+87
+00:04:07.820 --> 00:04:09.340
+of the autonomous vehicle.
+
+88
+00:04:09.340 --> 00:04:12.370
+Finally, all non-static
+objects which had
+
+89
+00:04:12.370 --> 00:04:15.250
+been captured by the LIDAR
+need to be removed.
+
+90
+00:04:15.250 --> 00:04:16.780
+This includes all vehicles,
+
+91
+00:04:16.780 --> 00:04:19.465
+pedestrians, bicycles,
+and animals.
+
+92
+00:04:19.465 --> 00:04:23.140
+Once all filtering of
+the LIDAR data is complete,
+
+93
+00:04:23.140 --> 00:04:26.170
+the 3D LIDAR data will need
+to be projected down to
+
+94
+00:04:26.170 --> 00:04:30.025
+a 2D plane to be used to
+construct our occupancy grid.
+
+95
+00:04:30.025 --> 00:04:33.070
+The filtering and compression
+of the LIDAR data to
+
+96
+00:04:33.070 --> 00:04:36.310
+create accurate occupancy
+grids for autonomous cars,
+
+97
+00:04:36.310 --> 00:04:39.830
+will be covered in
+a later video in this module.
+
+98
+00:04:40.040 --> 00:04:43.750
+The LIDAR data which is now
+filtered and compressed,
+
+99
+00:04:43.750 --> 00:04:47.275
+resembles data from a high
+definition 2D range sensor,
+
+100
+00:04:47.275 --> 00:04:49.330
+which accurately
+measures distance to
+
+101
+00:04:49.330 --> 00:04:53.025
+all static objects around
+the vehicle in the plane.
+
+102
+00:04:53.025 --> 00:04:55.265
+However, there is
+still a problem.
+
+103
+00:04:55.265 --> 00:04:57.625
+After all the filtering
+has been completed,
+
+104
+00:04:57.625 --> 00:05:00.065
+there are still
+major map uncertainties
+
+105
+00:05:00.065 --> 00:05:03.050
+due to the filtering methods
+used on the data,
+
+106
+00:05:03.050 --> 00:05:05.180
+the complexity of
+the data at hand,
+
+107
+00:05:05.180 --> 00:05:08.630
+and most of all, environmental
+and sensor noise.
+
+108
+00:05:08.630 --> 00:05:10.880
+In order to handle this noise,
+
+109
+00:05:10.880 --> 00:05:14.645
+the occupancy grid will be
+modified to be probabilistic.
+
+110
+00:05:14.645 --> 00:05:18.845
+Instead of cell i storing
+a binary value for occupied,
+
+111
+00:05:18.845 --> 00:05:20.825
+now each cell i will store
+
+112
+00:05:20.825 --> 00:05:23.240
+a probability between
+zero and one,
+
+113
+00:05:23.240 --> 00:05:24.950
+corresponding to the certainty
+
+114
+00:05:24.950 --> 00:05:27.125
+that the given square
+is occupied.
+
+115
+00:05:27.125 --> 00:05:29.090
+The higher the value stored,
+
+116
+00:05:29.090 --> 00:05:30.590
+the higher the probability that
+
+117
+00:05:30.590 --> 00:05:32.675
+the given square is occupied.
+
+118
+00:05:32.675 --> 00:05:35.075
+To use this set of probabilities,
+
+119
+00:05:35.075 --> 00:05:37.730
+the occupancy grid can
+now be represented as
+
+120
+00:05:37.730 --> 00:05:42.340
+a belief map denoted by
+the term B-E-L are bel.
+
+121
+00:05:42.340 --> 00:05:44.760
+To keep notations simple,
+
+122
+00:05:44.760 --> 00:05:48.530
+Mi represents a single square
+of the occupancy grid,
+
+123
+00:05:48.530 --> 00:05:51.785
+where i can be constructed
+from measurements Y,
+
+124
+00:05:51.785 --> 00:05:54.310
+and the vehicle location X.
+
+125
+00:05:54.310 --> 00:05:56.570
+The belief over Mi is
+
+126
+00:05:56.570 --> 00:05:59.150
+equal to the probability
+that the current cell
+
+127
+00:05:59.150 --> 00:06:01.010
+Mi is occupied given
+
+128
+00:06:01.010 --> 00:06:04.250
+the sensor measurements gathered
+for that cell location.
+
+129
+00:06:04.250 --> 00:06:07.280
+To convert back to a binary map,
+
+130
+00:06:07.280 --> 00:06:09.845
+a threshold value can
+be established at which
+
+131
+00:06:09.845 --> 00:06:11.450
+a given belief is confident
+
+132
+00:06:11.450 --> 00:06:14.330
+enough to be classified
+as occupied.
+
+133
+00:06:14.330 --> 00:06:18.715
+Any value below the set
+threshold will be set to free.
+
+134
+00:06:18.715 --> 00:06:21.680
+As an example,
+the occupied square in
+
+135
+00:06:21.680 --> 00:06:25.160
+the figure to the left has
+a probability of 0.94,
+
+136
+00:06:25.160 --> 00:06:27.620
+which classifies
+the square is occupied.
+
+137
+00:06:27.620 --> 00:06:29.030
+On the other hand, the square
+
+138
+00:06:29.030 --> 00:06:30.500
+found on the street only has
+
+139
+00:06:30.500 --> 00:06:33.590
+a probability of 0.12
+of being occupied,
+
+140
+00:06:33.590 --> 00:06:36.890
+and thus will be classified
+as a free location.
+
+141
+00:06:36.890 --> 00:06:39.140
+Multiple sets of
+measurements can be
+
+142
+00:06:39.140 --> 00:06:41.000
+combined from time one to time
+
+143
+00:06:41.000 --> 00:06:44.720
+t to achieve far more accurate
+belief of occupancy.
+
+144
+00:06:44.720 --> 00:06:47.060
+In fact, we can update beliefs in
+
+145
+00:06:47.060 --> 00:06:50.750
+a recursive manner so
+that at each time step t,
+
+146
+00:06:50.750 --> 00:06:53.120
+we use all prior information from
+
+147
+00:06:53.120 --> 00:06:56.935
+time one onwards to
+define our belief.
+
+148
+00:06:56.935 --> 00:07:00.615
+The belief at time t
+over the map cell Mi
+
+149
+00:07:00.615 --> 00:07:03.590
+is defined as
+the probability that Mi is
+
+150
+00:07:03.590 --> 00:07:06.005
+occupied given all measurements
+
+151
+00:07:06.005 --> 00:07:08.060
+and the vehicle
+position from time
+
+152
+00:07:08.060 --> 00:07:10.260
+one to t. To
+
+153
+00:07:10.260 --> 00:07:13.430
+combine multiple measurements
+into a single belief map,
+
+154
+00:07:13.430 --> 00:07:15.605
+Bayes theorem can be applied.
+
+155
+00:07:15.605 --> 00:07:17.990
+In the case of the
+occupancy grid,
+
+156
+00:07:17.990 --> 00:07:19.835
+we get a Bayesian update step
+
+157
+00:07:19.835 --> 00:07:21.925
+that takes the following form.
+
+158
+00:07:21.925 --> 00:07:26.265
+The distribution p
+of y_t given Mi,
+
+159
+00:07:26.265 --> 00:07:27.845
+is the probability of getting
+
+160
+00:07:27.845 --> 00:07:32.150
+a particular measurement
+given a cell Mi is occupied.
+
+161
+00:07:32.150 --> 00:07:34.190
+This is known as
+the measurement model,
+
+162
+00:07:34.190 --> 00:07:37.480
+which you studied in
+detail in course two.
+
+163
+00:07:37.480 --> 00:07:42.470
+The belief at time T minus
+one over Mi corresponds to
+
+164
+00:07:42.470 --> 00:07:44.570
+the prior belief stored in
+
+165
+00:07:44.570 --> 00:07:47.405
+our occupancy grid from
+the previous time step.
+
+166
+00:07:47.405 --> 00:07:50.090
+We rely on the Markov assumption,
+
+167
+00:07:50.090 --> 00:07:52.850
+that all necessary
+information for estimating
+
+168
+00:07:52.850 --> 00:07:55.160
+cell occupancy is captured
+
+169
+00:07:55.160 --> 00:07:57.320
+in the belief map
+at each time step.
+
+170
+00:07:57.320 --> 00:07:59.540
+So no earlier history needs to be
+
+171
+00:07:59.540 --> 00:08:02.395
+considered in
+the cell update equations.
+
+172
+00:08:02.395 --> 00:08:04.940
+Finally, eta in this case
+
+173
+00:08:04.940 --> 00:08:06.499
+corresponds to a normalizing
+
+174
+00:08:06.499 --> 00:08:08.600
+constant applied
+to the belief map.
+
+175
+00:08:08.600 --> 00:08:10.880
+This is needed to scale
+the results to make
+
+176
+00:08:10.880 --> 00:08:13.925
+sure it remains
+a probability distribution.
+
+177
+00:08:13.925 --> 00:08:17.495
+Lets see an occupancy
+grid in action.
+
+178
+00:08:17.495 --> 00:08:19.400
+In this video, we will follow
+
+179
+00:08:19.400 --> 00:08:21.230
+the autonomous vehicle as it
+
+180
+00:08:21.230 --> 00:08:23.750
+drives out of the driveway
+and down a road,
+
+181
+00:08:23.750 --> 00:08:27.155
+while the occupancy grid
+is updating in real time.
+
+182
+00:08:27.155 --> 00:08:30.470
+The lighter grid cells
+represent free squares,
+
+183
+00:08:30.470 --> 00:08:34.025
+whereas the black grid cells
+represent occupied squares.
+
+184
+00:08:34.025 --> 00:08:37.520
+We can also see
+the raw LIDAR data in red,
+
+185
+00:08:37.520 --> 00:08:39.755
+and the filtered
+outputs in orange.
+
+186
+00:08:39.755 --> 00:08:42.770
+Notice how the map tracks
+the vehicle motion which is
+
+187
+00:08:42.770 --> 00:08:44.899
+estimated using
+the same techniques
+
+188
+00:08:44.899 --> 00:08:47.610
+as we've presented in course two.
+
+189
+00:08:47.660 --> 00:08:50.430
+In this video, the threshold of
+
+190
+00:08:50.430 --> 00:08:52.310
+belief needed for an object to be
+
+191
+00:08:52.310 --> 00:08:56.270
+classified as obstructing
+is set to very high,
+
+192
+00:08:56.270 --> 00:08:58.460
+thus only large static objects
+
+193
+00:08:58.460 --> 00:09:00.380
+are getting identified
+as occupied.
+
+194
+00:09:00.380 --> 00:09:02.630
+Lowering this threshold
+value will result
+
+195
+00:09:02.630 --> 00:09:05.000
+in more cells to be
+tagged as occupied,
+
+196
+00:09:05.000 --> 00:09:08.840
+but will lead to noisier
+maps as well. All right.
+
+197
+00:09:08.840 --> 00:09:11.225
+So let's summarize what
+you've just learned.
+
+198
+00:09:11.225 --> 00:09:12.860
+In this video, you learned
+
+199
+00:09:12.860 --> 00:09:15.980
+the basic definition of
+the Occupancy grid map,
+
+200
+00:09:15.980 --> 00:09:19.130
+and saw how the LIDAR
+sensor data can be filtered
+
+201
+00:09:19.130 --> 00:09:22.385
+and compressed to create
+an occupancy grid.
+
+202
+00:09:22.385 --> 00:09:24.470
+You then learned how to represent
+
+203
+00:09:24.470 --> 00:09:26.810
+the occupancy grid
+as a belief map,
+
+204
+00:09:26.810 --> 00:09:29.270
+and applied Bayesian updates to
+
+205
+00:09:29.270 --> 00:09:32.705
+incorporate new measurements
+in the occupancy grid.
+
+206
+00:09:32.705 --> 00:09:34.520
+In the next video,
+
+207
+00:09:34.520 --> 00:09:36.890
+we will discuss some of
+the numerical problems
+
+208
+00:09:36.890 --> 00:09:39.620
+with our belief space
+map representation,
+
+209
+00:09:39.620 --> 00:09:41.735
+and introduce the logit function
+
+210
+00:09:41.735 --> 00:09:43.730
+as a solution to this problem.
+
+211
+00:09:43.730 --> 00:09:45.260
+We will also look at
+
+212
+00:09:45.260 --> 00:09:48.110
+an inverse measurement model
+which is needed to create
+
+213
+00:09:48.110 --> 00:09:51.095
+the occupancy map grid
+from 2D LIDAR data
+
+214
+00:09:51.095 --> 00:09:55.170
+using the logit function.
+See you there.

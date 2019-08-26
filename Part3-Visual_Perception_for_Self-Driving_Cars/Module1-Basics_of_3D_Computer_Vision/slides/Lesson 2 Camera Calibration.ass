@@ -1,0 +1,776 @@
+WEBVTT
+
+1
+00:00:14.060 --> 00:00:16.350
+So far, we have learnt
+
+2
+00:00:16.350 --> 00:00:17.610
+which camera parameters are
+
+3
+00:00:17.610 --> 00:00:19.755
+needed for projective
+geometry to work.
+
+4
+00:00:19.755 --> 00:00:22.080
+In this video, we
+will learn how to get
+
+5
+00:00:22.080 --> 00:00:23.505
+these camera parameters using
+
+6
+00:00:23.505 --> 00:00:25.770
+the mathematical tools
+of calibration.
+
+7
+00:00:25.770 --> 00:00:27.270
+Let's remember the projection
+
+8
+00:00:27.270 --> 00:00:28.845
+equations we've learnt so far.
+
+9
+00:00:28.845 --> 00:00:31.590
+The homogeneous
+coordinates of point O in
+
+10
+00:00:31.590 --> 00:00:34.370
+3D space can be transformed
+to the camera plane,
+
+11
+00:00:34.370 --> 00:00:36.900
+with the camera
+projection matrix P,
+
+12
+00:00:36.900 --> 00:00:40.845
+which includes both extrinsic
+and extrinsic parameters.
+
+13
+00:00:40.845 --> 00:00:43.610
+Remember, the
+projected coordinates
+
+14
+00:00:43.610 --> 00:00:44.810
+need to be converted to
+
+15
+00:00:44.810 --> 00:00:47.450
+homogeneous form
+to get the u and v
+
+16
+00:00:47.450 --> 00:00:50.345
+pixel locations in
+pixel coordinates.
+
+17
+00:00:50.345 --> 00:00:52.430
+We do this by dividing the image
+
+18
+00:00:52.430 --> 00:00:54.790
+coordinates by the z-component.
+
+19
+00:00:54.790 --> 00:00:58.235
+Finally, u and v can
+then be multiplied
+
+20
+00:00:58.235 --> 00:01:01.790
+with an arbitrary scale
+s. We multiply by s,
+
+21
+00:01:01.790 --> 00:01:03.470
+as it will be useful
+later on when we
+
+22
+00:01:03.470 --> 00:01:06.065
+formulate the
+calibration problem.
+
+23
+00:01:06.065 --> 00:01:08.750
+It is important to
+note that scale plays
+
+24
+00:01:08.750 --> 00:01:09.965
+a challenging role in
+
+25
+00:01:09.965 --> 00:01:12.544
+understanding monocular
+image information,
+
+26
+00:01:12.544 --> 00:01:14.660
+as once points are projected from
+
+27
+00:01:14.660 --> 00:01:17.435
+the 3D world onto
+the 2D image plane,
+
+28
+00:01:17.435 --> 00:01:19.745
+scale information is lost.
+
+29
+00:01:19.745 --> 00:01:23.690
+Points in 3D space along
+a ray from the camera center,
+
+30
+00:01:23.690 --> 00:01:26.870
+all project to the same location
+on the image plane,
+
+31
+00:01:26.870 --> 00:01:30.004
+and it is therefore not
+possible to directly associate
+
+32
+00:01:30.004 --> 00:01:34.070
+a depth to a point given
+only image information.
+
+33
+00:01:34.070 --> 00:01:38.120
+The camera calibration
+problem is defined as finding
+
+34
+00:01:38.120 --> 00:01:41.510
+these unknown intrinsic and
+extrinsic camera parameters,
+
+35
+00:01:41.510 --> 00:01:43.475
+shown here in red given
+
+36
+00:01:43.475 --> 00:01:44.930
+n known 3D point
+
+37
+00:01:44.930 --> 00:01:46.430
+coordinates and
+their corresponding
+
+38
+00:01:46.430 --> 00:01:47.975
+projection to the image plane.
+
+39
+00:01:47.975 --> 00:01:50.015
+Our approach will
+comprise of getting
+
+40
+00:01:50.015 --> 00:01:53.075
+the P matrix first and
+then decomposing it
+
+41
+00:01:53.075 --> 00:01:54.770
+into the intrinsic parameters
+
+42
+00:01:54.770 --> 00:01:56.930
+K and the extrinsic rotation
+
+43
+00:01:56.930 --> 00:01:58.850
+parameters R and translation
+
+44
+00:01:58.850 --> 00:02:02.055
+parameters t. For calibration,
+
+45
+00:02:02.055 --> 00:02:04.880
+we use a scene with
+known geometry to get
+
+46
+00:02:04.880 --> 00:02:08.720
+the location of our
+3D points from the 2D image,
+
+47
+00:02:08.720 --> 00:02:10.820
+resolving the scale
+issue by measuring
+
+48
+00:02:10.820 --> 00:02:12.440
+the actual 3D distance
+
+49
+00:02:12.440 --> 00:02:15.125
+between the points that
+are observed in the image.
+
+50
+00:02:15.125 --> 00:02:17.300
+The most commonly used example
+
+51
+00:02:17.300 --> 00:02:19.010
+would be a 3D checkerboard,
+
+52
+00:02:19.010 --> 00:02:21.440
+with squares of
+known size providing
+
+53
+00:02:21.440 --> 00:02:24.675
+a map of fixed point
+locations to observe.
+
+54
+00:02:24.675 --> 00:02:27.210
+We define our word
+coordinate frame,
+
+55
+00:02:27.210 --> 00:02:29.780
+in yellow and compute our 3D
+
+56
+00:02:29.780 --> 00:02:32.510
+point coordinates and
+their projections in the image.
+
+57
+00:02:32.510 --> 00:02:34.280
+Associating 3D points to
+
+58
+00:02:34.280 --> 00:02:36.725
+2D projections can be
+done either manually,
+
+59
+00:02:36.725 --> 00:02:38.510
+by clicking on the purple points,
+
+60
+00:02:38.510 --> 00:02:41.270
+for example or automatically,
+
+61
+00:02:41.270 --> 00:02:42.910
+with checkerboard detectors.
+
+62
+00:02:42.910 --> 00:02:45.350
+We can then set up
+a system of equations to
+
+63
+00:02:45.350 --> 00:02:47.900
+solve for the unknown
+parameters of P. Now,
+
+64
+00:02:47.900 --> 00:02:49.130
+let us form the system of
+
+65
+00:02:49.130 --> 00:02:51.230
+linear equations that
+needs to be solved.
+
+66
+00:02:51.230 --> 00:02:53.750
+First, we expand
+the projection equations to
+
+67
+00:02:53.750 --> 00:02:56.575
+three equations through
+matrix multiplication.
+
+68
+00:02:56.575 --> 00:02:59.265
+To get zero on the right-hand
+side of these equations,
+
+69
+00:02:59.265 --> 00:03:00.560
+we move the right hand side to
+
+70
+00:03:00.560 --> 00:03:02.270
+the left-hand side for each one.
+
+71
+00:03:02.270 --> 00:03:05.029
+Then, we substitute
+the third equation
+
+72
+00:03:05.029 --> 00:03:06.800
+into equations one and two,
+
+73
+00:03:06.800 --> 00:03:09.350
+and end up with
+two equations per point.
+
+74
+00:03:09.350 --> 00:03:11.435
+Therefore, if we have n points,
+
+75
+00:03:11.435 --> 00:03:13.925
+we have 2n associated equations.
+
+76
+00:03:13.925 --> 00:03:16.400
+Putting these equations
+in matrix form gives
+
+77
+00:03:16.400 --> 00:03:19.025
+us the shown homogeneous
+linear system.
+
+78
+00:03:19.025 --> 00:03:21.650
+Since this is a
+homogeneous linear system,
+
+79
+00:03:21.650 --> 00:03:24.320
+we can use the pseudo-inverse
+or even better,
+
+80
+00:03:24.320 --> 00:03:26.345
+the singular value decomposition
+
+81
+00:03:26.345 --> 00:03:28.340
+to get the least
+squares solution.
+
+82
+00:03:28.340 --> 00:03:30.560
+Our simple linear
+calibration approach
+
+83
+00:03:30.560 --> 00:03:32.015
+has several advantages.
+
+84
+00:03:32.015 --> 00:03:33.620
+It's easy to formulate,
+
+85
+00:03:33.620 --> 00:03:35.315
+has a closed form solution,
+
+86
+00:03:35.315 --> 00:03:38.495
+and often provides
+really good initial points
+
+87
+00:03:38.495 --> 00:03:40.730
+for non-linear
+calibration approaches.
+
+88
+00:03:40.730 --> 00:03:42.725
+Can you think of
+some disadvantages
+
+89
+00:03:42.725 --> 00:03:44.540
+of a simple linear system?
+
+90
+00:03:44.540 --> 00:03:47.060
+One disadvantage
+of solving for P,
+
+91
+00:03:47.060 --> 00:03:48.410
+is that we do not directly get
+
+92
+00:03:48.410 --> 00:03:50.815
+the intrinsic and extrinsic
+camera parameters.
+
+93
+00:03:50.815 --> 00:03:52.880
+Furthermore,
+our linear model does
+
+94
+00:03:52.880 --> 00:03:55.250
+not take into account
+complex phenomena,
+
+95
+00:03:55.250 --> 00:03:57.815
+such as radial and
+tangential distortion.
+
+96
+00:03:57.815 --> 00:03:59.630
+Finally, since we are solving
+
+97
+00:03:59.630 --> 00:04:01.460
+via the linear least
+squares method,
+
+98
+00:04:01.460 --> 00:04:03.770
+we cannot impose constraints
+on our solution,
+
+99
+00:04:03.770 --> 00:04:06.245
+such as requiring the focal
+length to be non-negative.
+
+100
+00:04:06.245 --> 00:04:08.430
+The camera projection
+matrix P by itself,
+
+101
+00:04:08.430 --> 00:04:11.390
+is useful for projecting
+3D points into 2D,
+
+102
+00:04:11.390 --> 00:04:13.355
+but it has several drawbacks.
+
+103
+00:04:13.355 --> 00:04:15.710
+It doesn't tell you
+the cameras pose and it
+
+104
+00:04:15.710 --> 00:04:18.095
+doesn't tell you about
+the camera's internal geometry.
+
+105
+00:04:18.095 --> 00:04:20.720
+Fortunately, we can
+factorize P into
+
+106
+00:04:20.720 --> 00:04:22.490
+intrinsic parameter matrix K
+
+107
+00:04:22.490 --> 00:04:24.260
+and extrinsic rotation parameters
+
+108
+00:04:24.260 --> 00:04:26.420
+R and translation parameters t,
+
+109
+00:04:26.420 --> 00:04:28.445
+using a linear algebra operation
+
+110
+00:04:28.445 --> 00:04:31.235
+known as the RQ factorization.
+
+111
+00:04:31.235 --> 00:04:33.985
+Let us see how we perform
+this factorization.
+
+112
+00:04:33.985 --> 00:04:37.340
+First, we alter
+the representation of P
+
+113
+00:04:37.340 --> 00:04:40.610
+to be a function of
+the camera center C. C is
+
+114
+00:04:40.610 --> 00:04:44.120
+the point that projects to
+zero when multiplied by P. We
+
+115
+00:04:44.120 --> 00:04:48.020
+multiply K into the matrix
+to form two sub-matrices,
+
+116
+00:04:48.020 --> 00:04:50.615
+KR and minus KRC.
+
+117
+00:04:50.615 --> 00:04:52.490
+We will refer to the combination
+
+118
+00:04:52.490 --> 00:04:54.545
+of K and R as the M matrix.
+
+119
+00:04:54.545 --> 00:04:56.510
+We can now express our projection
+
+120
+00:04:56.510 --> 00:05:00.175
+matrix P as M and minus MC.
+
+121
+00:05:00.175 --> 00:05:03.290
+From here, we use the fact
+that any square matrix can be
+
+122
+00:05:03.290 --> 00:05:06.350
+factored into an upper
+triangular matrix R and
+
+123
+00:05:06.350 --> 00:05:09.395
+an orthogonal basis
+to decompose M
+
+124
+00:05:09.395 --> 00:05:13.225
+into upper triangular R
+and orthogonal basis Q.
+
+125
+00:05:13.225 --> 00:05:15.150
+In linear algebra, this procedure
+
+126
+00:05:15.150 --> 00:05:16.965
+is known as RQ factorization,
+
+127
+00:05:16.965 --> 00:05:18.860
+which is a variant
+of the more commonly
+
+128
+00:05:18.860 --> 00:05:20.930
+referred to QR factorization.
+
+129
+00:05:20.930 --> 00:05:23.105
+In QR factorization, we have
+
+130
+00:05:23.105 --> 00:05:25.430
+the orthogonal Q
+first and then the
+
+131
+00:05:25.430 --> 00:05:27.770
+upper triangular
+R. Note here that
+
+132
+00:05:27.770 --> 00:05:30.605
+the R and the output
+of RQ factorization,
+
+133
+00:05:30.605 --> 00:05:33.490
+is a different variable than
+our rotation matrix R. So,
+
+134
+00:05:33.490 --> 00:05:34.760
+don't get those confused.
+
+135
+00:05:34.760 --> 00:05:36.980
+Let's now see how we
+can use the output of
+
+136
+00:05:36.980 --> 00:05:40.800
+RQ factorization of
+the matrix M to retrieve K,
+
+137
+00:05:40.800 --> 00:05:44.160
+R, and t by aligning
+these two expressions.
+
+138
+00:05:44.160 --> 00:05:47.870
+The intrinsic calibration matrix
+K is the output R of
+
+139
+00:05:47.870 --> 00:05:49.835
+the RQ factorization of M.
+
+140
+00:05:49.835 --> 00:05:53.935
+The rotation matrix R is
+the orthogonal basis Q.
+
+141
+00:05:53.935 --> 00:05:55.460
+Finally, we can extract
+
+142
+00:05:55.460 --> 00:05:57.140
+the translation vector
+directly from
+
+143
+00:05:57.140 --> 00:06:00.230
+K in the last column
+of the P matrix.
+
+144
+00:06:00.230 --> 00:06:03.800
+RQ factorization is
+a great tool to compute K,
+
+145
+00:06:03.800 --> 00:06:06.700
+R, and t from
+the camera P matrix.
+
+146
+00:06:06.700 --> 00:06:09.020
+However, some mathematical
+assumptions need to be
+
+147
+00:06:09.020 --> 00:06:10.070
+performed to guarantee
+
+148
+00:06:10.070 --> 00:06:12.005
+a unique solution
+for these matrices.
+
+149
+00:06:12.005 --> 00:06:14.300
+We will explore
+these assumptions in
+
+150
+00:06:14.300 --> 00:06:15.530
+further detail with
+
+151
+00:06:15.530 --> 00:06:17.890
+this lesson's practice
+Jupiter notebook.
+
+152
+00:06:17.890 --> 00:06:20.330
+Monocular camera calibration is
+
+153
+00:06:20.330 --> 00:06:22.310
+a well-established tool that has
+
+154
+00:06:22.310 --> 00:06:26.885
+excellent implementations
+in C++, Python and MATLAB.
+
+155
+00:06:26.885 --> 00:06:28.220
+You can test out some of
+
+156
+00:06:28.220 --> 00:06:30.290
+the most common
+implementations by following
+
+157
+00:06:30.290 --> 00:06:33.825
+the links we've included in
+the supplemental materials.
+
+158
+00:06:33.825 --> 00:06:35.700
+So, to summarize.
+
+159
+00:06:35.700 --> 00:06:37.250
+In this lesson,
+you've learned that
+
+160
+00:06:37.250 --> 00:06:39.110
+the camera projection
+matrix P can be
+
+161
+00:06:39.110 --> 00:06:41.815
+found through a process
+known as camera calibration.
+
+162
+00:06:41.815 --> 00:06:43.220
+You've learnt that
+this matrix can be
+
+163
+00:06:43.220 --> 00:06:45.950
+factored into the
+camera intrinsic matrix
+
+164
+00:06:45.950 --> 00:06:48.830
+K and the camera's
+extrinsic parameters
+
+165
+00:06:48.830 --> 00:06:51.860
+R and t, through
+RQ factorization.
+
+166
+00:06:51.860 --> 00:06:55.370
+Next up, we'll discuss
+how to get depth from
+
+167
+00:06:55.370 --> 00:06:56.780
+two camera sensors through
+
+168
+00:06:56.780 --> 00:06:59.590
+stereovision. We'll see you then.

@@ -1,0 +1,944 @@
+WEBVTT
+
+1
+00:00:14.120 --> 00:00:16.920
+Welcome everyone to
+the second part of
+
+2
+00:00:16.920 --> 00:00:19.615
+our lesson on
+Populating Occupancy Grid.
+
+3
+00:00:19.615 --> 00:00:23.070
+In this video, we will
+define the concept of
+
+4
+00:00:23.070 --> 00:00:25.815
+an inverse measurement model
+and see how to build
+
+5
+00:00:25.815 --> 00:00:29.190
+a simple inverse measurement
+model for a lidar sensor.
+
+6
+00:00:29.190 --> 00:00:31.170
+We will also describe ray
+
+7
+00:00:31.170 --> 00:00:33.320
+tracing which will significantly
+
+8
+00:00:33.320 --> 00:00:35.330
+reduce computational
+requirements for
+
+9
+00:00:35.330 --> 00:00:38.450
+the inverse measurement
+model. Let's dive in.
+
+10
+00:00:38.450 --> 00:00:41.660
+Recall from the previous video
+that in order to
+
+11
+00:00:41.660 --> 00:00:44.930
+perform the Bayesian update
+of our occupancy grid,
+
+12
+00:00:44.930 --> 00:00:48.635
+we need to be able to evaluate
+the log-odds update rule.
+
+13
+00:00:48.635 --> 00:00:53.240
+To do this we need to compute
+p of mi given yt which
+
+14
+00:00:53.240 --> 00:00:54.650
+represents the probability of
+
+15
+00:00:54.650 --> 00:00:57.979
+a cell mi in the occupancy
+grid being occupied,
+
+16
+00:00:57.979 --> 00:01:02.005
+given a certain measurement
+yt is obtained by the lidar.
+
+17
+00:01:02.005 --> 00:01:05.360
+However, so far the measurement
+models we have seen have
+
+18
+00:01:05.360 --> 00:01:08.765
+taken the form the probability
+of yt given mi,
+
+19
+00:01:08.765 --> 00:01:11.060
+which is in the mapping
+case represents
+
+20
+00:01:11.060 --> 00:01:14.045
+the probability of getting
+a certain lidar measurement,
+
+21
+00:01:14.045 --> 00:01:17.600
+given a cell in the
+occupancy grid is occupied.
+
+22
+00:01:17.600 --> 00:01:19.610
+So for occupancy grid updates,
+
+23
+00:01:19.610 --> 00:01:22.370
+we need to flip
+this measurement model around.
+
+24
+00:01:22.370 --> 00:01:24.635
+That is, we have to construct
+
+25
+00:01:24.635 --> 00:01:26.480
+an inverse measurement model that
+
+26
+00:01:26.480 --> 00:01:28.160
+constructs p of mi given
+
+27
+00:01:28.160 --> 00:01:31.475
+yt for every new
+measurement received.
+
+28
+00:01:31.475 --> 00:01:33.860
+As mentioned in
+the first lesson of
+
+29
+00:01:33.860 --> 00:01:36.020
+this module, for simplicity sake,
+
+30
+00:01:36.020 --> 00:01:38.180
+we will only look at
+the lidar data as
+
+31
+00:01:38.180 --> 00:01:42.050
+a 2D range data containing
+two sets of information.
+
+32
+00:01:42.050 --> 00:01:44.210
+The bearing at
+which each beam was
+
+33
+00:01:44.210 --> 00:01:47.525
+fired and the range
+that the beam traveled.
+
+34
+00:01:47.525 --> 00:01:49.610
+This is easily extended to
+
+35
+00:01:49.610 --> 00:01:52.690
+3D with the addition
+of an elevation angle.
+
+36
+00:01:52.690 --> 00:01:55.280
+The bearing of each beam
+is represented
+
+37
+00:01:55.280 --> 00:01:57.560
+by a set of angles Phi evenly
+
+38
+00:01:57.560 --> 00:01:59.480
+spaced within a range defined by
+
+39
+00:01:59.480 --> 00:02:02.675
+the minimum and maximum
+viewing angles of the sensor.
+
+40
+00:02:02.675 --> 00:02:05.570
+Typical rotating lidar
+are able to capture
+
+41
+00:02:05.570 --> 00:02:08.110
+data in all directions
+around the vehicle,
+
+42
+00:02:08.110 --> 00:02:10.790
+we'll assume the
+available bearings in
+
+43
+00:02:10.790 --> 00:02:14.180
+this course will cover
+all 360 degrees.
+
+44
+00:02:14.180 --> 00:02:16.130
+The range of each beam
+
+45
+00:02:16.130 --> 00:02:18.440
+corresponds to the distance
+it has traveled
+
+46
+00:02:18.440 --> 00:02:23.105
+before impacting an object
+represented by r1 to rJ.
+
+47
+00:02:23.105 --> 00:02:25.130
+The range is measured between
+
+48
+00:02:25.130 --> 00:02:28.655
+minimum and maximum ranges
+r min and r max,
+
+49
+00:02:28.655 --> 00:02:32.000
+and we'll assume r min
+is zero for simplicity.
+
+50
+00:02:32.000 --> 00:02:36.100
+Most lidar today will also
+return a no echo signal,
+
+51
+00:02:36.100 --> 00:02:38.810
+if a particular beam
+does not return an echo,
+
+52
+00:02:38.810 --> 00:02:40.235
+indicating the absence of
+
+53
+00:02:40.235 --> 00:02:43.165
+any object within range
+in that direction.
+
+54
+00:02:43.165 --> 00:02:45.175
+As we proceed in this video,
+
+55
+00:02:45.175 --> 00:02:46.910
+we will make
+an assumption here that
+
+56
+00:02:46.910 --> 00:02:49.520
+the entire lidar scan
+measurements from
+
+57
+00:02:49.520 --> 00:02:51.575
+a single rotation of the sensor
+
+58
+00:02:51.575 --> 00:02:54.680
+is measured at
+the same instant in time.
+
+59
+00:02:54.680 --> 00:02:57.230
+This is not an accurate
+model for a vehicle
+
+60
+00:02:57.230 --> 00:02:59.869
+moving at speed with
+a rotating lidar head,
+
+61
+00:02:59.869 --> 00:03:00.920
+as we must actually
+
+62
+00:03:00.920 --> 00:03:03.395
+correct for the motion
+of the vehicle,
+
+63
+00:03:03.395 --> 00:03:05.990
+the correction can be
+done using the state
+
+64
+00:03:05.990 --> 00:03:08.390
+estimates you developed
+in course two,
+
+65
+00:03:08.390 --> 00:03:09.800
+and interpolating the motion
+
+66
+00:03:09.800 --> 00:03:12.515
+between these state
+estimates as needed.
+
+67
+00:03:12.515 --> 00:03:14.540
+So the inverse measurement model
+
+68
+00:03:14.540 --> 00:03:16.415
+will take the following form.
+
+69
+00:03:16.415 --> 00:03:18.350
+Suppose this is the vehicle
+
+70
+00:03:18.350 --> 00:03:20.150
+with a lidar sensor collecting
+
+71
+00:03:20.150 --> 00:03:22.279
+range measurements at
+different bearings
+
+72
+00:03:22.279 --> 00:03:24.680
+in the following environment.
+
+73
+00:03:24.680 --> 00:03:28.430
+We construct a temporary
+occupancy grid that
+
+74
+00:03:28.430 --> 00:03:30.155
+encompasses the maximum range
+
+75
+00:03:30.155 --> 00:03:32.120
+of the beams in all directions.
+
+76
+00:03:32.120 --> 00:03:34.970
+The coordinate frame for
+this measurement grid uses
+
+77
+00:03:34.970 --> 00:03:38.270
+the occupancy grid map frame
+and so we define
+
+78
+00:03:38.270 --> 00:03:41.330
+a position x1 t and x2 t and an
+
+79
+00:03:41.330 --> 00:03:43.460
+orientation x3 t of
+
+80
+00:03:43.460 --> 00:03:45.935
+the sensor in
+the occupancy grid frame.
+
+81
+00:03:45.935 --> 00:03:48.545
+In practice, this
+occupancy grid frame
+
+82
+00:03:48.545 --> 00:03:50.270
+is set to the vehicle frame
+
+83
+00:03:50.270 --> 00:03:52.175
+and the map is transformed at
+
+84
+00:03:52.175 --> 00:03:55.145
+each step based on
+our state estimates.
+
+85
+00:03:55.145 --> 00:03:57.220
+We're now ready to populate
+
+86
+00:03:57.220 --> 00:03:58.780
+the temporary measurement grid
+
+87
+00:03:58.780 --> 00:04:00.940
+with occupancy probabilities.
+
+88
+00:04:00.940 --> 00:04:03.340
+Based on the current lidar data,
+
+89
+00:04:03.340 --> 00:04:04.480
+we can define three
+
+90
+00:04:04.480 --> 00:04:07.045
+distinct areas of
+the measurement grid.
+
+91
+00:04:07.045 --> 00:04:09.370
+First, there is an area of
+
+92
+00:04:09.370 --> 00:04:11.320
+no information which none
+
+93
+00:04:11.320 --> 00:04:13.555
+of the lidar beams had
+been able to reach.
+
+94
+00:04:13.555 --> 00:04:15.430
+The current lidar scan provides
+
+95
+00:04:15.430 --> 00:04:18.940
+no new information about
+the environment in this area.
+
+96
+00:04:18.940 --> 00:04:22.705
+Then there is an area with
+low probability of an object,
+
+97
+00:04:22.705 --> 00:04:24.610
+as all the beams
+have passed through
+
+98
+00:04:24.610 --> 00:04:27.875
+this area without
+encountering anything.
+
+99
+00:04:27.875 --> 00:04:29.980
+Finally, there is an area
+
+100
+00:04:29.980 --> 00:04:31.860
+with high probability
+of an object,
+
+101
+00:04:31.860 --> 00:04:34.150
+in which the lidar has
+come into contact with
+
+102
+00:04:34.150 --> 00:04:38.305
+an object and has returned
+a non maximum range value.
+
+103
+00:04:38.305 --> 00:04:42.100
+To translate these areas
+onto the measurement grid,
+
+104
+00:04:42.100 --> 00:04:44.740
+each grid square will
+be assigned a range in
+
+105
+00:04:44.740 --> 00:04:48.115
+bearing relative to
+the vehicles current location.
+
+106
+00:04:48.115 --> 00:04:51.070
+The relative range of
+each cell is simply
+
+107
+00:04:51.070 --> 00:04:53.380
+the Euclidean distance
+from the sensor to
+
+108
+00:04:53.380 --> 00:04:55.785
+the cell, defined as follows,
+
+109
+00:04:55.785 --> 00:04:59.830
+where ri is the range
+to grid cell i and mxi
+
+110
+00:04:59.830 --> 00:05:01.750
+and myi are the x and y
+
+111
+00:05:01.750 --> 00:05:04.325
+coordinates of the center
+of the grid cell.
+
+112
+00:05:04.325 --> 00:05:06.180
+Finally, x1 t and
+
+113
+00:05:06.180 --> 00:05:09.010
+x2 t are the sensor location
+at the current time
+
+114
+00:05:09.010 --> 00:05:11.770
+t. The relative bearing to
+
+115
+00:05:11.770 --> 00:05:14.875
+each cell is computed using
+the tan inverse function.
+
+116
+00:05:14.875 --> 00:05:17.380
+Here Phi identifies
+the bearing to
+
+117
+00:05:17.380 --> 00:05:18.790
+the given cell in
+
+118
+00:05:18.790 --> 00:05:21.410
+reference to the sensor's
+coordinate frame.
+
+119
+00:05:21.410 --> 00:05:23.410
+For each cell, we
+
+120
+00:05:23.410 --> 00:05:25.870
+associate the most
+relevant lidar beam by
+
+121
+00:05:25.870 --> 00:05:28.090
+finding the measurement
+with the minimum error
+
+122
+00:05:28.090 --> 00:05:31.295
+between its beam angle
+and the cell bearing.
+
+123
+00:05:31.295 --> 00:05:35.085
+We then define two parameters
+Alpha and Beta,
+
+124
+00:05:35.085 --> 00:05:38.455
+which define a sector
+around each beam in which
+
+125
+00:05:38.455 --> 00:05:39.880
+cell occupancy should be
+
+126
+00:05:39.880 --> 00:05:42.115
+determined based
+on the beam range.
+
+127
+00:05:42.115 --> 00:05:45.670
+This essentially creates
+a region around each beam
+
+128
+00:05:45.670 --> 00:05:46.885
+which will get assigned
+
+129
+00:05:46.885 --> 00:05:50.065
+the measurement information
+of that particular beam.
+
+130
+00:05:50.065 --> 00:05:53.620
+Alpha controls the range
+cells at the range of
+
+131
+00:05:53.620 --> 00:05:57.070
+the beam which will be
+tagged as high probability.
+
+132
+00:05:57.070 --> 00:06:00.460
+Beta controls the angle
+of the beam for which
+
+133
+00:06:00.460 --> 00:06:04.090
+cells will be marked as
+either low or high probability.
+
+134
+00:06:04.090 --> 00:06:06.085
+We are now ready to assign
+
+135
+00:06:06.085 --> 00:06:08.935
+a probability that
+any cell is occupied
+
+136
+00:06:08.935 --> 00:06:11.185
+given the lidar
+measurements received
+
+137
+00:06:11.185 --> 00:06:14.575
+based on these three
+types of cells.
+
+138
+00:06:14.575 --> 00:06:17.515
+The no information zone
+corresponds to
+
+139
+00:06:17.515 --> 00:06:20.080
+all cells with a greater range,
+
+140
+00:06:20.080 --> 00:06:23.410
+than the measured range
+or outside the angle
+
+141
+00:06:23.410 --> 00:06:27.025
+Beta sized cone for the
+measurements associated with it.
+
+142
+00:06:27.025 --> 00:06:30.790
+We assign a probability
+of an obstacle equal to
+
+143
+00:06:30.790 --> 00:06:32.800
+the prior probability
+of a cell being
+
+144
+00:06:32.800 --> 00:06:36.145
+occupied which is usually 0.5.
+
+145
+00:06:36.145 --> 00:06:38.530
+The high information zone defines
+
+146
+00:06:38.530 --> 00:06:41.200
+cells that fall within
+Alpha over two of
+
+147
+00:06:41.200 --> 00:06:43.630
+the range measurement
+and within Beta over
+
+148
+00:06:43.630 --> 00:06:47.165
+two of the angle of the
+measurement associated with it.
+
+149
+00:06:47.165 --> 00:06:50.150
+We assign an occupied
+probability of
+
+150
+00:06:50.150 --> 00:06:53.240
+greater than 0.5. to these cells.
+
+151
+00:06:53.240 --> 00:06:55.880
+Finally, the low
+information zone is
+
+152
+00:06:55.880 --> 00:06:58.730
+defined by cells that
+have a range less than
+
+153
+00:06:58.730 --> 00:07:01.770
+the measured range minus
+Alpha over two and
+
+154
+00:07:01.770 --> 00:07:05.225
+lie within the Beta sized
+cone about the measurement.
+
+155
+00:07:05.225 --> 00:07:07.640
+We assign an occupied
+probability of
+
+156
+00:07:07.640 --> 00:07:10.550
+less than 0.5 to these cells.
+
+157
+00:07:10.550 --> 00:07:14.465
+For example, let's say
+a lidar scan returns
+
+158
+00:07:14.465 --> 00:07:18.545
+a range to an object at
+the location marked by a red X.
+
+159
+00:07:18.545 --> 00:07:21.020
+The affected area which
+will be tagged as
+
+160
+00:07:21.020 --> 00:07:23.500
+high probability is given in red.
+
+161
+00:07:23.500 --> 00:07:26.690
+Increasing the value of Alpha
+will increase the range of
+
+162
+00:07:26.690 --> 00:07:29.120
+the affected region and
+increasing the value of
+
+163
+00:07:29.120 --> 00:07:31.985
+Beta affects the angle
+of the affected region.
+
+164
+00:07:31.985 --> 00:07:33.470
+We can now construct
+
+165
+00:07:33.470 --> 00:07:35.270
+the full inverse
+measurement model to
+
+166
+00:07:35.270 --> 00:07:37.750
+be used in our log-odds update.
+
+167
+00:07:37.750 --> 00:07:40.745
+However, this simple
+inverse measurement model
+
+168
+00:07:40.745 --> 00:07:42.980
+can be computationally expensive.
+
+169
+00:07:42.980 --> 00:07:45.170
+It requires a full update
+
+170
+00:07:45.170 --> 00:07:47.480
+of every cell in
+the measurement map,
+
+171
+00:07:47.480 --> 00:07:50.330
+and relies on multiple
+floating-point operations
+
+172
+00:07:50.330 --> 00:07:54.170
+to identify which measurements
+correspond to which cells.
+
+173
+00:07:54.170 --> 00:07:57.800
+An alternative, is to use
+a ray tracing algorithm,
+
+174
+00:07:57.800 --> 00:08:00.020
+such as the computer
+science classic,
+
+175
+00:08:00.020 --> 00:08:01.900
+the Bresenham's line algorithm.
+
+176
+00:08:01.900 --> 00:08:04.610
+Bresenham's line algorithm
+was originally
+
+177
+00:08:04.610 --> 00:08:07.700
+designed in the early 1960's
+to efficiently
+
+178
+00:08:07.700 --> 00:08:10.130
+solve the line
+plotting problem for
+
+179
+00:08:10.130 --> 00:08:11.840
+displays and printing on
+
+180
+00:08:11.840 --> 00:08:14.045
+the available hardware
+of the day.
+
+181
+00:08:14.045 --> 00:08:17.990
+By ray tracing along
+the beams of the lidar scan,
+
+182
+00:08:17.990 --> 00:08:19.850
+we reduce the number
+of cells that need to
+
+183
+00:08:19.850 --> 00:08:21.890
+be processed and identify them
+
+184
+00:08:21.890 --> 00:08:25.280
+more quickly relying on
+integer addition subtraction and
+
+185
+00:08:25.280 --> 00:08:27.080
+bit shifting to move through
+
+186
+00:08:27.080 --> 00:08:29.360
+the grid along the lidar beams.
+
+187
+00:08:29.360 --> 00:08:33.230
+Interestingly, many beams go
+through the same cells near
+
+188
+00:08:33.230 --> 00:08:35.180
+the car greatly increasing
+
+189
+00:08:35.180 --> 00:08:37.835
+the confidence in
+measurements nearby.
+
+190
+00:08:37.835 --> 00:08:40.220
+This concludes our discussion of
+
+191
+00:08:40.220 --> 00:08:41.720
+the inverse measurement model for
+
+192
+00:08:41.720 --> 00:08:43.975
+log odds occupancy grid mapping.
+
+193
+00:08:43.975 --> 00:08:45.515
+Let's summarize.
+
+194
+00:08:45.515 --> 00:08:47.945
+In this video, we constructed
+
+195
+00:08:47.945 --> 00:08:50.210
+a simple inverse
+measurement model for
+
+196
+00:08:50.210 --> 00:08:53.885
+lidar data needed in
+the log-odds update step.
+
+197
+00:08:53.885 --> 00:08:55.670
+We also briefly covered
+
+198
+00:08:55.670 --> 00:08:57.560
+a potential improvement by using
+
+199
+00:08:57.560 --> 00:09:00.245
+ray tracing to
+speed computations.
+
+200
+00:09:00.245 --> 00:09:01.790
+In our next video,
+
+201
+00:09:01.790 --> 00:09:04.475
+we will look into the many steps
+needed to prepare
+
+202
+00:09:04.475 --> 00:09:06.770
+a 3D lidar scan to be used
+
+203
+00:09:06.770 --> 00:09:10.290
+for occupancy grid mapping.
+See you there.

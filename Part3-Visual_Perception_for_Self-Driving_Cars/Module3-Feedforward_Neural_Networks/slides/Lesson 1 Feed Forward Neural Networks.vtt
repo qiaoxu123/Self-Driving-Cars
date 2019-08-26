@@ -1,0 +1,755 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.509
+[MUSIC]
+
+2
+00:00:03.509 --> 00:00:06.805
+[SOUND]
+
+3
+00:00:06.805 --> 00:00:16.805
+[MUSIC]
+
+4
+00:00:19.779 --> 00:00:22.265
+Hello and welcome to Week 3 of the course.
+
+5
+00:00:22.265 --> 00:00:26.473
+This week, you will learn about a topic
+that has changed the way we think about
+
+6
+00:00:26.473 --> 00:00:29.595
+autonomous perception,
+artificial neural networks.
+
+7
+00:00:29.595 --> 00:00:34.037
+Throughout this module, you will learn
+how these algorithms can be used to build
+
+8
+00:00:34.037 --> 00:00:36.456
+a self-driving car perception stack, and
+
+9
+00:00:36.456 --> 00:00:41.056
+you'll learn the different components to
+design and train a deep neural network.
+
+10
+00:00:41.056 --> 00:00:44.286
+Now we won't be able to teach you
+everything you need to know about
+
+11
+00:00:44.286 --> 00:00:45.990
+artificial neural networks, but
+
+12
+00:00:45.990 --> 00:00:48.412
+this module is a good
+introduction to the field.
+
+13
+00:00:48.412 --> 00:00:52.207
+If artificial neural networks is
+a topic that you're interested in,
+
+14
+00:00:52.207 --> 00:00:54.907
+feel free to check out some
+of the deep learning and
+
+15
+00:00:54.907 --> 00:00:57.562
+machine learning courses
+offered on Coursera.
+
+16
+00:00:57.562 --> 00:01:00.785
+In this lesson, you will learn
+about the building blocks of
+
+17
+00:01:00.785 --> 00:01:05.569
+feedforward neural networks, a very useful
+basic type of artificial neural network.
+
+18
+00:01:05.569 --> 00:01:10.509
+Specifically, we'll look at the hidden
+layers of a feedforward neural network.
+
+19
+00:01:10.509 --> 00:01:14.671
+The hidden layers are important, as they
+differentiate the mode of action of neural
+
+20
+00:01:14.671 --> 00:01:17.491
+networks from the rest of
+machine learning algorithms.
+
+21
+00:01:17.491 --> 00:01:22.458
+We'll begin by looking at the mathematical
+definition of feedforward neural networks,
+
+22
+00:01:22.458 --> 00:01:25.921
+so you can start to understand
+how to build these algorithms for
+
+23
+00:01:25.921 --> 00:01:27.246
+the perception stack.
+
+24
+00:01:27.246 --> 00:01:32.211
+A feedforward neural network
+defines a mapping from an input
+
+25
+00:01:32.211 --> 00:01:36.308
+x to an output y through
+a function f of x and theta.
+
+26
+00:01:36.308 --> 00:01:40.045
+For example, we use neural networks
+to produce outputs such as
+
+27
+00:01:40.045 --> 00:01:42.590
+the location of all
+cars in a camera image.
+
+28
+00:01:42.590 --> 00:01:48.094
+The function f takes an input x, and
+uses a set of learned parameters theta,
+
+29
+00:01:48.094 --> 00:01:51.536
+to interact with x,
+resulting in the output y.
+
+30
+00:01:51.536 --> 00:01:56.020
+The concept of learned parameters is
+important here, as we do not start with
+
+31
+00:01:56.020 --> 00:02:00.940
+the correct form of the function f, which
+maps our inputs to our outputs directly.
+
+32
+00:02:00.940 --> 00:02:05.588
+Instead, we must construct an
+approximation to the true function using
+
+33
+00:02:05.588 --> 00:02:07.349
+a generic neural network.
+
+34
+00:02:07.349 --> 00:02:12.539
+This means that neural networks can be
+thought of as function approximators.
+
+35
+00:02:12.539 --> 00:02:17.489
+Usually we describe a feedforward neural
+network as a function composition.
+
+36
+00:02:17.489 --> 00:02:21.922
+In a sense,
+each function f of i is a layer on top of
+
+37
+00:02:21.922 --> 00:02:25.286
+the previous function, f of i- 1.
+
+38
+00:02:25.286 --> 00:02:29.530
+Usually we have N functions in our
+compositions where N is a large number,
+
+39
+00:02:29.530 --> 00:02:32.897
+stacking layer upon layer for
+improved representation.
+
+40
+00:02:32.897 --> 00:02:35.861
+This layering led to
+the name deep learning for
+
+41
+00:02:35.861 --> 00:02:39.281
+the field describing these
+sequences of functions.
+
+42
+00:02:39.281 --> 00:02:42.454
+Now let us describe this
+function composition visually.
+
+43
+00:02:42.454 --> 00:02:46.205
+Here you can see a four-layer
+feedforward neural network.
+
+44
+00:02:46.205 --> 00:02:50.714
+This neural network has an input layer
+which describes the data input x
+
+45
+00:02:50.714 --> 00:02:52.784
+to the function approximator.
+
+46
+00:02:52.784 --> 00:02:56.077
+Here x can be a scalar,
+a vector, a matrix or
+
+47
+00:02:56.077 --> 00:02:59.551
+even a n-dimensional
+tensor such as images.
+
+48
+00:02:59.551 --> 00:03:03.961
+The input gets processed by the first
+layer of the neural network,
+
+49
+00:03:03.961 --> 00:03:05.467
+the function f1 of x.
+
+50
+00:03:05.467 --> 00:03:08.468
+We call this layer the first hidden layer.
+
+51
+00:03:08.468 --> 00:03:13.214
+Similarly, the second hidden layer
+processes the output of the first
+
+52
+00:03:13.214 --> 00:03:16.196
+hidden layer through the function f2 of x.
+
+53
+00:03:16.196 --> 00:03:20.714
+We can add as many hidden layers as we'd
+like, but each layer adds additional
+
+54
+00:03:20.714 --> 00:03:25.321
+parameters to be learned, and more
+computations to be performed at run time.
+
+55
+00:03:25.321 --> 00:03:29.936
+We will discuss how the number of hidden
+layers affects the performance of our
+
+56
+00:03:29.936 --> 00:03:31.783
+system later on in the course.
+
+57
+00:03:31.783 --> 00:03:35.353
+The final layer of the neural
+network is called the output layer.
+
+58
+00:03:35.353 --> 00:03:38.607
+It takes the output of
+the last hidden layer and
+
+59
+00:03:38.607 --> 00:03:41.199
+transforms it to a desired output Y.
+
+60
+00:03:41.199 --> 00:03:45.464
+Now, we should have the intuition on why
+these networks are called feedforward.
+
+61
+00:03:45.464 --> 00:03:51.497
+This is because information flows from the
+input x through some intermediate steps,
+
+62
+00:03:51.497 --> 00:03:55.869
+all the way to the output Y
+without any feedback connections.
+
+63
+00:03:55.869 --> 00:03:59.998
+The terms are used in the same
+way as we use them in Course 1,
+
+64
+00:03:59.998 --> 00:04:03.728
+when describing control for
+our self-driving car.
+
+65
+00:04:03.728 --> 00:04:06.409
+Now let us go back to
+the network definition and
+
+66
+00:04:06.409 --> 00:04:10.894
+check out how our visual representation
+matches our function composition.
+
+67
+00:04:10.894 --> 00:04:14.555
+In this expression we see x,
+which is called the input layer.
+
+68
+00:04:14.555 --> 00:04:19.413
+We see the outer most function f sub N,
+which is the output layer.
+
+69
+00:04:19.413 --> 00:04:24.082
+And we see each of the functions
+f1 to f N-1 in between,
+
+70
+00:04:24.082 --> 00:04:26.526
+which are the hidden layers.
+
+71
+00:04:26.526 --> 00:04:30.653
+Now before we delve deeper into these
+fascinating function approximators,
+
+72
+00:04:30.653 --> 00:04:34.666
+let's look at a few examples of how we
+can use them for autonomous driving.
+
+73
+00:04:34.666 --> 00:04:37.746
+Remember, this course is
+on visual perception, so
+
+74
+00:04:37.746 --> 00:04:40.691
+we'll restrict our input
+x to always be an image.
+
+75
+00:04:40.691 --> 00:04:43.949
+The most basic perception task
+is that of classification.
+
+76
+00:04:43.949 --> 00:04:49.371
+Here we require the neural network to
+tell us what is in the image via a label.
+
+77
+00:04:49.371 --> 00:04:53.563
+We can make this task more complicated
+by trying to estimate a location as
+
+78
+00:04:53.563 --> 00:04:55.911
+well as a label for objects in the scene.
+
+79
+00:04:55.911 --> 00:04:58.407
+This is called object detection.
+
+80
+00:04:58.407 --> 00:05:01.763
+Another set of tasks we might be
+interested in are pixel-wise tasks.
+
+81
+00:05:01.763 --> 00:05:06.590
+As an example we might want to estimate a
+depth value for every pixel in the image.
+
+82
+00:05:06.590 --> 00:05:09.468
+This will help us determine
+where objects are.
+
+83
+00:05:09.468 --> 00:05:13.517
+Or, we might want to determine
+which class each pixel belongs to.
+
+84
+00:05:13.517 --> 00:05:16.079
+This task is called semantic segmentation,
+and
+
+85
+00:05:16.079 --> 00:05:20.207
+we'll discuss this in depth along with
+object detection later in the course.
+
+86
+00:05:20.207 --> 00:05:24.660
+In each case, we can use a neural network
+to learn the complex mapping between
+
+87
+00:05:24.660 --> 00:05:28.565
+the raw pixel values from the image
+to the perception outputs we're
+
+88
+00:05:28.565 --> 00:05:33.321
+trying to generate, without having to
+explicitly model how that mapping works.
+
+89
+00:05:33.321 --> 00:05:38.301
+This flexibility to represent
+hard-to-model processes is what makes
+
+90
+00:05:38.301 --> 00:05:40.350
+neural networks so popular.
+
+91
+00:05:40.350 --> 00:05:45.013
+Now let's take a look at how to learn
+the parameters needed to create robust
+
+92
+00:05:45.013 --> 00:05:46.355
+perception models.
+
+93
+00:05:46.355 --> 00:05:50.249
+During a process referred to
+as Neural Network Training,
+
+94
+00:05:50.249 --> 00:05:55.571
+we drive the neural network function f of
+(x) and theta to match a true function
+
+95
+00:05:55.571 --> 00:06:00.429
+f*(x) by modifying the parameters
+theta that describe the network.
+
+96
+00:06:00.429 --> 00:06:06.199
+The modification of theta is done by
+providing the network pairs of input x and
+
+97
+00:06:06.199 --> 00:06:09.681
+its corresponding true out output f*(x).
+
+98
+00:06:09.681 --> 00:06:14.449
+We can then compare the true output to
+the output produced by the network and
+
+99
+00:06:14.449 --> 00:06:18.397
+optimize the network parameters
+to reduce the output error.
+
+100
+00:06:18.397 --> 00:06:22.561
+Since only the output of the neural
+network is specified for each example,
+
+101
+00:06:22.561 --> 00:06:26.790
+the training data does not specify what
+the network should do with its hidden
+
+102
+00:06:26.790 --> 00:06:27.335
+layers.
+
+103
+00:06:27.335 --> 00:06:31.859
+The network itself must decide how
+to modify these layers to best
+
+104
+00:06:31.859 --> 00:06:34.886
+implement an approximation of f*(x).
+
+105
+00:06:34.886 --> 00:06:39.572
+As a matter of fact, hidden units are what
+make neural networks unique when compared
+
+106
+00:06:39.572 --> 00:06:41.562
+to other machine learning models.
+
+107
+00:06:41.562 --> 00:06:46.087
+So let us define more clearly
+the hidden layer structure.
+
+108
+00:06:46.087 --> 00:06:50.604
+The hidden layer is comprised of
+an affine transformation followed by
+
+109
+00:06:50.604 --> 00:06:53.293
+an element wise non-linear function g.
+
+110
+00:06:53.293 --> 00:06:56.616
+This non-linear function is
+called the activation function.
+
+111
+00:06:56.616 --> 00:06:59.544
+The input to the nth
+hidden layer is h of n- 1,
+
+112
+00:06:59.544 --> 00:07:02.338
+the output from the previous hidden layer.
+
+113
+00:07:02.338 --> 00:07:05.520
+In the case where the layer
+is the first hidden layer,
+
+114
+00:07:05.520 --> 00:07:07.792
+its input is simply the input image x.
+
+115
+00:07:07.792 --> 00:07:12.865
+The affine transformation is
+comprised of a multiplicative
+
+116
+00:07:12.865 --> 00:07:16.947
+weight matrix W, and
+an additive bias Matrix B.
+
+117
+00:07:16.947 --> 00:07:18.054
+These weights and
+
+118
+00:07:18.054 --> 00:07:23.010
+biases are the learn parameters theta in
+the definition of the neural network.
+
+119
+00:07:23.010 --> 00:07:27.648
+Finally, the transformed input is passed
+through the activation function g.
+
+120
+00:07:27.648 --> 00:07:31.861
+Most of the time, g does not contain
+parameters to be learned by the network.
+
+121
+00:07:31.861 --> 00:07:36.601
+As an example, let us take a look at
+the rectified linear unit, or ReLU,
+
+122
+00:07:36.601 --> 00:07:41.837
+the default choice of activation functions
+in most neural networks nowadays.
+
+123
+00:07:41.837 --> 00:07:43.942
+ReLUs use the maximum between zero and
+
+124
+00:07:43.942 --> 00:07:48.889
+the output of the affine transformation as
+their element-wise non-linear function.
+
+125
+00:07:48.889 --> 00:07:54.578
+Since they are very similar to linear
+units, they're quite easy to optimize.
+
+126
+00:07:54.578 --> 00:07:59.962
+Let us go through an example of
+a ReLU hidden-layer computation.
+
+127
+00:07:59.962 --> 00:08:03.946
+We are given the output of
+the previous hidden layer hn- 1,
+
+128
+00:08:03.946 --> 00:08:06.848
+the weight matrix W,
+and the bias matrix b.
+
+129
+00:08:06.848 --> 00:08:10.222
+We first need to evaluate
+the affine transformation.
+
+130
+00:08:10.222 --> 00:08:14.040
+Remember, the weight matrix is
+transposed in the computation.
+
+131
+00:08:14.040 --> 00:08:18.300
+Let's take a look at the dimensions of
+each of the matrices in this expression.
+
+132
+00:08:18.300 --> 00:08:21.706
+hn- 1 is a 2x3 matrix in this case.
+
+133
+00:08:21.706 --> 00:08:24.423
+W is a 2x5 matrix.
+
+134
+00:08:24.423 --> 00:08:28.882
+The final result of our affine
+transformation is a 5 by 3 matrix.
+
+135
+00:08:28.882 --> 00:08:33.047
+Now, let us pass this matrix
+through the ReLU non-lineary.
+
+136
+00:08:33.047 --> 00:08:36.431
+We can see that the ReLU prevents
+any negative outputs from
+
+137
+00:08:36.431 --> 00:08:40.378
+the affine transformation from
+passing through to the next layer.
+
+138
+00:08:40.378 --> 00:08:44.568
+There are many additional activation
+functions that can be used as element wise
+
+139
+00:08:44.568 --> 00:08:47.646
+non-linearities in hidden layers for
+neural networks.
+
+140
+00:08:47.646 --> 00:08:52.825
+In fact, the design of hidden units is
+another extremely active area of research
+
+141
+00:08:52.825 --> 00:08:57.483
+in the field and does not yet
+have many guiding theoretical principles.
+
+142
+00:08:57.483 --> 00:08:58.447
+As an example,
+
+143
+00:08:58.447 --> 00:09:03.050
+certain neural network architectures
+use the sigmoid non-linearity,
+
+144
+00:09:03.050 --> 00:09:07.800
+the hyperbolic tangent non-linearity,
+and the generalization of ReLU,
+
+145
+00:09:07.800 --> 00:09:12.422
+the maxout non-linearity as their
+hidden layer activation functions.
+
+146
+00:09:12.422 --> 00:09:16.150
+If you're interested in learning more
+about neural network architectures,
+
+147
+00:09:16.150 --> 00:09:19.481
+I strongly encourage you to check out
+some of the deep learning courses
+
+148
+00:09:19.481 --> 00:09:20.566
+offered on Coursera.
+
+149
+00:09:20.566 --> 00:09:21.806
+They're amazing.
+
+150
+00:09:21.806 --> 00:09:22.676
+In this lesson,
+
+151
+00:09:22.676 --> 00:09:26.781
+you learned the main building blocks
+of feedfoward neural networks including
+
+152
+00:09:26.781 --> 00:09:30.964
+the hidden layers that comprise the core
+of the machine learning models we use.
+
+153
+00:09:30.964 --> 00:09:35.489
+You also learned different types of
+activation functions with ReLUs being
+
+154
+00:09:35.489 --> 00:09:38.948
+the default choice for
+many practitioners in the field.
+
+155
+00:09:38.948 --> 00:09:42.073
+In the next lesson,
+we'll explore the output layers and
+
+156
+00:09:42.073 --> 00:09:46.108
+then study how to learn the weights and
+bias matrices from training data,
+
+157
+00:09:46.108 --> 00:09:50.490
+setting the stage for training our first
+neural network later on in the module.
+
+158
+00:09:50.490 --> 00:09:59.182
+[MUSIC]

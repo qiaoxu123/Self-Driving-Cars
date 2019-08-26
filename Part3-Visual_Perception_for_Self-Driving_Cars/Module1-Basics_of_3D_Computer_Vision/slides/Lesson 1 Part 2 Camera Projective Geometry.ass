@@ -1,0 +1,850 @@
+WEBVTT
+
+1
+00:00:13.820 --> 00:00:16.860
+In this video, you will
+learn how to model
+
+2
+00:00:16.860 --> 00:00:19.095
+the cameras projective geometry
+
+3
+00:00:19.095 --> 00:00:21.855
+through the coordinate
+system transformation.
+
+4
+00:00:21.855 --> 00:00:25.190
+These transformations can
+be used to project points
+
+5
+00:00:25.190 --> 00:00:28.340
+from the world frame
+to the image frame,
+
+6
+00:00:28.340 --> 00:00:30.770
+building on the pinhole
+camera model
+
+7
+00:00:30.770 --> 00:00:32.420
+from the previous video.
+
+8
+00:00:32.420 --> 00:00:34.430
+Recall that you've already used
+
+9
+00:00:34.430 --> 00:00:37.655
+transformations
+extensively in Course 2.
+
+10
+00:00:37.655 --> 00:00:40.310
+You will then model
+these transformations
+
+11
+00:00:40.310 --> 00:00:41.930
+using matrix algebra and
+
+12
+00:00:41.930 --> 00:00:43.850
+apply them to a 3D point to get
+
+13
+00:00:43.850 --> 00:00:46.265
+it's 2D projection
+onto the image plane.
+
+14
+00:00:46.265 --> 00:00:48.560
+Finally, you will
+learn how camera
+
+15
+00:00:48.560 --> 00:00:51.350
+2D images are
+represented in software.
+
+16
+00:00:51.350 --> 00:00:53.720
+Equipped with
+the projection equations
+
+17
+00:00:53.720 --> 00:00:55.025
+in image definitions,
+
+18
+00:00:55.025 --> 00:00:56.420
+you will then be able to create
+
+19
+00:00:56.420 --> 00:00:58.310
+algorithms for
+detecting objects in
+
+20
+00:00:58.310 --> 00:01:01.400
+3D and localizing
+the self-driving car
+
+21
+00:01:01.400 --> 00:01:03.200
+later on in the course.
+
+22
+00:01:03.200 --> 00:01:06.935
+First, let's define
+the problem we need to solve.
+
+23
+00:01:06.935 --> 00:01:09.920
+Let's start with a
+point O world defined at
+
+24
+00:01:09.920 --> 00:01:13.250
+a particular location in
+the world coordinate frame.
+
+25
+00:01:13.250 --> 00:01:15.200
+We want to project
+this point from
+
+26
+00:01:15.200 --> 00:01:17.950
+the world frame to
+the camera image plane.
+
+27
+00:01:17.950 --> 00:01:21.455
+Light travels from
+the O world on the object
+
+28
+00:01:21.455 --> 00:01:25.250
+through the camera aperture
+to the sensor surface.
+
+29
+00:01:25.250 --> 00:01:27.304
+You can see that our projection
+
+30
+00:01:27.304 --> 00:01:28.940
+onto the sensor surface through
+
+31
+00:01:28.940 --> 00:01:30.680
+the aperture results in
+
+32
+00:01:30.680 --> 00:01:33.155
+flipped images of
+the objects in the world.
+
+33
+00:01:33.155 --> 00:01:34.910
+To avoid this confusion,
+
+34
+00:01:34.910 --> 00:01:37.340
+we usually define
+a virtual image plane
+
+35
+00:01:37.340 --> 00:01:39.365
+in front of the camera center.
+
+36
+00:01:39.365 --> 00:01:42.485
+Let's redraw our camera model
+with this sensor plane
+
+37
+00:01:42.485 --> 00:01:46.450
+instead of the real image
+plane behind the camera lens.
+
+38
+00:01:46.450 --> 00:01:50.260
+We will call this model the
+simplified camera model,
+
+39
+00:01:50.260 --> 00:01:52.540
+and need to develop
+a model for how to project
+
+40
+00:01:52.540 --> 00:01:55.300
+a point from the world
+frame coordinates x,
+
+41
+00:01:55.300 --> 00:01:57.040
+y and z to,
+
+42
+00:01:57.040 --> 00:02:00.670
+image coordinates u
+and v. We begin by
+
+43
+00:02:00.670 --> 00:02:02.680
+defining the following
+characteristics
+
+44
+00:02:02.680 --> 00:02:05.245
+of the cameras that are
+relevant to our problem.
+
+45
+00:02:05.245 --> 00:02:08.440
+First, we select
+a world frame in which to
+
+46
+00:02:08.440 --> 00:02:11.965
+define the coordinates of
+all objects and the camera.
+
+47
+00:02:11.965 --> 00:02:14.020
+We also define the camera
+
+48
+00:02:14.020 --> 00:02:16.075
+coordinate frame as
+the coordinate frame
+
+49
+00:02:16.075 --> 00:02:17.500
+attached to the center of
+
+50
+00:02:17.500 --> 00:02:20.545
+our lens aperture known
+as the optical sensor.
+
+51
+00:02:20.545 --> 00:02:22.310
+As we learned from Course 2,
+
+52
+00:02:22.310 --> 00:02:25.930
+we can define a translation
+vector and a rotation matrix
+
+53
+00:02:25.930 --> 00:02:27.595
+to model any transformation
+
+54
+00:02:27.595 --> 00:02:29.950
+between a world coordinate
+frame and another,
+
+55
+00:02:29.950 --> 00:02:31.610
+and in this case,
+we'll use the world
+
+56
+00:02:31.610 --> 00:02:34.160
+coordinate frame and
+the camera coordinate frame.
+
+57
+00:02:34.160 --> 00:02:36.440
+We refer to the parameters
+of the camera
+
+58
+00:02:36.440 --> 00:02:39.185
+pose as the extrinsic parameters,
+
+59
+00:02:39.185 --> 00:02:41.840
+as they are external to
+the camera and specific
+
+60
+00:02:41.840 --> 00:02:43.220
+to the location of the camera
+
+61
+00:02:43.220 --> 00:02:44.930
+in the world coordinate frame.
+
+62
+00:02:44.930 --> 00:02:47.000
+We define our image coordinate
+
+63
+00:02:47.000 --> 00:02:49.220
+frame as the coordinate
+frame attached
+
+64
+00:02:49.220 --> 00:02:51.035
+to our virtual image plane
+
+65
+00:02:51.035 --> 00:02:53.540
+emanating from
+the optical center.
+
+66
+00:02:53.540 --> 00:02:56.180
+The image pixel coordinate
+system however,
+
+67
+00:02:56.180 --> 00:02:59.360
+is attached to
+the top left corner
+
+68
+00:02:59.360 --> 00:03:01.335
+of the virtual image plane.
+
+69
+00:03:01.335 --> 00:03:02.690
+So we'll need to adjust
+
+70
+00:03:02.690 --> 00:03:05.660
+the pixel locations to
+the image coordinate frame.
+
+71
+00:03:05.660 --> 00:03:09.290
+Next, we define the focal length
+is the distance between
+
+72
+00:03:09.290 --> 00:03:12.230
+the camera and the
+image coordinate frames
+
+73
+00:03:12.230 --> 00:03:15.215
+along the z-axis of
+the camera coordinate frame.
+
+74
+00:03:15.215 --> 00:03:18.935
+Finally, our projection
+problem reduces to two steps.
+
+75
+00:03:18.935 --> 00:03:20.690
+We first need to project from
+
+76
+00:03:20.690 --> 00:03:23.170
+the world to the camera
+coordinates,
+
+77
+00:03:23.170 --> 00:03:24.980
+then we project from
+
+78
+00:03:24.980 --> 00:03:27.365
+the camera coordinates to
+the image coordinates.
+
+79
+00:03:27.365 --> 00:03:30.020
+We can then transform
+image coordinates to
+
+80
+00:03:30.020 --> 00:03:32.750
+pixel coordinates through
+scaling and offset.
+
+81
+00:03:32.750 --> 00:03:34.850
+We now have the geometric model
+
+82
+00:03:34.850 --> 00:03:36.860
+to allow us to
+project a point from
+
+83
+00:03:36.860 --> 00:03:38.870
+that world frame to the image
+
+84
+00:03:38.870 --> 00:03:41.220
+coordinate frame,
+whenever we want.
+
+85
+00:03:41.220 --> 00:03:43.280
+Let us formulate
+the mathematical tools
+
+86
+00:03:43.280 --> 00:03:46.220
+needed to perform this
+projection using linear algebra.
+
+87
+00:03:46.220 --> 00:03:48.470
+First, we begin with
+the transformation
+
+88
+00:03:48.470 --> 00:03:50.940
+from the world to the camera
+coordinate frame.
+
+89
+00:03:50.940 --> 00:03:52.010
+This is performed using
+
+90
+00:03:52.010 --> 00:03:54.755
+the rigid body
+transformation matrix T,
+
+91
+00:03:54.755 --> 00:03:57.515
+which has R and little t in it.
+
+92
+00:03:57.515 --> 00:03:59.840
+The next step is to transform
+
+93
+00:03:59.840 --> 00:04:02.300
+camera coordinates to
+image coordinates.
+
+94
+00:04:02.300 --> 00:04:04.025
+To perform this transformation,
+
+95
+00:04:04.025 --> 00:04:07.535
+we define the matrix K as
+a three-by-three matrix.
+
+96
+00:04:07.535 --> 00:04:11.160
+This matrix depends on
+camera intrinsic parameters,
+
+97
+00:04:11.160 --> 00:04:12.740
+which means it depends on
+
+98
+00:04:12.740 --> 00:04:14.645
+components internal to the camera
+
+99
+00:04:14.645 --> 00:04:16.610
+such as the camera geometry
+
+100
+00:04:16.610 --> 00:04:19.025
+and the camera lens
+characteristics.
+
+101
+00:04:19.025 --> 00:04:20.645
+Since both transformations
+
+102
+00:04:20.645 --> 00:04:22.290
+are just matrix multiplications,
+
+103
+00:04:22.290 --> 00:04:27.650
+we can define a matrix P
+as K times R and t,
+
+104
+00:04:27.650 --> 00:04:29.720
+that transforms from
+the world coordinate
+
+105
+00:04:29.720 --> 00:04:32.405
+frame all the way to
+the image coordinate frame.
+
+106
+00:04:32.405 --> 00:04:35.090
+The coordinates of point O in
+the world frame can now be
+
+107
+00:04:35.090 --> 00:04:37.460
+projected to the image plane via
+
+108
+00:04:37.460 --> 00:04:43.065
+the equation O sub image is
+equal to P times O sub world,
+
+109
+00:04:43.065 --> 00:04:47.955
+which is k times R
+and t of O sub world.
+
+110
+00:04:47.955 --> 00:04:49.850
+So, let's see what we're still
+
+111
+00:04:49.850 --> 00:04:52.210
+missing to compute this equation.
+
+112
+00:04:52.210 --> 00:04:54.260
+When we expect
+the matrix dimensions,
+
+113
+00:04:54.260 --> 00:04:55.940
+we noticed that
+the matrix multiplication
+
+114
+00:04:55.940 --> 00:04:57.605
+cannot be performed.
+
+115
+00:04:57.605 --> 00:04:59.270
+To remedy this problem,
+
+116
+00:04:59.270 --> 00:05:01.190
+we transform the coordinates of
+
+117
+00:05:01.190 --> 00:05:04.089
+the point O into
+homogeneous coordinates,
+
+118
+00:05:04.089 --> 00:05:07.850
+and this is done by adding
+a one at the end of the 3D
+
+119
+00:05:07.850 --> 00:05:09.725
+coordinates as we saw
+
+120
+00:05:09.725 --> 00:05:12.695
+in the second state
+estimation course.
+
+121
+00:05:12.695 --> 00:05:15.140
+So, now the dimensions
+work and we're all
+
+122
+00:05:15.140 --> 00:05:18.595
+ready to start computing
+our projections.
+
+123
+00:05:18.595 --> 00:05:21.570
+Now, we need to perform
+the final step,
+
+124
+00:05:21.570 --> 00:05:24.815
+transforming the image
+coordinates to pixel coordinates.
+
+125
+00:05:24.815 --> 00:05:27.560
+We do so by dividing x and y by
+
+126
+00:05:27.560 --> 00:05:31.550
+z to get homogeneous coordinates
+in the image plane.
+
+127
+00:05:31.550 --> 00:05:34.550
+You have completed the basic
+camera projection model.
+
+128
+00:05:34.550 --> 00:05:36.140
+In practice, we usually model
+
+129
+00:05:36.140 --> 00:05:39.709
+more complex phenomena
+such as non-square pixels,
+
+130
+00:05:39.709 --> 00:05:44.420
+camera access skew, distortion
+and non unit aspect ratio.
+
+131
+00:05:44.420 --> 00:05:47.659
+Luckily, this only changes
+the camera K matrix,
+
+132
+00:05:47.659 --> 00:05:49.760
+and the equations you
+have learned can be used
+
+133
+00:05:49.760 --> 00:05:53.045
+as is with a few
+additional parameters.
+
+134
+00:05:53.045 --> 00:05:55.955
+Now that we have formulated
+the coordinates of projection
+
+135
+00:05:55.955 --> 00:05:58.435
+of a 3D point onto
+the 2D image plane,
+
+136
+00:05:58.435 --> 00:06:00.950
+we want to define
+what values go into
+
+137
+00:06:00.950 --> 00:06:04.070
+the coordinates in
+a 2D color image.
+
+138
+00:06:04.070 --> 00:06:06.395
+We will start with
+a grayscale image.
+
+139
+00:06:06.395 --> 00:06:10.505
+We first define a width N
+and a height M of an image,
+
+140
+00:06:10.505 --> 00:06:13.570
+as the number of rows and
+columns the image has.
+
+141
+00:06:13.570 --> 00:06:16.370
+Each point in 3D projects
+to a pixel on
+
+142
+00:06:16.370 --> 00:06:17.450
+the image defined by
+
+143
+00:06:17.450 --> 00:06:19.790
+the uv coordinates
+we derived earlier.
+
+144
+00:06:19.790 --> 00:06:22.595
+Zooming in, we can see
+these pixels is a grid.
+
+145
+00:06:22.595 --> 00:06:25.535
+In grayscale, brightness
+information is written
+
+146
+00:06:25.535 --> 00:06:28.805
+in each pixel as
+an unsigned eight bit integer.
+
+147
+00:06:28.805 --> 00:06:30.695
+Some cameras can produce
+
+148
+00:06:30.695 --> 00:06:34.520
+unsigned 16-bit integers
+for better quality images.
+
+149
+00:06:34.520 --> 00:06:36.680
+For color images, we have
+
+150
+00:06:36.680 --> 00:06:40.010
+a third dimension of value
+three we call depth.
+
+151
+00:06:40.010 --> 00:06:42.950
+Each channel of
+this depth represents how
+
+152
+00:06:42.950 --> 00:06:46.325
+much of a certain color
+exists in the image.
+
+153
+00:06:46.325 --> 00:06:49.220
+Many other color
+representations are available,
+
+154
+00:06:49.220 --> 00:06:51.770
+but we will be using
+the RGB representation,
+
+155
+00:06:51.770 --> 00:06:54.550
+so red green blue,
+throughout this course.
+
+156
+00:06:54.550 --> 00:06:56.960
+In conclusion, an image
+is represented
+
+157
+00:06:56.960 --> 00:07:00.260
+digitally as an M by N by
+three array of pixels,
+
+158
+00:07:00.260 --> 00:07:02.554
+with each pixel
+representing the projection
+
+159
+00:07:02.554 --> 00:07:05.470
+of a 3D point onto
+the 2D image plane.
+
+160
+00:07:05.470 --> 00:07:07.300
+So, in this video,
+
+161
+00:07:07.300 --> 00:07:08.480
+you learned how to project
+
+162
+00:07:08.480 --> 00:07:10.340
+3D points in the world coordinate
+
+163
+00:07:10.340 --> 00:07:14.060
+frame to 2D points in
+the image coordinate frame.
+
+164
+00:07:14.060 --> 00:07:15.950
+You saw that the equations that
+
+165
+00:07:15.950 --> 00:07:18.290
+perform this projection rely on
+
+166
+00:07:18.290 --> 00:07:21.080
+camera intrinsic
+parameters as well as
+
+167
+00:07:21.080 --> 00:07:22.535
+on the location of the camera
+
+168
+00:07:22.535 --> 00:07:24.395
+in the world coordinate frame.
+
+169
+00:07:24.395 --> 00:07:27.100
+As we'll see later
+throughout the course,
+
+170
+00:07:27.100 --> 00:07:29.315
+this projection model is used in
+
+171
+00:07:29.315 --> 00:07:32.525
+every visual perception
+algorithm we develop,
+
+172
+00:07:32.525 --> 00:07:36.230
+from object detection to
+derivable space estimation.
+
+173
+00:07:36.230 --> 00:07:39.590
+Finally, you've learned how
+images are represented in
+
+174
+00:07:39.590 --> 00:07:43.415
+software as an array
+representing pixel locations.
+
+175
+00:07:43.415 --> 00:07:45.080
+You're now ready to start working
+
+176
+00:07:45.080 --> 00:07:47.420
+directly with images
+and software,
+
+177
+00:07:47.420 --> 00:07:49.730
+as you'll do in
+this week's assessments.
+
+178
+00:07:49.730 --> 00:07:51.140
+In the next video,
+
+179
+00:07:51.140 --> 00:07:53.390
+you will learn how to
+tailor the camera model to
+
+180
+00:07:53.390 --> 00:07:55.790
+a specific camera by computing
+
+181
+00:07:55.790 --> 00:07:58.940
+its intrinsic and extrinsic
+camera parameters
+
+182
+00:07:58.940 --> 00:08:02.790
+through a process known
+as camera calibration.

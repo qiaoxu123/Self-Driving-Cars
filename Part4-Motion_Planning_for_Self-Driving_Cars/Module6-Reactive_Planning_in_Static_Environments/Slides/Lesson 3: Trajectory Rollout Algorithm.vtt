@@ -1,0 +1,1291 @@
+WEBVTT
+
+1
+00:00:14.300 --> 00:00:16.710
+Hi everyone, and welcome to
+
+2
+00:00:16.710 --> 00:00:18.945
+this lesson on reactive planning.
+
+3
+00:00:18.945 --> 00:00:21.510
+In this video, we'll combine
+some of the knowledge we
+
+4
+00:00:21.510 --> 00:00:23.850
+acquired from
+the two previous lessons,
+
+5
+00:00:23.850 --> 00:00:26.310
+to develop a reactive motion
+planning algorithm
+
+6
+00:00:26.310 --> 00:00:29.190
+known as the trajectory
+roll-out planner.
+
+7
+00:00:29.190 --> 00:00:30.980
+This will introduce us to
+
+8
+00:00:30.980 --> 00:00:32.930
+the task of trajectory planning,
+
+9
+00:00:32.930 --> 00:00:35.420
+which will lay the groundwork
+for us to progress to
+
+10
+00:00:35.420 --> 00:00:36.890
+more advanced planning methods
+
+11
+00:00:36.890 --> 00:00:39.245
+presented later in module seven.
+
+12
+00:00:39.245 --> 00:00:41.120
+By the end of this video,
+
+13
+00:00:41.120 --> 00:00:42.650
+you should be able to implement
+
+14
+00:00:42.650 --> 00:00:44.615
+the trajectory
+roll-out algorithm.
+
+15
+00:00:44.615 --> 00:00:47.805
+This includes the trajectory
+propagation step,
+
+16
+00:00:47.805 --> 00:00:49.615
+the collision checking step,
+
+17
+00:00:49.615 --> 00:00:51.830
+and the path selection step in
+
+18
+00:00:51.830 --> 00:00:54.455
+order to achieve
+the desired goal state.
+
+19
+00:00:54.455 --> 00:00:56.690
+You should also understand how to
+
+20
+00:00:56.690 --> 00:00:59.045
+apply the receding
+horizon concept
+
+21
+00:00:59.045 --> 00:01:01.520
+to planning and
+the main drawbacks
+
+22
+00:01:01.520 --> 00:01:03.875
+associated with
+this type of planner.
+
+23
+00:01:03.875 --> 00:01:05.495
+At a high level,
+
+24
+00:01:05.495 --> 00:01:07.490
+the trajectory
+roll-out planner uses
+
+25
+00:01:07.490 --> 00:01:10.640
+the method of trajectory
+propagation discussed in lesson
+
+26
+00:01:10.640 --> 00:01:13.070
+one to generate a set of
+
+27
+00:01:13.070 --> 00:01:15.200
+candidate trajectories
+that the robot can
+
+28
+00:01:15.200 --> 00:01:18.605
+follow from its current
+point in the workspace.
+
+29
+00:01:18.605 --> 00:01:21.890
+We then take the obstacle
+information local to
+
+30
+00:01:21.890 --> 00:01:23.360
+the robot and determine
+
+31
+00:01:23.360 --> 00:01:26.405
+which paths are collision-free
+and which aren't.
+
+32
+00:01:26.405 --> 00:01:28.744
+Of these collision-free paths,
+
+33
+00:01:28.744 --> 00:01:30.290
+we then select the one that
+
+34
+00:01:30.290 --> 00:01:32.810
+maximizes an objective function,
+
+35
+00:01:32.810 --> 00:01:34.310
+which will include a term that
+
+36
+00:01:34.310 --> 00:01:37.070
+rewards progress
+towards the goal.
+
+37
+00:01:37.070 --> 00:01:39.365
+By performing this repeatedly,
+
+38
+00:01:39.365 --> 00:01:42.650
+we end up with a receding
+horizon planner that reacts
+
+39
+00:01:42.650 --> 00:01:43.970
+to the environment while making
+
+40
+00:01:43.970 --> 00:01:46.460
+steady progress towards the goal.
+
+41
+00:01:46.460 --> 00:01:48.590
+Let's go over each
+of these steps in
+
+42
+00:01:48.590 --> 00:01:52.290
+more detail so you can
+implement this yourself.
+
+43
+00:01:52.450 --> 00:01:55.370
+The first step of
+the algorithm is to
+
+44
+00:01:55.370 --> 00:01:58.670
+generate the set of
+trajectories at each time step.
+
+45
+00:01:58.670 --> 00:02:00.090
+How do we do this?
+
+46
+00:02:00.090 --> 00:02:01.825
+For trajectory roll-out,
+
+47
+00:02:01.825 --> 00:02:04.685
+each trajectory will
+correspond to applying
+
+48
+00:02:04.685 --> 00:02:07.130
+a fixed input to the robot for
+
+49
+00:02:07.130 --> 00:02:10.070
+multiple steps over
+a constant time horizon.
+
+50
+00:02:10.070 --> 00:02:13.145
+We uniformly sample
+these fixed inputs
+
+51
+00:02:13.145 --> 00:02:14.450
+across the range of
+
+52
+00:02:14.450 --> 00:02:16.820
+available input values
+in order to
+
+53
+00:02:16.820 --> 00:02:20.570
+generate a variety of potential
+candidate trajectories.
+
+54
+00:02:20.570 --> 00:02:22.520
+By reaching a wide variety of
+
+55
+00:02:22.520 --> 00:02:25.025
+trajectories across
+the input spectrum,
+
+56
+00:02:25.025 --> 00:02:28.355
+we improve the quality of
+our trajectory search and
+
+57
+00:02:28.355 --> 00:02:30.755
+our maneuverability
+as we are exploring
+
+58
+00:02:30.755 --> 00:02:34.240
+a broader set of candidate
+paths for the robot to take.
+
+59
+00:02:34.240 --> 00:02:37.160
+If we only use
+a small range of inputs,
+
+60
+00:02:37.160 --> 00:02:39.140
+then our computation
+time improves.
+
+61
+00:02:39.140 --> 00:02:41.780
+But there may be
+potential trajectory candidates
+
+62
+00:02:41.780 --> 00:02:43.955
+that we miss out on
+in our computation,
+
+63
+00:02:43.955 --> 00:02:45.950
+which could reduce the quality of
+
+64
+00:02:45.950 --> 00:02:48.640
+the trajectory generated
+by our planner.
+
+65
+00:02:48.640 --> 00:02:50.603
+However, sampling
+
+66
+00:02:50.603 --> 00:02:52.790
+too many candidate trajectories
+means that we have
+
+67
+00:02:52.790 --> 00:02:54.500
+additional computational
+overhead at
+
+68
+00:02:54.500 --> 00:02:57.140
+each step as each
+additional trajectory
+
+69
+00:02:57.140 --> 00:02:58.370
+will need to be generated,
+
+70
+00:02:58.370 --> 00:03:01.200
+checked for collisions,
+and scored.
+
+71
+00:03:01.870 --> 00:03:04.970
+Once we've chosen
+our set of inputs,
+
+72
+00:03:04.970 --> 00:03:06.350
+we then need to generate
+
+73
+00:03:06.350 --> 00:03:09.500
+the future states along
+the trajectory by propagating
+
+74
+00:03:09.500 --> 00:03:11.960
+the state forward using
+the kinematic model
+
+75
+00:03:11.960 --> 00:03:15.235
+of the vehicle as we
+discussed in lesson one.
+
+76
+00:03:15.235 --> 00:03:17.700
+Recall that for
+the bicycle model,
+
+77
+00:03:17.700 --> 00:03:21.335
+the two inputs are the velocity
+in the steering angle.
+
+78
+00:03:21.335 --> 00:03:23.750
+If we hold the velocity constant,
+
+79
+00:03:23.750 --> 00:03:25.700
+but vary the steering
+angle across
+
+80
+00:03:25.700 --> 00:03:28.570
+the range minus pie over
+four to pie over four,
+
+81
+00:03:28.570 --> 00:03:32.390
+we now have a set of arcs as
+our candidate trajectories.
+
+82
+00:03:32.390 --> 00:03:34.820
+These arcs are
+generated by evaluating
+
+83
+00:03:34.820 --> 00:03:36.905
+the kinematic
+equations recursively
+
+84
+00:03:36.905 --> 00:03:39.095
+as we discussed in lesson one.
+
+85
+00:03:39.095 --> 00:03:40.880
+Now that we have the set of arcs,
+
+86
+00:03:40.880 --> 00:03:44.125
+we can check to see which ones
+are collision-free.
+
+87
+00:03:44.125 --> 00:03:46.525
+For a collision
+checking algorithm,
+
+88
+00:03:46.525 --> 00:03:49.790
+we're going to assume that we
+are given an occupancy grid
+
+89
+00:03:49.790 --> 00:03:51.650
+that represents a discretization
+
+90
+00:03:51.650 --> 00:03:53.255
+of the vehicles workspace.
+
+91
+00:03:53.255 --> 00:03:55.580
+This discretization
+will be stored in
+
+92
+00:03:55.580 --> 00:03:58.010
+the form of a matrix
+where each value of
+
+93
+00:03:58.010 --> 00:03:59.360
+the matrix will denote if
+
+94
+00:03:59.360 --> 00:04:00.800
+the corresponding position in
+
+95
+00:04:00.800 --> 00:04:03.320
+the workspace is occupied or not.
+
+96
+00:04:03.320 --> 00:04:06.350
+We can then perform
+collision checking using
+
+97
+00:04:06.350 --> 00:04:07.760
+the swath-based method we
+
+98
+00:04:07.760 --> 00:04:09.770
+discussed in the previous video.
+
+99
+00:04:09.770 --> 00:04:12.530
+Recall that we
+generate the swath by
+
+100
+00:04:12.530 --> 00:04:15.500
+sweeping the body of
+the robot along the path,
+
+101
+00:04:15.500 --> 00:04:16.985
+and taking the union of
+
+102
+00:04:16.985 --> 00:04:18.200
+all the footprints at
+
+103
+00:04:18.200 --> 00:04:20.720
+each time step of
+a given trajectory.
+
+104
+00:04:20.720 --> 00:04:23.780
+The footprint of the car
+will correspond to
+
+105
+00:04:23.780 --> 00:04:26.330
+a set of indices in
+the occupancy grid.
+
+106
+00:04:26.330 --> 00:04:29.525
+So each rotated and translated
+point along the path
+
+107
+00:04:29.525 --> 00:04:31.010
+will also correspond to
+
+108
+00:04:31.010 --> 00:04:33.710
+different indices in
+the occupancy grid.
+
+109
+00:04:33.710 --> 00:04:35.720
+These indices will be stored in
+
+110
+00:04:35.720 --> 00:04:38.945
+a set data structure to
+eliminate duplicates.
+
+111
+00:04:38.945 --> 00:04:40.940
+We can then check each point of
+
+112
+00:04:40.940 --> 00:04:42.630
+the swath to see which points of
+
+113
+00:04:42.630 --> 00:04:44.090
+the swath overlap with
+
+114
+00:04:44.090 --> 00:04:46.490
+occupied elements of
+the occupancy grid.
+
+115
+00:04:46.490 --> 00:04:48.470
+We do this by iterating through
+
+116
+00:04:48.470 --> 00:04:50.360
+each point in the swath set
+
+117
+00:04:50.360 --> 00:04:52.370
+and checking the associated index
+
+118
+00:04:52.370 --> 00:04:54.770
+in the occupancy grid
+for an obstacle.
+
+119
+00:04:54.770 --> 00:04:57.785
+If any point in
+the swath is occupied,
+
+120
+00:04:57.785 --> 00:05:00.500
+then that trajectory
+contains a collision.
+
+121
+00:05:00.500 --> 00:05:02.150
+Once we've iterated through
+
+122
+00:05:02.150 --> 00:05:04.840
+every trajectory generated
+in the previous step,
+
+123
+00:05:04.840 --> 00:05:06.640
+we will be left with a set of
+
+124
+00:05:06.640 --> 00:05:10.040
+collision-free kinematically
+feasible trajectories
+
+125
+00:05:10.040 --> 00:05:13.670
+that we can then score using
+our objective function.
+
+126
+00:05:13.670 --> 00:05:15.620
+The primary element that
+
+127
+00:05:15.620 --> 00:05:18.200
+every objective function
+needs is some way
+
+128
+00:05:18.200 --> 00:05:22.280
+of rewarding progress towards
+some goal point or region,
+
+129
+00:05:22.280 --> 00:05:23.360
+which is the ultimate goal
+
+130
+00:05:23.360 --> 00:05:24.950
+of our motion planning problem.
+
+131
+00:05:24.950 --> 00:05:27.560
+A simple and effective way
+to do this is to
+
+132
+00:05:27.560 --> 00:05:29.810
+have a term in the objective
+function that is
+
+133
+00:05:29.810 --> 00:05:32.270
+proportional to
+the distance from the end
+
+134
+00:05:32.270 --> 00:05:36.025
+of the candidate trajectory
+to the goal node.
+
+135
+00:05:36.025 --> 00:05:39.170
+However, sometimes
+we will also want to
+
+136
+00:05:39.170 --> 00:05:42.215
+encourage other behavior
+in our reactive planner.
+
+137
+00:05:42.215 --> 00:05:44.395
+As we saw in module one,
+
+138
+00:05:44.395 --> 00:05:47.120
+some examples of
+objective functions include
+
+139
+00:05:47.120 --> 00:05:50.120
+minimizing the distance from
+the center line of a lane,
+
+140
+00:05:50.120 --> 00:05:53.135
+we're penalizing
+the curvature of a path.
+
+141
+00:05:53.135 --> 00:05:56.260
+Sometimes, we also
+want to reward paths
+
+142
+00:05:56.260 --> 00:05:59.365
+that maximize the distance
+to the nearest obstacle,
+
+143
+00:05:59.365 --> 00:06:01.660
+to maximize the flexibility of
+
+144
+00:06:01.660 --> 00:06:03.310
+feasible paths available to
+
+145
+00:06:03.310 --> 00:06:05.485
+future time steps in the planner.
+
+146
+00:06:05.485 --> 00:06:07.570
+As we discussed in module one,
+
+147
+00:06:07.570 --> 00:06:10.000
+there is no perfect
+objective function,
+
+148
+00:06:10.000 --> 00:06:11.170
+and you will need to craft
+
+149
+00:06:11.170 --> 00:06:14.555
+your own objective functions
+to fit your application.
+
+150
+00:06:14.555 --> 00:06:16.895
+For our reactive planner,
+
+151
+00:06:16.895 --> 00:06:18.460
+we will use the distance to
+
+152
+00:06:18.460 --> 00:06:21.054
+the goal as our objective
+function to minimize,
+
+153
+00:06:21.054 --> 00:06:23.740
+which is the first
+equation shown here.
+
+154
+00:06:23.740 --> 00:06:26.620
+Once we have
+the objective function,
+
+155
+00:06:26.620 --> 00:06:29.500
+we can iterate over
+the collision-free trajectories,
+
+156
+00:06:29.500 --> 00:06:32.720
+and pick the path that maximizes
+the objective function,
+
+157
+00:06:32.720 --> 00:06:34.160
+or minimizes the penalty
+
+158
+00:06:34.160 --> 00:06:37.170
+depending on how you
+formulate the objective.
+
+159
+00:06:37.750 --> 00:06:40.430
+Let's go over a concrete example
+
+160
+00:06:40.430 --> 00:06:42.515
+to bring the whole
+algorithm together.
+
+161
+00:06:42.515 --> 00:06:44.884
+Pictured here, we
+have the obstacles
+
+162
+00:06:44.884 --> 00:06:47.120
+in the occupancy grid
+given in red,
+
+163
+00:06:47.120 --> 00:06:49.400
+the goal region in yellow,
+
+164
+00:06:49.400 --> 00:06:53.075
+and the initial point to
+the car at zero, zero, zero.
+
+165
+00:06:53.075 --> 00:06:56.990
+Suppose our range of steering
+angles is between minus pie
+
+166
+00:06:56.990 --> 00:06:58.685
+over four and pie over four
+
+167
+00:06:58.685 --> 00:07:00.935
+with a pie over eight step size,
+
+168
+00:07:00.935 --> 00:07:02.270
+and suppose we are using
+
+169
+00:07:02.270 --> 00:07:05.690
+a constant velocity of
+0.5 meters per second.
+
+170
+00:07:05.690 --> 00:07:07.430
+In addition, let's assume
+
+171
+00:07:07.430 --> 00:07:10.070
+our planner is using
+a time step of 0.1
+
+172
+00:07:10.070 --> 00:07:12.560
+seconds and each plan trajectory
+
+173
+00:07:12.560 --> 00:07:14.755
+lasts for two seconds in total.
+
+174
+00:07:14.755 --> 00:07:17.915
+If we apply our trajectory
+propagation algorithm
+
+175
+00:07:17.915 --> 00:07:19.340
+that we outlined in lesson one
+
+176
+00:07:19.340 --> 00:07:21.545
+using our bicycle
+kinematics model,
+
+177
+00:07:21.545 --> 00:07:24.410
+we can then generate
+a set of paths for
+
+178
+00:07:24.410 --> 00:07:27.530
+each selected steering angle
+in our steering range.
+
+179
+00:07:27.530 --> 00:07:30.020
+The first trajectory
+has a steering angle of
+
+180
+00:07:30.020 --> 00:07:32.525
+minus pie over
+four and as a result,
+
+181
+00:07:32.525 --> 00:07:35.450
+we can see that the trajectory
+curves to the right.
+
+182
+00:07:35.450 --> 00:07:37.850
+Our next trajectory has
+a steering angle of
+
+183
+00:07:37.850 --> 00:07:40.310
+minus pie over eight
+and as you can see,
+
+184
+00:07:40.310 --> 00:07:41.840
+the trajectory generated has
+
+185
+00:07:41.840 --> 00:07:44.195
+a smaller curvature
+than the first one.
+
+186
+00:07:44.195 --> 00:07:47.480
+Next, we have the zero
+steering angle trajectory
+
+187
+00:07:47.480 --> 00:07:48.710
+which results in the car
+
+188
+00:07:48.710 --> 00:07:51.085
+driving forward in
+a straight line.
+
+189
+00:07:51.085 --> 00:07:53.315
+The positive steering
+angle trajectories
+
+190
+00:07:53.315 --> 00:07:54.350
+are symmetrical to
+
+191
+00:07:54.350 --> 00:07:57.440
+the negative steering angle
+trajectories and as expected,
+
+192
+00:07:57.440 --> 00:07:59.840
+turn the car to the left.
+
+193
+00:07:59.840 --> 00:08:03.080
+Now that we have a candidate set
+of trajectories,
+
+194
+00:08:03.080 --> 00:08:04.430
+we need to check each
+
+195
+00:08:04.430 --> 00:08:06.395
+one to see if they
+are collision-free
+
+196
+00:08:06.395 --> 00:08:08.525
+using the collision
+checking algorithm
+
+197
+00:08:08.525 --> 00:08:10.445
+we outlined in the last video,
+
+198
+00:08:10.445 --> 00:08:12.725
+and reviewed earlier in this one.
+
+199
+00:08:12.725 --> 00:08:15.110
+After translating and rotating
+
+200
+00:08:15.110 --> 00:08:17.495
+the footprints along
+each trajectory,
+
+201
+00:08:17.495 --> 00:08:19.940
+we check each occupancy
+grid index in
+
+202
+00:08:19.940 --> 00:08:23.300
+the resulting swath to see
+if an obstacle is present.
+
+203
+00:08:23.300 --> 00:08:26.570
+If any of the indices
+contain an obstacle,
+
+204
+00:08:26.570 --> 00:08:29.585
+then that path is marked
+as having a collision,
+
+205
+00:08:29.585 --> 00:08:32.405
+which we've denoted
+by the color red.
+
+206
+00:08:32.405 --> 00:08:35.570
+All collision-free paths
+are colored green,
+
+207
+00:08:35.570 --> 00:08:37.595
+which we can then evaluate using
+
+208
+00:08:37.595 --> 00:08:40.610
+our objective function
+to find the best one.
+
+209
+00:08:40.610 --> 00:08:42.725
+Recall that
+our objective function
+
+210
+00:08:42.725 --> 00:08:44.585
+is the distance to the goal.
+
+211
+00:08:44.585 --> 00:08:46.880
+The path that minimizes
+this distance
+
+212
+00:08:46.880 --> 00:08:49.265
+to the goal is now
+colored in black.
+
+213
+00:08:49.265 --> 00:08:52.700
+This completes our first
+planning iteration.
+
+214
+00:08:52.700 --> 00:08:54.680
+At this point, we now have
+
+215
+00:08:54.680 --> 00:08:56.780
+a trajectory for
+the vehicle to execute.
+
+216
+00:08:56.780 --> 00:08:59.030
+However, we will
+not fully execute
+
+217
+00:08:59.030 --> 00:09:01.660
+this trajectory before
+the next planning cycle.
+
+218
+00:09:01.660 --> 00:09:03.725
+Instead, the vehicle will execute
+
+219
+00:09:03.725 --> 00:09:05.810
+only the first few points
+of the cycle.
+
+220
+00:09:05.810 --> 00:09:09.200
+The exact number depends on
+the planning frequency and
+
+221
+00:09:09.200 --> 00:09:10.880
+our planning horizon
+will be shifted
+
+222
+00:09:10.880 --> 00:09:13.240
+forward depending
+on our progress.
+
+223
+00:09:13.240 --> 00:09:14.950
+This is exactly the receding
+
+224
+00:09:14.950 --> 00:09:16.750
+horizon approach you applied to
+
+225
+00:09:16.750 --> 00:09:18.070
+vehicle control in
+
+226
+00:09:18.070 --> 00:09:20.425
+the first course in
+this specialization.
+
+227
+00:09:20.425 --> 00:09:22.075
+Bringing this all together,
+
+228
+00:09:22.075 --> 00:09:23.245
+at each time step,
+
+229
+00:09:23.245 --> 00:09:25.165
+we plan a two-second trajectory,
+
+230
+00:09:25.165 --> 00:09:28.435
+but only execute one second
+of it at a time.
+
+231
+00:09:28.435 --> 00:09:30.730
+By doing this, the end time of
+
+232
+00:09:30.730 --> 00:09:32.530
+our planning horizon
+shifts forward by
+
+233
+00:09:32.530 --> 00:09:35.005
+one second for
+each planning cycle.
+
+234
+00:09:35.005 --> 00:09:37.930
+This is known as
+a receding horizon planner
+
+235
+00:09:37.930 --> 00:09:39.640
+because at each
+planning cycle we have
+
+236
+00:09:39.640 --> 00:09:42.750
+a fixed planning time
+horizon whose n times
+
+237
+00:09:42.750 --> 00:09:45.100
+slowly recedes towards
+the time point
+
+238
+00:09:45.100 --> 00:09:46.750
+at which we reach the goal.
+
+239
+00:09:46.750 --> 00:09:48.490
+This is illustrated
+here where the
+
+240
+00:09:48.490 --> 00:09:50.620
+black is the portion of
+the trajectory that will
+
+241
+00:09:50.620 --> 00:09:52.600
+be executed on the current cycle
+
+242
+00:09:52.600 --> 00:09:55.675
+and the orange part is
+the leftover portion.
+
+243
+00:09:55.675 --> 00:09:58.405
+Once the next planning
+cycle begins,
+
+244
+00:09:58.405 --> 00:10:00.585
+we repeat the whole
+process again.
+
+245
+00:10:00.585 --> 00:10:03.110
+We continue this process
+until we compute
+
+246
+00:10:03.110 --> 00:10:05.690
+a trajectory that
+reaches the goal region,
+
+247
+00:10:05.690 --> 00:10:08.210
+which we check at the end
+of each iteration.
+
+248
+00:10:08.210 --> 00:10:11.150
+You can now see the rest of
+the steps that the planner
+
+249
+00:10:11.150 --> 00:10:14.970
+took to the goal region
+in our example problem.
+
+250
+00:10:15.190 --> 00:10:17.630
+One caveat to notice about
+
+251
+00:10:17.630 --> 00:10:19.820
+this planner is
+that it is myopic.
+
+252
+00:10:19.820 --> 00:10:23.165
+That is, it doesn't plan
+a path directly to the goal.
+
+253
+00:10:23.165 --> 00:10:25.910
+It instead greedily
+sample sub-paths
+
+254
+00:10:25.910 --> 00:10:29.195
+according to how close they
+get the robot to the goal.
+
+255
+00:10:29.195 --> 00:10:32.165
+This can cause the planner
+to be shortsighted,
+
+256
+00:10:32.165 --> 00:10:34.025
+to get stuck in dead ends,
+
+257
+00:10:34.025 --> 00:10:35.720
+and in general, will
+cause the planner
+
+258
+00:10:35.720 --> 00:10:38.155
+to find sub-optimal paths.
+
+259
+00:10:38.155 --> 00:10:40.240
+However, this planner greatly
+
+260
+00:10:40.240 --> 00:10:42.520
+reduces the complexity of
+the planning problem to
+
+261
+00:10:42.520 --> 00:10:44.500
+the goal region and is fast
+
+262
+00:10:44.500 --> 00:10:47.290
+enough that it can be used
+as an online planner.
+
+263
+00:10:47.290 --> 00:10:49.555
+To summarize this video,
+
+264
+00:10:49.555 --> 00:10:51.280
+we introduce the steps of
+
+265
+00:10:51.280 --> 00:10:54.025
+the trajectory roll-out
+motion planning algorithm.
+
+266
+00:10:54.025 --> 00:10:55.990
+Combining the concepts
+introduced in
+
+267
+00:10:55.990 --> 00:10:59.205
+the first two lessons regarding
+trajectory propagation,
+
+268
+00:10:59.205 --> 00:11:01.095
+as well as, collision checking.
+
+269
+00:11:01.095 --> 00:11:02.860
+To cement this concept,
+
+270
+00:11:02.860 --> 00:11:05.950
+we went over an example from
+this algorithm in action.
+
+271
+00:11:05.950 --> 00:11:09.070
+Finally, we introduced
+the concept of receding
+
+272
+00:11:09.070 --> 00:11:11.740
+horizon planners and
+discussed how they can be
+
+273
+00:11:11.740 --> 00:11:14.890
+shortsighted when planning
+to the goal region.
+
+274
+00:11:14.890 --> 00:11:17.350
+By now, you should
+have a good idea of
+
+275
+00:11:17.350 --> 00:11:20.165
+how the trajectory
+roll-out algorithm works.
+
+276
+00:11:20.165 --> 00:11:21.560
+In our next lesson, we'll
+
+277
+00:11:21.560 --> 00:11:23.720
+be discussing dynamic windowing,
+
+278
+00:11:23.720 --> 00:11:26.285
+and how it can help our
+trajectory roll-out algorithm
+
+279
+00:11:26.285 --> 00:11:30.210
+generate more comfortable
+trajectories. Until then.

@@ -1,0 +1,125 @@
+So far we have described
+the three steps we need to use image features for autonomous
+vehicle applications. We also mentioned that feature matchers are not
+very robust to outliers. In this lesson, we will describe what outliers are
+and how they might affect our usage of image features to solve
+real-world problems. We will also provide
+a powerful method to handle outliers called random
+sample consensus, or RANSAC for short. This method will help us account for and eliminate outliers, as they can have
+a strong negative impact on the use of features in
+other perception tasks. But first, let us
+introduce the use of the three-step feature
+extraction framework for the real-world problem
+of vehicle localization. Our localization problem is
+defined as follows: given any two images of the same scene from
+different perspectives, find the translation T, between the coordinate system of the first image shown in red, and the coordinate system of the second image shown in green. In practice, we'd also
+want to solve for the scale and skew due
+to different viewpoints. But we'll keep
+this example simple to stay focused on
+the current topic. To solve this
+localization problem, we need to perform
+the following steps. First, we need to find
+the displacement of image one on the u image axis
+of image two. We call this
+displacement t sub u. Second, we need to
+find the displacement of image one on the
+v axis of image two, and we'll call this displacement
+t sub v. We will find t sub u and t sub v by matching features
+between the images, and then solving for
+the displacements that best align
+these matched features. We begin by
+computing features and their descriptors in
+image one and image two. We then match
+these features using the brute force matcher we developed in the previous lesson. Do you notice
+anything a little off in the results from
+our brute force match? Don't worry. We will come back to these results
+in a little bit. But first, let's
+define the solution of our problem mathematically in terms of our matched features. We denote a feature pair
+from images one and two, as f1 sub i and f2 sub i. Where i ranges
+between zero and n, the total number of feature pairs returned by our
+matching algorithm. Each feature in the feature pair
+is represented by its pixel coordinates ui and vi. Note that every pixel in
+the image ones should coincide with its corresponding
+pixel in image two after application of the
+translation t sub q and t sub v. We can then use our feature pairs to
+model the translation as follows: the location of a feature in image
+one is translated to a corresponding location in image two through model
+parameters t sub u and t sub v. Here the translations on
+the u image axis t sub u, and the v image axis t sub v, are the same for
+all feature pairs. Since we assume
+a rigid body motion. Now we can solve for t sub u and t sub v using
+least squares estimation. The solution to the least
+squares problem will be the values for t
+sub u and t sub v that minimize the sum of squared errors between
+all pairs of pixels. Now that we have our
+localization problem defined, let's return to the results
+of our feature matching. By observing the feature
+locations visually, it can be seen that
+the feature pair in the purple circles is
+actually an incorrect match. This happens even though we use the distance ratio method, and is a common occurrence
+in feature matching. We call such
+feature pairs outliers. Outliers can comprise a large
+portion of our feature set, and typically have
+an out-sized negative effect on our model solution, especially when using
+least squares estimation. Let us see if we can
+identify these outliers and avoid using them in
+our least squares solution. Outliers can be handled using a model-based
+outlier rejection method called Random Sample Consensus, or RANSAC for short. RANSAC developed by Martin
+Fischler and Robert Bolles in 1981 is one of the most used model-based methods for outlier rejection
+in robotics. The RANSAC algorithm
+proceeds as follows: first, given a model for identifying a problem solution from
+a set of data points, find the smallest number M
+of data points or samples needed to compute
+the parameters of this model. In our case,
+the problem localization and the model parameters, are the t sub u and t sub v offsets of the least
+square solution. Second, randomly select
+M samples from your data. Third, compute the model
+parameters using only the M samples selected
+from your data set. Forth, use the computed
+parameters and count how many of the remaining data points agree with this
+computed solution. The accepted points are retained and referred to as inliers. Fifth, if the number of
+inliers C is satisfactory, or if the algorithm has iterated a pre-set maximum number
+of iterations, terminate and return
+the computed solution and the inlier set. Else, go back to
+step two and repeat. Finally, recompute and return the model parameters from
+the best inlier set. The one with the largest
+number of features. Now we can revisit
+our localization problem and try to accommodate for the outliers
+from our feature matcher. As a reminder, our model
+parameters t sub u and t sub v, shift each feature pair equally from the first image
+to the second. To estimate t sub u and t sub v, we need one pair of features. Now, let us go through the RANSAC algorithm
+for this problem. First, we randomly select one feature pair from
+the matched samples. Now, we need to estimate our model using
+the computed feature pair. Using the feature
+pair, we compute the displacement along
+the u image axis, t sub u, and the displacement
+along the v image axis, t sub v. We now need to check if our model is valid by computing
+the number of inliers. Here, we use a tolerance
+to determine the inliers, since it is highly
+unlikely that we satisfy the model with
+a 100 percent precision. Unfortunately,
+our first iteration chose a poor feature match to
+compute the model parameters. When using this model to compute how many
+features in image one translate to their matched
+location in image two, we notice that none of them do. Since our number of
+inliers is zero, we go back and choose
+another feature pair at random, and restart the RANSAC process. Once again, we compute
+t sub u and t sub v, using a new randomly
+sampled feature pair to get our new model parameters. Using the model, we compute how many features and image one translate to
+their match in image two. This time we can see that most of the features actually
+fit this model. In fact 11 out of 12 features
+are considered in inliers. Since most of
+our features are inliers, we're satisfied with this model, and we can stop
+the RANSAC algorithm. At this point you should now
+understand the proper use of image features for an
+autonomous vehicle applications. You've learned what outliers are within the scope of
+feature matching, and how to handle outliers
+through the RANSAC algorithm. Outlier removal is
+a key process in improving robustness when
+using feature matching, and greatly improves the quality
+of localization results. In the next video,
+we will use what we learned so far to estimate the position of
+our autonomous vehicle using camera image features. This will help us track our own vehicles motion
+through the environment. Which is a process known
+as Visual Odometry, and is essential to navigating
+smoothly and safely

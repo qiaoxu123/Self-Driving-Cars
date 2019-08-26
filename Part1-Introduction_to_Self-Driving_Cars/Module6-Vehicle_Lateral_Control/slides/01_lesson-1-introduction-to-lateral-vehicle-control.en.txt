@@ -1,0 +1,120 @@
+Welcome to this week's first lesson. In the previous module, we learned some basic
+longitudinal control for autonomous car
+controlled development. In this module, we will go
+through the lateral control. We will cover four lessons this week. In the first lesson, we'll see the introduction
+to lateral vehicle control. In lessons two and three, we'll introduce
+two geometric path following control strategies that are built on the no-slip assumption
+of kinematic modeling. Finally, in the last lesson, we will focus on
+model predictive control, as an example of an advanced control strategy regularly used in
+autonomous vehicles. In this lesson specifically, we'll introduce the core concepts needed to perform lateral control, and you'll learn how to define different types of
+reference path and how to compute heading and crosstrack errors relative
+to those reference paths. So, let's get started. One of the main concerns in
+autonomous vehicles is ensuring the vehicle can precisely
+follow a predefined path, executing the motion plan devised in the higher level
+planning module. This is the main goal of lateral control which must select
+the steering angle required to correct any errors that accumulate and track changes in the path
+direction as they appear. To design the lateral controller, we need to define the error between the vehicle position and the
+appropriate desired path coordinates, select a control design strategy
+that drives errors to zero while still satisfying
+steering angle limits, and consider the dynamic limitations
+of vehicle and desired ride characteristics such as maximum lateral acceleration
+and minimum jerk. Control command must be cognizant
+of the available tire forces and not exceed the capabilities of the vehicle when correcting
+for tracking errors. The reference path is
+a fundamental interface between the planning system
+in the lateral controller, and can be defined in multiple ways. The easiest approach is
+to define a sequence of straight line segments by requiring a sequence of end point vertices
+that are connected linearly. This path definition can be very
+compact and easy to construct, assuming points are well spaced and the environment allows for
+mostly straight line motion, as in a Manhattan grid of roadways. However, the path includes
+heading discontinuities, which make precise tracking
+a challenge with a steered vehicle. A refinement of the line
+segment approach is to provide a series of
+tightly spaced waypoints. This spacing is usually fixed in
+terms of distance or travel time. The relative position
+of the waypoints can be restricted to satisfy
+an approximate curvature constraint. Waypoint paths are very common, as they are easy to work with and
+can be directly constructed from state estimates or GPS waypoints collected in earlier runs
+of a particular route. It is also possible to
+define a path using a sequence of continuous
+parameterized curves, which can be either drawn
+from a fixed set of motion primitives or can be identified through
+optimization during planning. These curves provide the benefit
+of continuously varying motion, and can be constructed to have
+smooth derivatives to aid in the consistency of error and
+error rate calculations. In all cases of path following, the controller tries to eliminate
+the offset of the vehicle to the desired path and to align the vehicle heading
+with the path heading. For each of these paths definitions, the direction of travel along
+the path is also provided, which can be encoded with the
+point ordering or curve ordering. We will define
+these two terms shortly, as they both play a critical role in the design of lateral controllers. Let's now introduced
+the two main categories of lateral control design, which are widely used
+in autonomous vehicles. The first category of controllers
+are geometric controllers, which rely on the geometry
+and coordinates of the desired path and
+the kinematic models of the vehicle. We'll consider two types
+of controllers that are geometric controllers: the pure pursuit and the Stanley controllers. We'll look at these in detail in
+the next lessons in this module. The other category of controllers
+is called dynamic controllers. The most popular
+advanced controller in this category is the model
+predictive controller or MPC, which performs a finite
+horizon optimization to identify the control
+command to apply. MPC is commonly used because of its ability to handle
+a wide variety of constraints and to identify optimized solutions that consider more than just the current errors. We'll look at MPC design in
+the final video in this module. Let's now investigate the definitions of errors in path tracking control. We'll use the kinematic bicycle model as our basis for this discussion. So, let's quickly review the important parameters
+of the bicycle model. The bicycle model is a suitable control oriented model
+of a four-wheel vehicle, where the front left
+and right wheels are combined into
+a single steerable wheel, and the rear left
+and right wheels are combined together in
+a single drive wheel. For this discussion, we'll use a line segment as our reference path, shown as a solid black line
+in the diagram. A dashed black line that is
+parallel to the path but runs through the center of
+the front axle is also visible. For the purposes of lateral control, we redefine our heading relative
+to the current path line segment. The variable side will
+be reused to represent the relative heading angle of the vehicle with respect
+to the path line. The front wheel velocity V and the steering angle relative to the heading direction delta
+do not change, and are also shown in this diagram. Note that we can place
+a reference frame for the vehicle at the center
+of the rear axle, at the center of the front axle, or at the center of gravity
+depending on our controller design. As mentioned in the previous section, we'll introduce two types of error:
+heading and crosstrack error. The heading error is equal to
+the difference between path heading and vehicle heading at
+the reference point along the path. It is a principal measure
+of how well the vehicle is aligned with and moving in
+the direction of the desired path. The rate of heading
+error psi dot helps us understand how the heading
+error evolves over time, and can be computed from the
+kinematic bicycle model equations. The rate of heading error
+can be expressed in terms of any of the three vehicle
+reference points as well. Here we present the rate
+of heading error relative to the front axle, as will be used in the Stanley controller presented in the third video in this module. For straight line segments, the desired heading rate
+of change is zero, and it can be removed. This is because
+the reference heading is not time-varying for a straight line, and is in fact equal to zero, as we have redefined our heading relative to the current
+path direction. The other type of error is an offset error called
+the crosstrack error. The crosstrack error is the distance between
+the reference point on the vehicle and the closest point
+on the desired path. It is the principal
+measure of how close the vehicle's position is to
+the desired position along the path. Both heading error and crosstrack
+error must converge to zero for the vehicle to be properly
+tracking the desired path. The line from the vehicle
+reference point to the path reference point is
+perpendicular to the path. The rate of change of the
+crosstrack error can be calculated by extracting the lateral component
+of the forward velocity. From this equation, we can see
+that as the velocity increases, the crosstrack error
+changes more quickly, meaning that smaller steering
+angles are needed to correct for the same size
+crosstrack errors. Extending this discussion
+of the heading and crosstrack errors to the curved paths adds some additional complexity, as it is not immediately clear where the reference point on
+the curved path should lie. The geometric relations required fall outside the scope of this video. We've nonetheless provided links
+in the supplemental materials for those interested in error calculations
+relative to curved paths. Let's summarize our discussion
+of the lateral control concepts. In this lesson, you've studied
+three approaches to defining reference paths: line segments,
+waypoints, and curves. You've learned how to construct
+error metrics for lateral control, including heading and
+crosstrack error. In the next video, we'll use these definitions to construct our first lateral
+vehicle controller, the pure pursuit controller, to define steering commands that will track our reference path.
+See you there.

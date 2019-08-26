@@ -1,0 +1,141 @@
+If you've been monitoring the latest news on
+self-driving cars, you would have heard the phrase convolutional
+neural networks or ConvNets for
+short at least a few times. In fact, we currently use ConvNets to perform
+a multitude of perception tasks on our own self-driving car
+the autonomoose. In this lesson, we will
+take a deeper look at these fascinating
+architectures to understand their importance
+for visual perception. Specifically, you will learn how convolutional layers
+use cross-correlation instead of general
+matrix multiplication to tailor neural networks
+for image input data. We'll also cover
+the advantages these models incur over standard
+feed-forward neural networks. Convolutional neural networks
+are a specialized kind of neural network for
+processing data that has a known
+grid-like topology. Examples of such data can be 1D time-series data sampled
+at regular intervals, 2D images or even 3D videos. ConvNets are mainly comprised
+of two types of layers; convolutional layers
+and pooling layers. A simple example of a convNet
+architecture is VGG 16. This network takes
+in the image and passes it through a set
+of convolutional layers, a pooling layer, and another couple of
+convolutional layers, and then more pooling layers and convolutional layers and so on. Don't worry too much
+about the specifics of the VGG 16 architecture
+design for now, we will discuss
+this architecture in detail in a later video when we learn about
+object detection. Let's see how these two types
+of layers work in practice. The neural network, hidden
+layers we have described so far are usually called
+fully connected layers. As their name suggests, fully connected layers connect each node output to every
+node input in the next layer. That means that
+every element of the input contributes to every element
+of the output. This is implemented in software through dense matrix
+multiplication. Although counter-intuitive,
+convolutional layers use cross-correlation
+not convolutions for their linear operator instead of general matrix multiplication. The logic behind using cross-correlation is that if
+the parameters are learned, it does not matter if we
+flip the output or not. Since we are learning the weights of the convolutional layer, the flipping does not
+affect our results at all. This results in what we
+call sparse connectivity. Each input element to the convolutional layer only affects a few output elements, thanks to the use of a limited size kernel for
+the convolutional operation. Let's begin by describing how convolutional layers
+work in practice. We'll assume that
+we want to apply a convolutional layer
+to an input image. We will refer to this image
+as our input volume, as we will see
+convolutional layers taking output of other layers
+as their inputs as well. The width of our input volume is its horizontal dimension, the height is
+its vertical dimension, and the depth is
+the number of channels. In our case, all
+three characteristics have a value of three. But why didn't we consider the gray pixels in our
+height or width computation? The gray pixels are added to the image through
+a process called padding. The number of pixels
+added on each side is called the padding
+size in this case one. Padding is essential
+for retaining the shape required to
+perform the convolutions. We perform the convolution
+operations through a set of kernels or filters. Each Filter is
+comprised of a set of weights and a single bias. The number of channels
+of the kernel needs to correspond to the number of
+channels of the input volume. In this case, we have three weight channels per
+filter corresponding to red, green, and blue channels
+of the input image. Usually we have multiple filters
+per convolutional layer. Let's see how to
+apply our two filters to get an output volume
+from our input volume. We start by taking each channel
+of the filter and perform cross-correlation
+between that channel and its corresponding channel
+in the input volume. We then proceed to add the output of
+the cross-correlation of all channels with the bias of the filter to arrive at
+the final output value. Notice that we get
+one output channel per filter. We will get back to
+this point in a bit. Let's now see how to get
+the rest of the output volume. After we're done with
+the first computation, we shift the filter location by a preset number of
+pixels horizontally. When we reach the end of
+the input volume width, we shift the filter location by a preset number of
+pixels vertically. The vertical and
+horizontal shifts are usually the same value, and we refer to this value as the stride of
+our convolutional layer. We arrive to a final output
+volume with its own width, depth, and height values. Assuming that
+the filters are M by M, and we have K filters,
+a stride of S, a padding P, we can derive
+expressions for the width, height, and depth of
+our output volume. You would think this gets
+challenging to keep track of, but when designing ConvNets, it is very important to know what size output layers
+you'll end up with. As an example, you don't want to reduce the size of
+your output volume too much if you are trying to
+detect small traffic signs and traffic lights
+on road scenes. They only occupy a small number
+of pixels in the image, and their visibility
+might get lost if the output volume is too compact. Let us now continue to describe the second building block of
+ConvNets, pooling layers. A pooling layer uses pooling functions to replace
+the output of the previous layer with a summary statistic of
+the nearby outputs. Pooling helps make
+the representations become invariant to
+small translations of the input. If we translate the input
+a small amount, the output of the pooling layer
+will not change. This is important for
+object recognition for example, as if we shift a car a small
+amount in an image space, it should still be
+recognizable as a car. Let us take an example of the most commonly used
+pooling layer, Max pooling. Max pooling summarizes
+output volume patches with the max function. Given the input volume in gray, Max Pooling applies the max
+function to an M by M region, then shifts this region in strides similar to the
+convolutional layer. Once again we can derive expressions for the output width, height, and depth of the pooling layers according
+to the following equations. In our previous example, the filter size M is two, and we get a stride of two, so we end up with
+a two-by-two output. Let's see how this
+pooling layer can help us with translation invariance. As an example, let's shift the previous input volume
+by one pixel. The added pixels due to
+the shift are shown in blue, whereas the removed pixels
+are shown in red. We can go ahead and apply Max Pooling to this input volume, as we did in the previous slide. When comparing our new output to the original volume output, we find that only one
+element has changed. So far, we've discussed how ConvNets operate
+but still did not provide a reason for their usefulness in the context
+of self-driving cars. There are really
+two important reasons for the effectiveness
+of ConvNets. First, they usually have
+far fewer parameters in their convolutional layers than a similar network with
+fully connected layers. This reduces the chance of over-fitting through
+parameters sharing, and allows ConvNets to
+operate on larger images. Perhaps more importantly,
+is translation invariance. By using the same parameters to process every block of the image, ConvNets are capable of detecting an object
+or classifying a pixel even if it is shifted with a translation
+on the image plane. This means we can detect
+cars wherever they appear. Before we end this lesson, I would like to shed light on the history of convolutional
+neural networks. Convolutional neural
+networks have played an important role in
+the history of deep learning. As a matter of
+fact, ConvNets were one of the first
+neural network models to perform well at a time where other feed-forward
+architectures failed, particularly on
+image classification tasks related to the ImageNet dataset. In many ways, ConvNets carry the torch for the rest
+of deep learning, and pave the way to the relatively new acceptance of neural networks in general. Finally, convolutional
+networks were some of the first neural networks to solve important
+commercial applications, the most famous being Yann LeCun's handwritten
+digit recognizer in the early nineties, and remain at the forefront of commercial applications
+of deep learning today. In fact, in the next week
+of this course, we will show you how
+to use ConvNets to detect a range of different
+objects in roads scenes, 2D object detection.
+We'll see you then.

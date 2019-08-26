@@ -1,0 +1,104 @@
+In the last two videos, we learned about the extended
+Kalman filter or EKF and how we can use it to adapt the linear
+Kalman filter to non-linear systems. While the EKF works well for
+many practical problems, there are some important limitations
+to keep in mind when deciding if the EKF is
+the right algorithm for you. In this video, we'll discuss
+some of these limitations. Recall that the EKF works
+by linearizing our systems non-linear motion and
+observation models to update both the mean and
+covariance of our state estimate. A linearized model is just a local linear approximation
+of the true non-linear model. We call the difference between the approximation and the true model,
+the linearization error. In general, the linearization error for
+any function depends on two things. The first thing is how non-linear
+the original function is to begin with. If our nonlinear function very slowly
+or is quite flat much of the time, linear approximation is going
+to be a pretty good fit. On the other hand, if
+the function varies quickly, linear approximation is not
+going to do a great job of capturing the true shape of
+the function over most of its domain. The second thing
+linearization error depends on is how far away from
+the operating point you are. The further away you move
+from the operating point, the more likely the linear approximation is to diverge from the true function. These properties of linearization error have important implications for the EKF. So, let's look at an example of how linearization error affects
+the mean and covariance of two random variables transformed by a common pair
+of non-linear functions. Specifically, let's look at
+the non-linear transformation from polar coordinates r and Theta to
+Cartesian coordinates, x and y. This kind of transformation
+is commonly used to work with laser scanners or LIDARs, to report range and bearing measurements, just as the scanners on
+many self-driving cars do. Let's take a number of samples from a uniform distribution
+over an interval of polar coordinates and
+consider what happens when we transform the samples into
+Cartesian coordinates. To illustrate what this looks like, we've plotted the random samples from the uniform distribution as
+blue dots you see on the left. When we transform each
+of these sample points into the corresponding
+Cartesian coordinates, we see that the transform distribution
+takes on a banana shape, shown on the right. Clearly, the shape of
+the banana distribution is not captured completely by using
+a mean and a covariance only. But let's see what happens to the mean
+and covariance of the original PDF. In the left-hand plot, the true mean of
+the uniform distribution is shown as the green dot in the middle, and the true covariance is
+represented by the green ellipse. After transforming the uniform
+distribution into Cartesian coordinates, the mean of the output
+distribution ends up here, and its covariance looks like this. Now, consider what
+happens if we linearize the polar to Cartesian transformation about the mean of
+the original distribution and then transform
+all the sample points again. The linearized transformation gives us an output distribution that looks like another uniform distribution and bears almost no resemblance to the
+banana-shaped distribution we saw before. If we look at the mean
+of this distribution, represented by a red dot, it lands somewhere up here, and the linearized covariance
+looks quite different as well. Let's compare the linearized and
+non-linear output distributions. You can see that the mean of the linearized distribution is in a very different place
+from the true mean, and the linearized covariance
+seriously underestimates the spread of the true output
+distribution along the y dimension. So, in this case, we can see that linearization
+error can cause our belief about the output distribution
+to completely miss the mark, and this can cause
+big problems in our estimator. For example, the estimated position
+of lane markers produced from a laser scanner might differ
+significantly from the actual positions, leading our car to drive
+over the center line. So when is linearization
+a problem for the EKF? There are two situations
+to watch out for. The first is when your system dynamics
+are highly nonlinear. If your emotion and measurement models
+are close to linear, linearization error
+won't be a big problem. But if they're not,
+your linearized estimator won't do a good job of capturing
+the true behavior of the system. The second situation is
+related to how far away from the operating point you're trying
+to use the linearized model. For self-driving cars moving very fast relative to the sampling
+time of your sensors, you're going to get more linearization
+error than if it's moving slowly. Mathematically speaking, there are two important consequences of
+linearization error in the EKF, both of which we saw in
+the previous example. One is that the estimated mean can become very different
+from the true state, and the other is that
+the estimated covariance may not accurately capture
+the true uncertainty in the state. In other words, this means that
+linearization error can cause our estimator to be overconfident
+in a completely wrong answer. In the worst case, the estimator may diverge, that is, become completely lost
+and fail to provide useful output. Worse, once an estimator such
+as the EKF has diverged, it can't be pulled back on track. Often, you're forced to
+re-initialize if you can. This is a huge problem for safety when we're dealing
+with self-driving cars. If your car's estimator
+diverges while driving, it could easily drive off the road into a ditch or cause a collision
+with another vehicle. So, linearization error is the main
+theoretical limitation of the EKF. But there are other common
+problems that we will encounter in our implementations. Probably the most common problem in
+practice is that it's very easy to make mistakes when we
+compute Jacobian matrices, especially if we're dealing with
+a complicated nonlinear system. I cannot tell you the number
+of times my students and I have missed a minus sign
+while deriving a Jacobian. This can lead to
+many many hours of debugging. Some people try to get around this problem by using
+numerical differentiation at runtime or automatic
+differentiation at compile time. But these had their own pitfalls and
+can sometimes behave unpredictably. On top of that, what happens if one or more of our models isn't
+even differentiable, like the step function response
+of a stepper motor. All of these drawbacks lead
+us to a question: Do we really need linearization to
+do nonlinear Kalman filtering? To summarize this video, the extended Kalman filter has several limitations based on its use
+of analytical local linearization. If the dynamics of the system
+being modeled are highly non-linear or the
+linearization error is large, the filter may diverge. The EKF requires Jacobian matrices to be computed which is often
+a tedious and error-prone process. Nonetheless, the EKF is a proven tool for state estimation and you will no doubt encounter it often as
+a self-driving car engineer. In the next video, we'll discuss another common filter variant
+called the unscented Kalman filter, which largely addresses
+these limitations of the EKF.

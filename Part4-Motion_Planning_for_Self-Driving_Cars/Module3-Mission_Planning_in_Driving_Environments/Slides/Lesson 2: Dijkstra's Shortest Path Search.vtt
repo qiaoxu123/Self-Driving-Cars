@@ -1,0 +1,1078 @@
+WEBVTT
+
+1
+00:00:14.090 --> 00:00:16.725
+Welcome to the second lesson
+
+2
+00:00:16.725 --> 00:00:18.465
+in the mission planning module.
+
+3
+00:00:18.465 --> 00:00:21.840
+In this lesson we'll modify
+our unweighted graph,
+
+4
+00:00:21.840 --> 00:00:25.185
+from the previous lesson
+to contain edge weights.
+
+5
+00:00:25.185 --> 00:00:27.570
+To give a more applicable
+representation
+
+6
+00:00:27.570 --> 00:00:29.055
+for our mission planning problem.
+
+7
+00:00:29.055 --> 00:00:31.710
+We'll then discuss how it
+impacts our algorithm,
+
+8
+00:00:31.710 --> 00:00:32.990
+and how we can overcome
+
+9
+00:00:32.990 --> 00:00:35.735
+this challenge while still
+planning efficiently.
+
+10
+00:00:35.735 --> 00:00:38.540
+In particular by the
+end of this video,
+
+11
+00:00:38.540 --> 00:00:40.010
+you should be able to understand
+
+12
+00:00:40.010 --> 00:00:42.705
+the difference between
+weighted and unweighted graphs,
+
+13
+00:00:42.705 --> 00:00:44.180
+and why weighted graphs are
+
+14
+00:00:44.180 --> 00:00:46.860
+more useful for mission planning.
+
+15
+00:00:47.170 --> 00:00:51.145
+You should have a firm grasp
+of the Dijkstra's algorithm.
+
+16
+00:00:51.145 --> 00:00:53.450
+A graph search algorithm
+that is useful for
+
+17
+00:00:53.450 --> 00:00:56.560
+weighted graphs.
+Let's get started.
+
+18
+00:00:56.560 --> 00:00:59.030
+As a refresher, recall that
+
+19
+00:00:59.030 --> 00:01:00.800
+for our mission planning problem,
+
+20
+00:01:00.800 --> 00:01:03.290
+the goal is to find
+the optimal path in
+
+21
+00:01:03.290 --> 00:01:06.590
+our road network from the ego
+vehicles current position,
+
+22
+00:01:06.590 --> 00:01:08.870
+to the required
+final destination.
+
+23
+00:01:08.870 --> 00:01:10.970
+In the last video
+we presented the
+
+24
+00:01:10.970 --> 00:01:14.030
+breadth-first search algorithm
+to solve this problem.
+
+25
+00:01:14.030 --> 00:01:16.645
+However, in the process
+we assume that
+
+26
+00:01:16.645 --> 00:01:19.075
+all road segments
+have equal length,
+
+27
+00:01:19.075 --> 00:01:21.575
+which is an overly
+simplistic assumption.
+
+28
+00:01:21.575 --> 00:01:23.370
+Depending on factors such as
+
+29
+00:01:23.370 --> 00:01:25.680
+road lengths, traffic,
+speed limits,
+
+30
+00:01:25.680 --> 00:01:27.730
+and weather, different
+road segments
+
+31
+00:01:27.730 --> 00:01:30.415
+can vary wildly in
+their traversal costs.
+
+32
+00:01:30.415 --> 00:01:32.800
+For simplicity, we
+will initially focus
+
+33
+00:01:32.800 --> 00:01:36.095
+purely on distance
+in our search graph.
+
+34
+00:01:36.095 --> 00:01:38.920
+To reflect this, we will add
+
+35
+00:01:38.920 --> 00:01:41.230
+edge weights to
+each edge in the graph,
+
+36
+00:01:41.230 --> 00:01:42.895
+that correspond to the length
+
+37
+00:01:42.895 --> 00:01:45.175
+of the corresponding
+road segment.
+
+38
+00:01:45.175 --> 00:01:46.810
+This is shown here,
+
+39
+00:01:46.810 --> 00:01:48.985
+after updating
+our unweighted graph
+
+40
+00:01:48.985 --> 00:01:51.115
+with appropriate edge weights.
+
+41
+00:01:51.115 --> 00:01:53.560
+The units of the weights
+are arbitrary,
+
+42
+00:01:53.560 --> 00:01:56.275
+as long as they are
+common to all edges.
+
+43
+00:01:56.275 --> 00:01:58.220
+For this instance, suppose
+
+44
+00:01:58.220 --> 00:01:59.900
+the edge weights
+are the number of
+
+45
+00:01:59.900 --> 00:02:03.485
+kilometers it takes to travel
+across that road segment.
+
+46
+00:02:03.485 --> 00:02:05.600
+As before, the goal is to
+
+47
+00:02:05.600 --> 00:02:07.970
+find the optimal path
+from the vertex of
+
+48
+00:02:07.970 --> 00:02:10.610
+the ego vehicles
+current position S to
+
+49
+00:02:10.610 --> 00:02:14.935
+the final destination
+vertex T. Unfortunately,
+
+50
+00:02:14.935 --> 00:02:16.730
+our BFS algorithm doesn't
+
+51
+00:02:16.730 --> 00:02:18.770
+take edge weights
+into consideration.
+
+52
+00:02:18.770 --> 00:02:20.510
+So it isn't guaranteed to find
+
+53
+00:02:20.510 --> 00:02:22.715
+the optimal path
+in this situation.
+
+54
+00:02:22.715 --> 00:02:24.365
+We instead need to use
+
+55
+00:02:24.365 --> 00:02:26.210
+a different more
+powerful algorithm.
+
+56
+00:02:26.210 --> 00:02:28.960
+This is where Dijkstra's
+algorithm comes in.
+
+57
+00:02:28.960 --> 00:02:32.230
+Edsger Dijkstra, a Dutch
+computer scientist,
+
+58
+00:02:32.230 --> 00:02:36.110
+first conceived of
+this algorithm in 1956.
+
+59
+00:02:36.110 --> 00:02:38.585
+In an interview in 2001,
+
+60
+00:02:38.585 --> 00:02:39.740
+he explains that he was
+
+61
+00:02:39.740 --> 00:02:41.780
+shopping with
+his fiance at the time,
+
+62
+00:02:41.780 --> 00:02:44.405
+and got tired and they
+sat down for a coffee.
+
+63
+00:02:44.405 --> 00:02:46.190
+He had been puzzling
+with the shortest
+
+64
+00:02:46.190 --> 00:02:47.780
+path problem in his head,
+
+65
+00:02:47.780 --> 00:02:49.790
+and within 20 minutes
+he worked out
+
+66
+00:02:49.790 --> 00:02:52.100
+his algorithm without
+pen or paper.
+
+67
+00:02:52.100 --> 00:02:53.840
+It took him three more years to
+
+68
+00:02:53.840 --> 00:02:55.610
+write a paper on this topic,
+
+69
+00:02:55.610 --> 00:02:57.950
+but he credits the simplicity
+and elegance of
+
+70
+00:02:57.950 --> 00:02:59.840
+the idea with being forced to
+
+71
+00:02:59.840 --> 00:03:02.825
+work through the solution
+entirely in his head.
+
+72
+00:03:02.825 --> 00:03:05.660
+The overall flow of
+Dijkstra's algorithm
+
+73
+00:03:05.660 --> 00:03:07.895
+is quite similar to BFS.
+
+74
+00:03:07.895 --> 00:03:09.470
+The main difference is in
+
+75
+00:03:09.470 --> 00:03:11.855
+the order we process
+the vertices.
+
+76
+00:03:11.855 --> 00:03:13.730
+We've highlighted
+the differences from
+
+77
+00:03:13.730 --> 00:03:15.995
+the BFS algorithm in blue.
+
+78
+00:03:15.995 --> 00:03:19.220
+As before, we keep track
+of the vertices we
+
+79
+00:03:19.220 --> 00:03:22.040
+have already processed
+in the closed set,
+
+80
+00:03:22.040 --> 00:03:23.870
+and the vertices
+we've discovered but
+
+81
+00:03:23.870 --> 00:03:26.255
+not yet processed
+in the open set.
+
+82
+00:03:26.255 --> 00:03:28.550
+The key difference
+is that instead
+
+83
+00:03:28.550 --> 00:03:30.500
+of using a queue
+for the open set,
+
+84
+00:03:30.500 --> 00:03:32.915
+we'll be using a min heap.
+
+85
+00:03:32.915 --> 00:03:35.210
+A min heap is
+a data structure that
+
+86
+00:03:35.210 --> 00:03:37.220
+stores keys and values,
+
+87
+00:03:37.220 --> 00:03:39.140
+and sorts the keys in terms of
+
+88
+00:03:39.140 --> 00:03:42.665
+their associated values
+from smallest to largest.
+
+89
+00:03:42.665 --> 00:03:47.135
+In our case, the values of
+each key vertex in the graph
+
+90
+00:03:47.135 --> 00:03:49.190
+will correspond to
+the distance it
+
+91
+00:03:49.190 --> 00:03:51.420
+takes to reach that vertex,
+
+92
+00:03:51.420 --> 00:03:53.520
+along the shortest path to
+
+93
+00:03:53.520 --> 00:03:56.085
+that vertex we've found so far.
+
+94
+00:03:56.085 --> 00:03:59.330
+In this sense, Dijkstra's
+algorithm processes
+
+95
+00:03:59.330 --> 00:04:04.025
+vertices with a lower accumulated
+cost before other ones.
+
+96
+00:04:04.025 --> 00:04:08.000
+Thus unlike BFS, a vertex
+that was added later
+
+97
+00:04:08.000 --> 00:04:09.620
+in the search can be processed
+
+98
+00:04:09.620 --> 00:04:12.035
+before when that
+was added earlier,
+
+99
+00:04:12.035 --> 00:04:15.760
+so long as it's accumulated
+cost is lower.
+
+100
+00:04:15.760 --> 00:04:18.470
+Other than that,
+Dijkstra's algorithm is
+
+101
+00:04:18.470 --> 00:04:20.960
+largely the same as BFS.
+
+102
+00:04:20.960 --> 00:04:23.075
+Progressing through the vertices,
+
+103
+00:04:23.075 --> 00:04:25.280
+while adding and
+popping them off of
+
+104
+00:04:25.280 --> 00:04:28.940
+the min heap until
+the goal vertex is processed.
+
+105
+00:04:28.940 --> 00:04:30.770
+One interesting case however,
+
+106
+00:04:30.770 --> 00:04:34.070
+is if we find a new path
+to a vertex that is
+
+107
+00:04:34.070 --> 00:04:37.940
+already in the open heap but
+has not been processed yet.
+
+108
+00:04:37.940 --> 00:04:41.510
+In this case, we have to
+check if the newly found path
+
+109
+00:04:41.510 --> 00:04:44.990
+to this vertex is cheaper
+than the old path.
+
+110
+00:04:44.990 --> 00:04:46.910
+If it is, we need to update
+
+111
+00:04:46.910 --> 00:04:49.420
+its cost in the
+min-heap otherwise,
+
+112
+00:04:49.420 --> 00:04:51.270
+no action is required.
+
+113
+00:04:51.270 --> 00:04:55.610
+Once we process the goal vertex
+we must have necessarily
+
+114
+00:04:55.610 --> 00:04:58.010
+processed all
+possible predecessor
+
+115
+00:04:58.010 --> 00:04:59.765
+vertices of the goal node.
+
+116
+00:04:59.765 --> 00:05:02.449
+Since a predecessor
+must have accumulated
+
+117
+00:05:02.449 --> 00:05:06.290
+distance less than or
+equal to the goal vertex.
+
+118
+00:05:06.290 --> 00:05:09.770
+Since all predecessor vertices
+have been processed,
+
+119
+00:05:09.770 --> 00:05:13.115
+we will have found the shortest
+path to the goal vertex.
+
+120
+00:05:13.115 --> 00:05:15.364
+Once the goal vertex
+has been processed,
+
+121
+00:05:15.364 --> 00:05:17.665
+so the algorithm can terminate.
+
+122
+00:05:17.665 --> 00:05:19.825
+To solidify our understanding,
+
+123
+00:05:19.825 --> 00:05:21.770
+let's step through
+the application of
+
+124
+00:05:21.770 --> 00:05:25.410
+Dijkstra's algorithm to
+our new weighted graph.
+
+125
+00:05:25.410 --> 00:05:28.310
+For our graph as with BFS,
+
+126
+00:05:28.310 --> 00:05:31.170
+the first vertex to process is S,
+
+127
+00:05:31.170 --> 00:05:32.760
+which then adds A,
+
+128
+00:05:32.760 --> 00:05:35.100
+B and C, to the min heap.
+
+129
+00:05:35.100 --> 00:05:39.770
+By default, the accumulated
+cost of the origin S is zero.
+
+130
+00:05:39.770 --> 00:05:42.365
+So the cost to reach A, B and C,
+
+131
+00:05:42.365 --> 00:05:45.290
+is five, seven and
+two respectively.
+
+132
+00:05:45.290 --> 00:05:47.480
+Since we are using a min-heap
+
+133
+00:05:47.480 --> 00:05:49.865
+instead of a queue for
+Dijkstra's algorithm,
+
+134
+00:05:49.865 --> 00:05:52.580
+the order of
+the open vertices is now
+
+135
+00:05:52.580 --> 00:05:57.415
+CAB sorted from lowest cost
+to highest cost in the heap.
+
+136
+00:05:57.415 --> 00:06:01.205
+We store each of these
+vertices predecessors as S,
+
+137
+00:06:01.205 --> 00:06:03.905
+and then add S to the closed set.
+
+138
+00:06:03.905 --> 00:06:06.740
+Next, we pop C from the heap.
+
+139
+00:06:06.740 --> 00:06:09.700
+Since it is the lowest
+cost vertex so far.
+
+140
+00:06:09.700 --> 00:06:11.805
+C is only connected to E,
+
+141
+00:06:11.805 --> 00:06:13.395
+which has not yet
+been discovered.
+
+142
+00:06:13.395 --> 00:06:15.320
+So we add it to the min heap with
+
+143
+00:06:15.320 --> 00:06:17.585
+a cost of two plus eight is ten,
+
+144
+00:06:17.585 --> 00:06:20.225
+along with C as its predecessor.
+
+145
+00:06:20.225 --> 00:06:22.460
+Our new heap ordering is A,
+
+146
+00:06:22.460 --> 00:06:26.540
+B and E. We then add
+C to the closed set.
+
+147
+00:06:26.540 --> 00:06:29.465
+The next vertex to pop
+off the heap is A,
+
+148
+00:06:29.465 --> 00:06:31.700
+which connects to both D and B.
+
+149
+00:06:31.700 --> 00:06:33.500
+D is not yet been explored,
+
+150
+00:06:33.500 --> 00:06:34.820
+so we add it to the heap with
+
+151
+00:06:34.820 --> 00:06:37.235
+a cost of five plus
+two for seven,
+
+152
+00:06:37.235 --> 00:06:39.830
+and b however has
+been explored as it
+
+153
+00:06:39.830 --> 00:06:42.935
+currently has an accumulated
+cost of seven.
+
+154
+00:06:42.935 --> 00:06:45.560
+The edge AB has weight one,
+
+155
+00:06:45.560 --> 00:06:47.285
+so the new cost of going through
+
+156
+00:06:47.285 --> 00:06:49.805
+A is five plus one for six.
+
+157
+00:06:49.805 --> 00:06:51.530
+Since this is lower than
+
+158
+00:06:51.530 --> 00:06:53.780
+the current cost of
+B which was seven,
+
+159
+00:06:53.780 --> 00:06:56.585
+we update the cost of
+B in the heap to six,
+
+160
+00:06:56.585 --> 00:06:59.795
+and change its
+predecessor from S to A.
+
+161
+00:06:59.795 --> 00:07:02.570
+To show that the cost
+of B was updated,
+
+162
+00:07:02.570 --> 00:07:05.675
+we have marked the new edge
+to be as purple.
+
+163
+00:07:05.675 --> 00:07:08.240
+We then close vertex A.
+
+164
+00:07:08.240 --> 00:07:11.315
+Our vertex ordering in
+the min heap is now B,
+
+165
+00:07:11.315 --> 00:07:15.920
+D and E. We now pop
+B off of the heap,
+
+166
+00:07:15.920 --> 00:07:17.755
+which only connects to E.
+
+167
+00:07:17.755 --> 00:07:20.770
+The cost so far to
+reach B is six,
+
+168
+00:07:20.770 --> 00:07:23.150
+which gives us a cost
+of nine to reach
+
+169
+00:07:23.150 --> 00:07:25.130
+E. E was already
+
+170
+00:07:25.130 --> 00:07:27.410
+stored in the min heap
+with a cost of ten.
+
+171
+00:07:27.410 --> 00:07:30.560
+So, we need to update
+the cost of E to nine,
+
+172
+00:07:30.560 --> 00:07:33.845
+as well as change
+its predecessor from C to B.
+
+173
+00:07:33.845 --> 00:07:36.350
+Finally, we close vertex B.
+
+174
+00:07:36.350 --> 00:07:38.570
+Our new vertex ordering
+in the min-heap is
+
+175
+00:07:38.570 --> 00:07:41.635
+D then E. Next,
+
+176
+00:07:41.635 --> 00:07:44.930
+we pop D off of the heap
+which connects both E and
+
+177
+00:07:44.930 --> 00:07:48.559
+T. E is already in
+the heap with cost nine,
+
+178
+00:07:48.559 --> 00:07:51.770
+and the new path from D
+to E has a cost of 14.
+
+179
+00:07:51.770 --> 00:07:53.900
+Since this is higher
+than E's current cost,
+
+180
+00:07:53.900 --> 00:07:55.975
+we can ignore this new path.
+
+181
+00:07:55.975 --> 00:07:57.955
+To show that we've ignored it,
+
+182
+00:07:57.955 --> 00:08:01.880
+we mark the new edge to E
+as red instead of purple.
+
+183
+00:08:01.880 --> 00:08:04.010
+We then add T to the heap of
+
+184
+00:08:04.010 --> 00:08:06.635
+a cost of seven
+plus one is eight,
+
+185
+00:08:06.635 --> 00:08:09.070
+setting D as its predecessor.
+
+186
+00:08:09.070 --> 00:08:13.230
+Finally, we close vertex D.
+Our new heap ordering is
+
+187
+00:08:13.230 --> 00:08:17.920
+T and then E. The final vertex
+that we pop off is T,
+
+188
+00:08:17.920 --> 00:08:19.535
+which is our goal vertex.
+
+189
+00:08:19.535 --> 00:08:21.680
+This completes
+the planning process,
+
+190
+00:08:21.680 --> 00:08:24.830
+and we now have an optimal path
+formed by chaining
+
+191
+00:08:24.830 --> 00:08:26.450
+together the predecessors of
+
+192
+00:08:26.450 --> 00:08:28.715
+T all the way back to the origin,
+
+193
+00:08:28.715 --> 00:08:31.165
+as highlighted on
+this graph here.
+
+194
+00:08:31.165 --> 00:08:33.500
+Next, let's take a look at how
+
+195
+00:08:33.500 --> 00:08:36.335
+this mission planning problem
+looks on a real map.
+
+196
+00:08:36.335 --> 00:08:38.980
+Here we have a map of
+Berkeley, California.
+
+197
+00:08:38.980 --> 00:08:41.210
+Where the vertices of
+the graph correspond
+
+198
+00:08:41.210 --> 00:08:43.790
+to intersections, and
+the edges correspond to
+
+199
+00:08:43.790 --> 00:08:46.235
+road segments as we
+discussed earlier.
+
+200
+00:08:46.235 --> 00:08:47.930
+The two red dots,
+
+201
+00:08:47.930 --> 00:08:49.465
+correspond to the start and end
+
+202
+00:08:49.465 --> 00:08:51.560
+points of our required plan.
+
+203
+00:08:51.560 --> 00:08:55.160
+We have to remember that
+certain roads are one-way roads.
+
+204
+00:08:55.160 --> 00:08:57.935
+As such, the graph is directed.
+
+205
+00:08:57.935 --> 00:08:59.989
+After running
+Dijkstra's algorithm,
+
+206
+00:08:59.989 --> 00:09:01.460
+the shortest path between
+
+207
+00:09:01.460 --> 00:09:05.005
+the two nodes is given
+by the red path.
+
+208
+00:09:05.005 --> 00:09:07.975
+Dijkstra's algorithm
+is quite efficient,
+
+209
+00:09:07.975 --> 00:09:10.250
+which allows it to
+scale really well to
+
+210
+00:09:10.250 --> 00:09:13.325
+real-world problems such
+as the ones shown here.
+
+211
+00:09:13.325 --> 00:09:15.140
+In fact, it even works with
+
+212
+00:09:15.140 --> 00:09:16.880
+a much larger scale problems such
+
+213
+00:09:16.880 --> 00:09:19.220
+as navigating over New York City.
+
+214
+00:09:19.220 --> 00:09:22.055
+Whose road network graph
+is shown below.
+
+215
+00:09:22.055 --> 00:09:24.515
+While Dijkstra's is
+an efficient algorithm,
+
+216
+00:09:24.515 --> 00:09:26.390
+we can leverage
+certain heuristics to
+
+217
+00:09:26.390 --> 00:09:28.590
+make it even faster in practice,
+
+218
+00:09:28.590 --> 00:09:31.550
+which we'll discuss
+in our next lesson.
+
+219
+00:09:31.550 --> 00:09:34.549
+Now that we've worked
+through a full example,
+
+220
+00:09:34.549 --> 00:09:37.430
+let's review what we
+discussed in this video.
+
+221
+00:09:37.430 --> 00:09:41.060
+We first introduced the concept
+of a weighted graph,
+
+222
+00:09:41.060 --> 00:09:43.640
+and discussed that having
+the ability to make
+
+223
+00:09:43.640 --> 00:09:46.940
+certain edges have
+higher weights than others,
+
+224
+00:09:46.940 --> 00:09:49.520
+better reflects the
+autonomous driving mission.
+
+225
+00:09:49.520 --> 00:09:52.685
+As different roads are
+longer than others.
+
+226
+00:09:52.685 --> 00:09:54.785
+As a consequence of this,
+
+227
+00:09:54.785 --> 00:09:57.890
+our breadth-first search
+algorithm no longer works.
+
+228
+00:09:57.890 --> 00:09:59.930
+So we introduced
+Dijkstra's algorithm,
+
+229
+00:09:59.930 --> 00:10:02.345
+to handle this added complexity.
+
+230
+00:10:02.345 --> 00:10:03.800
+In our next lesson,
+
+231
+00:10:03.800 --> 00:10:06.080
+we'll be discussing how
+to solve these problems
+
+232
+00:10:06.080 --> 00:10:09.085
+more efficiently using
+search heuristics.
+
+233
+00:10:09.085 --> 00:10:12.160
+We'll introduce
+the A-star algorithm.

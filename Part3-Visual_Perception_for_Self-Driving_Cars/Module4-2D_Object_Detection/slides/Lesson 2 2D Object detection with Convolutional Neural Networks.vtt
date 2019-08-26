@@ -1,0 +1,1158 @@
+WEBVTT
+
+1
+00:00:13.460 --> 00:00:15.480
+In the last lesson,
+
+2
+00:00:15.480 --> 00:00:18.100
+we described the general
+object detection problem
+
+3
+00:00:18.100 --> 00:00:20.830
+as well as how to
+evaluate the performance
+
+4
+00:00:20.830 --> 00:00:24.280
+of 2G object detectors
+using average precision.
+
+5
+00:00:24.280 --> 00:00:26.980
+This lesson will describe
+the steps involved
+
+6
+00:00:26.980 --> 00:00:30.115
+in performing 2D object
+detection using convNets.
+
+7
+00:00:30.115 --> 00:00:32.846
+Keep in mind that the field
+of 2D object detection
+
+8
+00:00:32.846 --> 00:00:36.775
+is rapidly changing with
+new methods emerging everyday.
+
+9
+00:00:36.775 --> 00:00:39.940
+What we will be describing
+is a modern approach
+
+10
+00:00:39.940 --> 00:00:42.535
+to 2D object detection
+using ConvNets,
+
+11
+00:00:42.535 --> 00:00:45.200
+but without many of
+the intricacies that allow state
+
+12
+00:00:45.200 --> 00:00:47.060
+of the art detectors to eke
+
+13
+00:00:47.060 --> 00:00:49.100
+out the best possible
+performance.
+
+14
+00:00:49.100 --> 00:00:51.850
+If you find this topic
+is exciting as we do,
+
+15
+00:00:51.850 --> 00:00:53.090
+check out the list of some
+
+16
+00:00:53.090 --> 00:00:56.435
+of the current top 2D
+object detection papers
+
+17
+00:00:56.435 --> 00:00:59.255
+we've included in
+the supplementary material.
+
+18
+00:00:59.255 --> 00:01:02.000
+In this lesson, you
+will learn how to build
+
+19
+00:01:02.000 --> 00:01:05.000
+a standard single-stage
+ConvNet architecture
+
+20
+00:01:05.000 --> 00:01:07.460
+for 2D object detection using
+
+21
+00:01:07.460 --> 00:01:10.390
+the network layers we learned
+about in module three.
+
+22
+00:01:10.390 --> 00:01:13.880
+In addition, we will discuss
+some common designs that
+
+23
+00:01:13.880 --> 00:01:16.729
+researchers have
+formulated for ConvNets
+
+24
+00:01:16.729 --> 00:01:18.800
+used for 2D object detection.
+
+25
+00:01:18.800 --> 00:01:23.015
+Let's begin by reviewing the 2D
+object detection problem.
+
+26
+00:01:23.015 --> 00:01:25.150
+Given an image as an input,
+
+27
+00:01:25.150 --> 00:01:28.660
+we want to simultaneously
+localize all objects
+
+28
+00:01:28.660 --> 00:01:32.260
+in the scene and determine
+which class they belong to.
+
+29
+00:01:32.260 --> 00:01:36.605
+Let's see how we can perform
+this task using a ConvNet.
+
+30
+00:01:36.605 --> 00:01:40.735
+This figure shows
+the basic ConvNet configuration
+
+31
+00:01:40.735 --> 00:01:42.715
+used for 2D object detection.
+
+32
+00:01:42.715 --> 00:01:46.135
+We call this configuration a
+neural network architecture.
+
+33
+00:01:46.135 --> 00:01:48.340
+The architecture
+takes as an input
+
+34
+00:01:48.340 --> 00:01:52.285
+an image and a set of
+manually crafted prior boxes.
+
+35
+00:01:52.285 --> 00:01:56.710
+First, the image is processed
+using a feature extractor.
+
+36
+00:01:56.710 --> 00:02:01.300
+Second, a set of fully connected
+layers take as an input,
+
+37
+00:02:01.300 --> 00:02:04.465
+the output of the feature
+extractor and provide
+
+38
+00:02:04.465 --> 00:02:06.070
+a location refinement of
+
+39
+00:02:06.070 --> 00:02:10.150
+each 2D prior box as well
+as a classification.
+
+40
+00:02:10.150 --> 00:02:14.450
+Finally, non maximum
+suppression is performed on
+
+41
+00:02:14.450 --> 00:02:16.700
+the output of
+the fully connected layers
+
+42
+00:02:16.700 --> 00:02:19.100
+to generate the final detections.
+
+43
+00:02:19.100 --> 00:02:22.085
+Let's delve deeper into
+each of these steps.
+
+44
+00:02:22.085 --> 00:02:23.990
+We will begin our discussion with
+
+45
+00:02:23.990 --> 00:02:26.225
+the feature extraction stage.
+
+46
+00:02:26.225 --> 00:02:28.040
+Feature extractors are
+
+47
+00:02:28.040 --> 00:02:31.235
+the most computationally
+expensive component
+
+48
+00:02:31.235 --> 00:02:33.485
+of the 2D object detector.
+
+49
+00:02:33.485 --> 00:02:37.100
+It is typical to have
+as much as 90 percent of
+
+50
+00:02:37.100 --> 00:02:38.780
+the total architectures required
+
+51
+00:02:38.780 --> 00:02:42.020
+computation used at this stage.
+
+52
+00:02:42.020 --> 00:02:45.230
+The output of feature
+extractors usually has
+
+53
+00:02:45.230 --> 00:02:46.580
+much lower width and
+
+54
+00:02:46.580 --> 00:02:49.450
+height than those
+of the input image.
+
+55
+00:02:49.450 --> 00:02:51.860
+However, its depth is usually
+
+56
+00:02:51.860 --> 00:02:53.060
+two to three orders of
+
+57
+00:02:53.060 --> 00:02:55.970
+magnitude greater than
+that of the input image.
+
+58
+00:02:55.970 --> 00:03:00.080
+The design of feature extractors
+is a very active area of
+
+59
+00:03:00.080 --> 00:03:04.355
+research with new extractors
+emerging on a regular basis.
+
+60
+00:03:04.355 --> 00:03:06.800
+The most common feature
+extractors used
+
+61
+00:03:06.800 --> 00:03:09.215
+are VGG, ResNet, and Inception.
+
+62
+00:03:09.215 --> 00:03:10.880
+We will be focusing on
+
+63
+00:03:10.880 --> 00:03:12.860
+the VGG feature extractor as
+
+64
+00:03:12.860 --> 00:03:15.695
+our running example throughout
+the rest of this lesson.
+
+65
+00:03:15.695 --> 00:03:18.289
+The VGG feature extractor
+
+66
+00:03:18.289 --> 00:03:20.600
+is based on the
+convolutional layers
+
+67
+00:03:20.600 --> 00:03:23.255
+of the VGG 16
+classification network
+
+68
+00:03:23.255 --> 00:03:25.550
+proposed by the
+Visual Geometry Group
+
+69
+00:03:25.550 --> 00:03:27.175
+at Oxford University.
+
+70
+00:03:27.175 --> 00:03:29.810
+It is one of the first
+feature extractors to be
+
+71
+00:03:29.810 --> 00:03:33.185
+proposed for detection and
+is quite simple to build.
+
+72
+00:03:33.185 --> 00:03:35.060
+As with most ConvNets,
+
+73
+00:03:35.060 --> 00:03:37.655
+the VGG feature
+extractor is built by
+
+74
+00:03:37.655 --> 00:03:41.585
+alternating convolutional
+layers and pooling layers.
+
+75
+00:03:41.585 --> 00:03:46.160
+All convolutional layers are
+of size three by three by K,
+
+76
+00:03:46.160 --> 00:03:49.385
+with a stride of one and
+a zero-padding of one,
+
+77
+00:03:49.385 --> 00:03:51.020
+by which we mean that the padding
+
+78
+00:03:51.020 --> 00:03:53.495
+of size one is filled with zeros.
+
+79
+00:03:53.495 --> 00:03:56.480
+All max-pooling layers
+are of size two
+
+80
+00:03:56.480 --> 00:03:59.660
+by two with stride
+two and no padding.
+
+81
+00:03:59.660 --> 00:04:02.870
+These particular hyper
+parameters were arrived
+
+82
+00:04:02.870 --> 00:04:05.930
+at through intensive
+experimentation and
+
+83
+00:04:05.930 --> 00:04:08.270
+have performed extremely
+well in a wide range
+
+84
+00:04:08.270 --> 00:04:12.470
+of problems making VGG and
+extremely popular extractor.
+
+85
+00:04:12.470 --> 00:04:14.330
+Let's see how these layers affect
+
+86
+00:04:14.330 --> 00:04:16.255
+our output volume shape.
+
+87
+00:04:16.255 --> 00:04:17.960
+Last week, we derive
+
+88
+00:04:17.960 --> 00:04:20.800
+the three equations for
+the output width, height,
+
+89
+00:04:20.800 --> 00:04:22.610
+and depth based on
+
+90
+00:04:22.610 --> 00:04:24.170
+the input volume after it has
+
+91
+00:04:24.170 --> 00:04:26.255
+been passed through
+the convolutional layer.
+
+92
+00:04:26.255 --> 00:04:28.920
+For the VGG feature extractor,
+
+93
+00:04:28.920 --> 00:04:32.735
+all convolutions are of
+size three by three by K,
+
+94
+00:04:32.735 --> 00:04:35.315
+with a stride of
+one and zero padding of one.
+
+95
+00:04:35.315 --> 00:04:36.770
+That means the passing
+
+96
+00:04:36.770 --> 00:04:39.770
+an input volume through any
+of the convolutional layers
+
+97
+00:04:39.770 --> 00:04:44.480
+only changes its depth
+to K. On the other hand,
+
+98
+00:04:44.480 --> 00:04:46.954
+the pooling layers
+of the VGG extractor
+
+99
+00:04:46.954 --> 00:04:50.525
+are two by two with stride
+two and no padding.
+
+100
+00:04:50.525 --> 00:04:52.880
+Repeating the same analysis
+
+101
+00:04:52.880 --> 00:04:55.115
+using the equations
+for the pooling layer,
+
+102
+00:04:55.115 --> 00:04:56.930
+we noticed that
+the max-pooling layers of
+
+103
+00:04:56.930 --> 00:04:59.750
+VGG extractors reduce the width
+
+104
+00:04:59.750 --> 00:05:01.940
+and height of
+the input volume by two,
+
+105
+00:05:01.940 --> 00:05:04.310
+while maintaining
+the depth constant.
+
+106
+00:05:04.310 --> 00:05:06.800
+Let's now see how
+the VGG extractor
+
+107
+00:05:06.800 --> 00:05:08.800
+processes an input image.
+
+108
+00:05:08.800 --> 00:05:11.725
+Given an M by N by
+three input image,
+
+109
+00:05:11.725 --> 00:05:13.190
+we pass it through the first
+
+110
+00:05:13.190 --> 00:05:14.840
+two convolutional layers of depth
+
+111
+00:05:14.840 --> 00:05:18.125
+64 followed by
+the first pooling layer.
+
+112
+00:05:18.125 --> 00:05:20.330
+At this point,
+the output volume width and
+
+113
+00:05:20.330 --> 00:05:22.340
+height are reduced
+by a factor of two,
+
+114
+00:05:22.340 --> 00:05:25.220
+while the depth is
+expanded to 64.
+
+115
+00:05:25.220 --> 00:05:27.980
+We can separate
+the VGG feature extractor
+
+116
+00:05:27.980 --> 00:05:29.345
+into subsections,
+
+117
+00:05:29.345 --> 00:05:32.095
+where each subsection ends
+with a pooling layer.
+
+118
+00:05:32.095 --> 00:05:34.260
+The first subsection
+is called the
+
+119
+00:05:34.260 --> 00:05:38.020
+Conv1 subsection of
+the VGG extractor.
+
+120
+00:05:38.020 --> 00:05:40.550
+We then proceed to pass
+
+121
+00:05:40.550 --> 00:05:42.410
+the output volume
+through the rest of
+
+122
+00:05:42.410 --> 00:05:45.200
+the five subsections to arrive at
+
+123
+00:05:45.200 --> 00:05:48.770
+our final output volume
+of shape M over 32,
+
+124
+00:05:48.770 --> 00:05:51.790
+N over 32, and 512.
+
+125
+00:05:51.790 --> 00:05:53.940
+As an example, if we have a
+
+126
+00:05:53.940 --> 00:05:57.360
+1,240 by 960 by
+3 image as our input,
+
+127
+00:05:57.360 --> 00:06:01.745
+our final output volume shape
+will be 40 by 30 by 512.
+
+128
+00:06:01.745 --> 00:06:03.950
+We will be using
+this output volume to
+
+129
+00:06:03.950 --> 00:06:06.200
+generate our final detections.
+
+130
+00:06:06.200 --> 00:06:08.330
+The next step to describe
+
+131
+00:06:08.330 --> 00:06:09.979
+in our neural
+network architecture
+
+132
+00:06:09.979 --> 00:06:12.140
+is the concept of prior boxes.
+
+133
+00:06:12.140 --> 00:06:14.785
+Also called anchor boxes.
+
+134
+00:06:14.785 --> 00:06:17.315
+To generate 2D bounding boxes,
+
+135
+00:06:17.315 --> 00:06:19.660
+we usually do not
+start from scratch and
+
+136
+00:06:19.660 --> 00:06:21.475
+estimate the corners
+of the bounding box
+
+137
+00:06:21.475 --> 00:06:23.005
+without any prior.
+
+138
+00:06:23.005 --> 00:06:26.590
+We assume that we do have
+a prior on where the boxes
+
+139
+00:06:26.590 --> 00:06:30.280
+are in image space and how
+large these boxes should be.
+
+140
+00:06:30.280 --> 00:06:33.790
+These priors are called
+anchor boxes and are manually
+
+141
+00:06:33.790 --> 00:06:35.920
+defined over the whole image
+
+142
+00:06:35.920 --> 00:06:38.950
+usually on an
+equally-spaced grid.
+
+143
+00:06:38.950 --> 00:06:41.530
+Let's assume that we
+have a set of anchors
+
+144
+00:06:41.530 --> 00:06:44.080
+close to our ground-truth boxes.
+
+145
+00:06:44.080 --> 00:06:46.630
+During training,
+the network learns
+
+146
+00:06:46.630 --> 00:06:49.600
+to take each of these anchors and
+
+147
+00:06:49.600 --> 00:06:51.700
+tries to move it as
+close as possible
+
+148
+00:06:51.700 --> 00:06:53.080
+to the ground truth bounding
+
+149
+00:06:53.080 --> 00:06:57.655
+box in both the centroid
+location and box dimensions.
+
+150
+00:06:57.655 --> 00:07:00.025
+This is termed residual learning
+
+151
+00:07:00.025 --> 00:07:02.245
+and it takes advantage
+of the notion that it is
+
+152
+00:07:02.245 --> 00:07:04.150
+easier to nudge and existing
+
+153
+00:07:04.150 --> 00:07:06.490
+box a small amount to improve
+
+154
+00:07:06.490 --> 00:07:08.050
+it rather than to search
+
+155
+00:07:08.050 --> 00:07:11.095
+the entire image for
+possible object locations.
+
+156
+00:07:11.095 --> 00:07:14.290
+In practice, residual learning
+has proven to provide
+
+157
+00:07:14.290 --> 00:07:16.300
+much better results
+than attempting
+
+158
+00:07:16.300 --> 00:07:20.155
+to directly estimate bounding
+boxes without any prior.
+
+159
+00:07:20.155 --> 00:07:22.300
+Many different methods have been
+
+160
+00:07:22.300 --> 00:07:24.520
+proposed in the literature
+on how to use
+
+161
+00:07:24.520 --> 00:07:25.840
+the anchor bounding boxes
+
+162
+00:07:25.840 --> 00:07:28.030
+to generate the final prediction.
+
+163
+00:07:28.030 --> 00:07:31.270
+Usually, the anchors interact
+with the feature map
+
+164
+00:07:31.270 --> 00:07:34.850
+to generate fixed sized feature
+vectors for every anchor.
+
+165
+00:07:34.850 --> 00:07:37.030
+We'll explain one of
+the first methods
+
+166
+00:07:37.030 --> 00:07:38.830
+proposed for this interaction by
+
+167
+00:07:38.830 --> 00:07:43.135
+Microsoft Research in
+their architecture Faster R-CNN.
+
+168
+00:07:43.135 --> 00:07:45.620
+However, keep in mind
+that this is not
+
+169
+00:07:45.620 --> 00:07:48.410
+the only way to perform
+such an interaction.
+
+170
+00:07:48.410 --> 00:07:51.910
+The Faster R-CNN interaction
+method is quite simple.
+
+171
+00:07:51.910 --> 00:07:54.305
+For every pixel in
+the feature map,
+
+172
+00:07:54.305 --> 00:07:56.810
+we associate k anchor boxes.
+
+173
+00:07:56.810 --> 00:07:59.990
+We then perform a
+three by three by D
+
+174
+00:07:59.990 --> 00:08:03.695
+star convolution operation
+on that pixels neighborhood.
+
+175
+00:08:03.695 --> 00:08:06.440
+This results in a one by one by D
+
+176
+00:08:06.440 --> 00:08:08.870
+star feature vector
+for that pixel.
+
+177
+00:08:08.870 --> 00:08:12.770
+We use this one by one by
+D star feature vector as
+
+178
+00:08:12.770 --> 00:08:14.570
+the feature vector of every one
+
+179
+00:08:14.570 --> 00:08:17.585
+of the k anchors associated
+with that pixel.
+
+180
+00:08:17.585 --> 00:08:19.550
+We then proceed to feed
+
+181
+00:08:19.550 --> 00:08:21.080
+the extracted feature vector
+
+182
+00:08:21.080 --> 00:08:23.600
+to the output layers
+in the neural network.
+
+183
+00:08:23.600 --> 00:08:26.390
+The output layers of
+a 2D object detector
+
+184
+00:08:26.390 --> 00:08:27.560
+usually comprise
+
+185
+00:08:27.560 --> 00:08:31.790
+of a regression head and
+a classification head.
+
+186
+00:08:31.790 --> 00:08:34.010
+The regression head
+usually includes
+
+187
+00:08:34.010 --> 00:08:36.590
+multiple fully-connected
+hidden layers
+
+188
+00:08:36.590 --> 00:08:38.555
+with a linear output layer.
+
+189
+00:08:38.555 --> 00:08:40.610
+The regressed output is typically
+
+190
+00:08:40.610 --> 00:08:42.530
+a vector of residuals that need
+
+191
+00:08:42.530 --> 00:08:44.960
+to be added to
+the anchor that hand
+
+192
+00:08:44.960 --> 00:08:47.630
+to get the ground truth
+bounding box.
+
+193
+00:08:47.630 --> 00:08:50.180
+Another method to
+update the dimension
+
+194
+00:08:50.180 --> 00:08:52.220
+of the anchors is to
+regress a residual
+
+195
+00:08:52.220 --> 00:08:54.080
+from the center of the anchor
+
+196
+00:08:54.080 --> 00:08:55.850
+to the center of the ground truth
+
+197
+00:08:55.850 --> 00:08:58.850
+bounding box in addition
+to two scale factors
+
+198
+00:08:58.850 --> 00:09:01.130
+that correct the
+ground truth bounding
+
+199
+00:09:01.130 --> 00:09:02.840
+box width and height when
+
+200
+00:09:02.840 --> 00:09:05.885
+multiplied with
+an anchor's width and height.
+
+201
+00:09:05.885 --> 00:09:09.020
+The classification head
+is also comprised
+
+202
+00:09:09.020 --> 00:09:11.660
+of multiple fully-connected
+hidden layers,
+
+203
+00:09:11.660 --> 00:09:14.360
+but with a final
+softmax output layer.
+
+204
+00:09:14.360 --> 00:09:16.160
+The softmax output is
+
+205
+00:09:16.160 --> 00:09:19.175
+a vector with
+a single score per class.
+
+206
+00:09:19.175 --> 00:09:20.840
+The highest score usually
+
+207
+00:09:20.840 --> 00:09:23.990
+defines the class of
+the anchor at hand.
+
+208
+00:09:23.990 --> 00:09:27.410
+You might note that based on
+what we described so far,
+
+209
+00:09:27.410 --> 00:09:29.570
+we will end up with
+k bounding boxes
+
+210
+00:09:29.570 --> 00:09:32.270
+per pixel of
+the output feature map.
+
+211
+00:09:32.270 --> 00:09:34.250
+Even if we consider boxes with
+
+212
+00:09:34.250 --> 00:09:37.760
+high classification score
+for all classes of interest,
+
+213
+00:09:37.760 --> 00:09:39.050
+we still will have
+
+214
+00:09:39.050 --> 00:09:41.465
+many redundant detections
+in the image.
+
+215
+00:09:41.465 --> 00:09:43.940
+During average
+precision computation,
+
+216
+00:09:43.940 --> 00:09:45.380
+we only consider one
+
+217
+00:09:45.380 --> 00:09:48.020
+detection per ground
+truth bounding box.
+
+218
+00:09:48.020 --> 00:09:49.880
+Any redundant detections are
+
+219
+00:09:49.880 --> 00:09:52.010
+considered false positives and
+
+220
+00:09:52.010 --> 00:09:53.960
+results in lower precision and
+
+221
+00:09:53.960 --> 00:09:57.415
+thus a lower average
+precision overall.
+
+222
+00:09:57.415 --> 00:10:00.810
+Recall, we're aiming
+for perfect detection,
+
+223
+00:10:00.810 --> 00:10:02.525
+which means we want
+
+224
+00:10:02.525 --> 00:10:06.055
+an output of one box per
+object in the image.
+
+225
+00:10:06.055 --> 00:10:08.720
+So, we will need to do
+something to eliminate
+
+226
+00:10:08.720 --> 00:10:12.470
+the many redundant detections
+produced by our network.
+
+227
+00:10:12.470 --> 00:10:15.410
+In fact, this is
+only an issue of inference
+
+228
+00:10:15.410 --> 00:10:17.270
+and it turns out to be beneficial
+
+229
+00:10:17.270 --> 00:10:18.890
+to drive the network to output
+
+230
+00:10:18.890 --> 00:10:20.975
+the best possible residuals
+
+231
+00:10:20.975 --> 00:10:23.475
+for every anchor during training.
+
+232
+00:10:23.475 --> 00:10:25.710
+Before going deeper
+into this issue,
+
+233
+00:10:25.710 --> 00:10:28.630
+let's summarize what you
+learned this lesson.
+
+234
+00:10:28.630 --> 00:10:31.550
+First, you learned that
+convolutional neural networks
+
+235
+00:10:31.550 --> 00:10:32.720
+can be used to solve
+
+236
+00:10:32.720 --> 00:10:35.480
+the 2D object detection
+problem and study
+
+237
+00:10:35.480 --> 00:10:38.945
+the details of the VGG feature
+extractor architecture.
+
+238
+00:10:38.945 --> 00:10:41.555
+Second, you learned how
+to use anchor boxes
+
+239
+00:10:41.555 --> 00:10:44.075
+as object location priors and
+
+240
+00:10:44.075 --> 00:10:46.310
+estimate the bounding
+box residuals
+
+241
+00:10:46.310 --> 00:10:49.685
+to output the final
+object locations.
+
+242
+00:10:49.685 --> 00:10:51.170
+In the next lesson,
+
+243
+00:10:51.170 --> 00:10:52.640
+we'll describe how to train
+
+244
+00:10:52.640 --> 00:10:54.710
+2D object detectors using
+
+245
+00:10:54.710 --> 00:10:57.485
+classification and
+regression loss functions.
+
+246
+00:10:57.485 --> 00:11:01.540
+For that, we will use most
+of the k output boxes.
+
+247
+00:11:01.540 --> 00:11:04.070
+We'll then return to
+the challenge of outputting
+
+248
+00:11:04.070 --> 00:11:06.485
+a single bounding box per object
+
+249
+00:11:06.485 --> 00:11:07.970
+and introduce the concept
+
+250
+00:11:07.970 --> 00:11:12.760
+of non-maximum suppression
+to solve it. See you then.

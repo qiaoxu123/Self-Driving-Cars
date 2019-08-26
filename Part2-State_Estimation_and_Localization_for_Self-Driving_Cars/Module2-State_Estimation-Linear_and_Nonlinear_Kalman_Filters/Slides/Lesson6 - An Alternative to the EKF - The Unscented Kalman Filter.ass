@@ -1,0 +1,1056 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.895 --> 00:00:18.878
+In the previous video, we saw how
+linearization error can cause the EKF to
+
+3
+00:00:18.878 --> 00:00:23.184
+produce state estimates that are very
+different from the true value of the state
+
+4
+00:00:23.184 --> 00:00:27.510
+and covariances that don't accurately
+capture the uncertainty in the state.
+
+5
+00:00:28.570 --> 00:00:31.258
+This can be a big problem
+when we're relying on the EKF
+
+6
+00:00:31.258 --> 00:00:35.220
+in safety critical applications
+like self-driving cars.
+
+7
+00:00:35.220 --> 00:00:35.890
+In this lesson,
+
+8
+00:00:35.890 --> 00:00:39.810
+you'll learn about the unscented common
+filter, which is an alternative approach
+
+9
+00:00:39.810 --> 00:00:44.070
+to non-linear common filtering that
+relies on something called the unscented
+
+10
+00:00:44.070 --> 00:00:49.590
+transform to pass probability
+distributions through nonlinear functions.
+
+11
+00:00:49.590 --> 00:00:54.600
+As we'll see, the unscented transform
+gives us much higher accuracy
+
+12
+00:00:54.600 --> 00:00:57.720
+than analytical EKF
+style linearization for
+
+13
+00:00:57.720 --> 00:01:02.480
+a similar amount of computation, and
+without needing to compute any Jacobians.
+
+14
+00:01:02.480 --> 00:01:07.520
+So by the end of this video you'll be
+able to use the unscented transform
+
+15
+00:01:07.520 --> 00:01:12.360
+to pass a probability distribution through
+a nonlinear function, describe how
+
+16
+00:01:12.360 --> 00:01:17.350
+the Unscented Kalman Filter or UKF uses
+the unscented transform in the prediction
+
+17
+00:01:17.350 --> 00:01:23.050
+and correction steps, and explain
+the advantages of the UKF over the EKF as
+
+18
+00:01:23.050 --> 00:01:28.000
+well as apply the UKF to a simple
+nonlinear tracking problem.
+
+19
+00:01:28.000 --> 00:01:31.580
+The intuition behind the unscented
+transform is simple.
+
+20
+00:01:31.580 --> 00:01:35.520
+It's typically much easier to
+approximate a probability distribution
+
+21
+00:01:35.520 --> 00:01:38.446
+than it is to approximate
+an arbitrary nonlinear function.
+
+22
+00:01:39.970 --> 00:01:43.850
+Let's think about a simple example
+where a 1D Gaussian distribution
+
+23
+00:01:43.850 --> 00:01:47.970
+like the one on the left gets
+transformed through nonlinear function
+
+24
+00:01:47.970 --> 00:01:51.690
+into a more complicated 1D distribution
+like the one on the right.
+
+25
+00:01:52.880 --> 00:01:56.790
+We already know the mean and the standard
+deviation of the input Gaussian and
+
+26
+00:01:56.790 --> 00:01:59.750
+we want to figure out the mean and
+standard deviation of the output
+
+27
+00:01:59.750 --> 00:02:03.040
+distribution using this information and
+the nonlinear function.
+
+28
+00:02:04.280 --> 00:02:07.140
+The unscented transform
+gives us a way to do this.
+
+29
+00:02:08.570 --> 00:02:12.590
+The basic idea in the unscented
+transform has three steps.
+
+30
+00:02:12.590 --> 00:02:16.500
+First, we choose a set of sample
+points from our input distribution.
+
+31
+00:02:17.580 --> 00:02:21.660
+Now these aren't random samples,
+they're deterministic samples
+
+32
+00:02:21.660 --> 00:02:25.400
+chosen to be a certain number of
+standard deviations away from the mean.
+
+33
+00:02:26.660 --> 00:02:30.150
+For this reason,
+these samples are called sigma points, and
+
+34
+00:02:30.150 --> 00:02:33.810
+the unscented transform is sometimes
+called the sigma point transform.
+
+35
+00:02:35.120 --> 00:02:39.230
+Once we have our set of carefully
+chosen sigma points, the second and
+
+36
+00:02:39.230 --> 00:02:43.780
+easiest step is to pass each sigma
+point through our nonlinear function,
+
+37
+00:02:43.780 --> 00:02:47.500
+producing a new set of sigma points
+belonging to the output distribution.
+
+38
+00:02:48.910 --> 00:02:53.540
+Finally, we can compute the sample mean
+and covariance of the output sigma points
+
+39
+00:02:53.540 --> 00:02:57.760
+with some carefully chosen weights, and
+these will give us a good approximation
+
+40
+00:02:57.760 --> 00:03:01.030
+of the mean and covariance of
+the true output distribution.
+
+41
+00:03:02.600 --> 00:03:05.450
+Now that you've seen the basic
+idea of the unscented transform,
+
+42
+00:03:05.450 --> 00:03:07.230
+let's look at each of
+these steps in detail.
+
+43
+00:03:08.360 --> 00:03:12.310
+The first thing you might be wondering
+is how many sigma points do we need and
+
+44
+00:03:12.310 --> 00:03:15.169
+which points are, in fact, sigma points?
+
+45
+00:03:16.550 --> 00:03:20.100
+In general, for
+an n dimensional probability distribution,
+
+46
+00:03:20.100 --> 00:03:24.590
+we need 2n+1 sigma points,
+one for the mean and
+
+47
+00:03:24.590 --> 00:03:28.060
+the rest symmetrically
+distributed about the mean.
+
+48
+00:03:28.060 --> 00:03:31.250
+The diagrams in the left show the sigma
+points for one dimensional and
+
+49
+00:03:31.250 --> 00:03:33.612
+two dimensional examples.
+
+50
+00:03:33.612 --> 00:03:37.169
+In 1D we need three sigma points and
+in 2D we need five.
+
+51
+00:03:38.690 --> 00:03:42.080
+The first step in determining where the
+sigma point should be is taking something
+
+52
+00:03:42.080 --> 00:03:45.660
+called the Cholesky decomposition
+of the covariance matrix
+
+53
+00:03:45.660 --> 00:03:47.560
+associated with the input distribution.
+
+54
+00:03:49.550 --> 00:03:53.680
+A Cholesky decomposition is basically
+a square root operation that operates on
+
+55
+00:03:53.680 --> 00:03:57.629
+symmetric positive definite matrices,
+such as covariance matrices.
+
+56
+00:03:58.640 --> 00:04:01.550
+In fact,
+if the input PDF is one dimensional
+
+57
+00:04:01.550 --> 00:04:05.580
+the Cholesky decomposition really is
+just the square root of the variants,
+
+58
+00:04:05.580 --> 00:04:08.230
+which is also known as
+the standard deviation.
+
+59
+00:04:08.230 --> 00:04:12.330
+We won't go into the details of how to
+compute a Cholesky decomposition but
+
+60
+00:04:12.330 --> 00:04:18.250
+you can use the chole function in MATLAB
+or the Cholesky function in NumPy.
+
+61
+00:04:18.250 --> 00:04:20.500
+Once we've decomposed
+the covariance matrix,
+
+62
+00:04:20.500 --> 00:04:24.210
+we can choose our first sigma point to
+be the mean of the distribution and
+
+63
+00:04:24.210 --> 00:04:28.130
+the remainder to be the mean plus or
+minus some factor
+
+64
+00:04:28.130 --> 00:04:32.300
+times each column of the matrix L that
+we got from the cholesky decomposition.
+
+65
+00:04:34.090 --> 00:04:37.230
+The value of N here again
+is a number of dimensions
+
+66
+00:04:37.230 --> 00:04:38.580
+of the probability distribution.
+
+67
+00:04:39.960 --> 00:04:44.440
+The parameter capa is a tuning parameter
+that you're free to set yourself.
+
+68
+00:04:45.680 --> 00:04:48.460
+For Gaussian distributions,
+which is what we'll be working with,
+
+69
+00:04:49.460 --> 00:04:53.060
+setting N plus capa equal
+to 3 is a good choice.
+
+70
+00:04:54.550 --> 00:04:57.250
+Okay, so
+now we have our set of sigma points.
+
+71
+00:04:57.250 --> 00:04:59.320
+The next step is straightforward.
+
+72
+00:04:59.320 --> 00:05:03.020
+Just pass each of the sigma points
+through our nonlinear function
+
+73
+00:05:03.020 --> 00:05:05.520
+to get a new set of
+transformed sigma points.
+
+74
+00:05:07.350 --> 00:05:11.110
+Now all that's left is to recombine
+the transformed sigma points
+
+75
+00:05:11.110 --> 00:05:13.580
+to find our output mean and
+output covariance.
+
+76
+00:05:15.080 --> 00:05:17.860
+We do this using the standard formulas for
+the sample means and
+
+77
+00:05:17.860 --> 00:05:21.489
+covariance that you would have seen in
+your introductory statistics courses.
+
+78
+00:05:22.580 --> 00:05:26.781
+The trick is that each of the points
+gets a specific weight in the mean and
+
+79
+00:05:26.781 --> 00:05:31.405
+covariance calculations, and that weight
+depends on the parameter kappa and
+
+80
+00:05:31.405 --> 00:05:34.016
+the dimension of the input distribution N.
+
+81
+00:05:34.016 --> 00:05:35.470
+And that's really all there is to it.
+
+82
+00:05:37.180 --> 00:05:41.336
+To see the unscented transform in action,
+lets come back to our example of
+
+83
+00:05:41.336 --> 00:05:45.829
+the previous video where we nonlinearly
+transformed a uniform distribution in
+
+84
+00:05:45.829 --> 00:05:49.651
+polar coordinates into Cartesian
+coordinates, and let's see how
+
+85
+00:05:49.651 --> 00:05:54.164
+the unscented transform compares to
+the analytical linearization approach.
+
+86
+00:05:56.230 --> 00:05:57.086
+So here, again,
+
+87
+00:05:57.086 --> 00:06:01.420
+we have the true mean and covariance
+of the two distributions in green.
+
+88
+00:06:01.420 --> 00:06:04.110
+Now let's apply the unscented transform.
+
+89
+00:06:04.110 --> 00:06:06.800
+The dimension of our input
+distribution is two, so
+
+90
+00:06:06.800 --> 00:06:10.695
+we need five sigma points which
+we've shown as orange stars.
+
+91
+00:06:10.695 --> 00:06:15.628
+Passing these sigma points through our
+nonlinear function puts them here.
+
+92
+00:06:18.109 --> 00:06:22.123
+And the mean and covariance we compute
+from the transformed sigma points
+
+93
+00:06:22.123 --> 00:06:23.910
+look like this shown in orange.
+
+94
+00:06:25.510 --> 00:06:28.880
+Note that our estimate for
+the mean using the unscented transform is
+
+95
+00:06:28.880 --> 00:06:32.720
+almost exactly the same as the true
+nonlinear mean and our estimate for
+
+96
+00:06:32.720 --> 00:06:35.980
+the covariance almost exactly
+matches the true covariance.
+
+97
+00:06:37.700 --> 00:06:41.762
+Compare that to the analytically
+linearized transform mean and covariance
+
+98
+00:06:41.762 --> 00:06:45.962
+in red, which are both very different
+from the true mean and true covariance.
+
+99
+00:06:48.398 --> 00:06:52.886
+It's easy to see from this example that
+the unscented transform gives us a much
+
+100
+00:06:52.886 --> 00:06:57.306
+better approximation of the output PDF
+without requiring much more work than
+
+101
+00:06:57.306 --> 00:06:59.760
+the analytical linearization approach.
+
+102
+00:06:59.760 --> 00:07:04.760
+Now that we've seen how the unscented
+transform works, we can
+
+103
+00:07:04.760 --> 00:07:09.180
+easily use it in our Kalman Filtering
+framework to work with nonlinear models.
+
+104
+00:07:10.200 --> 00:07:14.631
+This variant of the common filter is
+called the Unscented Kalman Filter or UKF.
+
+105
+00:07:14.631 --> 00:07:18.060
+You may also hear it called
+the sigma point common filter.
+
+106
+00:07:19.970 --> 00:07:24.030
+The main idea of the UKF is that instead
+of approximating the system equations
+
+107
+00:07:24.030 --> 00:07:27.120
+by linearizing them like the EKF does,
+
+108
+00:07:27.120 --> 00:07:30.880
+we use the unscented transform to
+approximate the PDFs directly.
+
+109
+00:07:32.770 --> 00:07:34.330
+Let's look at the prediction
+step of the UKF.
+
+110
+00:07:35.960 --> 00:07:40.420
+To propagate the state and covariance
+through the motion model from time k-1 to
+
+111
+00:07:40.420 --> 00:07:45.410
+time k, we apply the unscented transform
+using the current best guess for
+
+112
+00:07:45.410 --> 00:07:47.170
+the mean and covariance of the state.
+
+113
+00:07:48.470 --> 00:07:53.730
+First, we decompose the estimated state
+covariance from time k- 1, then we
+
+114
+00:07:53.730 --> 00:08:00.060
+calculate our sigma points centered around
+the estimated means state from time k- 1.
+
+115
+00:08:00.060 --> 00:08:04.738
+Second, we propagate our sigma points
+through our nonlinear motion model to get
+
+116
+00:08:04.738 --> 00:08:08.130
+a new set of sigma points for
+the predicted state at time k.
+
+117
+00:08:09.740 --> 00:08:12.659
+And finally,
+we calculate the predicted mean and
+
+118
+00:08:12.659 --> 00:08:14.754
+covariance for the state at time K.
+
+119
+00:08:14.754 --> 00:08:17.163
+At this point it's
+important to account for
+
+120
+00:08:17.163 --> 00:08:21.527
+the process noise by adding its covariance
+to the covariance of the transformed
+
+121
+00:08:21.527 --> 00:08:24.470
+sigma points to get the final
+predicted covariance.
+
+122
+00:08:26.200 --> 00:08:29.930
+This equation looks a bit different if
+the process noise is not additive, but
+
+123
+00:08:29.930 --> 00:08:32.960
+most of the time you will be dealing
+with additive noise in your models
+
+124
+00:08:32.960 --> 00:08:34.370
+unless there is a good reason not to.
+
+125
+00:08:36.060 --> 00:08:39.098
+For the correction step,
+we're going to follow a similar procedure,
+
+126
+00:08:39.098 --> 00:08:41.233
+this time with a non-linear
+measurement model.
+
+127
+00:08:44.092 --> 00:08:46.812
+First, we will need to
+redraw our sigma points
+
+128
+00:08:46.812 --> 00:08:49.960
+using the predicted covariance matrix.
+
+129
+00:08:49.960 --> 00:08:53.950
+We need to do this a second time because
+we added process noise at the end of
+
+130
+00:08:53.950 --> 00:08:58.142
+the last step, and this will modify
+the positions of some of the sigma points.
+
+131
+00:08:58.142 --> 00:09:03.270
+Next, we're going to plug
+these new sigma points one by
+
+132
+00:09:03.270 --> 00:09:07.760
+one into our nonlinear measurement model
+to get another set of sigma points for
+
+133
+00:09:07.760 --> 00:09:13.660
+the predicted measurements, then we
+can estimate the mean and covariance
+
+134
+00:09:13.660 --> 00:09:17.310
+of the predicted measurements using
+the sample mean and covariance formulas.
+
+135
+00:09:18.420 --> 00:09:22.620
+Again, take note that we’re adding in
+the measurement noise covariance to get
+
+136
+00:09:22.620 --> 00:09:25.660
+the final covariance of
+the predicted measurements, and
+
+137
+00:09:25.660 --> 00:09:29.400
+also remember that this formula
+only applies to additive noise.
+
+138
+00:09:31.260 --> 00:09:34.040
+To compute the common gain,
+we’re also going to need the cross
+
+139
+00:09:34.040 --> 00:09:37.570
+covariance between the predicted state and
+the predicted measurements,
+
+140
+00:09:37.570 --> 00:09:40.169
+which tells us how the measurements
+are correlated with the state.
+
+141
+00:09:41.710 --> 00:09:45.500
+You can calculate this using the standard
+formula for the cross covariance and
+
+142
+00:09:45.500 --> 00:09:46.870
+using the same weights as before.
+
+143
+00:09:48.760 --> 00:09:52.770
+Then all that's left is to use the Kalman
+gain to optimally correct the mean and
+
+144
+00:09:52.770 --> 00:09:54.880
+covariance of the predicted state.
+
+145
+00:09:54.880 --> 00:09:57.076
+And that's it!
+
+146
+00:09:57.076 --> 00:10:00.692
+The UKF follows the same prediction
+correction pattern as the EKF, but we've
+
+147
+00:10:00.692 --> 00:10:04.490
+just replaced the analytical linearization
+step with the unscented transform.
+
+148
+00:10:06.310 --> 00:10:09.630
+Let's try applying the UKF to
+the same example driving scenario
+
+149
+00:10:09.630 --> 00:10:11.380
+we worked through with the EKF.
+
+150
+00:10:12.800 --> 00:10:16.220
+We're again trying to track the position
+and velocity of a moving car
+
+151
+00:10:16.220 --> 00:10:19.110
+that we're controlling by pressing
+on the gas pedal or the brake.
+
+152
+00:10:20.210 --> 00:10:23.200
+The car has a sensor on board that
+measures the angle between a distant
+
+153
+00:10:23.200 --> 00:10:24.600
+landmark and the horizon.
+
+154
+00:10:25.700 --> 00:10:29.170
+The motion model is linear but
+the measurement model is nonlinear.
+
+155
+00:10:29.170 --> 00:10:33.800
+Try using the data given here to estimate
+the position of the vehicle at time one,
+
+156
+00:10:33.800 --> 00:10:34.620
+using the UKF.
+
+157
+00:10:35.800 --> 00:10:39.367
+Here is the Cholesky decomposition
+of the initial covariance matrix and
+
+158
+00:10:39.367 --> 00:10:43.121
+the five sigma points we'll use to
+represent the state and its covariance.
+
+159
+00:10:46.860 --> 00:10:50.174
+And here is the result of the prediction
+step for the mean of the state.
+
+160
+00:10:53.747 --> 00:10:56.210
+And finally, the predicted covariance.
+
+161
+00:10:57.970 --> 00:11:00.830
+Notice that the predicted mean and
+covariance are identical to what we
+
+162
+00:11:00.830 --> 00:11:05.220
+would've found with the linear common
+filter and the extended common filter.
+
+163
+00:11:05.220 --> 00:11:07.658
+This is because the motion
+model actually is linear.
+
+164
+00:11:11.472 --> 00:11:14.199
+For the correction step,
+these are the sigma points for
+
+165
+00:11:14.199 --> 00:11:18.096
+the predicted measurements and the mean
+and covariance of that distribution.
+
+166
+00:11:22.158 --> 00:11:25.263
+And finally, the cross covariance,
+common gain, and
+
+167
+00:11:25.263 --> 00:11:28.777
+our final answer for
+the position of the vehicle at time k = 1.
+
+168
+00:11:37.247 --> 00:11:42.226
+To summarize this video, we looked at the
+Unscented Kalman Filter or UKF, which uses
+
+169
+00:11:42.226 --> 00:11:46.599
+the unscented transform to adapt
+the Kalman filter to nonlinear systems.
+
+170
+00:11:47.970 --> 00:11:52.970
+As we saw, the unscented transform works
+by passing a small set of carefully chosen
+
+171
+00:11:52.970 --> 00:11:56.670
+samples through a nonlinear system,
+and computing the mean and
+
+172
+00:11:56.670 --> 00:12:01.590
+covariance of the outputs, and it often
+does a much better job of approximating
+
+173
+00:12:01.590 --> 00:12:05.640
+the output distribution than the local
+analytical linearization technique
+
+174
+00:12:05.640 --> 00:12:08.800
+used by the EKF for
+similar computational cost.
+
+175
+00:12:10.210 --> 00:12:11.880
+Let's recap what we
+learned in this module.
+
+176
+00:12:13.280 --> 00:12:16.290
+We started off by discussing
+the linear Kalman filter,
+
+177
+00:12:16.290 --> 00:12:19.370
+which is a form of recursive
+least squares estimation
+
+178
+00:12:19.370 --> 00:12:22.500
+that allows us to combine
+information from a motion model
+
+179
+00:12:22.500 --> 00:12:26.680
+with information from sensor measurements
+to estimate the vehicle state.
+
+180
+00:12:28.220 --> 00:12:31.640
+The Kalman filter follows
+a prediction correction architecture.
+
+181
+00:12:31.640 --> 00:12:34.370
+The motion model is used to make
+predictions of the state, and
+
+182
+00:12:34.370 --> 00:12:37.330
+the measurements are used to make
+corrections to those predictions.
+
+183
+00:12:39.480 --> 00:12:44.940
+We also saw that the Kalman filter is the
+best linear unbiased estimator, or BLUE.
+
+184
+00:12:44.940 --> 00:12:48.750
+That is, the Kalman filter is
+the best unbiased estimator
+
+185
+00:12:48.750 --> 00:12:51.590
+that uses only a linear
+combination of measurements.
+
+186
+00:12:52.770 --> 00:12:56.202
+But, of course, linear systems
+don't really exist in reality, so
+
+187
+00:12:56.202 --> 00:12:59.450
+we needed to develop techniques for
+handling nonlinear systems.
+
+188
+00:12:59.450 --> 00:13:03.860
+[SOUND] In this module,
+we looked at three different approaches to
+
+189
+00:13:03.860 --> 00:13:08.349
+nonlinear Kalman filtering,
+the Extended Kalman Filter or EKF,
+
+190
+00:13:08.349 --> 00:13:13.668
+the error state formulation of the EKF and
+the Unscented Kalman Filter or UKF.
+
+191
+00:13:13.668 --> 00:13:18.404
+As we've discussed the main difference is
+that the EKF relies on local analytical
+
+192
+00:13:18.404 --> 00:13:22.867
+linearization to propagate PDFs through
+nonlinear functions whether using
+
+193
+00:13:22.867 --> 00:13:26.310
+the full state or
+the error state formulation.
+
+194
+00:13:26.310 --> 00:13:27.620
+In contrast,
+
+195
+00:13:27.620 --> 00:13:31.678
+the UKF relies on the unscented
+transform to handle nonlinear functions.
+
+196
+00:13:32.910 --> 00:13:35.760
+For most systems that
+are only mildly nonlinear,
+
+197
+00:13:35.760 --> 00:13:40.050
+the EKF will give accurate results,
+but the UKF will be more accurate in
+
+198
+00:13:40.050 --> 00:13:42.920
+cases where linearization error
+is a problem for the EKF.
+
+199
+00:13:44.510 --> 00:13:47.594
+The error state Kalman filter
+performs somewhere in-between.
+
+200
+00:13:49.020 --> 00:13:54.420
+One of the biggest advantages of the UKF
+over any EKF formulation is that the UKF
+
+201
+00:13:54.420 --> 00:13:58.700
+doesn't require you to compute any
+derivatives of your non-linear models,
+
+202
+00:13:58.700 --> 00:14:01.290
+which can be prone to human error or
+numerical instability.
+
+203
+00:14:03.230 --> 00:14:07.380
+Finally, in terms of speed,
+the EKF wins out by a small margin for
+
+204
+00:14:07.380 --> 00:14:11.250
+typical estimation problems,
+but in general, the EKF and
+
+205
+00:14:11.250 --> 00:14:14.180
+the UKF require very similar
+amounts of computation.
+
+206
+00:14:15.750 --> 00:14:17.840
+Because of its accuracy and simplicity,
+
+207
+00:14:17.840 --> 00:14:22.190
+we recommend using the UKF over the EKF
+whenever possible in your projects.
+
+208
+00:14:23.800 --> 00:14:28.700
+If you must use the EKF, our advice is
+to use the error state formulation,
+
+209
+00:14:28.700 --> 00:14:30.630
+be wary of linearization error, and
+
+210
+00:14:30.630 --> 00:14:36.170
+take extra care to ensure your Jacobians
+are correct, a good mantra to repeat.
+
+211
+00:14:37.990 --> 00:14:41.730
+Now that you've learned about the basic
+tools we need for state estimation, we can
+
+212
+00:14:41.730 --> 00:14:45.830
+start thinking about the types of sensors
+we might find on a self-driving car and
+
+213
+00:14:45.830 --> 00:14:48.660
+how we can use them to
+localize the vehicle.
+
+214
+00:14:48.660 --> 00:14:55.525
+In the next module,
+we'll discuss one common pair of sensors,
+
+215
+00:14:55.525 --> 00:14:59.848
+the inertial measurement unit or IMU and
+
+216
+00:14:59.848 --> 00:15:05.459
+the global navigation satellite system,
+or GNSS.
+
+217
+00:15:05.459 --> 00:15:10.553
+[MUSIC]

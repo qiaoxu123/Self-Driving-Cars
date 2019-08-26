@@ -1,0 +1,899 @@
+1
+00:00:00,025 --> 00:00:07,905
+[SOUND]
+
+2
+00:00:07,905 --> 00:00:17,905
+[MUSIC]
+
+3
+00:00:19,746 --> 00:00:21,389
+Welcome to the first lesson of week two.
+
+4
+00:00:21,389 --> 00:00:25,751
+This week we will discuss many
+details about the hardware and
+
+5
+00:00:25,751 --> 00:00:30,298
+software architecture used in
+today's self-driving cars.
+
+6
+00:00:30,298 --> 00:00:35,322
+In particular, we will cover the various
+sensors that can be used for perception.
+
+7
+00:00:35,322 --> 00:00:38,227
+The computing platforms available today.
+
+8
+00:00:38,227 --> 00:00:43,417
+The basics of designing sensor
+configurations for self-driving cars.
+
+9
+00:00:43,417 --> 00:00:47,121
+The components of a typical
+autonomy software stack.
+
+10
+00:00:47,121 --> 00:00:51,031
+And finally, we will conclude by
+discussing the various ways which we can
+
+11
+00:00:51,031 --> 00:00:53,629
+represent the environment for
+self-driving.
+
+12
+00:00:55,610 --> 00:00:59,337
+Hopefully by the end of this week you
+will have a broad understanding of
+
+13
+00:00:59,337 --> 00:01:03,328
+the equipment and software ideas that
+go into making a self-driving car.
+
+14
+00:01:03,328 --> 00:01:05,606
+Let's begin this video.
+
+15
+00:01:05,606 --> 00:01:08,630
+In this video, we will define sensors, and
+
+16
+00:01:08,630 --> 00:01:13,881
+discuss the various types of sensors
+available for the task of perception.
+
+17
+00:01:13,881 --> 00:01:19,172
+And we will then discuss the self-driving
+car hardware available nowadays.
+
+18
+00:01:19,172 --> 00:01:21,620
+Let's begin by talking about sensors.
+
+19
+00:01:21,620 --> 00:01:26,120
+Even the best perception algorithms
+are limited by the quality of their
+
+20
+00:01:26,120 --> 00:01:27,026
+sensor data.
+
+21
+00:01:27,026 --> 00:01:30,975
+And careful selection of sensors
+can go a long way to simplifying
+
+22
+00:01:30,975 --> 00:01:33,327
+the self-driving perception task.
+
+23
+00:01:33,327 --> 00:01:35,167
+So what is a sensor?
+
+24
+00:01:35,167 --> 00:01:40,826
+A sensor is any device that measures or
+detects some property of the environment,
+
+25
+00:01:40,826 --> 00:01:43,541
+or changes to that property over time.
+
+26
+00:01:43,541 --> 00:01:46,934
+Sensors are broadly
+categorized into two types,
+
+27
+00:01:46,934 --> 00:01:49,770
+depending on what property they record.
+
+28
+00:01:49,770 --> 00:01:54,249
+If they record a property of
+the environment they are exteroceptive.
+
+29
+00:01:54,249 --> 00:01:57,930
+Extero means outside, or
+from the surroundings.
+
+30
+00:01:57,930 --> 00:02:02,490
+On the other hand, if the sensors
+record a property of the ego vehicle,
+
+31
+00:02:02,490 --> 00:02:04,242
+they are proprioceptive.
+
+32
+00:02:04,242 --> 00:02:07,410
+Proprios means internal, or one's own.
+
+33
+00:02:08,550 --> 00:02:12,636
+Let's start by discussing
+common exteroceptive sensors.
+
+34
+00:02:12,636 --> 00:02:17,251
+We start with the most common and
+widely used sensor in autonomous driving,
+
+35
+00:02:17,251 --> 00:02:18,054
+the camera.
+
+36
+00:02:18,054 --> 00:02:23,382
+Cameras are a passive, light-collecting
+sensor that are great at capturing rich,
+
+37
+00:02:23,382 --> 00:02:25,752
+detailed information about a scene.
+
+38
+00:02:25,752 --> 00:02:30,472
+In fact, some groups believe that the
+camera is the only sensor truly required
+
+39
+00:02:30,472 --> 00:02:31,771
+for self-driving.
+
+40
+00:02:31,771 --> 00:02:36,812
+But state of the art performance is
+not yet possible with vision alone.
+
+41
+00:02:36,812 --> 00:02:38,627
+While talking about cameras,
+
+42
+00:02:38,627 --> 00:02:42,611
+we usually tend to talk about three
+important comparison metrics.
+
+43
+00:02:42,611 --> 00:02:45,760
+We select cameras in terms
+of their resolution.
+
+44
+00:02:45,760 --> 00:02:48,795
+The resolution is the number of
+pixels that create the image.
+
+45
+00:02:48,795 --> 00:02:52,485
+So it's a way of specifying
+the quality of the image.
+
+46
+00:02:52,485 --> 00:02:55,516
+We can also select cameras on
+the basis of field of view.
+
+47
+00:02:55,516 --> 00:02:59,698
+The field of view is defined by
+the horizontal and vertical angular extent
+
+48
+00:02:59,698 --> 00:03:04,360
+that is visible to the camera, and can be
+varied through lens selection and zoom.
+
+49
+00:03:05,550 --> 00:03:07,344
+Another important metric
+is the dynamic range.
+
+50
+00:03:07,344 --> 00:03:11,357
+The dynamic range of the camera is
+the difference between the darkest and
+
+51
+00:03:11,357 --> 00:03:13,850
+the lightest tones in an image.
+
+52
+00:03:13,850 --> 00:03:18,223
+High dynamic range is critical for
+self-driving vehicles due to the highly
+
+53
+00:03:18,223 --> 00:03:22,881
+variable lighting conditions encountered
+while driving especially at night.
+
+54
+00:03:22,881 --> 00:03:26,641
+There is an important trade off
+cameras and lens selection,
+
+55
+00:03:26,641 --> 00:03:30,488
+that lies between the choice of
+field of view and resolution.
+
+56
+00:03:30,488 --> 00:03:34,590
+Wider field of view permit a lager
+viewing region in the environment.
+
+57
+00:03:34,590 --> 00:03:37,872
+But fewer pixels that absorb
+light from one particular object.
+
+58
+00:03:37,872 --> 00:03:39,710
+As the field of view increases,
+
+59
+00:03:39,710 --> 00:03:44,408
+we need to increase resolution to still be
+able to perceive with the same quality,
+
+60
+00:03:44,408 --> 00:03:47,420
+the various kinds of
+information we may encounter.
+
+61
+00:03:48,620 --> 00:03:52,278
+Other properties of cameras that
+affect perception exist as well,
+
+62
+00:03:52,278 --> 00:03:55,175
+such as focal length,
+depth of field and frame rate.
+
+63
+00:03:55,175 --> 00:03:57,701
+We'll go into much more
+detail on cameras and
+
+64
+00:03:57,701 --> 00:04:00,830
+computer vision in course
+three on visual perception.
+
+65
+00:04:02,330 --> 00:04:06,053
+The combination of two cameras with
+overlapping fields of view and
+
+66
+00:04:06,053 --> 00:04:08,919
+aligned image planes is
+called the stereo camera.
+
+67
+00:04:08,919 --> 00:04:14,000
+Stereo cameras allow depth estimation
+from synchronized image pairs.
+
+68
+00:04:14,000 --> 00:04:18,691
+Pixel values from image can be
+matched to the other image producing
+
+69
+00:04:18,691 --> 00:04:20,794
+a disparity map of the scene.
+
+70
+00:04:20,794 --> 00:04:25,070
+This disparity can then be used
+to estimate depth at each pixel.
+
+71
+00:04:26,110 --> 00:04:30,273
+Next we have LIDAR which stands for
+light detection and ranging sensor.
+
+72
+00:04:30,273 --> 00:04:34,270
+LIDAR sensing involves shooting
+light beams into the environment and
+
+73
+00:04:34,270 --> 00:04:36,240
+measuring the reflected return.
+
+74
+00:04:37,270 --> 00:04:40,981
+By measuring the amount of returned
+light and time of flight of the beam.
+
+75
+00:04:40,981 --> 00:04:45,215
+Both in intensity in range to
+the reflecting object can be estimated.
+
+76
+00:04:45,215 --> 00:04:50,769
+LIDAR usually include a spinning element
+with multiple stacked light sources.
+
+77
+00:04:50,769 --> 00:04:54,697
+And output a three dimensional
+point cloud map, which is great for
+
+78
+00:04:54,697 --> 00:04:57,240
+assessing scene geometry.
+
+79
+00:04:57,240 --> 00:05:00,759
+Because it is an active sensor
+with it's own light sources,
+
+80
+00:05:00,759 --> 00:05:03,938
+LIDAR are not effected by
+the environments lighting.
+
+81
+00:05:03,938 --> 00:05:08,444
+So LIDAR do not face the same challenges
+as cameras when operating in poor or
+
+82
+00:05:08,444 --> 00:05:10,454
+variable lighting conditions.
+
+83
+00:05:10,454 --> 00:05:14,096
+Let's discuss the important comparison
+metrics for selecting LIDAR.
+
+84
+00:05:14,096 --> 00:05:18,856
+The first is the number of sources
+it contains with 8, 16, 32,
+
+85
+00:05:18,856 --> 00:05:21,550
+and 64 being common sizes.
+
+86
+00:05:21,550 --> 00:05:25,232
+And the second is the points
+per second it can collect.
+
+87
+00:05:25,232 --> 00:05:30,171
+The faster the point collection, the more
+detailed the 3D point cloud can be.
+
+88
+00:05:30,171 --> 00:05:33,470
+Another characteristic
+is the rotation rate.
+
+89
+00:05:33,470 --> 00:05:37,409
+The higher this rate, the faster
+the 3D point clouds are updated.
+
+90
+00:05:37,409 --> 00:05:39,726
+Detection range is also important,
+
+91
+00:05:39,726 --> 00:05:44,200
+and is dictated by the power
+output of the light source.
+
+92
+00:05:44,200 --> 00:05:47,826
+And finally, we have the field of view,
+which once again,
+
+93
+00:05:47,826 --> 00:05:50,955
+is the angular extent
+visible to the LIDAR sensor.
+
+94
+00:05:50,955 --> 00:05:55,498
+Finally, we should also mention the new
+LIDAR types that are currently emerging.
+
+95
+00:05:55,498 --> 00:05:58,777
+High-resolution, solid-state LIDAR.
+
+96
+00:05:58,777 --> 00:06:01,951
+Without a rotational component
+of the typical LIDARs,
+
+97
+00:06:01,951 --> 00:06:06,220
+these sensors stand to become
+extremely low-cost and reliable.
+
+98
+00:06:06,220 --> 00:06:09,309
+Thanks to being implemented
+entirely in silicon.
+
+99
+00:06:09,309 --> 00:06:12,730
+HD solid-state LIDAR
+are still a work in progress.
+
+100
+00:06:12,730 --> 00:06:17,047
+But definitely something exciting for
+the future of affordable self-driving.
+
+101
+00:06:17,047 --> 00:06:20,990
+Our next sensor is RADAR, which stands for
+radio detection and ranging.
+
+102
+00:06:22,110 --> 00:06:24,797
+RADAR sensors have been
+around longer than LIDAR and
+
+103
+00:06:24,797 --> 00:06:27,495
+robustly detect large
+objects in the environment.
+
+104
+00:06:27,495 --> 00:06:31,820
+They are particularly useful in adverse
+weather as they are mostly unaffected by
+
+105
+00:06:31,820 --> 00:06:32,780
+precipitation.
+
+106
+00:06:33,920 --> 00:06:37,250
+Let's discuss some of the comparison
+metrics for selecting RADAR.
+
+107
+00:06:37,250 --> 00:06:41,681
+RADAR are selected based on
+detection range, field of view,
+
+108
+00:06:41,681 --> 00:06:45,360
+and the position and
+speed measurement accuracy.
+
+109
+00:06:46,430 --> 00:06:51,125
+RADAR are also typically available as
+either having a wide angular field of view
+
+110
+00:06:51,125 --> 00:06:52,186
+but short range.
+
+111
+00:06:52,186 --> 00:06:55,380
+Or having a narrow filed of view but
+a longer range.
+
+112
+00:06:56,440 --> 00:07:00,022
+The next sensor we are going to
+discuss are ultrasonics or sonars.
+
+113
+00:07:00,022 --> 00:07:03,710
+Originally so named for
+sound navigation and ranging.
+
+114
+00:07:03,710 --> 00:07:06,024
+Which measure range using sound waves.
+
+115
+00:07:06,024 --> 00:07:10,349
+Sonar are sensors that are short
+range in inexpensive ranging devices.
+
+116
+00:07:11,350 --> 00:07:14,175
+This makes them good for
+parking scenarios,
+
+117
+00:07:14,175 --> 00:07:18,796
+where the ego-vehicle needs to make
+movements very close to other cars.
+
+118
+00:07:18,796 --> 00:07:22,790
+Another great thing about sonar
+is that they are low-cost.
+
+119
+00:07:22,790 --> 00:07:26,914
+Moreover, just like RADAR and LIDAR,
+they are unaffected by lighting and
+
+120
+00:07:26,914 --> 00:07:28,562
+precipitation conditions.
+
+121
+00:07:28,562 --> 00:07:31,139
+Sonar is selected based
+on a few key metrics.
+
+122
+00:07:32,230 --> 00:07:38,511
+The maximum range they can measure, the
+detection field of view, and their cost.
+
+123
+00:07:38,511 --> 00:07:41,373
+Now let's discuss
+the proprioceptive sensors,
+
+124
+00:07:41,373 --> 00:07:44,530
+the sensors that sense ego properties.
+
+125
+00:07:44,530 --> 00:07:49,286
+The most common ones here
+are Global Navigation Satellite Systems,
+
+126
+00:07:49,286 --> 00:07:52,081
+GNSS for short, such as GPS or Galileo.
+
+127
+00:07:52,081 --> 00:07:55,221
+An inertial measurement units or IMU's.
+
+128
+00:07:55,221 --> 00:08:00,017
+GNSS receivers are used to measure
+ego vehicle position, velocity,
+
+129
+00:08:00,017 --> 00:08:01,732
+and sometimes heading.
+
+130
+00:08:01,732 --> 00:08:05,764
+The accuracy depends a lot on
+the actual positioning methods and
+
+131
+00:08:05,764 --> 00:08:07,263
+the corrections used.
+
+132
+00:08:07,263 --> 00:08:11,391
+Apart from these, the IMU also
+measures the angular rotation rate,
+
+133
+00:08:11,391 --> 00:08:16,158
+accelerations of the ego vehicle, and
+the combined measurements can be used to
+
+134
+00:08:16,158 --> 00:08:19,380
+estimate the 3D orientation
+of the vehicle.
+
+135
+00:08:19,380 --> 00:08:22,682
+Where heading is the most important for
+vehicle control.
+
+136
+00:08:22,682 --> 00:08:25,670
+And finally we have
+wheel odometry sensors.
+
+137
+00:08:25,670 --> 00:08:28,817
+This sensor tracks the wheel
+rates of rotation, and
+
+138
+00:08:28,817 --> 00:08:33,266
+uses these to estimate the speed and
+heading rate of change of the ego car.
+
+139
+00:08:33,266 --> 00:08:36,340
+This is the same sensor that tracks
+the mileage on your vehicle.
+
+140
+00:08:37,480 --> 00:08:42,122
+So, to summarize,
+the major sensors used nowadays for
+
+141
+00:08:42,122 --> 00:08:47,064
+autonomous driving perception
+include cameras, RADAR,
+
+142
+00:08:47,064 --> 00:08:52,130
+LIDAR, sonar, GNSS, IMUs,
+and wheel odometry modules.
+
+143
+00:08:52,130 --> 00:08:55,436
+These sensors have many
+characteristics that can vary wildly,
+
+144
+00:08:55,436 --> 00:08:58,960
+including resolution,
+detection range, and field-of-view.
+
+145
+00:08:58,960 --> 00:09:01,997
+Selecting an appropriate
+sensor configuration for
+
+146
+00:09:01,997 --> 00:09:04,141
+a self-driving car is not trivial.
+
+147
+00:09:04,141 --> 00:09:07,263
+Here's a simple graphic that
+shows each of the sensors and
+
+148
+00:09:07,263 --> 00:09:08,929
+where they usually go on a car.
+
+149
+00:09:08,929 --> 00:09:13,785
+We will revisit this chart again in the
+next video, when we discuss how to select
+
+150
+00:09:13,785 --> 00:09:18,510
+sensor configurations to achieve
+a particular operational design domain.
+
+151
+00:09:19,870 --> 00:09:24,587
+Finally, let's discuss a little bit about
+the computing hardware most commonly
+
+152
+00:09:24,587 --> 00:09:26,853
+used in today's self-driving cars.
+
+153
+00:09:26,853 --> 00:09:29,245
+The most crucial part
+is the computing brain,
+
+154
+00:09:29,245 --> 00:09:31,400
+the main decision making unit of the car.
+
+155
+00:09:32,580 --> 00:09:37,825
+It takes in all sensor data and outputs
+the commands needed to drive the vehicle.
+
+156
+00:09:37,825 --> 00:09:42,024
+Most companies prefer to design their own
+computing systems that match the specific
+
+157
+00:09:42,024 --> 00:09:44,459
+requirements of their sensors and
+algorithms.
+
+158
+00:09:44,459 --> 00:09:46,692
+Some hardware options exist, however,
+
+159
+00:09:46,692 --> 00:09:50,670
+that can handle self-driving
+computing loads out of the box.
+
+160
+00:09:50,670 --> 00:09:57,203
+The most common examples would be Nvidia's
+Drive PX and Intel & Mobileye's EyeQ.
+
+161
+00:09:57,203 --> 00:10:02,650
+Any computing brain for self-driving needs
+both serial and parallel compute modules.
+
+162
+00:10:02,650 --> 00:10:06,641
+Particularly for image and
+LIDAR processing to do segmentation,
+
+163
+00:10:06,641 --> 00:10:08,716
+object detection, and mapping.
+
+164
+00:10:08,716 --> 00:10:12,599
+For these we employ GPUs,
+FPGAs and custom ASICs,
+
+165
+00:10:12,599 --> 00:10:17,942
+which are specialized hardware to
+do a specific type of computation.
+
+166
+00:10:17,942 --> 00:10:22,840
+For example; the drive PX
+units include multiple GPUs.
+
+167
+00:10:22,840 --> 00:10:27,768
+And the EyeQs have FPGAs both to
+accelerate parallalizable compute tasks,
+
+168
+00:10:27,768 --> 00:10:31,391
+such as image processing or
+neural network inference.
+
+169
+00:10:31,391 --> 00:10:35,160
+And finally,
+a quick comment about synchronization.
+
+170
+00:10:35,160 --> 00:10:39,003
+Because we want to make driving
+decisions based on a coherent picture of
+
+171
+00:10:39,003 --> 00:10:39,923
+the road scene.
+
+172
+00:10:39,923 --> 00:10:44,829
+It is essential to correctly synchronize
+the different modules in the system, and
+
+173
+00:10:44,829 --> 00:10:47,120
+serve a common clock.
+
+174
+00:10:47,120 --> 00:10:51,378
+Fortunately, GPS relies on extremely
+accurate timing to function, and
+
+175
+00:10:51,378 --> 00:10:55,233
+as such can act as an appropriate
+reference clock when available.
+
+176
+00:10:55,233 --> 00:10:59,941
+Regardless, sensor measurements must be
+timestamped with consistent times for
+
+177
+00:10:59,941 --> 00:11:02,200
+sensor fusion to function correctly.
+
+178
+00:11:03,420 --> 00:11:04,156
+Let's summarize.
+
+179
+00:11:04,156 --> 00:11:06,713
+In this video,
+we learned about sensors and
+
+180
+00:11:06,713 --> 00:11:09,692
+their different types based
+on what they measure.
+
+181
+00:11:09,692 --> 00:11:14,260
+We covered the major sensors used in
+self-driving hardware systems, and
+
+182
+00:11:14,260 --> 00:11:18,220
+discussed the advantages and
+comparison metrics.
+
+183
+00:11:18,220 --> 00:11:21,827
+And then we briefly discussed
+the self-driving computing hardware
+
+184
+00:11:21,827 --> 00:11:22,828
+available today.
+
+185
+00:11:22,828 --> 00:11:26,554
+Hopefully, this solidifies some of
+the concepts we learned last week for
+
+186
+00:11:26,554 --> 00:11:28,189
+doing autonomous perception.
+
+187
+00:11:28,189 --> 00:11:32,098
+In the next lesson, we'll take a step
+further and look at how to select
+
+188
+00:11:32,098 --> 00:11:35,889
+an appropriate sensor configuration for
+your self-driving car.
+
+189
+00:11:35,889 --> 00:11:37,413
+See you in the next video.
+
+190
+00:11:37,413 --> 00:11:47,413
+[MUSIC]

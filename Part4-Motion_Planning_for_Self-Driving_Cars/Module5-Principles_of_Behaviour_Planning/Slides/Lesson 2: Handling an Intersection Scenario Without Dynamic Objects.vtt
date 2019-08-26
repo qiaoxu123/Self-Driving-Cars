@@ -1,0 +1,1048 @@
+WEBVTT
+
+1
+00:00:14.270 --> 00:00:16.470
+In the last video, we
+
+2
+00:00:16.470 --> 00:00:18.855
+introduced the concept
+of a behavior planner,
+
+3
+00:00:18.855 --> 00:00:20.460
+and described the basics of
+
+4
+00:00:20.460 --> 00:00:23.475
+the finite state machine to
+implement behavior planning.
+
+5
+00:00:23.475 --> 00:00:26.160
+In this video, we will
+see how to build out
+
+6
+00:00:26.160 --> 00:00:27.525
+our system to handle
+
+7
+00:00:27.525 --> 00:00:29.925
+a more complete
+intersection scenario.
+
+8
+00:00:29.925 --> 00:00:31.710
+We will start by defining
+
+9
+00:00:31.710 --> 00:00:34.540
+the specifics of the scenario
+that will be handled.
+
+10
+00:00:34.540 --> 00:00:36.380
+We will then look at how we can
+
+11
+00:00:36.380 --> 00:00:38.720
+discretize the
+intersection map into
+
+12
+00:00:38.720 --> 00:00:42.790
+sections to establish clear
+transitions between states.
+
+13
+00:00:42.790 --> 00:00:46.280
+Then we will define the states
+and transitions which are
+
+14
+00:00:46.280 --> 00:00:47.690
+required to complete
+
+15
+00:00:47.690 --> 00:00:50.180
+the given scenario
+safely and efficiently.
+
+16
+00:00:50.180 --> 00:00:51.889
+To finish this video,
+
+17
+00:00:51.889 --> 00:00:53.840
+we will highlight the
+testing procedure
+
+18
+00:00:53.840 --> 00:00:55.190
+required to confirm
+
+19
+00:00:55.190 --> 00:00:57.350
+the correctness and accuracy of
+
+20
+00:00:57.350 --> 00:01:00.275
+our behavior planning
+system. Let's begin.
+
+21
+00:01:00.275 --> 00:01:02.750
+The scenario which we
+will be attempting to
+
+22
+00:01:02.750 --> 00:01:05.225
+handle is a four-way
+intersection,
+
+23
+00:01:05.225 --> 00:01:08.705
+with two lanes and stop
+signs for every direction.
+
+24
+00:01:08.705 --> 00:01:12.259
+A diagram of such an
+intersection can be seen here,
+
+25
+00:01:12.259 --> 00:01:13.760
+where the red lines represent
+
+26
+00:01:13.760 --> 00:01:16.760
+the stop lines which the car
+is required to stop behind.
+
+27
+00:01:16.760 --> 00:01:19.265
+By the end of the video,
+
+28
+00:01:19.265 --> 00:01:21.665
+this vehicle should be
+able to travel left,
+
+29
+00:01:21.665 --> 00:01:24.470
+right, or straight through
+this intersection.
+
+30
+00:01:24.470 --> 00:01:27.250
+We'll leave dynamic objects
+out of the scenario for now,
+
+31
+00:01:27.250 --> 00:01:29.885
+and we'll address them
+in the next video.
+
+32
+00:01:29.885 --> 00:01:31.820
+We've now defined a very
+
+33
+00:01:31.820 --> 00:01:33.980
+restricted operational
+design domain
+
+34
+00:01:33.980 --> 00:01:36.080
+for our behavior
+planner to handle.
+
+35
+00:01:36.080 --> 00:01:39.455
+It's now time to implement
+the behavior planner.
+
+36
+00:01:39.455 --> 00:01:42.410
+Let's start by looking
+at how to discretize
+
+37
+00:01:42.410 --> 00:01:44.240
+an intersection so
+that we can more
+
+38
+00:01:44.240 --> 00:01:47.020
+simply make decisions
+in the environment.
+
+39
+00:01:47.020 --> 00:01:49.220
+The area of
+the intersection where
+
+40
+00:01:49.220 --> 00:01:51.500
+a vehicle should
+begin safely braking
+
+41
+00:01:51.500 --> 00:01:53.990
+is defined as
+the approaching zone
+
+42
+00:01:53.990 --> 00:01:57.005
+of the intersection,
+highlighted in red.
+
+43
+00:01:57.005 --> 00:01:59.240
+The zone of the
+intersection in which
+
+44
+00:01:59.240 --> 00:02:01.400
+the vehicle must
+stop and wait until
+
+45
+00:02:01.400 --> 00:02:03.890
+the appropriate time
+to proceed will be
+
+46
+00:02:03.890 --> 00:02:07.190
+known as the at zone,
+highlighted in green.
+
+47
+00:02:07.190 --> 00:02:10.430
+Finally, the zone in which
+the vehicle is crossing
+
+48
+00:02:10.430 --> 00:02:12.290
+the actual intersection is
+
+49
+00:02:12.290 --> 00:02:14.490
+defined as on the intersection,
+
+50
+00:02:14.490 --> 00:02:17.080
+and is highlighted in orange.
+
+51
+00:02:17.080 --> 00:02:19.610
+The size of each
+of the above zones
+
+52
+00:02:19.610 --> 00:02:21.200
+are dynamically changed based
+
+53
+00:02:21.200 --> 00:02:24.770
+on two primary factors:
+the ego vehicle speed,
+
+54
+00:02:24.770 --> 00:02:26.900
+at higher speed, we will require
+
+55
+00:02:26.900 --> 00:02:29.780
+more distance to safely
+and comfortably stop,
+
+56
+00:02:29.780 --> 00:02:31.925
+and the size of the intersection.
+
+57
+00:02:31.925 --> 00:02:33.395
+The bigger the intersection,
+
+58
+00:02:33.395 --> 00:02:35.720
+the bigger each zone has to be.
+
+59
+00:02:35.720 --> 00:02:37.400
+To handle this scenario,
+
+60
+00:02:37.400 --> 00:02:40.645
+we will require three
+high-level driving maneuvers.
+
+61
+00:02:40.645 --> 00:02:43.385
+Track speed,
+this maneuver state is
+
+62
+00:02:43.385 --> 00:02:46.265
+only bounded by the current
+speed limit of the road.
+
+63
+00:02:46.265 --> 00:02:48.590
+Traditionally, this
+is the maneuver given
+
+64
+00:02:48.590 --> 00:02:51.470
+before entering any region
+of the intersection,
+
+65
+00:02:51.470 --> 00:02:55.205
+or after entering the on
+the intersection zone safely.
+
+66
+00:02:55.205 --> 00:02:58.685
+The state entry action
+sets the speed limit.
+
+67
+00:02:58.685 --> 00:03:02.420
+Decelerate to stop,
+this maneuver state forces
+
+68
+00:03:02.420 --> 00:03:04.250
+the future trajectory
+of the object to
+
+69
+00:03:04.250 --> 00:03:06.470
+stop before reaching
+the stop point.
+
+70
+00:03:06.470 --> 00:03:10.045
+The entry action defines
+the stop point location.
+
+71
+00:03:10.045 --> 00:03:12.680
+Stop, this maneuver tells
+
+72
+00:03:12.680 --> 00:03:15.620
+the vehicle to stay stopped
+in its current location.
+
+73
+00:03:15.620 --> 00:03:18.650
+The entry action is to
+start a timer to wait for
+
+74
+00:03:18.650 --> 00:03:19.850
+a fixed amount of time
+
+75
+00:03:19.850 --> 00:03:22.445
+before proceeding through
+the intersection.
+
+76
+00:03:22.445 --> 00:03:25.020
+We will now look at
+the different situations
+
+77
+00:03:25.020 --> 00:03:27.920
+the ego vehicle will
+encounter in this scenario,
+
+78
+00:03:27.920 --> 00:03:30.500
+and figure out the finite
+state machine elements
+
+79
+00:03:30.500 --> 00:03:34.010
+needed to encode the correct
+behavior planning solution.
+
+80
+00:03:34.010 --> 00:03:36.650
+Let's start by looking
+at the ego vehicle
+
+81
+00:03:36.650 --> 00:03:39.290
+before it enters
+the intersection region,
+
+82
+00:03:39.290 --> 00:03:40.820
+where it has
+a single constraint to
+
+83
+00:03:40.820 --> 00:03:42.770
+follow the speed limit
+of the road.
+
+84
+00:03:42.770 --> 00:03:44.840
+This constraint is set based on
+
+85
+00:03:44.840 --> 00:03:47.705
+the entry action of
+the track speed state.
+
+86
+00:03:47.705 --> 00:03:49.970
+When the ego vehicle enters
+
+87
+00:03:49.970 --> 00:03:51.890
+the approaching zone,
+the red zone,
+
+88
+00:03:51.890 --> 00:03:54.370
+it must begin decelerating
+to the stop sign,
+
+89
+00:03:54.370 --> 00:03:57.950
+thus will transition to
+the decelerate to stop state.
+
+90
+00:03:57.950 --> 00:04:01.400
+The transition condition on
+moving from track speed to
+
+91
+00:04:01.400 --> 00:04:02.990
+decelerate to stop is
+
+92
+00:04:02.990 --> 00:04:05.725
+therefore entry into
+the approaching zone.
+
+93
+00:04:05.725 --> 00:04:07.870
+Then, once decelerating,
+
+94
+00:04:07.870 --> 00:04:09.890
+the next maneuver which
+the autonomous vehicle
+
+95
+00:04:09.890 --> 00:04:11.750
+must execute is to come to
+
+96
+00:04:11.750 --> 00:04:13.985
+a full stop before the stop line,
+
+97
+00:04:13.985 --> 00:04:16.970
+or in the at zone of
+the intersection.
+
+98
+00:04:16.970 --> 00:04:18.605
+To make sure this happens,
+
+99
+00:04:18.605 --> 00:04:19.850
+the vehicle stays in
+
+100
+00:04:19.850 --> 00:04:22.370
+the decelerate to stop
+state until it has
+
+101
+00:04:22.370 --> 00:04:26.510
+both a zero velocity and
+a position within the at zone.
+
+102
+00:04:26.510 --> 00:04:29.210
+The entry action in
+the decelerate to stop
+
+103
+00:04:29.210 --> 00:04:33.245
+state is the establishment
+of a safe stop location.
+
+104
+00:04:33.245 --> 00:04:35.485
+Due to the simplicity
+of this scenario,
+
+105
+00:04:35.485 --> 00:04:37.285
+this is a single stop location,
+
+106
+00:04:37.285 --> 00:04:39.140
+the stop line as given to
+
+107
+00:04:39.140 --> 00:04:41.570
+the planner by
+the high-definition roadmap.
+
+108
+00:04:41.570 --> 00:04:44.240
+This, however, we will
+see in the next lesson,
+
+109
+00:04:44.240 --> 00:04:45.995
+will become harder to do once
+
+110
+00:04:45.995 --> 00:04:49.310
+other dynamic objects interact
+with the ego vehicle.
+
+111
+00:04:49.310 --> 00:04:53.615
+Once fully stopped, the car
+enters the stop state.
+
+112
+00:04:53.615 --> 00:04:55.190
+As the entry action,
+
+113
+00:04:55.190 --> 00:04:57.230
+a timer is started to make sure
+
+114
+00:04:57.230 --> 00:04:59.450
+that the vehicle stays
+in the stopped state
+
+115
+00:04:59.450 --> 00:05:00.770
+for three seconds before
+
+116
+00:05:00.770 --> 00:05:04.520
+proceeding in accordance
+with typical driving rules.
+
+117
+00:05:04.520 --> 00:05:06.565
+Once the timer is complete,
+
+118
+00:05:06.565 --> 00:05:08.570
+the planner automatically
+transitions
+
+119
+00:05:08.570 --> 00:05:10.550
+to the track speed state and
+
+120
+00:05:10.550 --> 00:05:12.530
+follows the route
+provided to it by
+
+121
+00:05:12.530 --> 00:05:14.825
+the mission planner
+through the intersection,
+
+122
+00:05:14.825 --> 00:05:17.825
+be at left, right,
+or straight through.
+
+123
+00:05:17.825 --> 00:05:20.660
+This is all the required
+computation to handle
+
+124
+00:05:20.660 --> 00:05:22.370
+the simple four-way intersection
+
+125
+00:05:22.370 --> 00:05:23.975
+with the finite state machine.
+
+126
+00:05:23.975 --> 00:05:26.945
+Throughout this process, it
+is vitally important that we
+
+127
+00:05:26.945 --> 00:05:31.160
+understand how we the human
+expert analyze the scenario,
+
+128
+00:05:31.160 --> 00:05:33.425
+and what the specific
+capabilities
+
+129
+00:05:33.425 --> 00:05:35.710
+of the resulting
+behavior planner are.
+
+130
+00:05:35.710 --> 00:05:37.580
+These need to be captured in
+
+131
+00:05:37.580 --> 00:05:40.280
+the operational design
+domain definition,
+
+132
+00:05:40.280 --> 00:05:42.200
+and we need to ensure
+that we create
+
+133
+00:05:42.200 --> 00:05:44.060
+a complete state machine able to
+
+134
+00:05:44.060 --> 00:05:46.100
+handle every possible
+case that can
+
+135
+00:05:46.100 --> 00:05:48.760
+arise for the given scenarios.
+
+136
+00:05:48.760 --> 00:05:50.740
+One particular issue that has
+
+137
+00:05:50.740 --> 00:05:52.540
+a big impact on
+the performance of
+
+138
+00:05:52.540 --> 00:05:56.425
+our state machine is the issue
+of noise in the inputs.
+
+139
+00:05:56.425 --> 00:06:00.290
+The state transition conditions
+defined above are exact,
+
+140
+00:06:00.290 --> 00:06:02.815
+and rely on the vehicle
+reaching the stop point
+
+141
+00:06:02.815 --> 00:06:05.515
+and achieving
+a zero velocity exactly.
+
+142
+00:06:05.515 --> 00:06:08.620
+Even with no other dynamic
+objects to detect,
+
+143
+00:06:08.620 --> 00:06:11.440
+the localization estimates
+of the vehicle state may
+
+144
+00:06:11.440 --> 00:06:15.125
+contain noise and not satisfy
+these conditions exactly.
+
+145
+00:06:15.125 --> 00:06:17.190
+To handle this type
+of input noise,
+
+146
+00:06:17.190 --> 00:06:20.555
+we can introduce
+noise threshold hyperparameters.
+
+147
+00:06:20.555 --> 00:06:23.230
+This is a small
+threshold value allowing
+
+148
+00:06:23.230 --> 00:06:26.770
+speeds close to zero to
+be accepted as stopped.
+
+149
+00:06:26.770 --> 00:06:28.480
+We will continue to see
+
+150
+00:06:28.480 --> 00:06:31.485
+these hyperparameters more
+and more in the next lesson,
+
+151
+00:06:31.485 --> 00:06:33.680
+when handling
+more complex scenarios
+
+152
+00:06:33.680 --> 00:06:35.720
+with dynamic objects.
+
+153
+00:06:35.720 --> 00:06:37.520
+Now that we've finished
+
+154
+00:06:37.520 --> 00:06:39.350
+creating the finite
+state machine,
+
+155
+00:06:39.350 --> 00:06:41.260
+how do we test if it works?
+
+156
+00:06:41.260 --> 00:06:44.360
+Well, traditionally, there
+are four stages of testing
+
+157
+00:06:44.360 --> 00:06:46.550
+required to confirm functionality
+
+158
+00:06:46.550 --> 00:06:48.335
+of a behavior planning system,
+
+159
+00:06:48.335 --> 00:06:50.240
+which follow from
+our discussion of
+
+160
+00:06:50.240 --> 00:06:53.815
+safety assessment for
+the full vehicle in course 1.
+
+161
+00:06:53.815 --> 00:06:56.800
+First, we perform
+code-based tests,
+
+162
+00:06:56.800 --> 00:06:58.340
+which are done to confirm that
+
+163
+00:06:58.340 --> 00:07:00.650
+the logic of the code is correct.
+
+164
+00:07:00.650 --> 00:07:04.340
+For example, code-based tests
+can tell the programmer if
+
+165
+00:07:04.340 --> 00:07:06.800
+the speed limits set
+in the roadmap will be
+
+166
+00:07:06.800 --> 00:07:09.575
+the speed limit produced by
+the finite state machine.
+
+167
+00:07:09.575 --> 00:07:11.990
+However, these checks
+are incapable of
+
+168
+00:07:11.990 --> 00:07:15.140
+confirming if the state
+transitions are correct,
+
+169
+00:07:15.140 --> 00:07:17.075
+or if the states are
+capable of handling
+
+170
+00:07:17.075 --> 00:07:19.600
+all of the situations
+in a given scenario.
+
+171
+00:07:19.600 --> 00:07:22.550
+For this, we have to
+see if the program code
+
+172
+00:07:22.550 --> 00:07:26.240
+correctly handles
+all situations as intended.
+
+173
+00:07:26.240 --> 00:07:29.495
+Next, we move to
+simulation testing,
+
+174
+00:07:29.495 --> 00:07:32.990
+which is performed in a simulated
+environment like Carla,
+
+175
+00:07:32.990 --> 00:07:34.670
+in which the state
+machine performs
+
+176
+00:07:34.670 --> 00:07:37.295
+the scenarios which it
+was designed to handle.
+
+177
+00:07:37.295 --> 00:07:40.130
+This type of testing
+is able to confirm if
+
+178
+00:07:40.130 --> 00:07:41.660
+the state machine transitions
+
+179
+00:07:41.660 --> 00:07:43.900
+and state coverage are correct.
+
+180
+00:07:43.900 --> 00:07:45.950
+The number of tests performed in
+
+181
+00:07:45.950 --> 00:07:48.095
+the simulation should
+be representative of
+
+182
+00:07:48.095 --> 00:07:51.650
+all possible situations which
+can be seen when driving
+
+183
+00:07:51.650 --> 00:07:53.375
+the scenario to catch
+
+184
+00:07:53.375 --> 00:07:56.080
+any edge cases which
+programmers might have missed.
+
+185
+00:07:56.080 --> 00:07:58.940
+Many times selecting
+a representative
+
+186
+00:07:58.940 --> 00:08:01.220
+set of tests is not trivial,
+
+187
+00:08:01.220 --> 00:08:04.760
+especially as the complexity
+of the scenarios increases.
+
+188
+00:08:04.760 --> 00:08:08.020
+We then move into
+closed track testing,
+
+189
+00:08:08.020 --> 00:08:10.010
+once confident that
+the state machine
+
+190
+00:08:10.010 --> 00:08:12.485
+performs as intended
+in simulation.
+
+191
+00:08:12.485 --> 00:08:14.390
+This type of testing tests
+
+192
+00:08:14.390 --> 00:08:16.340
+specific scenarios which are hard
+
+193
+00:08:16.340 --> 00:08:18.680
+to confirm exactly in simulation,
+
+194
+00:08:18.680 --> 00:08:21.020
+such as parameter
+tuning and noise,
+
+195
+00:08:21.020 --> 00:08:22.700
+and errors in
+the perception output
+
+196
+00:08:22.700 --> 00:08:24.480
+in a real environment.
+
+197
+00:08:24.480 --> 00:08:28.700
+Finally, we proceed to
+on-road validation testing.
+
+198
+00:08:28.700 --> 00:08:30.740
+Whereas all previous tests were
+
+199
+00:08:30.740 --> 00:08:33.095
+performed in a highly
+controlled environment,
+
+200
+00:08:33.095 --> 00:08:35.540
+road tests can be
+highly unpredictable,
+
+201
+00:08:35.540 --> 00:08:37.220
+and often break the system in
+
+202
+00:08:37.220 --> 00:08:39.980
+a manner otherwise not
+imagined by engineers.
+
+203
+00:08:39.980 --> 00:08:42.530
+New variations on
+scenarios can then be
+
+204
+00:08:42.530 --> 00:08:46.580
+incorporated into earlier stages
+of the testing process.
+
+205
+00:08:46.580 --> 00:08:49.295
+Let's review what we've
+learned in this video.
+
+206
+00:08:49.295 --> 00:08:51.500
+We first defined the scenario and
+
+207
+00:08:51.500 --> 00:08:53.840
+the operational design
+domain to be handled,
+
+208
+00:08:53.840 --> 00:08:55.880
+a single intersection scenario
+
+209
+00:08:55.880 --> 00:08:58.190
+with a stop sign
+in all directions.
+
+210
+00:08:58.190 --> 00:09:00.230
+We then saw how the intersection
+
+211
+00:09:00.230 --> 00:09:01.670
+can be discretized so that
+
+212
+00:09:01.670 --> 00:09:03.380
+each zone can be used when
+
+213
+00:09:03.380 --> 00:09:06.555
+making the transitions
+of the state diagram.
+
+214
+00:09:06.555 --> 00:09:08.600
+We then built up the states
+
+215
+00:09:08.600 --> 00:09:11.180
+in transitions at the system
+to correctly define
+
+216
+00:09:11.180 --> 00:09:14.110
+the required behaviors
+throughout the intersection.
+
+217
+00:09:14.110 --> 00:09:17.660
+Finally, we reviewed
+four stages of testing that can
+
+218
+00:09:17.660 --> 00:09:21.380
+be used to confirm proper
+behaviors in the scenario.
+
+219
+00:09:21.380 --> 00:09:24.470
+In the next video, we will
+show you how to handle
+
+220
+00:09:24.470 --> 00:09:26.390
+the same intersection scenario
+
+221
+00:09:26.390 --> 00:09:29.165
+while interacting with
+other dynamic objects.
+
+222
+00:09:29.165 --> 00:09:31.540
+As we will see, this
+makes the state machines
+
+223
+00:09:31.540 --> 00:09:33.290
+significantly more complex and
+
+224
+00:09:33.290 --> 00:09:36.150
+interesting. We'll see you then.

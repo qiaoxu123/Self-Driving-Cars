@@ -1,0 +1,355 @@
+1
+00:00:23,450 --> 00:00:26,940
+Hello, and welcome to the University of Toronto
+
+2
+00:00:26,940 --> 00:00:30,780
+Self-Driving Cars Specialization. My name is Steven.
+
+3
+00:00:30,780 --> 00:00:32,280
+My name is Jonathan.
+
+4
+00:00:32,280 --> 00:00:34,965
+We'll be your instructors throughout this specialization.
+
+5
+00:00:34,965 --> 00:00:39,330
+The self-driving car is the sleeping giant which can change everything;
+
+6
+00:00:39,330 --> 00:00:41,650
+road safety, mobility for everyone,
+
+7
+00:00:41,650 --> 00:00:44,440
+while dramatically reducing the costs of driving.
+
+8
+00:00:44,440 --> 00:00:47,270
+This specialization will teach you what you need to
+
+9
+00:00:47,270 --> 00:00:51,305
+know to kick start a career in the autonomous driving industry.
+
+10
+00:00:51,305 --> 00:00:54,080
+Whether you're coming from academia or industry,
+
+11
+00:00:54,080 --> 00:00:57,470
+these courses will provide you with the foundational knowledge and
+
+12
+00:00:57,470 --> 00:01:02,185
+practical skills you need to help build a new future with self-driving cars.
+
+13
+00:01:02,185 --> 00:01:07,225
+Throughout the courses, we'll show you real-world data and scenarios from our research,
+
+14
+00:01:07,225 --> 00:01:11,435
+and from our own self-driving car or what we call the autonomous.
+
+15
+00:01:11,435 --> 00:01:14,555
+After decades of applied and award winning research,
+
+16
+00:01:14,555 --> 00:01:17,090
+we at the University of Toronto are excited
+
+17
+00:01:17,090 --> 00:01:19,820
+to show you the nuts and bolts of autonomous driving.
+
+18
+00:01:19,820 --> 00:01:23,495
+There are a total of four courses in this specialization.
+
+19
+00:01:23,495 --> 00:01:24,950
+In the first course,
+
+20
+00:01:24,950 --> 00:01:29,405
+I'll introduce you to the self-driving car software and hardware architectures.
+
+21
+00:01:29,405 --> 00:01:30,950
+By the end of this course,
+
+22
+00:01:30,950 --> 00:01:35,405
+you'll be able to design a basic hardware system for a self-driving car,
+
+23
+00:01:35,405 --> 00:01:39,725
+identify the main components of the autonomous driving software stack,
+
+24
+00:01:39,725 --> 00:01:44,500
+and create a safety assessment strategy for self-driving car program.
+
+25
+00:01:44,500 --> 00:01:48,530
+You'll then learn to develop the complete model of a vehicles motion,
+
+26
+00:01:48,530 --> 00:01:52,430
+define a PI controller for longitudinal control,
+
+27
+00:01:52,430 --> 00:01:56,410
+define a path following controller for lateral vehicle control,
+
+28
+00:01:56,410 --> 00:01:59,790
+and test out your control designs in a Carla simulator.
+
+29
+00:01:59,790 --> 00:02:02,190
+In the second course of this specialization,
+
+30
+00:02:02,190 --> 00:02:04,410
+I'll teach you about state estimation,
+
+31
+00:02:04,410 --> 00:02:08,330
+sensing, and localization for autonomous vehicles.
+
+32
+00:02:08,330 --> 00:02:10,220
+By the end of this course,
+
+33
+00:02:10,220 --> 00:02:14,345
+you'll understand the key methods for perimeter and state estimation,
+
+34
+00:02:14,345 --> 00:02:19,159
+develop and use models for typical vehicle localization sensors,
+
+35
+00:02:19,159 --> 00:02:24,900
+apply extended and uncentered Kalman filters to a vehicle state estimation problem,
+
+36
+00:02:24,900 --> 00:02:31,105
+and register point clouds created from LIDAR scans to a 3D map of a static environment.
+
+37
+00:02:31,105 --> 00:02:32,980
+In the third course,
+
+38
+00:02:32,980 --> 00:02:36,955
+I'll teach you about visual perception for self-driving cars.
+
+39
+00:02:36,955 --> 00:02:38,770
+After completing this course,
+
+40
+00:02:38,770 --> 00:02:42,745
+you'll be able to project 3D points onto the camera image plane,
+
+41
+00:02:42,745 --> 00:02:45,220
+calibrate the pinhole camera model,
+
+42
+00:02:45,220 --> 00:02:50,740
+apply feature detection description and matching algorithms for localization and mapping,
+
+43
+00:02:50,740 --> 00:02:56,875
+develop and train neural networks for both object detection and semantic segmentation.
+
+44
+00:02:56,875 --> 00:03:01,870
+You'll apply these methods to vehicle tracking and drivable surface estimation.
+
+45
+00:03:01,870 --> 00:03:03,910
+In the fourth and final course,
+
+46
+00:03:03,910 --> 00:03:07,405
+I'll teach you about motion planning for self-driving cars.
+
+47
+00:03:07,405 --> 00:03:08,715
+By the end of this course,
+
+48
+00:03:08,715 --> 00:03:12,980
+you'll be able to devise a trajectory roll out motion planning method,
+
+49
+00:03:12,980 --> 00:03:17,425
+calculate the time to collision with static and constant velocity objects,
+
+50
+00:03:17,425 --> 00:03:20,294
+plan routes over complex road networks,
+
+51
+00:03:20,294 --> 00:03:24,140
+define high-level vehicle behaviors and transitions for vehicles
+
+52
+00:03:24,140 --> 00:03:28,390
+navigating through intersections around parked cars and merging,
+
+53
+00:03:28,390 --> 00:03:33,770
+and develop kinematically feasible paths through an environment with static obstacles,
+
+54
+00:03:33,770 --> 00:03:37,670
+compute velocity profiles that satisfies speed,
+
+55
+00:03:37,670 --> 00:03:41,285
+curvature and moving object motion planning constraints,
+
+56
+00:03:41,285 --> 00:03:46,040
+plan behaviors and execute maneuvers to navigate safely through the world,
+
+57
+00:03:46,040 --> 00:03:49,040
+and gain valuable experience in debugging and
+
+58
+00:03:49,040 --> 00:03:52,990
+testing self-driving algorithms in the Carla simulator.
+
+59
+00:03:52,990 --> 00:03:55,270
+So, by the end of this specialization,
+
+60
+00:03:55,270 --> 00:03:59,300
+you will have a detailed understanding of the architecture and components of
+
+61
+00:03:59,300 --> 00:04:05,105
+the autonomous driving software stack and you will program your own self-driving car.
+
+62
+00:04:05,105 --> 00:04:08,600
+Since we're teaching you how to program your own self-driving car,
+
+63
+00:04:08,600 --> 00:04:12,320
+the courses in this specialization have several prerequisites.
+
+64
+00:04:12,320 --> 00:04:17,780
+First, you should be proficient in linear algebra and be familiar with matrices,
+
+65
+00:04:17,780 --> 00:04:20,885
+vectors, matrix multiplication, rank,
+
+66
+00:04:20,885 --> 00:04:23,500
+eigenvalues in vectors and inverses.
+
+67
+00:04:23,500 --> 00:04:26,384
+This background will help you with control,
+
+68
+00:04:26,384 --> 00:04:31,100
+state estimation, perception, and planning algorithms throughout the courses.
+
+69
+00:04:31,100 --> 00:04:33,625
+You should also be comfortable with statistics.
+
+70
+00:04:33,625 --> 00:04:37,345
+In particular, working with Gaussian probability distributions.
+
+71
+00:04:37,345 --> 00:04:40,665
+This knowledge will be important for state estimation,
+
+72
+00:04:40,665 --> 00:04:43,760
+and for perception when we're estimating vehicle speed and
+
+73
+00:04:43,760 --> 00:04:46,920
+heading from GPS and inertial measurements for example.
+
+74
+00:04:46,920 --> 00:04:49,940
+You should also be comfortable with basic calculus and physics,
+
+75
+00:04:49,940 --> 00:04:52,225
+such as forces, moments,
+
+76
+00:04:52,225 --> 00:04:54,305
+inertia, and Newton's laws.
+
+77
+00:04:54,305 --> 00:04:57,110
+It's certainly helpful to know how to drive a car,
+
+78
+00:04:57,110 --> 00:04:59,690
+but since the cars will be self-driving,
+
+79
+00:04:59,690 --> 00:05:02,765
+it's not a hard requirement for this specialization.
+
+80
+00:05:02,765 --> 00:05:05,815
+If you don't have these necessary pre-requisites,
+
+81
+00:05:05,815 --> 00:05:08,579
+there are excellent robotics, AI,
+
+82
+00:05:08,579 --> 00:05:11,180
+deep learning, and other courses that you can take on
+
+83
+00:05:11,180 --> 00:05:14,240
+Coursera to prepare you for this specialization.
+
+84
+00:05:14,240 --> 00:05:18,295
+Autonomous driving is a constantly evolving and changing field.
+
+85
+00:05:18,295 --> 00:05:22,820
+So, keeping up not only with self-driving knowledge but also robotics,
+
+86
+00:05:22,820 --> 00:05:27,035
+AI, and deep learning will help you keep your technical skills sharp.
+
+87
+00:05:27,035 --> 00:05:28,670
+There's a long way to go,
+
+88
+00:05:28,670 --> 00:05:31,100
+and we need pioneers to help us get there.
+
+89
+00:05:31,100 --> 00:05:33,900
+So, are you ready for the ride?

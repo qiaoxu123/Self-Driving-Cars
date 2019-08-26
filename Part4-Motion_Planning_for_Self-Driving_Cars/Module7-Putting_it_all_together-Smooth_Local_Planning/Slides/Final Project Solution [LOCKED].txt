@@ -1,0 +1,108 @@
+Hi everyone. I'd like
+to congratulate you on completing the course
+for final project. It combined many of the concepts we covered throughout the course, and the other courses
+in this specialization. So you should be proud
+of your efforts to accomplish this
+challenging final task. In this video we
+will be discussing our solution to
+the final project, which you can use to compare your code to in order
+to help you with sections of the project
+you struggled with or we're unsure if
+your answer was correct. In particular for
+our solution there were four main tasks to
+complete in order to enable all of the functionality required for our three-stage
+scenario and Carla. These were past generation, path collision checking, velocity profile generation,
+and behavior planning. Let's take a look at
+each of these steps. The first task you had to
+complete was path generation. For this assignment, we
+had given you all of the required code to optimize
+a spiral to a given point. So all you needed to
+add was to extract the goal points from the way points sequence you were given. We did this by iterating
+through the way points and finding the closest
+one to the ego vehicle, and then progressing through way points until we
+arrived at a way point that was at least a look
+ahead distance away from us. The look ahead distance
+represents how far ahead of the vehicle we are
+planning during any cycle. Once this goal point is selected, we laterally offset
+additional goal points from the selected way point to
+generate a goal state set. We do this to give the car multiple options to select from, which will allow it
+to avoid obstacles. The lateral spacing
+is 90 degrees rotated away from the heading of the road at the target way point. This ensures that
+our planned path set conforms to
+the structure of the road. We then have to rotate and
+translate these points from the global frame to
+the ego vehicles frame, such that the ego vehicle is at the origin with zero heading. Once this is done, we can pass these goal points
+to the spiral optimizer which will
+then compute the path that we can use in
+our future planning steps. Once we have our path set, the next step to perform is collision checking
+and path selection. To compute the best feasible
+and collision-free path for our ego vehicle to follow. The way we performed
+collision checking was to use the circle based method we
+introduced in Module Four. In particular, we overlaid
+circles on top of the vehicle location at
+each point along the path. This generates a set of
+circles which gives us a conservative approximation
+of the ego vehicle swath. We then checked if each of
+the obstacle points was located within any of
+the circles along the path. If any of the points did
+fall within the circles, then this path was labeled
+as having a collision. We then repeated this process for each of the paths removing all of those that collided with obstacles from future
+consideration. Once our collision check
+was complete, we then selected
+the collision-free path whose end-point was closest to the line center line
+as our best path. We select this because
+it allows us to track the global way points
+along the center of the lane even if
+we had to veer off course temporarily due to
+an obstacle along our path. This choice does lead us to cut as close as possible
+to obstacles. So we had to be careful to ensure our collision checks were
+conservative with some buffer. Once we have a suitable
+path selected, we need to generate
+a velocity profile for it. We are given a reference velocity depending on the behavior
+we are trying to execute. If we are decelerating to
+a stop or staying stopped, our target velocity
+should be zero. Otherwise, it should
+be the speed limit. However, we need to take leading vehicles
+into consideration. Because if a leading vehicle is moving more slowly
+than us we may hit it. To handle this, we set our target velocity to be the minimum of
+the reference velocity, and the lead vehicle speed. We also need to make sure that we reach the lead vehicle speed by the time we reach the
+lead vehicles original location. Otherwise we risk a collision. From this information,
+we can now construct a ramp trajectory from
+our current velocity, to the target velocity
+along our path. If there is a lead vehicle, the end-point of
+the ramp profile will be the lead vehicles position
+less a time gap buffer. Otherwise the end-point of the ramp profile will
+be the end of the path. Finally, we must implement the behavioral planner
+for our ego vehicle. The only regulatory
+element we will face in this project
+is a stop sign, so that will be the focus
+of the behavioral planner. To handle it,
+our behavioral planner will have three states. A nominal lane following state, a decelerate to stop state, and a stay stop state. During the course of
+normal driving we will stay in the lane following state. Once the endpoint
+of our planned path crosses the stop
+line of a stop sign, we then switch from driving
+normally to decelerating to a stop at the stop point
+defined by that stopline. To do this, we must transition to the decelerate to stop state, and ensure our planned length provides sufficient time
+to decelerate comfortably. Once we've stopped we transition to the stay stopped state to make sure the car is at
+a complete stop at the stop sign for
+a fixed period of time. In this case, we
+choose two seconds. Once that is done, we then transition back to
+the lane following state, and continue with
+nominal driving. This completes the state
+machine transition cycle, and allows us to
+handle the presence of a stop sign along our path. Once we've completed
+each of these steps, we now have a fully
+functional motion planner, that can handle the scenario
+presented in this project. If you struggled with
+any portion of this project, try implementing
+that portion as discussed in this video to see if you can
+improve its performance. Of course, there are
+multiple approaches defined in the course for
+many aspects of this project. There is no restriction on which approach you choose to use. If you found
+an alternative method that worked really well, be sure to let us
+know in the forums. Now that you've completed
+the course project, you should have
+a strong grasp for the motion planning concepts we've covered in course four. In the final two videos, we'll close out both this course
+and the specialization. Thanks for all your hard work
+and we wish you the best of luck through all your future
+autonomous driving projects.

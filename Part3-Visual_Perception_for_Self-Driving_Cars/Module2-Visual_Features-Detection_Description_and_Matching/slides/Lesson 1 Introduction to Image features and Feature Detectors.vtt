@@ -1,0 +1,708 @@
+WEBVTT
+
+1
+00:00:19.280 --> 00:00:23.325
+Hello again, and welcome to
+the second week of the course.
+
+2
+00:00:23.325 --> 00:00:26.325
+This week, we will be learning
+about image features,
+
+3
+00:00:26.325 --> 00:00:29.280
+which are distinctive points
+of interest in the image.
+
+4
+00:00:29.280 --> 00:00:31.200
+We use image features for
+
+5
+00:00:31.200 --> 00:00:32.970
+several computer
+vision applications
+
+6
+00:00:32.970 --> 00:00:34.395
+in self-driving cars.
+
+7
+00:00:34.395 --> 00:00:35.900
+For example, we can use
+
+8
+00:00:35.900 --> 00:00:38.510
+these feature points to
+localize our car across
+
+9
+00:00:38.510 --> 00:00:40.340
+image frames or to get
+
+10
+00:00:40.340 --> 00:00:42.785
+a global location in
+a predefined map.
+
+11
+00:00:42.785 --> 00:00:44.645
+All of these tasks share
+
+12
+00:00:44.645 --> 00:00:48.170
+a general framework comprising
+of feature detection,
+
+13
+00:00:48.170 --> 00:00:50.895
+description, and
+finally matching.
+
+14
+00:00:50.895 --> 00:00:53.600
+In this video, we will
+cover the first step of
+
+15
+00:00:53.600 --> 00:00:56.390
+this framework namely
+feature extraction.
+
+16
+00:00:56.390 --> 00:00:58.280
+You will learn what comprises
+
+17
+00:00:58.280 --> 00:00:59.960
+good image features and
+
+18
+00:00:59.960 --> 00:01:03.190
+different algorithms that
+perform feature extraction.
+
+19
+00:01:03.190 --> 00:01:06.110
+Let's begin describing
+this process by
+
+20
+00:01:06.110 --> 00:01:09.110
+taking a real application,
+image stitching.
+
+21
+00:01:09.110 --> 00:01:12.574
+We're given two images from
+two different cameras,
+
+22
+00:01:12.574 --> 00:01:14.210
+and we would like to stitch them
+
+23
+00:01:14.210 --> 00:01:16.405
+together to form a panorama.
+
+24
+00:01:16.405 --> 00:01:18.410
+First, we need to identify
+
+25
+00:01:18.410 --> 00:01:20.690
+distinctive points in our images.
+
+26
+00:01:20.690 --> 00:01:23.620
+We call this point
+image features.
+
+27
+00:01:23.620 --> 00:01:26.180
+Second, we associate a descriptor
+
+28
+00:01:26.180 --> 00:01:28.375
+for each feature from
+its neighborhood.
+
+29
+00:01:28.375 --> 00:01:30.590
+Finally, we use
+these descriptors to
+
+30
+00:01:30.590 --> 00:01:33.425
+match features across
+two or more images.
+
+31
+00:01:33.425 --> 00:01:35.420
+For our application here,
+
+32
+00:01:35.420 --> 00:01:38.360
+we can use the matched features
+in an image stitching
+
+33
+00:01:38.360 --> 00:01:40.444
+algorithm to align the two images
+
+34
+00:01:40.444 --> 00:01:42.485
+and create lovely panorama.
+
+35
+00:01:42.485 --> 00:01:45.800
+Take a look at the details
+of the stitched panorama.
+
+36
+00:01:45.800 --> 00:01:47.480
+You can see the two images
+
+37
+00:01:47.480 --> 00:01:48.860
+have been stitched
+together from some of
+
+38
+00:01:48.860 --> 00:01:50.300
+the artifacts at the edge of
+
+39
+00:01:50.300 --> 00:01:52.960
+the image. So how do we do it?
+
+40
+00:01:52.960 --> 00:01:55.205
+Don't worry. We'll explain each
+
+41
+00:01:55.205 --> 00:01:57.425
+of the above three
+steps in detail.
+
+42
+00:01:57.425 --> 00:01:59.120
+But first, let's begin by
+
+43
+00:01:59.120 --> 00:02:02.375
+defining what an image
+feature really is.
+
+44
+00:02:02.375 --> 00:02:04.925
+Features are points of
+interest in an image.
+
+45
+00:02:04.925 --> 00:02:06.860
+This definition is pretty vague,
+
+46
+00:02:06.860 --> 00:02:09.110
+as it poses the
+following question.
+
+47
+00:02:09.110 --> 00:02:11.950
+What is considered an
+interesting point?
+
+48
+00:02:11.950 --> 00:02:14.295
+Points of interest
+should be distinctive,
+
+49
+00:02:14.295 --> 00:02:15.715
+and identifiable,
+
+50
+00:02:15.715 --> 00:02:18.275
+and different from
+its immediate neighborhood.
+
+51
+00:02:18.275 --> 00:02:20.960
+Features should
+also be repeatable.
+
+52
+00:02:20.960 --> 00:02:23.870
+That means that we should
+be able to extract
+
+53
+00:02:23.870 --> 00:02:25.130
+the same features from
+
+54
+00:02:25.130 --> 00:02:28.130
+two independent images
+of the same scene.
+
+55
+00:02:28.130 --> 00:02:31.055
+Third, features should be local.
+
+56
+00:02:31.055 --> 00:02:33.635
+That means the features
+should not change
+
+57
+00:02:33.635 --> 00:02:35.510
+if an image region far away
+
+58
+00:02:35.510 --> 00:02:38.165
+from the immediate
+neighborhood changes.
+
+59
+00:02:38.165 --> 00:02:42.170
+Forth, our features should
+be abundant in an image.
+
+60
+00:02:42.170 --> 00:02:45.560
+This is because many applications
+such as calibration and
+
+61
+00:02:45.560 --> 00:02:48.380
+localization require
+a minimum number
+
+62
+00:02:48.380 --> 00:02:51.580
+of distinctive points
+to perform effectively.
+
+63
+00:02:51.580 --> 00:02:54.290
+Finally, generating
+features should
+
+64
+00:02:54.290 --> 00:02:57.065
+not require a large amount
+of computation,
+
+65
+00:02:57.065 --> 00:02:59.240
+as it is usually used as
+
+66
+00:02:59.240 --> 00:03:01.040
+a pre-processing step for
+
+67
+00:03:01.040 --> 00:03:03.245
+the applications that
+we've described.
+
+68
+00:03:03.245 --> 00:03:05.270
+Take a look at
+the following images.
+
+69
+00:03:05.270 --> 00:03:06.950
+Can you think of pixels that
+
+70
+00:03:06.950 --> 00:03:09.275
+abide by the above
+characteristics?
+
+71
+00:03:09.275 --> 00:03:11.450
+Repetitive texture less patches
+
+72
+00:03:11.450 --> 00:03:13.235
+are very hard to localize.
+
+73
+00:03:13.235 --> 00:03:16.100
+So these are definitely
+not feature locations.
+
+74
+00:03:16.100 --> 00:03:18.230
+You can see that
+the two red rectangles
+
+75
+00:03:18.230 --> 00:03:21.020
+located on the road
+are almost identical.
+
+76
+00:03:21.020 --> 00:03:23.435
+Patches with
+large contrast change,
+
+77
+00:03:23.435 --> 00:03:24.815
+where there's a strong gradient,
+
+78
+00:03:24.815 --> 00:03:26.540
+are much easier to localize,
+
+79
+00:03:26.540 --> 00:03:28.025
+but the patches along
+
+80
+00:03:28.025 --> 00:03:30.815
+a certain image edge
+might still be confusing.
+
+81
+00:03:30.815 --> 00:03:33.410
+As an example,
+the two red rectangles on
+
+82
+00:03:33.410 --> 00:03:36.650
+the edge of the same lane
+marking look very similar.
+
+83
+00:03:36.650 --> 00:03:38.465
+So again, these are challenging
+
+84
+00:03:38.465 --> 00:03:40.865
+locations to use as features.
+
+85
+00:03:40.865 --> 00:03:42.830
+The easiest concept to
+
+86
+00:03:42.830 --> 00:03:45.590
+localize in images
+is that of a corner.
+
+87
+00:03:45.590 --> 00:03:47.900
+A corner occurs when
+the gradients in
+
+88
+00:03:47.900 --> 00:03:49.460
+at least two significantly
+
+89
+00:03:49.460 --> 00:03:51.275
+different directions are large.
+
+90
+00:03:51.275 --> 00:03:55.355
+Examples of corners are
+shown in the red rectangles.
+
+91
+00:03:55.355 --> 00:03:57.695
+The most famous corner detector
+
+92
+00:03:57.695 --> 00:03:59.390
+is the Harris Corner Detector,
+
+93
+00:03:59.390 --> 00:04:01.715
+which uses image
+gradient information
+
+94
+00:04:01.715 --> 00:04:03.350
+to identify pixels that have
+
+95
+00:04:03.350 --> 00:04:07.595
+a strong change in intensity
+in both x and y directions.
+
+96
+00:04:07.595 --> 00:04:09.470
+Many implementations
+are available
+
+97
+00:04:09.470 --> 00:04:11.915
+online in different
+programming languages.
+
+98
+00:04:11.915 --> 00:04:14.030
+However, the corners detected by
+
+99
+00:04:14.030 --> 00:04:17.150
+Harris corner detectors
+are not scale invariant,
+
+100
+00:04:17.150 --> 00:04:18.620
+meaning that the corners can look
+
+101
+00:04:18.620 --> 00:04:20.090
+different depending
+on the distance
+
+102
+00:04:20.090 --> 00:04:23.480
+the camera is away from the
+object generating the corner.
+
+103
+00:04:23.480 --> 00:04:25.035
+To remedy this problem,
+
+104
+00:04:25.035 --> 00:04:28.485
+researchers proposed the
+Harris-Laplace corner detector.
+
+105
+00:04:28.485 --> 00:04:30.920
+Harris-Laplace detectors
+detect corners at
+
+106
+00:04:30.920 --> 00:04:33.020
+different scales and choose
+
+107
+00:04:33.020 --> 00:04:36.050
+the best scale based on
+the Laplacian of the image.
+
+108
+00:04:36.050 --> 00:04:38.240
+Furthermore, researchers
+have also been
+
+109
+00:04:38.240 --> 00:04:40.520
+able to machine learn corners.
+
+110
+00:04:40.520 --> 00:04:43.955
+One prominent algorithm,
+the fast corner detector,
+
+111
+00:04:43.955 --> 00:04:46.490
+is one of the most used
+feature detectors due to
+
+112
+00:04:46.490 --> 00:04:48.875
+its very high
+computational efficiency
+
+113
+00:04:48.875 --> 00:04:51.155
+and solid detection performance.
+
+114
+00:04:51.155 --> 00:04:53.510
+Other scale invariant
+feature detectors are
+
+115
+00:04:53.510 --> 00:04:55.730
+based on the concept
+of blobs such as
+
+116
+00:04:55.730 --> 00:04:58.370
+the Laplacian of Gaussian
+or the difference of
+
+117
+00:04:58.370 --> 00:05:00.410
+Gaussian feature detectors of
+
+118
+00:05:00.410 --> 00:05:02.120
+which there are many variance.
+
+119
+00:05:02.120 --> 00:05:03.620
+We will not be discussing
+
+120
+00:05:03.620 --> 00:05:05.090
+these detectors in
+great depth here,
+
+121
+00:05:05.090 --> 00:05:08.030
+as they represent a complex area
+of ongoing research,
+
+122
+00:05:08.030 --> 00:05:11.030
+but we can readily use a variety
+of feature extractors.
+
+123
+00:05:11.030 --> 00:05:14.530
+Thanks to robust open source
+implementations like OpenCV.
+
+124
+00:05:14.530 --> 00:05:18.305
+Now let's see some examples
+of these detectors in action.
+
+125
+00:05:18.305 --> 00:05:19.940
+Here you can see corners
+
+126
+00:05:19.940 --> 00:05:22.565
+detected by the Harris
+Corner Detector.
+
+127
+00:05:22.565 --> 00:05:26.180
+The features primarily
+capture corners as expected,
+
+128
+00:05:26.180 --> 00:05:28.955
+where strong illumination
+changes are visible.
+
+129
+00:05:28.955 --> 00:05:31.160
+Here you can see Harris-Laplace
+
+130
+00:05:31.160 --> 00:05:33.065
+features on the same image.
+
+131
+00:05:33.065 --> 00:05:36.080
+By using the Laplacian
+to determine scale,
+
+132
+00:05:36.080 --> 00:05:39.005
+we can detect scale and
+variant corners that can be more
+
+133
+00:05:39.005 --> 00:05:42.620
+easily matched as a vehicle
+moves relative to the scene.
+
+134
+00:05:42.620 --> 00:05:44.870
+Scale is represented here by
+
+135
+00:05:44.870 --> 00:05:47.450
+the size of the circle
+around each feature.
+
+136
+00:05:47.450 --> 00:05:48.950
+The larger the circle,
+
+137
+00:05:48.950 --> 00:05:52.190
+the larger the principal
+scale of that feature.
+
+138
+00:05:52.190 --> 00:05:53.900
+In this lesson, you learn
+
+139
+00:05:53.900 --> 00:05:55.220
+what characteristics are required
+
+140
+00:05:55.220 --> 00:05:56.740
+for good image features.
+
+141
+00:05:56.740 --> 00:05:58.910
+You also learn
+the different methods that
+
+142
+00:05:58.910 --> 00:06:01.235
+can be used to extract
+image features.
+
+143
+00:06:01.235 --> 00:06:03.500
+Most of these methods are
+already implemented in
+
+144
+00:06:03.500 --> 00:06:05.870
+many programming
+languages including
+
+145
+00:06:05.870 --> 00:06:08.060
+Python and C plus plus,
+
+146
+00:06:08.060 --> 00:06:10.340
+and are ready for you
+to use whenever needed.
+
+147
+00:06:10.340 --> 00:06:11.720
+As a matter of fact,
+
+148
+00:06:11.720 --> 00:06:14.690
+you will be using the OpenCV
+Python implementation of
+
+149
+00:06:14.690 --> 00:06:16.910
+the Harris-Laplace
+corner detector
+
+150
+00:06:16.910 --> 00:06:19.070
+for this week's
+programming assignment.
+
+151
+00:06:19.070 --> 00:06:20.509
+In the next video,
+
+152
+00:06:20.509 --> 00:06:22.340
+we will learn about
+the second step of
+
+153
+00:06:22.340 --> 00:06:23.995
+our feature extraction framework,
+
+154
+00:06:23.995 --> 00:06:26.560
+the feature descriptors.

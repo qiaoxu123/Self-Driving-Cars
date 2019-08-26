@@ -1,0 +1,704 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.406 --> 00:00:18.253
+In the last lesson, we described how
+to divide data sets into training,
+
+3
+00:00:18.253 --> 00:00:20.146
+validation, and testing splits,
+
+4
+00:00:20.146 --> 00:00:24.578
+and interpret the results of evaluating
+the loss function on each of these splits.
+
+5
+00:00:24.578 --> 00:00:28.812
+We also emphasize that most of the time
+we tend to suffer from overfitting rather
+
+6
+00:00:28.812 --> 00:00:31.415
+than underfitting after
+training the network.
+
+7
+00:00:31.415 --> 00:00:35.522
+In this lesson, we'll explore some
+ways to reduce overfitting by applying
+
+8
+00:00:35.522 --> 00:00:38.097
+regularization strategies during training.
+
+9
+00:00:38.097 --> 00:00:42.404
+As a result of regularization, our
+networks will generalize well to new data,
+
+10
+00:00:42.404 --> 00:00:46.730
+and we'll be able to use them more
+effectively outside of the lab.
+
+11
+00:00:46.730 --> 00:00:51.010
+Let's walk through an iteration of neural
+network development on a toy example.
+
+12
+00:00:51.010 --> 00:00:56.810
+We want to separate a 2D Cartesian space
+into two components, orange and blue.
+
+13
+00:00:56.810 --> 00:01:00.400
+Any point belonging to the blue
+space should be labelled class 1,
+
+14
+00:01:00.400 --> 00:01:03.850
+while any point belonging to the orange
+space should be labelled class 2.
+
+15
+00:01:03.850 --> 00:01:08.450
+However, we do not have direct access
+to these classes or their boundaries.
+
+16
+00:01:08.450 --> 00:01:11.450
+Instead we only have access
+to sensor measurements
+
+17
+00:01:11.450 --> 00:01:15.640
+that provide us with examples of
+points and their corresponding class.
+
+18
+00:01:15.640 --> 00:01:18.267
+Unfortunately, our sensor is also noisy,
+
+19
+00:01:18.267 --> 00:01:21.604
+that means it sometimes
+provides the incorrect label.
+
+20
+00:01:21.604 --> 00:01:27.210
+The label points in the blue space as
+class 2, and in orange space as class 1.
+
+21
+00:01:27.210 --> 00:01:31.870
+Our problem amounts to finding the space
+classification from the noisy sensor data.
+
+22
+00:01:31.870 --> 00:01:34.360
+We begin by collecting
+data from the sensor and
+
+23
+00:01:34.360 --> 00:01:38.020
+splitting them into 60-40
+training validation splits.
+
+24
+00:01:38.020 --> 00:01:42.040
+The training splits is shown here
+as points with white out lines, and
+
+25
+00:01:42.040 --> 00:01:45.430
+the validation splits is shown here
+as points with black out lines.
+
+26
+00:01:45.430 --> 00:01:48.192
+Let's use a simple neuron
+network with one layer and
+
+27
+00:01:48.192 --> 00:01:51.090
+two hidden units per layer
+to classify measurements.
+
+28
+00:01:51.090 --> 00:01:55.841
+Using this design choice, we get
+that following space classification.
+
+29
+00:01:55.841 --> 00:02:02.153
+The training set loss is 0.264 close
+to the validation set loss of 0.2268.
+
+30
+00:02:02.153 --> 00:02:06.670
+But it's still much higher than
+the minimum achievable loss of 0.1.
+
+31
+00:02:06.670 --> 00:02:08.630
+This is a clear case of underfitting.
+
+32
+00:02:08.630 --> 00:02:11.910
+When we compare the results of our
+network classification to the true space
+
+33
+00:02:11.910 --> 00:02:14.890
+classification, we see that
+the neural network fail to
+
+34
+00:02:14.890 --> 00:02:17.820
+capture the complexity of
+the problem at hand, and
+
+35
+00:02:17.820 --> 00:02:23.190
+did not correctly segment the space
+into four compartments as required.
+
+36
+00:02:23.190 --> 00:02:27.460
+To resolve underfitting issues, we
+increase the network size by adding five
+
+37
+00:02:27.460 --> 00:02:32.260
+additional layers, and increase the number
+of hidden units to six units per layer.
+
+38
+00:02:32.260 --> 00:02:34.170
+Our model is now much more expressive, so
+
+39
+00:02:34.170 --> 00:02:37.350
+it should be able to better
+represent the true classification.
+
+40
+00:02:37.350 --> 00:02:41.920
+We go ahead and train our model again,
+then test to see how well we have done.
+
+41
+00:02:41.920 --> 00:02:45.300
+We noticed that our
+validation set loss result
+
+42
+00:02:45.300 --> 00:02:50.320
+of 0.45 is much higher than our
+training set loss result of 0.1.
+
+43
+00:02:50.320 --> 00:02:51.830
+The training set loss, however,
+
+44
+00:02:51.830 --> 00:02:56.260
+is equal to the minimum achievable
+loss of 0.1 on this task.
+
+45
+00:02:56.260 --> 00:02:59.260
+We are in a state of overfitting
+to the training data.
+
+46
+00:02:59.260 --> 00:03:03.290
+Overfitting is caused by the network
+learning the noise in the training data.
+
+47
+00:03:03.290 --> 00:03:05.664
+Because the neural network has so
+many parameters,
+
+48
+00:03:05.664 --> 00:03:10.580
+it is able to curve out small regions in
+the space that correspond to the noisy
+
+49
+00:03:10.580 --> 00:03:14.610
+training examples as shown
+inside the red circles.
+
+50
+00:03:14.610 --> 00:03:17.740
+This usually happens when we increase
+the network size too much for
+
+51
+00:03:17.740 --> 00:03:18.950
+the problem at hand.
+
+52
+00:03:18.950 --> 00:03:22.750
+Again, we have learned that one way
+to remedy over fitting is through
+
+53
+00:03:22.750 --> 00:03:23.808
+regularization.
+
+54
+00:03:23.808 --> 00:03:28.502
+Let's check out the first regularization
+method commonly used for neural networks.
+
+55
+00:03:28.502 --> 00:03:31.503
+The most traditional form of
+regularization applicable
+
+56
+00:03:31.503 --> 00:03:34.886
+to neural networks is the concept
+of parameter norm penalties.
+
+57
+00:03:34.886 --> 00:03:39.379
+This approach limits the capacity of the
+model by adding the penalty omega of theta
+
+58
+00:03:39.379 --> 00:03:41.710
+to the objective function.
+
+59
+00:03:41.710 --> 00:03:44.800
+We add the norm penalty to
+our existing loss function
+
+60
+00:03:44.800 --> 00:03:47.210
+using our weighting parameter alpha.
+
+61
+00:03:47.210 --> 00:03:51.150
+Alpha is a new hyperparameter that
+weights the relative contribution
+
+62
+00:03:51.150 --> 00:03:55.020
+of the norm penalty to the total
+value of loss function.
+
+63
+00:03:55.020 --> 00:04:00.390
+Usually, omega of theta is a measure
+of how large the value of theta is.
+
+64
+00:04:00.390 --> 00:04:03.650
+Most commonly this measure is an Lp Norm.
+
+65
+00:04:03.650 --> 00:04:09.790
+When P is 1 we have an absolute sum, and
+when P is 2 we get the quadratic sum, etc.
+
+66
+00:04:09.790 --> 00:04:13.890
+Furthermore, we usually only constrain
+the weights of the neural network.
+
+67
+00:04:13.890 --> 00:04:17.290
+This is motivated by the fact that
+the number of weights is much
+
+68
+00:04:17.290 --> 00:04:20.720
+larger than the number of
+biases in the neural network.
+
+69
+00:04:20.720 --> 00:04:24.980
+So weight penalty have a much larger
+impact on the final network performance.
+
+70
+00:04:24.980 --> 00:04:29.670
+The most common norm penalty used in
+neural networks is the L2-norm penalty.
+
+71
+00:04:29.670 --> 00:04:33.680
+The L2-norm penalty tries
+to minimize the L2-norm of
+
+72
+00:04:33.680 --> 00:04:36.510
+all the weights in each
+layer of the neural network.
+
+73
+00:04:36.510 --> 00:04:40.180
+Let's take a look at the effect of the
+L2-norm penalty applied to our problem.
+
+74
+00:04:40.180 --> 00:04:44.432
+Remember that our latest design resulted
+in overfitting on the training data set.
+
+75
+00:04:44.432 --> 00:04:47.698
+Adding the L2-norm penalty
+the loss function results in
+
+76
+00:04:47.698 --> 00:04:50.696
+a much better estimate of
+the space classification,
+
+77
+00:04:50.696 --> 00:04:54.511
+due to a lower validation set loss
+over the unregularized network.
+
+78
+00:04:54.511 --> 00:04:59.105
+However, this lower validation set
+loss is coupled with an increase in
+
+79
+00:04:59.105 --> 00:05:02.332
+the training set loss from 0.1 to 0.176.
+
+80
+00:05:02.332 --> 00:05:05.969
+In this case the decrease in
+the generalization gap is higher
+
+81
+00:05:05.969 --> 00:05:08.406
+than the increase in training set loss.
+
+82
+00:05:08.406 --> 00:05:11.188
+Do be careful not to regularize too much,
+however,
+
+83
+00:05:11.188 --> 00:05:14.740
+to avoid falling into
+the underfitting regime once again.
+
+84
+00:05:14.740 --> 00:05:18.880
+Adding a norm penalty is quite easy
+in most neural network packages.
+
+85
+00:05:18.880 --> 00:05:22.931
+If you suspect over fitting, L2-norm
+penalties might be a very easy remedy that
+
+86
+00:05:22.931 --> 00:05:25.650
+will prevent a lot of waste of
+time during the design process.
+
+87
+00:05:27.870 --> 00:05:31.470
+As we mentioned earlier in this video,
+researchers have developed regularization
+
+88
+00:05:31.470 --> 00:05:34.730
+mechanisms that are specific
+to neural networks.
+
+89
+00:05:34.730 --> 00:05:38.740
+One powerful mechanism used
+regularly is called dropout.
+
+90
+00:05:38.740 --> 00:05:41.590
+Lets see how dropout gets
+applied during network training.
+
+91
+00:05:41.590 --> 00:05:46.610
+The first step of dropout is to choose
+a probability which we'll call P sub keep.
+
+92
+00:05:46.610 --> 00:05:49.700
+At every training iteration,
+this probability is used to
+
+93
+00:05:49.700 --> 00:05:54.310
+choose a subset of the network
+nodes to keep in the network.
+
+94
+00:05:54.310 --> 00:05:59.188
+These nodes can be either hidden units,
+output units, or input units.
+
+95
+00:05:59.188 --> 00:06:04.117
+We then proceed to evaluate the output y
+after cutting all the connections coming
+
+96
+00:06:04.117 --> 00:06:05.212
+out of this unit.
+
+97
+00:06:05.212 --> 00:06:09.632
+Since we are removing units proportional
+to the keep probably, P sub keep,
+
+98
+00:06:09.632 --> 00:06:13.653
+we multiply the final weights by P
+sub keep at the ending of training.
+
+99
+00:06:13.653 --> 00:06:17.622
+This is essential to avoid incorrectly
+scaling the outputs when we switch
+
+100
+00:06:17.622 --> 00:06:20.020
+to inference for the full network.
+
+101
+00:06:20.020 --> 00:06:24.777
+Dropout can be intuitively explained as
+forcing the model to learn with missing
+
+102
+00:06:24.777 --> 00:06:26.268
+input and hidden units.
+
+103
+00:06:26.268 --> 00:06:29.435
+Or in other words,
+with different versions of itself.
+
+104
+00:06:29.435 --> 00:06:34.060
+It provides a computationally inexpensive
+but powerful method of regularizing
+
+105
+00:06:34.060 --> 00:06:38.072
+a broad family of neural network
+models during the training process,
+
+106
+00:06:38.072 --> 00:06:41.892
+leading to significant reductions
+in over feeding and practice.
+
+107
+00:06:41.892 --> 00:06:45.689
+Furthermore, dropout does not
+significantly limit the type or
+
+108
+00:06:45.689 --> 00:06:48.440
+model of training
+procedure that can be used.
+
+109
+00:06:48.440 --> 00:06:52.946
+It works well with nearly any model that
+uses a distributed over parameterized
+
+110
+00:06:52.946 --> 00:06:57.490
+representation, and that can be trained
+with stochastic gradient descent.
+
+111
+00:06:57.490 --> 00:07:01.420
+Finally, all neural network libraries
+have a dropout layer implemented and
+
+112
+00:07:01.420 --> 00:07:02.800
+ready to be used.
+
+113
+00:07:02.800 --> 00:07:05.740
+We recommend using drop out
+whenever you have dense
+
+114
+00:07:05.740 --> 00:07:07.209
+feed forward neural network layers.
+
+115
+00:07:09.640 --> 00:07:13.680
+The final form of regularization you
+should know about is early stopping.
+
+116
+00:07:13.680 --> 00:07:18.482
+To explain early stopping visually, we
+look at the evolution of the loss function
+
+117
+00:07:18.482 --> 00:07:21.415
+of a neuro network evaluated
+on the training set.
+
+118
+00:07:21.415 --> 00:07:25.855
+Given enough capacity, the training loss
+should be able to decrease to a value
+
+119
+00:07:25.855 --> 00:07:29.635
+close to zero, as the neuro network
+memorizes the training data.
+
+120
+00:07:29.635 --> 00:07:33.248
+However, if we have independent
+training and validation sets,
+
+121
+00:07:33.248 --> 00:07:37.260
+the validation loss reaches a point
+where it starts to increase.
+
+122
+00:07:37.260 --> 00:07:40.680
+This behaviour is typical during
+the overfitting regime, and
+
+123
+00:07:40.680 --> 00:07:43.970
+can be resolved via a method
+known as early stopping.
+
+124
+00:07:43.970 --> 00:07:47.290
+We discussed earlier that we
+can stop the optimization
+
+125
+00:07:47.290 --> 00:07:49.300
+according to various stopping criteria.
+
+126
+00:07:50.380 --> 00:07:54.130
+Early stopping ends training when
+the validation loss keeps increasing for
+
+127
+00:07:54.130 --> 00:07:57.210
+a preset number of iterations or epochs.
+
+128
+00:07:57.210 --> 00:08:01.240
+This is usually interpreted at the point
+just before the neural network enters
+
+129
+00:08:01.240 --> 00:08:02.410
+the overfitting regime.
+
+130
+00:08:03.630 --> 00:08:05.780
+After stopping the training algorithm,
+
+131
+00:08:05.780 --> 00:08:09.400
+the set of parameters with the lowest
+validation loss is returned.
+
+132
+00:08:09.400 --> 00:08:13.290
+As a final note, early stopping should
+not be use as a first choice for
+
+133
+00:08:13.290 --> 00:08:14.585
+regularization.
+
+134
+00:08:14.585 --> 00:08:16.660
+As it also limits the training time,
+
+135
+00:08:16.660 --> 00:08:19.480
+which may interfere with
+the overall network performance.
+
+136
+00:08:19.480 --> 00:08:24.040
+Congratulations, you are now ready to
+start building your own neural networks.
+
+137
+00:08:24.040 --> 00:08:27.410
+In this lesson,
+you learned how to improve the performance
+
+138
+00:08:27.410 --> 00:08:31.790
+of the neural network in the key as
+it falls into an overfitting regime.
+
+139
+00:08:31.790 --> 00:08:36.022
+There are many more interesting aspects to
+neural network design and training, and
+
+140
+00:08:36.022 --> 00:08:39.777
+I urge you to keep exploring this
+fascinating field through the additional
+
+141
+00:08:39.777 --> 00:08:42.357
+resources that we've
+included with this module.
+
+142
+00:08:42.357 --> 00:08:46.471
+In the next and final lesson in this
+module, we will talk about a neural
+
+143
+00:08:46.471 --> 00:08:50.661
+network architecture of huge practical and
+historical importance for
+
+144
+00:08:50.661 --> 00:08:54.451
+vision based perception,
+the convolutional neural network.
+
+145
+00:08:54.451 --> 00:08:55.889
+See you then
+
+146
+00:08:55.889 --> 00:09:04.188
+[MUSIC]

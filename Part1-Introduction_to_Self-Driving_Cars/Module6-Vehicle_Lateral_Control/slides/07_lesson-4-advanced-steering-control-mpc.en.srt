@@ -1,0 +1,1202 @@
+1
+00:00:13,790 --> 00:00:15,885
+Welcome back.
+
+2
+00:00:15,885 --> 00:00:17,210
+In the last video,
+
+3
+00:00:17,210 --> 00:00:19,300
+we studied the Stanley controller
+
+4
+00:00:19,300 --> 00:00:21,535
+for lateral path tracking control.
+
+5
+00:00:21,535 --> 00:00:23,785
+In this video, we will explore
+
+6
+00:00:23,785 --> 00:00:26,224
+an advanced applied control strategy,
+
+7
+00:00:26,224 --> 00:00:29,490
+known as Model Predictive
+Control or MPC,
+
+8
+00:00:29,490 --> 00:00:31,480
+to understand how to incorporate
+
+9
+00:00:31,480 --> 00:00:34,405
+dynamic modeling into
+controller design.
+
+10
+00:00:34,405 --> 00:00:36,490
+Specifically in this video,
+
+11
+00:00:36,490 --> 00:00:39,895
+we will describe the MPC architecture
+
+12
+00:00:39,895 --> 00:00:42,855
+and the concept of
+receding horizon control,
+
+13
+00:00:42,855 --> 00:00:45,955
+formulate an MPC optimization problem
+
+14
+00:00:45,955 --> 00:00:48,635
+for both linear and nonlinear models,
+
+15
+00:00:48,635 --> 00:00:53,590
+and apply MPC to joint longitudinal
+and lateral vehicle control.
+
+16
+00:00:53,590 --> 00:00:56,440
+Let's dive in. First, let's
+
+17
+00:00:56,440 --> 00:01:00,200
+quickly go through the key aspects
+of Model Predictive Control.
+
+18
+00:01:00,200 --> 00:01:04,060
+MPC refers to the control
+design approach that
+
+19
+00:01:04,060 --> 00:01:07,930
+numerically solves an optimization
+problem at each time-step.
+
+20
+00:01:07,930 --> 00:01:10,270
+Because solving an
+optimization problem
+
+21
+00:01:10,270 --> 00:01:12,475
+at each time step can take time,
+
+22
+00:01:12,475 --> 00:01:15,160
+MPC was originally applied to slow
+
+23
+00:01:15,160 --> 00:01:18,275
+processes such as
+industrial chemical processing.
+
+24
+00:01:18,275 --> 00:01:21,070
+However, the ever-improving
+performance of
+
+25
+00:01:21,070 --> 00:01:23,140
+today's computing hardware has made
+
+26
+00:01:23,140 --> 00:01:26,960
+MPC a viable approach even
+on embedded hardware.
+
+27
+00:01:26,960 --> 00:01:29,570
+More and more automotive
+applications are
+
+28
+00:01:29,570 --> 00:01:32,300
+turning to MPC as a way to improve
+
+29
+00:01:32,300 --> 00:01:34,940
+performance and expand
+operating range
+
+30
+00:01:34,940 --> 00:01:37,685
+for a suite of different
+embedded controllers,
+
+31
+00:01:37,685 --> 00:01:41,030
+from traction control
+and stability control,
+
+32
+00:01:41,030 --> 00:01:43,970
+to emission reduction,
+and idle speed control.
+
+33
+00:01:43,970 --> 00:01:47,330
+Longitudinal and lateral control
+for autonomous vehicles is
+
+34
+00:01:47,330 --> 00:01:50,960
+another extremely suitable
+application for MPC.
+
+35
+00:01:50,960 --> 00:01:53,465
+Model Predictive Control is often
+
+36
+00:01:53,465 --> 00:01:57,410
+interchangeably referred to
+as Receding Horizon Control,
+
+37
+00:01:57,410 --> 00:02:01,430
+since the controller generates
+an actuator signal based on
+
+38
+00:02:01,430 --> 00:02:03,620
+a fixed finite length horizon at
+
+39
+00:02:03,620 --> 00:02:07,200
+each time-step which receives
+as time moves forward.
+
+40
+00:02:07,200 --> 00:02:09,350
+The key advantages to solving
+
+41
+00:02:09,350 --> 00:02:13,899
+online optimizations as part of
+the controller are as follows:
+
+42
+00:02:13,899 --> 00:02:16,490
+The formulation of
+an MPC controller is
+
+43
+00:02:16,490 --> 00:02:19,160
+straightforward requiring
+the definition of
+
+44
+00:02:19,160 --> 00:02:21,995
+an objective function
+and relevant constraints
+
+45
+00:02:21,995 --> 00:02:25,610
+that are then optimized using
+well-established solvers.
+
+46
+00:02:25,610 --> 00:02:29,900
+The states and control signals
+can be constrained to stay within
+
+47
+00:02:29,900 --> 00:02:32,870
+safe operating bounds
+and controls can be
+
+48
+00:02:32,870 --> 00:02:36,770
+selected to maximize
+multiple objectives simultaneously.
+
+49
+00:02:36,770 --> 00:02:40,485
+Both hard constraints and
+soft penalties can be employed,
+
+50
+00:02:40,485 --> 00:02:42,844
+leading to a rich set of solutions
+
+51
+00:02:42,844 --> 00:02:45,230
+for constrained control problems.
+
+52
+00:02:45,230 --> 00:02:47,510
+As many automotive subsystems have
+
+53
+00:02:47,510 --> 00:02:51,680
+rigid actuator constraints and
+diverse performance objectives,
+
+54
+00:02:51,680 --> 00:02:56,135
+MPC has emerged as a major tool
+for vehicle control.
+
+55
+00:02:56,135 --> 00:02:59,090
+The controller can be
+explicitly applied to
+
+56
+00:02:59,090 --> 00:03:02,930
+the linear or non-linear models of
+the vehicle and its subsystems,
+
+57
+00:03:02,930 --> 00:03:05,480
+meaning that we can
+use the same approach
+
+58
+00:03:05,480 --> 00:03:08,990
+even as our models change
+or improve over time.
+
+59
+00:03:08,990 --> 00:03:12,415
+The trade-off these advantages
+must be weighed against,
+
+60
+00:03:12,415 --> 00:03:14,120
+is that MPC requires
+
+61
+00:03:14,120 --> 00:03:16,790
+significantly more
+computational resources
+
+62
+00:03:16,790 --> 00:03:18,660
+than a Static Control Law.
+
+63
+00:03:18,660 --> 00:03:20,855
+It is certainly possible to create
+
+64
+00:03:20,855 --> 00:03:23,180
+optimization formulations
+that are too
+
+65
+00:03:23,180 --> 00:03:25,040
+expensive to compute at
+
+66
+00:03:25,040 --> 00:03:28,655
+the high update rates required
+for smooth vehicle control.
+
+67
+00:03:28,655 --> 00:03:33,860
+Careful implementation is needed
+to avoid overloading processors.
+
+68
+00:03:33,860 --> 00:03:37,055
+Before we start designing
+MPC controllers,
+
+69
+00:03:37,055 --> 00:03:41,725
+let's take a closer look at
+the concept of Receding Horizon.
+
+70
+00:03:41,725 --> 00:03:44,445
+Receding Horizon Control solves
+
+71
+00:03:44,445 --> 00:03:47,869
+a fixed size optimization
+at each time-step,
+
+72
+00:03:47,869 --> 00:03:50,570
+which identifies
+optimal control inputs
+
+73
+00:03:50,570 --> 00:03:52,910
+to apply from the current time to
+
+74
+00:03:52,910 --> 00:03:55,100
+the end of the horizon based on
+
+75
+00:03:55,100 --> 00:03:58,565
+the objectives constraints and
+current state of the vehicle.
+
+76
+00:03:58,565 --> 00:04:02,270
+One issue that arises in
+implementation however,
+
+77
+00:04:02,270 --> 00:04:05,630
+is that because optimization
+can take some amount of time,
+
+78
+00:04:05,630 --> 00:04:08,765
+the state of the vehicle when
+starting the optimization,
+
+79
+00:04:08,765 --> 00:04:10,370
+will be different from the state of
+
+80
+00:04:10,370 --> 00:04:13,070
+the vehicle when completing
+the optimization.
+
+81
+00:04:13,070 --> 00:04:16,580
+As a results, we must
+use a predicted state in
+
+82
+00:04:16,580 --> 00:04:18,920
+the optimization for
+the time at which
+
+83
+00:04:18,920 --> 00:04:22,100
+the control input will
+actually be applied.
+
+84
+00:04:22,100 --> 00:04:26,875
+Let's step through the process
+and clarify the notation needed.
+
+85
+00:04:26,875 --> 00:04:32,205
+First, we define the receding
+horizon length t. Then,
+
+86
+00:04:32,205 --> 00:04:33,710
+we set the initial state for
+
+87
+00:04:33,710 --> 00:04:36,770
+the optimization to be
+the predicted state at the end of
+
+88
+00:04:36,770 --> 00:04:41,495
+the optimization x at time t. Next,
+
+89
+00:04:41,495 --> 00:04:43,790
+we solve the optimization
+as the vehicle
+
+90
+00:04:43,790 --> 00:04:46,400
+moves from its current
+state at time t minus
+
+91
+00:04:46,400 --> 00:04:49,160
+one to x of t using
+
+92
+00:04:49,160 --> 00:04:52,840
+the control input identified
+in the previous optimization.
+
+93
+00:04:52,840 --> 00:04:54,950
+Although we won't exactly arrive at
+
+94
+00:04:54,950 --> 00:04:58,355
+the predicted state at
+time t due to disturbances,
+
+95
+00:04:58,355 --> 00:05:03,460
+we do expect to be reasonably close
+if the time interval is short.
+
+96
+00:05:03,460 --> 00:05:08,060
+Finally, we apply the control
+signal from the first time step of
+
+97
+00:05:08,060 --> 00:05:10,295
+the receding horizon optimization
+
+98
+00:05:10,295 --> 00:05:13,570
+and repeat the process
+for the next time step.
+
+99
+00:05:13,570 --> 00:05:18,415
+We can visualize the Receding
+Horizon or MPC Algorithm,
+
+100
+00:05:18,415 --> 00:05:21,545
+using the following block
+diagram for a control.
+
+101
+00:05:21,545 --> 00:05:25,220
+We have two main blocks,
+an optimizer block,
+
+102
+00:05:25,220 --> 00:05:27,320
+which is the core MPC component
+
+103
+00:05:27,320 --> 00:05:29,375
+or a Receding Horizon
+Control component,
+
+104
+00:05:29,375 --> 00:05:31,310
+and the dynamic model.
+
+105
+00:05:31,310 --> 00:05:34,640
+The model takes in
+the past inputs and state
+
+106
+00:05:34,640 --> 00:05:37,955
+from time t minus one and takes in
+
+107
+00:05:37,955 --> 00:05:40,310
+the output of the optimizer which is
+
+108
+00:05:40,310 --> 00:05:45,035
+the current sequence of inputs U
+at each time step in the horizon.
+
+109
+00:05:45,035 --> 00:05:49,730
+The model then outputs predicted
+states at the next time-step,
+
+110
+00:05:49,730 --> 00:05:52,580
+which are compared to
+the reference trajectory and
+
+111
+00:05:52,580 --> 00:05:56,930
+passed into the optimizer as
+the future or predicted error.
+
+112
+00:05:56,930 --> 00:05:59,585
+The optimizer also receives
+
+113
+00:05:59,585 --> 00:06:03,260
+updated constraints and
+the cost function to use,
+
+114
+00:06:03,260 --> 00:06:04,910
+which can be fixed in advanced or
+
+115
+00:06:04,910 --> 00:06:07,940
+varied based on changing
+operating modes.
+
+116
+00:06:07,940 --> 00:06:09,920
+The optimizer then solves
+
+117
+00:06:09,920 --> 00:06:12,260
+its optimization and
+the process repeats.
+
+118
+00:06:12,260 --> 00:06:17,345
+Now, let's take a look at
+the linear MPC design in particular.
+
+119
+00:06:17,345 --> 00:06:20,570
+We use the state space
+formulation which
+
+120
+00:06:20,570 --> 00:06:23,930
+represents a motion
+model in discrete form.
+
+121
+00:06:23,930 --> 00:06:26,810
+The future states
+are linearly related
+
+122
+00:06:26,810 --> 00:06:29,495
+to the current states and
+the actuator signals.
+
+123
+00:06:29,495 --> 00:06:31,280
+Note that, A and B are
+
+124
+00:06:31,280 --> 00:06:35,030
+the coefficient matrices and are
+assumed to be time-invariant.
+
+125
+00:06:35,030 --> 00:06:37,160
+MPC seeks to find
+
+126
+00:06:37,160 --> 00:06:41,630
+a control policy U of inputs
+over a finite horizon.
+
+127
+00:06:41,630 --> 00:06:44,539
+If all the states are
+to be driven to zero,
+
+128
+00:06:44,539 --> 00:06:48,215
+the objective function or cost
+function when we minimize,
+
+129
+00:06:48,215 --> 00:06:51,710
+can be defined as follows:
+with quadratic error on
+
+130
+00:06:51,710 --> 00:06:53,540
+both deviations of the state from
+
+131
+00:06:53,540 --> 00:06:57,320
+zero and on non-zero control inputs.
+
+132
+00:06:57,320 --> 00:07:00,575
+This is similar to
+the optimization problem of
+
+133
+00:07:00,575 --> 00:07:03,305
+optimal control theory and trades off
+
+134
+00:07:03,305 --> 00:07:06,710
+control performance and
+input aggressiveness.
+
+135
+00:07:06,710 --> 00:07:10,040
+Note that, the matrices Q
+and R are called weight
+
+136
+00:07:10,040 --> 00:07:12,350
+matrices and can be selected to
+
+137
+00:07:12,350 --> 00:07:15,275
+achieve a particular
+type of response.
+
+138
+00:07:15,275 --> 00:07:17,405
+If instead we need to track
+
+139
+00:07:17,405 --> 00:07:20,515
+a reference signals such
+as a desired trajectory,
+
+140
+00:07:20,515 --> 00:07:23,210
+we modify the formulation to include
+
+141
+00:07:23,210 --> 00:07:27,260
+the error delta x relative
+to the desired state.
+
+142
+00:07:27,260 --> 00:07:30,560
+This is a famous
+optimization formulation
+
+143
+00:07:30,560 --> 00:07:32,674
+and has a closed form solution,
+
+144
+00:07:32,674 --> 00:07:36,020
+the Linear Quadratic
+Regulator or LQR.
+
+145
+00:07:36,020 --> 00:07:39,620
+The closed form solution
+uses full state feedback,
+
+146
+00:07:39,620 --> 00:07:43,025
+meaning that all states are
+used in the control response.
+
+147
+00:07:43,025 --> 00:07:47,455
+The LQR solution defines
+a control gain matrix K,
+
+148
+00:07:47,455 --> 00:07:50,420
+which can be computed from
+the A and B matrices of
+
+149
+00:07:50,420 --> 00:07:52,280
+the state-space model and
+
+150
+00:07:52,280 --> 00:07:54,905
+the Q and R matrices
+of the cost function.
+
+151
+00:07:54,905 --> 00:07:57,950
+We've included links in
+the supplemental materials to
+
+152
+00:07:57,950 --> 00:08:01,280
+this fascinating result of
+states-pace control theory.
+
+153
+00:08:01,280 --> 00:08:03,410
+In the more general case,
+
+154
+00:08:03,410 --> 00:08:04,835
+the objective function is
+
+155
+00:08:04,835 --> 00:08:07,490
+any differentiable
+non-linear function of
+
+156
+00:08:07,490 --> 00:08:10,820
+a state and inputs over
+the receding horizon.
+
+157
+00:08:10,820 --> 00:08:14,749
+The constraints imposed on
+the optimization can include;
+
+158
+00:08:14,749 --> 00:08:17,165
+non-linear dynamic models of motion,
+
+159
+00:08:17,165 --> 00:08:19,130
+state and input bounds that
+
+160
+00:08:19,130 --> 00:08:21,920
+capture things like
+maximum steering angles,
+
+161
+00:08:21,920 --> 00:08:24,800
+and any other inequality
+constraints g
+
+162
+00:08:24,800 --> 00:08:28,160
+are equality constraints
+h that affect our system.
+
+163
+00:08:28,160 --> 00:08:31,205
+For such a general
+optimization problem however,
+
+164
+00:08:31,205 --> 00:08:33,985
+no closed form solution exists.
+
+165
+00:08:33,985 --> 00:08:38,775
+So, we must rely on numerical
+optimization to find a solution.
+
+166
+00:08:38,775 --> 00:08:42,590
+Even the kinematic bicycle
+model falls into this category.
+
+167
+00:08:42,590 --> 00:08:45,079
+So, almost all MPC controllers
+
+168
+00:08:45,079 --> 00:08:48,365
+for autonomous driving will
+be solved numerically.
+
+169
+00:08:48,365 --> 00:08:50,960
+Let's now look at
+the implementation of
+
+170
+00:08:50,960 --> 00:08:55,460
+an MPC controller for trajectory
+tracking on a self-driving car.
+
+171
+00:08:55,460 --> 00:09:00,325
+MPC will be used in the same feedback
+structure presented earlier,
+
+172
+00:09:00,325 --> 00:09:02,510
+but we include the conversion from
+
+173
+00:09:02,510 --> 00:09:04,490
+the tire forces to throttle, break,
+
+174
+00:09:04,490 --> 00:09:09,320
+and steering commands as a low
+level controller inside the loop.
+
+175
+00:09:09,320 --> 00:09:13,490
+The inputs to the MPC block
+or the reference trajectory,
+
+176
+00:09:13,490 --> 00:09:16,615
+which include the reference
+path and velocity,
+
+177
+00:09:16,615 --> 00:09:19,895
+as well as the vehicle states
+at each time step.
+
+178
+00:09:19,895 --> 00:09:22,560
+The outputs of the MPC block are
+
+179
+00:09:22,560 --> 00:09:24,774
+the lateral and longitudinal forces
+
+180
+00:09:24,774 --> 00:09:27,370
+needed to follow
+the desired trajectory.
+
+181
+00:09:27,370 --> 00:09:31,180
+These forces are then translated
+into throttle, breaking,
+
+182
+00:09:31,180 --> 00:09:35,140
+and steering commands, as the output
+of the low-level control.
+
+183
+00:09:35,140 --> 00:09:37,780
+Finally, the actuation signals
+
+184
+00:09:37,780 --> 00:09:40,460
+are applied to the vehicle
+at each time-step,
+
+185
+00:09:40,460 --> 00:09:44,590
+and a new vehicle state is achieved
+closing the feedback loop.
+
+186
+00:09:44,590 --> 00:09:47,530
+The MPC optimization
+will be set up as
+
+187
+00:09:47,530 --> 00:09:50,795
+follows to perform
+a double lane change maneuver.
+
+188
+00:09:50,795 --> 00:09:55,164
+First, we define a cost for
+tracking the desired trajectory,
+
+189
+00:09:55,164 --> 00:09:57,130
+which includes deviation from
+
+190
+00:09:57,130 --> 00:09:58,810
+the desired trajectory and
+
+191
+00:09:58,810 --> 00:10:01,885
+minimization of control
+command magnitude.
+
+192
+00:10:01,885 --> 00:10:05,510
+Next, we define motion
+constraints on the vehicle,
+
+193
+00:10:05,510 --> 00:10:08,090
+which rely on the lateral
+and longitudinal models
+
+194
+00:10:08,090 --> 00:10:10,070
+developed in earlier videos.
+
+195
+00:10:10,070 --> 00:10:12,770
+We also impose maximum limits
+
+196
+00:10:12,770 --> 00:10:14,840
+on the tire forces
+to restrict them to
+
+197
+00:10:14,840 --> 00:10:17,330
+fall within the linear tire region to
+
+198
+00:10:17,330 --> 00:10:20,645
+avoid extreme responses
+to control our errors.
+
+199
+00:10:20,645 --> 00:10:23,570
+These costs and constraints define
+
+200
+00:10:23,570 --> 00:10:26,000
+the optimization used in our example,
+
+201
+00:10:26,000 --> 00:10:27,755
+which then gets converted into
+
+202
+00:10:27,755 --> 00:10:31,685
+actual vehicle commands by
+the low-level controller.
+
+203
+00:10:31,685 --> 00:10:34,339
+It is also possible to incorporate
+
+204
+00:10:34,339 --> 00:10:37,715
+the low-level control into
+the MPC optimization,
+
+205
+00:10:37,715 --> 00:10:41,720
+which would involve including
+as constraints, the engine map,
+
+206
+00:10:41,720 --> 00:10:44,075
+full vehicle dynamic models,
+
+207
+00:10:44,075 --> 00:10:47,345
+actuator forces, and
+tire force models.
+
+208
+00:10:47,345 --> 00:10:49,985
+The result is a large
+optimization problem
+
+209
+00:10:49,985 --> 00:10:52,640
+that may be challenging
+to solve in real time,
+
+210
+00:10:52,640 --> 00:10:55,115
+but let's have a look at the results.
+
+211
+00:10:55,115 --> 00:10:59,540
+This simulation is done for
+the double lane change scenario,
+
+212
+00:10:59,540 --> 00:11:02,960
+where the vehicle first accelerates
+to a steady-state speed of
+
+213
+00:11:02,960 --> 00:11:06,725
+17 meters per second or
+60 kilometers per hour,
+
+214
+00:11:06,725 --> 00:11:09,830
+then maneuvers
+four meters to the left,
+
+215
+00:11:09,830 --> 00:11:13,145
+and returns four meters to
+the right immediately thereafter.
+
+216
+00:11:13,145 --> 00:11:15,830
+The following plots
+show the results of
+
+217
+00:11:15,830 --> 00:11:18,754
+the simulated maneuver
+with MPC control,
+
+218
+00:11:18,754 --> 00:11:20,750
+with the reference trajectory in
+
+219
+00:11:20,750 --> 00:11:24,905
+blue and the actual
+vehicle trajectory in red.
+
+220
+00:11:24,905 --> 00:11:27,680
+We can see that
+the tracking performance with
+
+221
+00:11:27,680 --> 00:11:30,004
+the MPC controller is excellent,
+
+222
+00:11:30,004 --> 00:11:33,920
+lagging slightly, but without
+overshoot or oscillation.
+
+223
+00:11:33,920 --> 00:11:37,115
+This is perhaps not
+surprising as the simulation
+
+224
+00:11:37,115 --> 00:11:41,045
+and MPC use the same
+model and parameters.
+
+225
+00:11:41,045 --> 00:11:43,780
+The output of model
+predictive controllers,
+
+226
+00:11:43,780 --> 00:11:46,340
+the lateral and longitudinal forces,
+
+227
+00:11:46,340 --> 00:11:49,985
+can be seen to be smoothly
+varying and well-behaved.
+
+228
+00:11:49,985 --> 00:11:52,610
+Also, the vehicle yaw rate during
+
+229
+00:11:52,610 --> 00:11:55,310
+the double lane change
+maneuver is plotted,
+
+230
+00:11:55,310 --> 00:11:58,910
+revealing precise tracking
+throughout the states of a vehicle.
+
+231
+00:11:58,910 --> 00:12:01,280
+MPC shows a lot of promises
+
+232
+00:12:01,280 --> 00:12:05,120
+a control technique for
+autonomous driving and can be
+
+233
+00:12:05,120 --> 00:12:07,910
+used without modification
+for a wide range of
+
+234
+00:12:07,910 --> 00:12:11,510
+operating conditions and
+a large variety of scenarios.
+
+235
+00:12:11,510 --> 00:12:14,990
+This flexibility and
+convenience comes at the cost
+
+236
+00:12:14,990 --> 00:12:18,500
+of increased computational
+requirements and relies
+
+237
+00:12:18,500 --> 00:12:21,815
+on the availability of
+robust optimization solvers to
+
+238
+00:12:21,815 --> 00:12:25,850
+always return feasible solutions
+in the available time window.
+
+239
+00:12:25,850 --> 00:12:29,210
+Let's summarize what we've
+discussed in this video.
+
+240
+00:12:29,210 --> 00:12:33,620
+We first explored the definition
+of Model Predictive Control and
+
+241
+00:12:33,620 --> 00:12:36,260
+the Receding Horizon and constructed
+
+242
+00:12:36,260 --> 00:12:40,265
+the closed loop block diagram
+for an MPC system.
+
+243
+00:12:40,265 --> 00:12:45,430
+We then define the costs and
+constraints used in MPC.
+
+244
+00:12:45,430 --> 00:12:48,020
+Finally, we applied MPC to
+
+245
+00:12:48,020 --> 00:12:51,380
+the trajectory tracking problem
+for self-driving cars.
+
+246
+00:12:51,380 --> 00:12:54,995
+Congratulations, you've made
+it to the end of the module.
+
+247
+00:12:54,995 --> 00:12:57,050
+In this module, you learned how to
+
+248
+00:12:57,050 --> 00:12:59,980
+define the lateral
+path tracking problem,
+
+249
+00:12:59,980 --> 00:13:03,475
+applied two geometric path
+tracking controllers,
+
+250
+00:13:03,475 --> 00:13:04,670
+the pure pursuit and
+
+251
+00:13:04,670 --> 00:13:07,625
+Stanley controllers to
+the path tracking problem,
+
+252
+00:13:07,625 --> 00:13:11,090
+and defined a Model Predictive
+Controller for joint,
+
+253
+00:13:11,090 --> 00:13:13,655
+lateral, and longitudinal control.
+
+254
+00:13:13,655 --> 00:13:16,520
+In the final module in this course,
+
+255
+00:13:16,520 --> 00:13:18,485
+you'll get your first hands on look
+
+256
+00:13:18,485 --> 00:13:20,480
+at the Carlos simulator where you'll
+
+257
+00:13:20,480 --> 00:13:22,790
+design lateral and
+longitudinal controllers
+
+258
+00:13:22,790 --> 00:13:26,220
+to navigate a vehicle
+around a race track.

@@ -1,0 +1,568 @@
+WEBVTT
+
+1
+00:00:19.220 --> 00:00:22.230
+Congratulations for
+making it this far in
+
+2
+00:00:22.230 --> 00:00:24.300
+the course. You're almost done.
+
+3
+00:00:24.300 --> 00:00:25.920
+Now it's time to
+take everything you
+
+4
+00:00:25.920 --> 00:00:29.205
+learned and put it together
+for the final project.
+
+5
+00:00:29.205 --> 00:00:32.159
+This video will provide
+you with the requirements
+
+6
+00:00:32.159 --> 00:00:34.965
+needed to complete
+the final course assessment.
+
+7
+00:00:34.965 --> 00:00:37.560
+We will also discuss
+the grading scheme,
+
+8
+00:00:37.560 --> 00:00:39.645
+and how to submit
+the final assessment
+
+9
+00:00:39.645 --> 00:00:41.935
+through the provided YAML file.
+
+10
+00:00:41.935 --> 00:00:46.100
+Let's begin by listing the
+objectives of this assessment.
+
+11
+00:00:46.100 --> 00:00:48.680
+The final project requires using
+
+12
+00:00:48.680 --> 00:00:50.600
+what you learned
+throughout the course
+
+13
+00:00:50.600 --> 00:00:53.300
+to implement an environment
+perception stack
+
+14
+00:00:53.300 --> 00:00:55.445
+for self-driving cars.
+
+15
+00:00:55.445 --> 00:00:58.730
+Specifically, you will
+be using the output from
+
+16
+00:00:58.730 --> 00:01:01.130
+semantic segmentation
+neural networks
+
+17
+00:01:01.130 --> 00:01:05.720
+to: implement drivable space
+estimation in 3D,
+
+18
+00:01:05.720 --> 00:01:09.410
+implement lane estimation,
+and filter out
+
+19
+00:01:09.410 --> 00:01:11.585
+unreliable estimates
+in the output
+
+20
+00:01:11.585 --> 00:01:13.595
+of 2D object detectors.
+
+21
+00:01:13.595 --> 00:01:15.200
+Finally, you will use
+
+22
+00:01:15.200 --> 00:01:17.930
+the filtered 2D object
+detection output to
+
+23
+00:01:17.930 --> 00:01:19.490
+determine how far obstacles
+
+24
+00:01:19.490 --> 00:01:21.695
+are from the self-driving car.
+
+25
+00:01:21.695 --> 00:01:23.645
+By finishing this project,
+
+26
+00:01:23.645 --> 00:01:24.920
+you will be ready to develop
+
+27
+00:01:24.920 --> 00:01:27.320
+baseline perception
+stacks that would
+
+28
+00:01:27.320 --> 00:01:29.090
+allow a self-driving car to
+
+29
+00:01:29.090 --> 00:01:31.465
+know where it can
+drive in roads scenes,
+
+30
+00:01:31.465 --> 00:01:32.960
+what obstacles are within
+
+31
+00:01:32.960 --> 00:01:35.360
+view which may affect
+its decision-making,
+
+32
+00:01:35.360 --> 00:01:38.075
+and how far away
+these obstacles are?
+
+33
+00:01:38.075 --> 00:01:40.880
+You have already learned
+how to perform most of
+
+34
+00:01:40.880 --> 00:01:41.990
+the required tasks for
+
+35
+00:01:41.990 --> 00:01:44.335
+this assessment in
+the previous lessons.
+
+36
+00:01:44.335 --> 00:01:46.670
+Let us list the reference
+lessons that can
+
+37
+00:01:46.670 --> 00:01:49.250
+be useful while tackling
+this assignment.
+
+38
+00:01:49.250 --> 00:01:51.590
+For drivable space estimation,
+
+39
+00:01:51.590 --> 00:01:53.360
+you can refer to Module 1,
+
+40
+00:01:53.360 --> 00:01:56.090
+Lesson 3 to estimate the x, y,
+
+41
+00:01:56.090 --> 00:01:59.970
+z coordinates of pixels
+from depth, and Module 5,
+
+42
+00:01:59.970 --> 00:02:01.700
+Lesson 3 to estimate
+
+43
+00:02:01.700 --> 00:02:05.120
+the ground plane from
+semantic segmentation output.
+
+44
+00:02:05.120 --> 00:02:08.510
+For Lane estimation, you
+can refer to Module 5,
+
+45
+00:02:08.510 --> 00:02:11.390
+Lesson 3 for
+estimating lane lines.
+
+46
+00:02:11.390 --> 00:02:14.165
+For estimating the minimum
+distance to impact,
+
+47
+00:02:14.165 --> 00:02:18.035
+Module 4, Lesson 4 will
+be useful for reference.
+
+48
+00:02:18.035 --> 00:02:20.300
+Now let's describe in detail why
+
+49
+00:02:20.300 --> 00:02:23.705
+the required tasks are important
+for self-driving cars.
+
+50
+00:02:23.705 --> 00:02:27.050
+Drivable space estimation
+in 3D is important
+
+51
+00:02:27.050 --> 00:02:30.460
+for self-driving cars to safely
+traverse the environment.
+
+52
+00:02:30.460 --> 00:02:33.290
+Using the given sensor
+input as well as
+
+53
+00:02:33.290 --> 00:02:36.260
+semantic segmentation data
+from a neural network,
+
+54
+00:02:36.260 --> 00:02:37.730
+you are required to estimate
+
+55
+00:02:37.730 --> 00:02:40.805
+the equation of
+the ground plane in 3D.
+
+56
+00:02:40.805 --> 00:02:43.010
+Then determine
+pixels belonging to
+
+57
+00:02:43.010 --> 00:02:45.800
+the ground plane based
+on a distance threshold.
+
+58
+00:02:45.800 --> 00:02:48.200
+Yellow here specifies the pixels
+
+59
+00:02:48.200 --> 00:02:51.515
+your algorithm should
+label as a drivable space.
+
+60
+00:02:51.515 --> 00:02:54.590
+We will provide you
+with code to visualize
+
+61
+00:02:54.590 --> 00:02:56.060
+the ground plane you estimated in
+
+62
+00:02:56.060 --> 00:02:58.010
+3D as an occupancy grid.
+
+63
+00:02:58.010 --> 00:02:59.660
+A topic that will be covered in
+
+64
+00:02:59.660 --> 00:03:02.270
+the next course in
+this specialization.
+
+65
+00:03:02.270 --> 00:03:05.750
+Note that drivable space
+does not mean road.
+
+66
+00:03:05.750 --> 00:03:08.480
+As you can see,
+a portion of an area
+
+67
+00:03:08.480 --> 00:03:12.115
+behind the sidewalk was
+labeled as drivable space two.
+
+68
+00:03:12.115 --> 00:03:16.070
+Drivable space based on
+ground plane estimation provides
+
+69
+00:03:16.070 --> 00:03:17.690
+the 3D space where the car
+
+70
+00:03:17.690 --> 00:03:19.820
+is physically capable of driving.
+
+71
+00:03:19.820 --> 00:03:23.405
+To specify where the car is
+legally allowed to drive,
+
+72
+00:03:23.405 --> 00:03:26.720
+you are required to perform
+lane boundary estimation.
+
+73
+00:03:26.720 --> 00:03:28.310
+To perform this task,
+
+74
+00:03:28.310 --> 00:03:29.480
+you are provided with
+
+75
+00:03:29.480 --> 00:03:32.180
+the output of
+semantic segmentation.
+
+76
+00:03:32.180 --> 00:03:35.090
+You are required to use
+this output to estimate
+
+77
+00:03:35.090 --> 00:03:38.570
+the left and right lane
+boundaries for your current lane.
+
+78
+00:03:38.570 --> 00:03:40.895
+The final task for
+this assessment
+
+79
+00:03:40.895 --> 00:03:43.130
+requires you to estimate
+the distance to
+
+80
+00:03:43.130 --> 00:03:45.335
+impact to objects in the scene
+
+81
+00:03:45.335 --> 00:03:48.530
+provided by an object
+detection neural network.
+
+82
+00:03:48.530 --> 00:03:51.245
+The problem is that,
+the neural network model
+
+83
+00:03:51.245 --> 00:03:52.625
+has a high recall
+
+84
+00:03:52.625 --> 00:03:54.500
+but a low precision and
+
+85
+00:03:54.500 --> 00:03:57.050
+provide some errors
+in its output.
+
+86
+00:03:57.050 --> 00:04:00.440
+You are required to
+first use the output of
+
+87
+00:04:00.440 --> 00:04:03.230
+the semantic segmentation
+network to filter
+
+88
+00:04:03.230 --> 00:04:06.980
+out erroneous results from
+the object detection network.
+
+89
+00:04:06.980 --> 00:04:09.200
+Then you are required to compute
+
+90
+00:04:09.200 --> 00:04:10.820
+the minimum distance to impact
+
+91
+00:04:10.820 --> 00:04:13.470
+with every obstacle in the scene.
+
+92
+00:04:13.520 --> 00:04:16.160
+Let's check what the final output
+
+93
+00:04:16.160 --> 00:04:18.230
+of the whole system
+would look like.
+
+94
+00:04:18.230 --> 00:04:20.540
+Using the estimated ground plane,
+
+95
+00:04:20.540 --> 00:04:22.969
+the self-driving car will
+be able to determine
+
+96
+00:04:22.969 --> 00:04:25.820
+where it can physically
+drive in the environment.
+
+97
+00:04:25.820 --> 00:04:28.220
+Using the estimated
+lane boundaries,
+
+98
+00:04:28.220 --> 00:04:29.600
+the self-driving car will be able
+
+99
+00:04:29.600 --> 00:04:31.705
+to abide by the rules
+of the road.
+
+100
+00:04:31.705 --> 00:04:35.105
+Finally, using the filtered
+object detection output
+
+101
+00:04:35.105 --> 00:04:37.970
+along with the distance
+to impact estimation,
+
+102
+00:04:37.970 --> 00:04:39.650
+the self-driving car will be able
+
+103
+00:04:39.650 --> 00:04:41.120
+to localize obstacles on
+
+104
+00:04:41.120 --> 00:04:42.800
+the road to determine if
+
+105
+00:04:42.800 --> 00:04:44.890
+any obstacles or
+blocking its path.
+
+106
+00:04:44.890 --> 00:04:47.075
+For the final project,
+
+107
+00:04:47.075 --> 00:04:49.955
+keep in mind that the provided
+algorithmic guidelines
+
+108
+00:04:49.955 --> 00:04:51.170
+are not rigid,
+
+109
+00:04:51.170 --> 00:04:53.390
+and there exist
+many alternative approaches
+
+110
+00:04:53.390 --> 00:04:56.120
+that you could use at
+each step of the assessment.
+
+111
+00:04:56.120 --> 00:04:57.980
+You are encouraged to diverge
+
+112
+00:04:57.980 --> 00:04:59.675
+from the provided
+algorithm outlines
+
+113
+00:04:59.675 --> 00:05:01.220
+wherever you believe you could do
+
+114
+00:05:01.220 --> 00:05:03.965
+better in terms of
+results or efficiency.
+
+115
+00:05:03.965 --> 00:05:05.990
+If you have any questions that I
+
+116
+00:05:05.990 --> 00:05:07.850
+didn't answer in this video,
+
+117
+00:05:07.850 --> 00:05:10.430
+there are further instructions
+in the Jupiter Notebook
+
+118
+00:05:10.430 --> 00:05:12.560
+itself and don't be afraid
+
+119
+00:05:12.560 --> 00:05:15.230
+to ask in the discussion
+forums as well.
+
+120
+00:05:15.230 --> 00:05:17.855
+I hope you have fun with
+this final project.
+
+121
+00:05:17.855 --> 00:05:19.235
+I'll see you once again,
+
+122
+00:05:19.235 --> 00:05:21.860
+once it's complete to
+close out the course.
+
+123
+00:05:21.860 --> 00:05:24.370
+Good luck, and have fun.

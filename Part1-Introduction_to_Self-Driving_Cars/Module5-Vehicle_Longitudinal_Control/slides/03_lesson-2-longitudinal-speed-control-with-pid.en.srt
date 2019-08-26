@@ -1,0 +1,571 @@
+1
+00:00:13,610 --> 00:00:16,890
+Welcome back. In the previous video,
+
+2
+00:00:16,890 --> 00:00:22,545
+we briefly reviewed the design of PID controllers and classical controller design.
+
+3
+00:00:22,545 --> 00:00:27,630
+In this video, we'll apply PID control to our longitudinal vehicle model.
+
+4
+00:00:27,630 --> 00:00:30,615
+So, by the end of this video, you'll be able to;
+
+5
+00:00:30,615 --> 00:00:35,640
+define the full vehicle planning and control architecture and design a
+
+6
+00:00:35,640 --> 00:00:41,230
+PID-based controller for regulating to a set reference speed as in cruise control.
+
+7
+00:00:41,230 --> 00:00:44,720
+Let's take a closer look at the vehicle control architecture
+
+8
+00:00:44,720 --> 00:00:48,440
+and how it fits into the overall autonomy software stack.
+
+9
+00:00:48,440 --> 00:00:51,725
+We can divide the structure into four sections.
+
+10
+00:00:51,725 --> 00:00:54,215
+These sections are connected to each other.
+
+11
+00:00:54,215 --> 00:00:58,565
+The first section is the perception of the road and the environment.
+
+12
+00:00:58,565 --> 00:01:04,790
+This perception is captured by sensors and generates the input references for our system.
+
+13
+00:01:04,790 --> 00:01:06,425
+In the second layer,
+
+14
+00:01:06,425 --> 00:01:10,399
+we have both path generation and speed profile generation,
+
+15
+00:01:10,399 --> 00:01:14,225
+which in automotive circles is referred to as the drive cycle.
+
+16
+00:01:14,225 --> 00:01:18,320
+These profiles are generated through the motion planning process,
+
+17
+00:01:18,320 --> 00:01:22,355
+which is the focus of the fourth course of this specialization.
+
+18
+00:01:22,355 --> 00:01:28,330
+The path and the speed profiles are the reference inputs needed by our controllers.
+
+19
+00:01:28,330 --> 00:01:31,525
+For longitudinal control, define the set point's,
+
+20
+00:01:31,525 --> 00:01:36,635
+acceleration and deceleration that we'd like to be able to track precisely.
+
+21
+00:01:36,635 --> 00:01:41,300
+For both the lateral and longitudinal control of an autonomous vehicle,
+
+22
+00:01:41,300 --> 00:01:46,625
+the only task that needs to be performed is to follow the plan as precisely as possible,
+
+23
+00:01:46,625 --> 00:01:51,610
+and thereby minimize the error between the actual and reference path and speed.
+
+24
+00:01:51,610 --> 00:01:57,365
+All other tasks required for autonomous driving or done by other parts of the system.
+
+25
+00:01:57,365 --> 00:02:03,545
+Finally, the controllers generate the input commands or actuator signals for the vehicle.
+
+26
+00:02:03,545 --> 00:02:05,960
+As we've seen in the previous module,
+
+27
+00:02:05,960 --> 00:02:07,850
+these include the steering for
+
+28
+00:02:07,850 --> 00:02:12,800
+the lateral control and the throttle and break commands for longitudinal control.
+
+29
+00:02:12,800 --> 00:02:16,565
+Let's look at an example of longitudinal vehicle control.
+
+30
+00:02:16,565 --> 00:02:20,765
+One of the most well-known and commonly available control applications in
+
+31
+00:02:20,765 --> 00:02:25,340
+automotive control is cruise control operating at highway speeds.
+
+32
+00:02:25,340 --> 00:02:28,280
+A cruise control system performs the function of
+
+33
+00:02:28,280 --> 00:02:31,610
+maintaining a fixed reference speed using throttle commands,
+
+34
+00:02:31,610 --> 00:02:37,460
+and accelerating or decelerating to a new reference speed as requested by the driver.
+
+35
+00:02:37,460 --> 00:02:41,855
+When the vehicle is subjected to different loads and resistances,
+
+36
+00:02:41,855 --> 00:02:45,805
+the throttle angle will be changed by the cruise controller accordingly.
+
+37
+00:02:45,805 --> 00:02:51,410
+Many systems now exist with expanded capabilities such as the adaptive cruise control,
+
+38
+00:02:51,410 --> 00:02:54,350
+which can vary the reference point based on measurements of
+
+39
+00:02:54,350 --> 00:02:57,350
+a lead vehicle and semi autonomous systems,
+
+40
+00:02:57,350 --> 00:02:58,890
+like traffic jam assist,
+
+41
+00:02:58,890 --> 00:03:00,530
+which can operate throughout
+
+42
+00:03:00,530 --> 00:03:05,000
+the vehicle speed range and create spacing gaps for merging vehicles.
+
+43
+00:03:05,000 --> 00:03:08,270
+These extended examples require additional controller
+
+44
+00:03:08,270 --> 00:03:11,870
+designed to handle the wider range of operating points.
+
+45
+00:03:11,870 --> 00:03:16,910
+This block diagram shows the cruise controller and plant vehicle model as
+
+46
+00:03:16,910 --> 00:03:19,160
+a closed loop system designed to keep
+
+47
+00:03:19,160 --> 00:03:22,325
+the vehicle velocity close to the reference velocity.
+
+48
+00:03:22,325 --> 00:03:25,490
+The controller can be split into two levels;
+
+49
+00:03:25,490 --> 00:03:28,070
+a high level and a low level controller.
+
+50
+00:03:28,070 --> 00:03:32,420
+Although the low level controller is not essential to the control task.
+
+51
+00:03:32,420 --> 00:03:35,210
+The high level controller takes the difference between
+
+52
+00:03:35,210 --> 00:03:39,009
+the set point velocity and the vehicle actual velocity,
+
+53
+00:03:39,009 --> 00:03:43,220
+and generates the desired vehicle acceleration to close the gap.
+
+54
+00:03:43,220 --> 00:03:47,090
+The low-level controller gets the vehicle acceleration and
+
+55
+00:03:47,090 --> 00:03:52,025
+generates a throttle or breaking actuation to track the reference acceleration.
+
+56
+00:03:52,025 --> 00:03:58,430
+In practice, this two-stage approach allows us to go beyond just PID control and impose
+
+57
+00:03:58,430 --> 00:04:00,470
+limits or profiles directly on
+
+58
+00:04:00,470 --> 00:04:04,955
+the accelerations that are requested of the vehicle in order to maintain speed.
+
+59
+00:04:04,955 --> 00:04:07,925
+It also allows us to separate the use of
+
+60
+00:04:07,925 --> 00:04:10,820
+engine maps we studied in the previous module for
+
+61
+00:04:10,820 --> 00:04:13,100
+generating a desired torque given
+
+62
+00:04:13,100 --> 00:04:17,700
+the engine state from the cruise control input response.
+
+63
+00:04:17,770 --> 00:04:21,725
+Let's take a closer look at the high level controller.
+
+64
+00:04:21,725 --> 00:04:24,679
+The upper level or high level controller determines
+
+65
+00:04:24,679 --> 00:04:29,815
+how much acceleration is needed at each time step based on the velocity error.
+
+66
+00:04:29,815 --> 00:04:32,395
+Let's apply a PID controller here,
+
+67
+00:04:32,395 --> 00:04:35,015
+which is expressed in the continuous time domain.
+
+68
+00:04:35,015 --> 00:04:38,760
+The input to the high level controller is the velocity error,
+
+69
+00:04:38,760 --> 00:04:42,200
+and the output is the vehicle's desired acceleration.
+
+70
+00:04:42,200 --> 00:04:43,560
+In the previous lesson,
+
+71
+00:04:43,560 --> 00:04:46,280
+we learned how to design a PID controller and studied
+
+72
+00:04:46,280 --> 00:04:49,745
+how the different gains affect performance of the controller.
+
+73
+00:04:49,745 --> 00:04:52,549
+To implement such a controller in software,
+
+74
+00:04:52,549 --> 00:04:54,630
+we discretize the controller,
+
+75
+00:04:54,630 --> 00:04:59,405
+changing the integral to a summation over a fixed length time steps.
+
+76
+00:04:59,405 --> 00:05:03,500
+The derivative term can be approximated with the finite difference over
+
+77
+00:05:03,500 --> 00:05:05,120
+a fixed time step if
+
+78
+00:05:05,120 --> 00:05:10,520
+either the reference acceleration or the estimated vehicle acceleration is not available.
+
+79
+00:05:10,520 --> 00:05:15,650
+The low-level controller generates the throttle and breaking signals to
+
+80
+00:05:15,650 --> 00:05:20,690
+follow the desired acceleration calculated by the high-level controller.
+
+81
+00:05:20,690 --> 00:05:23,200
+In designing a low-level controller,
+
+82
+00:05:23,200 --> 00:05:26,495
+we make some assumptions to simplify our problem.
+
+83
+00:05:26,495 --> 00:05:29,510
+We assume that only throttle is needed to
+
+84
+00:05:29,510 --> 00:05:32,485
+manage the speed of the vehicle during cruise control,
+
+85
+00:05:32,485 --> 00:05:37,100
+and that the driver will take over if breaking is required to avoid an incident.
+
+86
+00:05:37,100 --> 00:05:40,190
+We assume that we are operating in gear three or
+
+87
+00:05:40,190 --> 00:05:43,070
+higher such that the torque converter is locked,
+
+88
+00:05:43,070 --> 00:05:45,230
+meaning that torque from the engine passes
+
+89
+00:05:45,230 --> 00:05:48,635
+directly through the transmission without loss,
+
+90
+00:05:48,635 --> 00:05:52,130
+and we assume that the tire slip angle and ratio are
+
+91
+00:05:52,130 --> 00:05:56,405
+negligible as cruise control motions are typically gentle.
+
+92
+00:05:56,405 --> 00:06:00,770
+The low-level controllers seeks to generate the desired acceleration from
+
+93
+00:06:00,770 --> 00:06:06,080
+the high level controller by increasing or decreasing the torque produced by the engine.
+
+94
+00:06:06,080 --> 00:06:08,840
+This is controlled by the throttle angle,
+
+95
+00:06:08,840 --> 00:06:12,350
+but is governed by the power train dynamics and the engine map,
+
+96
+00:06:12,350 --> 00:06:17,120
+making it a nonlinear problem that can be a challenge for classic control methods.
+
+97
+00:06:17,120 --> 00:06:21,935
+Instead, the desired acceleration is translated to a torque demand,
+
+98
+00:06:21,935 --> 00:06:25,940
+and the torque demand is then converted to a throttle angle command.
+
+99
+00:06:25,940 --> 00:06:28,910
+Recall from the previous module that we developed
+
+100
+00:06:28,910 --> 00:06:31,910
+a second-order ordinary differential equation to
+
+101
+00:06:31,910 --> 00:06:34,910
+describe the acceleration of the vehicle in
+
+102
+00:06:34,910 --> 00:06:39,200
+terms of the difference between the engine torque and the load torque.
+
+103
+00:06:39,200 --> 00:06:43,610
+We can rearrange this equation to solve for the desired engine torque,
+
+104
+00:06:43,610 --> 00:06:48,065
+given known load torques and the desired acceleration of the vehicle.
+
+105
+00:06:48,065 --> 00:06:50,570
+Then, the steady-state engine map,
+
+106
+00:06:50,570 --> 00:06:55,040
+which is generated in testing the engine at different operating points can be
+
+107
+00:06:55,040 --> 00:06:57,500
+used to determine the throttle angle needed to
+
+108
+00:06:57,500 --> 00:07:00,635
+produce the amount of torque demand required.
+
+109
+00:07:00,635 --> 00:07:02,660
+In these standard maps,
+
+110
+00:07:02,660 --> 00:07:05,210
+the desired engine torque and the current engine
+
+111
+00:07:05,210 --> 00:07:08,450
+RPM define the required throttle position,
+
+112
+00:07:08,450 --> 00:07:10,940
+and can be interpolated if needed.
+
+113
+00:07:10,940 --> 00:07:14,210
+This approach is a data-driven approximation,
+
+114
+00:07:14,210 --> 00:07:16,325
+but it works quite well in practice.
+
+115
+00:07:16,325 --> 00:07:19,370
+The approximation comes from the fact that the data points
+
+116
+00:07:19,370 --> 00:07:22,280
+in the map are steady-state points while
+
+117
+00:07:22,280 --> 00:07:24,800
+the power train is continuously changing
+
+118
+00:07:24,800 --> 00:07:28,945
+its operating point to meet the current driving conditions.
+
+119
+00:07:28,945 --> 00:07:32,630
+Finally, we can put the pieces of our vehicle controller
+
+120
+00:07:32,630 --> 00:07:35,480
+together and simulate the control response to
+
+121
+00:07:35,480 --> 00:07:42,100
+a step change in desired speed of our dynamic vehicle models with PID controllers.
+
+122
+00:07:42,100 --> 00:07:47,450
+The PID gains are tuned by trial and error so that the vehicle speeds follow
+
+123
+00:07:47,450 --> 00:07:52,555
+the reference velocity of 30 meters per second or a 108 kilometers per hour.
+
+124
+00:07:52,555 --> 00:07:54,680
+In the results plot, on the left,
+
+125
+00:07:54,680 --> 00:07:58,265
+we see the throttle opening as a percentage,
+
+126
+00:07:58,265 --> 00:08:01,175
+which is the commanded throttle for the vehicle.
+
+127
+00:08:01,175 --> 00:08:04,990
+On the right, we see how the actual velocity evolves over time,
+
+128
+00:08:04,990 --> 00:08:09,740
+and reaches the reference velocity after a settling time.
+
+129
+00:08:09,740 --> 00:08:12,980
+Because of the engine map non-linearity,
+
+130
+00:08:12,980 --> 00:08:15,230
+we see some interesting artifacts in
+
+131
+00:08:15,230 --> 00:08:18,535
+the vehicle response as it closes in on the reference speed.
+
+132
+00:08:18,535 --> 00:08:21,170
+You'll see even more interesting effects in
+
+133
+00:08:21,170 --> 00:08:26,000
+the simulated vehicles in Carla during your final assessment for this course,
+
+134
+00:08:26,000 --> 00:08:30,805
+with gear changes causing big challenges for pure PID control.
+
+135
+00:08:30,805 --> 00:08:33,710
+In this video, we covered the concept of
+
+136
+00:08:33,710 --> 00:08:37,115
+longitudinal speed control for a cruise control system.
+
+137
+00:08:37,115 --> 00:08:40,130
+This is the first case in designing a controller for
+
+138
+00:08:40,130 --> 00:08:45,050
+the autonomous car to follow a desired forward speed in this course.
+
+139
+00:08:45,050 --> 00:08:49,730
+We learned the concepts of high-level and low-level controllers and use
+
+140
+00:08:49,730 --> 00:08:54,320
+the combination of PID control and engine maps to regulate vehicle speed.
+
+141
+00:08:54,320 --> 00:08:56,455
+In the next video,
+
+142
+00:08:56,455 --> 00:08:59,720
+you will learn how to apply feed-forward control to improve
+
+143
+00:08:59,720 --> 00:09:04,980
+the performance of a longitudinal control system. See you there.

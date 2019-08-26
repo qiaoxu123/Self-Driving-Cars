@@ -1,0 +1,1123 @@
+1
+00:00:13,610 --> 00:00:17,175
+Welcome to the final video of this week.
+
+2
+00:00:17,175 --> 00:00:21,030
+In this video, we will discuss some popular safety frameworks,
+
+3
+00:00:21,030 --> 00:00:23,805
+some of which we encountered in the last lesson.
+
+4
+00:00:23,805 --> 00:00:27,585
+More specifically, we will describe some generic,
+
+5
+00:00:27,585 --> 00:00:30,945
+analytical frameworks including fault trees,
+
+6
+00:00:30,945 --> 00:00:34,125
+failure modes and effects analyses or FMEA,
+
+7
+00:00:34,125 --> 00:00:37,560
+and hazard and operability analysis or HAZOP.
+
+8
+00:00:37,560 --> 00:00:39,095
+Then we will focus on
+
+9
+00:00:39,095 --> 00:00:45,060
+automotive and autonomous safety frameworks and discuss functional safety or FUSA,
+
+10
+00:00:45,060 --> 00:00:48,565
+and safety of intended functionality, or SOTIF.
+
+11
+00:00:48,565 --> 00:00:51,545
+We'll define these terms later on in the video.
+
+12
+00:00:51,545 --> 00:00:56,495
+Let's begin. We'll start off with fault tree analysis.
+
+13
+00:00:56,495 --> 00:01:00,410
+Fault trees can be used as a preliminary analysis framework,
+
+14
+00:01:00,410 --> 00:01:04,940
+and can be steadily expanded to encompass as much details necessary.
+
+15
+00:01:04,940 --> 00:01:08,420
+Fault trees are top-down flows in which we
+
+16
+00:01:08,420 --> 00:01:11,870
+analyze a possible failure of a system to be avoided,
+
+17
+00:01:11,870 --> 00:01:14,540
+and then identify all of the ways in which it can
+
+18
+00:01:14,540 --> 00:01:19,045
+occur from events and failures at lower levels of the system.
+
+19
+00:01:19,045 --> 00:01:23,345
+The top node in a fault tree is the root or top event.
+
+20
+00:01:23,345 --> 00:01:26,825
+The intermediate nodes in the fault tree are logic gates,
+
+21
+00:01:26,825 --> 00:01:29,885
+that define possible causes for the root event.
+
+22
+00:01:29,885 --> 00:01:33,365
+The decomposition continues to a level of detail
+
+23
+00:01:33,365 --> 00:01:36,980
+for which a probability of such an event can be defined.
+
+24
+00:01:36,980 --> 00:01:40,220
+The fault tree can then be analyzed by combining
+
+25
+00:01:40,220 --> 00:01:43,595
+the probabilities using the laws of Boolean logic.
+
+26
+00:01:43,595 --> 00:01:46,205
+To assess the overall probability of
+
+27
+00:01:46,205 --> 00:01:51,590
+root cause event and the causes that most contribute to its occurrence.
+
+28
+00:01:51,590 --> 00:01:54,155
+Let's consider a simple example,
+
+29
+00:01:54,155 --> 00:01:57,320
+and take a car crash as our root event.
+
+30
+00:01:57,320 --> 00:01:59,840
+The cause of a car crash could be broken down
+
+31
+00:01:59,840 --> 00:02:04,535
+into either a software failure or a hardware failure,
+
+32
+00:02:04,535 --> 00:02:06,680
+amongst many other possibilities that we've
+
+33
+00:02:06,680 --> 00:02:10,740
+described as hazard classes in our earlier videos.
+
+34
+00:02:11,180 --> 00:02:15,560
+Very crudely, the hardware failure could be because of
+
+35
+00:02:15,560 --> 00:02:19,600
+manufacturing defects or material imperfections, for example.
+
+36
+00:02:19,600 --> 00:02:22,910
+Similarly, a software error could be due to
+
+37
+00:02:22,910 --> 00:02:26,900
+malfunctioning perception code or some cybersecurity problem,
+
+38
+00:02:26,900 --> 00:02:28,520
+say, if we were hacked.
+
+39
+00:02:28,520 --> 00:02:32,510
+From there, we can proceed to software subsystems and
+
+40
+00:02:32,510 --> 00:02:35,555
+specific calculations within those subsystems
+
+41
+00:02:35,555 --> 00:02:39,065
+deepening the tree at each successive branching.
+
+42
+00:02:39,065 --> 00:02:43,460
+Ultimately, we'll arrive at specific failure rates for which we can
+
+43
+00:02:43,460 --> 00:02:48,410
+assign probabilities of occurrence per hour or per mile of operation.
+
+44
+00:02:48,410 --> 00:02:52,490
+We have now arrived at the leaf nodes of the fault tree.
+
+45
+00:02:52,490 --> 00:02:55,580
+Then using the logic gates structure,
+
+46
+00:02:55,580 --> 00:02:58,415
+we can explicitly compute statistics of
+
+47
+00:02:58,415 --> 00:03:03,965
+overall failure rates given assessments of the individual leaf node failure rates.
+
+48
+00:03:03,965 --> 00:03:08,720
+The operations used to propagate these probabilities upwards would
+
+49
+00:03:08,720 --> 00:03:13,400
+be the same as the rules of probability when events follow set theory.
+
+50
+00:03:13,400 --> 00:03:17,015
+So, for example, for independent events,
+
+51
+00:03:17,015 --> 00:03:23,525
+the OR and AND probabilities would be the sum or product of children node probabilities.
+
+52
+00:03:23,525 --> 00:03:26,615
+This is the general idea behind fault trees,
+
+53
+00:03:26,615 --> 00:03:29,390
+which are referred to as probabilistic fault trees,
+
+54
+00:03:29,390 --> 00:03:32,825
+when probabilities are included at the leaf nodes.
+
+55
+00:03:32,825 --> 00:03:37,519
+Probabilistic fault trees are a top-down approach to safety
+
+56
+00:03:37,519 --> 00:03:41,840
+that has been widely used in the nuclear and aerospace industries,
+
+57
+00:03:41,840 --> 00:03:44,960
+and can similarly be applied to autonomous driving.
+
+58
+00:03:44,960 --> 00:03:49,130
+The challenge lies in building a comprehensive tree and
+
+59
+00:03:49,130 --> 00:03:53,725
+incorrectly identifying the probabilities of the leaf node events.
+
+60
+00:03:53,725 --> 00:03:56,260
+Let's now look at FMEA,
+
+61
+00:03:56,260 --> 00:03:59,660
+which stands for failure modes and effects analyses.
+
+62
+00:03:59,660 --> 00:04:05,065
+Whereas fault trees flow down from a system failure to all of its possible causes,
+
+63
+00:04:05,065 --> 00:04:08,285
+FMEA is a bottom-up process that looks at
+
+64
+00:04:08,285 --> 00:04:12,980
+individual causes and determines all the possible effects that might occur.
+
+65
+00:04:12,980 --> 00:04:20,110
+Often, FTA's and FMEA's are used together to assess safety critical systems.
+
+66
+00:04:20,110 --> 00:04:23,405
+Failure modes are modes or ways in which
+
+67
+00:04:23,405 --> 00:04:29,005
+a particular component of the overall system can cause the system to fail.
+
+68
+00:04:29,005 --> 00:04:32,870
+Effects analysis refers to analyzing all
+
+69
+00:04:32,870 --> 00:04:36,305
+of the possible effects these mode failures can cause.
+
+70
+00:04:36,305 --> 00:04:39,470
+Often, the effects analysis seeks to identify
+
+71
+00:04:39,470 --> 00:04:42,739
+those modes that bring about the most critical failures,
+
+72
+00:04:42,739 --> 00:04:45,980
+which can then lead to improved designs that add
+
+73
+00:04:45,980 --> 00:04:49,835
+more redundancy or higher reliability to the system.
+
+74
+00:04:49,835 --> 00:04:54,035
+Let's come to the big idea behind FMEA.
+
+75
+00:04:54,035 --> 00:04:58,415
+The goal is to categorize failure modes by priority.
+
+76
+00:04:58,415 --> 00:05:01,040
+So, we ask questions like,
+
+77
+00:05:01,040 --> 00:05:04,445
+how serious are the effects,
+
+78
+00:05:04,445 --> 00:05:08,065
+how frequently do these failures happen,
+
+79
+00:05:08,065 --> 00:05:12,185
+and how easy is it to detect these failures?
+
+80
+00:05:12,185 --> 00:05:16,444
+Then we quantify all the failures using priority values,
+
+81
+00:05:16,444 --> 00:05:21,100
+then we start addressing the failures with the highest priority first.
+
+82
+00:05:21,100 --> 00:05:27,485
+Here are the steps. The goal is to construct a table of all possible risky situations,
+
+83
+00:05:27,485 --> 00:05:29,510
+and we start off by,
+
+84
+00:05:29,510 --> 00:05:32,440
+first discussing with field experts and
+
+85
+00:05:32,440 --> 00:05:36,580
+identifying processes at the level of detail we want in the table.
+
+86
+00:05:36,580 --> 00:05:42,125
+Then, we question the purpose of the system and list all failure possibilities.
+
+87
+00:05:42,125 --> 00:05:45,065
+Then for each failure possibility,
+
+88
+00:05:45,065 --> 00:05:48,290
+we identify the possible consequences and assign
+
+89
+00:05:48,290 --> 00:05:51,975
+each consequence a severity rating between one and 10,
+
+90
+00:05:51,975 --> 00:05:54,045
+10 being the most severe.
+
+91
+00:05:54,045 --> 00:05:58,670
+For each consequence, we identify the possible root causes,
+
+92
+00:05:58,670 --> 00:05:59,930
+and for each route cause,
+
+93
+00:05:59,930 --> 00:06:02,465
+we assign another number between one and 10,
+
+94
+00:06:02,465 --> 00:06:05,860
+to denote how frequently this cause occurs.
+
+95
+00:06:05,860 --> 00:06:11,705
+Then, we identify all the ways in which the failure mode can be detected by operator,
+
+96
+00:06:11,705 --> 00:06:14,885
+maintenance, inspection, or a fault detection system.
+
+97
+00:06:14,885 --> 00:06:18,620
+We assess the overall mode detection likelihood before
+
+98
+00:06:18,620 --> 00:06:22,650
+it causes an effect and assign another score from 1-10,
+
+99
+00:06:22,650 --> 00:06:28,890
+with one being guaranteed to be detected and 10 being impossible to detect.
+
+100
+00:06:28,990 --> 00:06:34,180
+Finally, we compute a final number called the risk priority number,
+
+101
+00:06:34,180 --> 00:06:36,495
+which is the product of the severity,
+
+102
+00:06:36,495 --> 00:06:38,955
+the occurrence, and the detection.
+
+103
+00:06:38,955 --> 00:06:40,740
+The higher this value is,
+
+104
+00:06:40,740 --> 00:06:42,810
+the higher the priority is.
+
+105
+00:06:42,810 --> 00:06:47,360
+Eventually, we address the most problematic failure modes by modifying
+
+106
+00:06:47,360 --> 00:06:52,505
+our implementation of the system until we reduce the risks to an acceptable level.
+
+107
+00:06:52,505 --> 00:06:55,685
+It is also possible to perform FMEA with
+
+108
+00:06:55,685 --> 00:06:59,480
+actual failure probabilities as in fault tree analysis,
+
+109
+00:06:59,480 --> 00:07:02,450
+and to define acceptable risk levels in terms of
+
+110
+00:07:02,450 --> 00:07:07,955
+the likelihood of a critical event occurring over a fixed period of operation.
+
+111
+00:07:07,955 --> 00:07:10,880
+The method doesn't change just the meaning of
+
+112
+00:07:10,880 --> 00:07:15,685
+the numbers and the complexity of completing the entire analysis.
+
+113
+00:07:15,685 --> 00:07:19,190
+Let's stick with the simple scoring approach and make
+
+114
+00:07:19,190 --> 00:07:22,940
+the FMEA process more concrete with a brief example.
+
+115
+00:07:22,940 --> 00:07:27,740
+Consider, a specific failure where the vehicle has driven
+
+116
+00:07:27,740 --> 00:07:32,510
+onto a gravel patch that appears in its test area due to road construction,
+
+117
+00:07:32,510 --> 00:07:35,495
+which leads to controller instability.
+
+118
+00:07:35,495 --> 00:07:39,535
+The worst-case effect could be a physical crash,
+
+119
+00:07:39,535 --> 00:07:41,790
+which would be severity 10.
+
+120
+00:07:41,790 --> 00:07:44,610
+It might also lead to driver discomfort,
+
+121
+00:07:44,610 --> 00:07:46,075
+or a near miss,
+
+122
+00:07:46,075 --> 00:07:48,935
+but these would be lower severity events.
+
+123
+00:07:48,935 --> 00:07:52,280
+This event could happen regularly in urban environments
+
+124
+00:07:52,280 --> 00:07:55,175
+wherever construction of a particular type occurs.
+
+125
+00:07:55,175 --> 00:07:56,885
+So, it is somewhat likely.
+
+126
+00:07:56,885 --> 00:08:00,820
+Let's say we're able to assess the occurrence number at four.
+
+127
+00:08:00,820 --> 00:08:05,510
+Similarly, we can assign a current scores to the other effects.
+
+128
+00:08:05,510 --> 00:08:09,710
+Let's assume this problem is not currently detectable as
+
+129
+00:08:09,710 --> 00:08:12,080
+the road surface texture is not actively
+
+130
+00:08:12,080 --> 00:08:15,625
+monitored during operation of our autonomy software.
+
+131
+00:08:15,625 --> 00:08:20,650
+So, detectability would be at number 10 for all of these effects.
+
+132
+00:08:20,680 --> 00:08:27,990
+The risk priority number for a crash would then be 10 times 4 times 10, which is 400.
+
+133
+00:08:28,070 --> 00:08:32,705
+In the same way, we could have other failure modes as well.
+
+134
+00:08:32,705 --> 00:08:38,280
+A sign perception failure with the priority number of a 100, let's say,
+
+135
+00:08:38,350 --> 00:08:43,940
+a GPS synchronization failure with a priority number of 300,
+
+136
+00:08:43,940 --> 00:08:49,660
+and maybe a vehicle motion prediction failure with the priority of 150.
+
+137
+00:08:49,660 --> 00:08:53,150
+So, we would go about addressing these failures in
+
+138
+00:08:53,150 --> 00:08:58,190
+implementation by focusing on driving on gravel than GPS failure,
+
+139
+00:08:58,190 --> 00:09:02,070
+than motion prediction, and finally sign perception.
+
+140
+00:09:02,400 --> 00:09:06,850
+And so this is the general framework behind FMEA.
+
+141
+00:09:06,850 --> 00:09:10,470
+FMEA is a risk assessment idea that was developed by
+
+142
+00:09:10,470 --> 00:09:15,115
+the military and aerospace industries and later brought to the automotive industry.
+
+143
+00:09:15,115 --> 00:09:19,525
+It provides a really structured way to quantify risks and deal with them.
+
+144
+00:09:19,525 --> 00:09:21,640
+The most important first.
+
+145
+00:09:21,640 --> 00:09:26,345
+Lastly, a common variation on FMEA that appears frequently,
+
+146
+00:09:26,345 --> 00:09:30,235
+is the Hazard and Operability Study or HAZOP.
+
+147
+00:09:30,235 --> 00:09:35,085
+HAZOP is more of a qualitative process as compared to FMEA,
+
+148
+00:09:35,085 --> 00:09:38,840
+where we seek to define the risks quantitatively.
+
+149
+00:09:39,000 --> 00:09:43,020
+So, in HAZOP, the main purpose is to
+
+150
+00:09:43,020 --> 00:09:48,370
+brainstorm effectively over the set of possible hazards that can arise.
+
+151
+00:09:48,550 --> 00:09:52,600
+For complex processes, the risks can be assessed
+
+152
+00:09:52,600 --> 00:09:55,960
+without having to assign specific values to occurrence,
+
+153
+00:09:55,960 --> 00:09:59,345
+severity and detection, which may be hard to do.
+
+154
+00:09:59,345 --> 00:10:05,270
+HAZOP is often used earlier in the design process to guide the conceptual design phase.
+
+155
+00:10:05,270 --> 00:10:08,040
+The key addition in HAZOP is that,
+
+156
+00:10:08,040 --> 00:10:13,380
+guide words are used to lead the brainstorm applied to each system requirement.
+
+157
+00:10:13,380 --> 00:10:17,685
+These guide words include things like not, more, less,
+
+158
+00:10:17,685 --> 00:10:23,780
+early, late and lead to possible failure modes that might not otherwise be considered.
+
+159
+00:10:23,820 --> 00:10:30,545
+So think of HAZOP as a simplified ongoing FMEA brainstorming approach.
+
+160
+00:10:30,545 --> 00:10:35,460
+Let's now focus on a more specific type of safety and discuss
+
+161
+00:10:35,460 --> 00:10:40,250
+existing safety frameworks for automotive and low-level autonomy feature development,
+
+162
+00:10:40,250 --> 00:10:45,360
+which are often used in assessing hardware and software failures in autonomous vehicles.
+
+163
+00:10:45,360 --> 00:10:49,030
+In particular, let's discuss the functional safety approach
+
+164
+00:10:49,030 --> 00:10:53,440
+described in ISO 26262 and the safety of
+
+165
+00:10:53,440 --> 00:10:56,580
+intended functionality approach which extends on ISO to
+
+166
+00:10:56,580 --> 00:11:02,900
+26262 and is defined in ISOPAR 21448.1.
+
+167
+00:11:02,900 --> 00:11:07,060
+We won't be able to go into significant detail on either process,
+
+168
+00:11:07,060 --> 00:11:11,570
+but I've included links to supplemental materials, if you'd like to learn more.
+
+169
+00:11:11,570 --> 00:11:14,200
+Functional Safety or FUSA,
+
+170
+00:11:14,200 --> 00:11:17,500
+is the absence of unreasonable risk from
+
+171
+00:11:17,500 --> 00:11:23,190
+malfunctioning behavior caused by failures of the hardware and software in a car,
+
+172
+00:11:23,190 --> 00:11:28,535
+or unintended behaviors arising with respect to its intended design.
+
+173
+00:11:28,535 --> 00:11:33,350
+The ISO 262 standard defines functional safety terms and
+
+174
+00:11:33,350 --> 00:11:38,350
+activities for electrical and electronic systems within motor vehicles.
+
+175
+00:11:38,350 --> 00:11:42,990
+As such, addresses only the hardware and software hazards
+
+176
+00:11:42,990 --> 00:11:45,770
+that can affect autonomous vehicle safety.
+
+177
+00:11:45,770 --> 00:11:51,195
+The standard defines four Automotive Safety Integrity Levels or ASIL.
+
+178
+00:11:51,195 --> 00:11:55,720
+With ASIL D being the most stringent and A being the least.
+
+179
+00:11:55,720 --> 00:12:00,325
+Each level has associated with it specific development requirements,
+
+180
+00:12:00,325 --> 00:12:03,195
+that must be adhered to for certification.
+
+181
+00:12:03,195 --> 00:12:07,435
+The functional safety process follows a V-shaped flow.
+
+182
+00:12:07,435 --> 00:12:12,139
+Starting at the top left with requirements specification then analysis
+
+183
+00:12:12,139 --> 00:12:17,105
+of hazards and risks and proceeding to implementation of functionality.
+
+184
+00:12:17,105 --> 00:12:22,590
+We then climb up the right branch to confirm the design goals have been met.
+
+185
+00:12:22,590 --> 00:12:26,825
+We start with low-level verifications such as software unit tests,
+
+186
+00:12:26,825 --> 00:12:32,080
+and then proceed to subsystem and full system validation through simulation,
+
+187
+00:12:32,080 --> 00:12:35,335
+test track, operations and on-road testing.
+
+188
+00:12:35,335 --> 00:12:37,685
+As we descend the V on the left,
+
+189
+00:12:37,685 --> 00:12:41,630
+high-level requirements turn into low-level implementations.
+
+190
+00:12:41,630 --> 00:12:43,945
+And as we climb the V on the right,
+
+191
+00:12:43,945 --> 00:12:47,510
+we confirm each low-level function implementation before
+
+192
+00:12:47,510 --> 00:12:51,675
+combining them to confirm system requirements for safe operation.
+
+193
+00:12:51,675 --> 00:12:55,860
+The final step is a summary functional safety assessment,
+
+194
+00:12:55,860 --> 00:12:58,410
+to evaluate residual risk and
+
+195
+00:12:58,410 --> 00:13:02,665
+determine if our system has reached an acceptable level of safety.
+
+196
+00:13:02,665 --> 00:13:05,760
+At the start of the functional safety V,
+
+197
+00:13:05,760 --> 00:13:09,070
+we use HARA or Hazard and Risk Assessment.
+
+198
+00:13:09,070 --> 00:13:12,160
+In HARA, we identify and categorize
+
+199
+00:13:12,160 --> 00:13:17,450
+hazardous events and specify requirements to avoid unreasonable risk.
+
+200
+00:13:17,450 --> 00:13:22,170
+This process drives all of the system development and testing beyond this point.
+
+201
+00:13:22,170 --> 00:13:26,660
+To do so, we first identify possible hardware and software
+
+202
+00:13:26,660 --> 00:13:32,595
+faults or malfunctions and unintended functions that can affect car safety.
+
+203
+00:13:32,595 --> 00:13:36,340
+This is where FMEA or HAZOP are used in
+
+204
+00:13:36,340 --> 00:13:41,740
+the functional safety framework and leads to a specific set of hazards to our system.
+
+205
+00:13:41,740 --> 00:13:45,920
+We then define a list of scenarios or situations that
+
+206
+00:13:45,920 --> 00:13:50,565
+the system must operate in drawing on our ODD to create this list.
+
+207
+00:13:50,565 --> 00:13:57,880
+Next, we combine hazards and situations into hazardous events, describe expected damages,
+
+208
+00:13:57,880 --> 00:13:59,490
+and determine risk parameters,
+
+209
+00:13:59,490 --> 00:14:01,490
+to calculate numerical values of
+
+210
+00:14:01,490 --> 00:14:06,310
+potential risk for each combination of situation and hazard.
+
+211
+00:14:06,310 --> 00:14:08,270
+After the risk assessment,
+
+212
+00:14:08,270 --> 00:14:10,500
+we choose the highest risk scenarios.
+
+213
+00:14:10,500 --> 00:14:16,110
+The worst-case events that can happen with respect to each possible malfunction.
+
+214
+00:14:16,240 --> 00:14:23,170
+Then finally, we define our safety requirements based on these worst-case scenarios.
+
+215
+00:14:23,170 --> 00:14:26,580
+The HARA process sets the design goals for the system in
+
+216
+00:14:26,580 --> 00:14:30,170
+a way that is aware of all of the worst-case failures that can occur.
+
+217
+00:14:30,170 --> 00:14:32,545
+Through validation confirms that
+
+218
+00:14:32,545 --> 00:14:37,035
+these worst-case failures are handled with only reasonable risk.
+
+219
+00:14:37,035 --> 00:14:40,670
+And this is the main idea behind functional safety.
+
+220
+00:14:40,670 --> 00:14:44,190
+You focus on worst-case requirements and then implement
+
+221
+00:14:44,190 --> 00:14:48,905
+hardware and software that can at least handle these worst-case requirements.
+
+222
+00:14:48,905 --> 00:14:55,680
+Finally, let's briefly explore the Safety of Intended Functionality Standard or SOTIF,
+
+223
+00:14:55,680 --> 00:15:02,255
+which is formally defined in the ISOPAS 21448 document.
+
+224
+00:15:02,255 --> 00:15:07,120
+SOTIF is specifically concerned with failure causes related to
+
+225
+00:15:07,120 --> 00:15:12,115
+system performance limitations and predictable misuse of the system.
+
+226
+00:15:12,115 --> 00:15:17,120
+Performance limitations or insufficiencies of the implemented functions due
+
+227
+00:15:17,120 --> 00:15:22,070
+to technology limitations such as sensor performance limitations and noise,
+
+228
+00:15:22,070 --> 00:15:24,330
+or limitations of algorithms such as
+
+229
+00:15:24,330 --> 00:15:28,825
+object detection failures and limitations of actuator technology.
+
+230
+00:15:28,825 --> 00:15:32,180
+Hardware and software failures are addressed by
+
+231
+00:15:32,180 --> 00:15:38,135
+the functional safety standard in ISO 26262 and are out of the scope of SOTIF.
+
+232
+00:15:38,135 --> 00:15:44,370
+SOTIF also addresses unsafe actions due to foreseeable misuse by the user.
+
+233
+00:15:44,370 --> 00:15:46,175
+Such as user confusion,
+
+234
+00:15:46,175 --> 00:15:49,375
+user overload and user overconfidence.
+
+235
+00:15:49,375 --> 00:15:52,765
+The current SOTIF standard targets automation levels,
+
+236
+00:15:52,765 --> 00:15:54,345
+zero, one and two.
+
+237
+00:15:54,345 --> 00:15:58,080
+It also states that its methods can be applied to levels three,
+
+238
+00:15:58,080 --> 00:16:02,275
+four, and five autonomy but additional measures may be required.
+
+239
+00:16:02,275 --> 00:16:07,125
+SOTIF can be seen as an extension of the functional safety process,
+
+240
+00:16:07,125 --> 00:16:12,140
+specifically designed to address the challenges of automated driving functions.
+
+241
+00:16:12,140 --> 00:16:17,035
+As such, it follows very much the same V-shaped development philosophy,
+
+242
+00:16:17,035 --> 00:16:19,300
+but with augmented components.
+
+243
+00:16:19,300 --> 00:16:22,635
+SOTIF also employs HARA to identify
+
+244
+00:16:22,635 --> 00:16:26,620
+the hazards that arise from performance limitations and misuse.
+
+245
+00:16:26,620 --> 00:16:29,870
+And then performs a similar sequence of design,
+
+246
+00:16:29,870 --> 00:16:32,650
+unit testing and verification and validation,
+
+247
+00:16:32,650 --> 00:16:35,475
+to confirm the safety requirements have been met.
+
+248
+00:16:35,475 --> 00:16:40,075
+If you'd like to dive deeper into either the functional safety or SOTIF standards,
+
+249
+00:16:40,075 --> 00:16:43,515
+please check out the links in the supplemental materials.
+
+250
+00:16:43,515 --> 00:16:47,270
+Let's summarize what we've learned about in this video.
+
+251
+00:16:47,270 --> 00:16:52,470
+We started off with a discussion of generic safety frameworks.
+
+252
+00:16:52,470 --> 00:16:55,790
+Fault tree analysis as a top-down approach to
+
+253
+00:16:55,790 --> 00:16:58,990
+safety assessment and failure modes
+
+254
+00:16:58,990 --> 00:17:02,450
+and effects analysis as a bottom-up approach to safety.
+
+255
+00:17:02,450 --> 00:17:07,720
+Then we discussed the ideas of functional safety which are used commonly in
+
+256
+00:17:07,720 --> 00:17:10,640
+software and hardware risk assessments and
+
+257
+00:17:10,640 --> 00:17:14,005
+discussed SOTIF as an extension to functional safety,
+
+258
+00:17:14,005 --> 00:17:17,505
+that accounts for performance limitations and misuse.
+
+259
+00:17:17,505 --> 00:17:21,180
+All of these ideas are used a lot in the industry,
+
+260
+00:17:21,180 --> 00:17:24,480
+as we saw with both Waymo and GM which use
+
+261
+00:17:24,480 --> 00:17:27,970
+nearly all of these techniques in their safety assessments.
+
+262
+00:17:27,970 --> 00:17:29,555
+Congratulations.
+
+263
+00:17:29,555 --> 00:17:32,355
+You've made it to the end of this safety assessment module.
+
+264
+00:17:32,355 --> 00:17:35,140
+Let's summarize what we learned this week.
+
+265
+00:17:35,170 --> 00:17:40,520
+We started off with discussions on why safety is important specifically how
+
+266
+00:17:40,520 --> 00:17:45,325
+a broad range of distinct failures can lead to self-driving accidents.
+
+267
+00:17:45,325 --> 00:17:49,060
+Then we formally defined safety concepts and discussed
+
+268
+00:17:49,060 --> 00:17:53,345
+the NHTASA's safety recommendations for autonomous vehicles.
+
+269
+00:17:53,345 --> 00:17:58,670
+We then discussed how Waymo and GM think about self-driving safety.
+
+270
+00:17:58,670 --> 00:18:04,380
+Then we described analytic and data-driven approaches to demonstrating safety.
+
+271
+00:18:04,380 --> 00:18:06,735
+Finally, in today's video,
+
+272
+00:18:06,735 --> 00:18:09,660
+we discussed common safety assessment frameworks.
+
+273
+00:18:09,660 --> 00:18:13,275
+Including fault trees, failure modes and effects analysis,
+
+274
+00:18:13,275 --> 00:18:17,115
+functional safety and safety of intended functionality.
+
+275
+00:18:17,115 --> 00:18:20,650
+Hopefully, this week give you insight into designing
+
+276
+00:18:20,650 --> 00:18:25,710
+safe self-driving systems and into properly assessing the systems you built.
+
+277
+00:18:25,710 --> 00:18:27,670
+Before we wrap up this week,
+
+278
+00:18:27,670 --> 00:18:29,060
+we'll have a discussion with
+
+279
+00:18:29,060 --> 00:18:32,200
+Professor Krzysztof Czarnecki from the University of Waterloo,
+
+280
+00:18:32,200 --> 00:18:35,285
+an expert on autonomous safety assessment.
+
+281
+00:18:35,285 --> 00:18:39,710
+I have lots of interesting questions to ask. Stay tuned.

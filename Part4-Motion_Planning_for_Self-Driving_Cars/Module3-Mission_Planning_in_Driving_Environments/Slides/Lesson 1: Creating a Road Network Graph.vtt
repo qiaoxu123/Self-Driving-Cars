@@ -1,0 +1,1136 @@
+WEBVTT
+
+1
+00:00:19.580 --> 00:00:21.950
+Hi everyone and welcome to
+
+2
+00:00:21.950 --> 00:00:23.795
+the first lesson of week three.
+
+3
+00:00:23.795 --> 00:00:25.700
+In this module,
+we'll be discussing
+
+4
+00:00:25.700 --> 00:00:27.260
+the mission planning problem in
+
+5
+00:00:27.260 --> 00:00:29.840
+autonomous driving
+and how to solve it.
+
+6
+00:00:29.840 --> 00:00:31.940
+If you recall from Module 1,
+
+7
+00:00:31.940 --> 00:00:33.605
+the autonomous driving mission
+
+8
+00:00:33.605 --> 00:00:35.270
+is the highest level portion of
+
+9
+00:00:35.270 --> 00:00:37.970
+our motion planning task
+and it's crucial
+
+10
+00:00:37.970 --> 00:00:41.225
+for navigating the autonomous
+car to its destination.
+
+11
+00:00:41.225 --> 00:00:44.930
+In this video, we'll introduce
+the mathematical concept
+
+12
+00:00:44.930 --> 00:00:48.485
+of a graph and how it can be
+used in our mission planner.
+
+13
+00:00:48.485 --> 00:00:51.590
+In addition, we will discuss
+how a graph can be used to
+
+14
+00:00:51.590 --> 00:00:53.270
+represent the road network that
+
+15
+00:00:53.270 --> 00:00:55.325
+we are required to
+navigate through.
+
+16
+00:00:55.325 --> 00:00:57.020
+Finally, we'll discuss
+
+17
+00:00:57.020 --> 00:00:59.300
+the Breadth-First Search
+algorithm and
+
+18
+00:00:59.300 --> 00:01:00.440
+how it can be applied to
+
+19
+00:01:00.440 --> 00:01:03.800
+mission planning.
+Let's get started.
+
+20
+00:01:03.800 --> 00:01:07.540
+First, let's recall
+the autonomous driving mission.
+
+21
+00:01:07.540 --> 00:01:09.070
+The objective of the autonomous
+
+22
+00:01:09.070 --> 00:01:10.510
+driving mission is to find
+
+23
+00:01:10.510 --> 00:01:11.830
+the optimal path for
+
+24
+00:01:11.830 --> 00:01:14.620
+the eagle vehicle from
+its current position to
+
+25
+00:01:14.620 --> 00:01:17.020
+a given destination by navigating
+
+26
+00:01:17.020 --> 00:01:19.570
+the road network while
+abstracting away
+
+27
+00:01:19.570 --> 00:01:21.640
+the lower-level details
+like the rules of
+
+28
+00:01:21.640 --> 00:01:23.290
+the road and other agents
+
+29
+00:01:23.290 --> 00:01:25.435
+present in the driving scenario.
+
+30
+00:01:25.435 --> 00:01:29.290
+In this module, we will think
+of optimality in terms of
+
+31
+00:01:29.290 --> 00:01:31.210
+the amount of time or distance it
+
+32
+00:01:31.210 --> 00:01:33.850
+takes for the car to
+reach its destination.
+
+33
+00:01:33.850 --> 00:01:36.445
+For autonomous driving,
+mission planning
+
+34
+00:01:36.445 --> 00:01:39.085
+is considered the highest
+level planning problem.
+
+35
+00:01:39.085 --> 00:01:41.560
+This is because
+the spatial planning scale
+
+36
+00:01:41.560 --> 00:01:44.195
+of the mission planner is
+on the order of kilometers
+
+37
+00:01:44.195 --> 00:01:46.390
+and the mission planner
+doesn't focus on
+
+38
+00:01:46.390 --> 00:01:48.100
+low-level planning
+constraints such
+
+39
+00:01:48.100 --> 00:01:50.560
+as obstacles or dynamics.
+
+40
+00:01:50.560 --> 00:01:53.665
+Instead, the mission
+planner will focus on
+
+41
+00:01:53.665 --> 00:01:56.380
+aspects of the road
+network when planning,
+
+42
+00:01:56.380 --> 00:01:59.035
+such as speed limits
+and road lengths,
+
+43
+00:01:59.035 --> 00:02:01.930
+traffic flow rates
+and road closures.
+
+44
+00:02:01.930 --> 00:02:04.930
+Based on these constraints
+posed to us by the map,
+
+45
+00:02:04.930 --> 00:02:07.030
+the mission planner needs to find
+
+46
+00:02:07.030 --> 00:02:10.030
+the optimal path to
+our required destination.
+
+47
+00:02:10.030 --> 00:02:11.890
+One thing to note about
+
+48
+00:02:11.890 --> 00:02:13.690
+the road network is
+that it is highly
+
+49
+00:02:13.690 --> 00:02:15.730
+structured which is
+something we can
+
+50
+00:02:15.730 --> 00:02:19.045
+exploit in our planning process
+to simplify the problem.
+
+51
+00:02:19.045 --> 00:02:20.890
+By exploiting the structure,
+
+52
+00:02:20.890 --> 00:02:23.350
+we can efficiently find
+the optimal path to
+
+53
+00:02:23.350 --> 00:02:26.710
+our destination based
+on the map given to us.
+
+54
+00:02:26.710 --> 00:02:28.580
+To do this, we will need to use
+
+55
+00:02:28.580 --> 00:02:31.160
+a mathematical structure
+known as a graph,
+
+56
+00:02:31.160 --> 00:02:34.085
+which we've overlaid onto
+our road network here.
+
+57
+00:02:34.085 --> 00:02:35.895
+So what is a graph?
+
+58
+00:02:35.895 --> 00:02:38.150
+A graph is a discrete structure
+
+59
+00:02:38.150 --> 00:02:40.550
+composed of a set of
+vertices denoted as
+
+60
+00:02:40.550 --> 00:02:42.995
+V and a set of edges denoted
+
+61
+00:02:42.995 --> 00:02:45.505
+as E. For the mission planner,
+
+62
+00:02:45.505 --> 00:02:47.120
+each vertex in V will
+
+63
+00:02:47.120 --> 00:02:50.030
+correspond to a given
+point on the road network,
+
+64
+00:02:50.030 --> 00:02:52.430
+and each edge E
+will correspond to
+
+65
+00:02:52.430 --> 00:02:54.095
+the road segment that connects
+
+66
+00:02:54.095 --> 00:02:56.420
+any two points in
+the road network.
+
+67
+00:02:56.420 --> 00:02:58.850
+In this sense, a sequence
+
+68
+00:02:58.850 --> 00:03:00.980
+of contiguous edges in the graph
+
+69
+00:03:00.980 --> 00:03:02.960
+corresponds to a path through
+
+70
+00:03:02.960 --> 00:03:05.975
+the road network from
+one point to another.
+
+71
+00:03:05.975 --> 00:03:08.585
+An example of a
+graph is shown here.
+
+72
+00:03:08.585 --> 00:03:10.565
+For now, we will assume
+
+73
+00:03:10.565 --> 00:03:12.730
+each road segment
+is of equal length,
+
+74
+00:03:12.730 --> 00:03:16.190
+so the edges of this
+graph are all unweighted.
+
+75
+00:03:16.190 --> 00:03:17.960
+However, in future lessons,
+
+76
+00:03:17.960 --> 00:03:20.140
+we will relax this restriction.
+
+77
+00:03:20.140 --> 00:03:22.855
+To generate a graph such as this,
+
+78
+00:03:22.855 --> 00:03:25.730
+the road network needs to
+be discreetly sampled,
+
+79
+00:03:25.730 --> 00:03:28.460
+which will give us
+the vertices of our graph.
+
+80
+00:03:28.460 --> 00:03:29.870
+The edges will then be
+
+81
+00:03:29.870 --> 00:03:31.790
+defined by the
+segments of the road
+
+82
+00:03:31.790 --> 00:03:33.620
+that connect each sample point
+
+83
+00:03:33.620 --> 00:03:35.495
+according to the rules
+of the road.
+
+84
+00:03:35.495 --> 00:03:37.305
+Note that in general,
+
+85
+00:03:37.305 --> 00:03:39.200
+just because point A is
+
+86
+00:03:39.200 --> 00:03:41.990
+adjacent to point B
+using a road segment,
+
+87
+00:03:41.990 --> 00:03:44.090
+it does not mean
+that point A can be
+
+88
+00:03:44.090 --> 00:03:47.080
+reached from point B from
+that same road segment.
+
+89
+00:03:47.080 --> 00:03:49.220
+This is because in
+many cases there is
+
+90
+00:03:49.220 --> 00:03:50.540
+only one direction that
+
+91
+00:03:50.540 --> 00:03:53.315
+a road segment can be
+legally traversed.
+
+92
+00:03:53.315 --> 00:03:57.050
+In this sense, the edges
+of our graph are directed
+
+93
+00:03:57.050 --> 00:04:00.865
+in that the edge is only
+traversable in one direction.
+
+94
+00:04:00.865 --> 00:04:03.260
+We've denoted this
+by using arrows for
+
+95
+00:04:03.260 --> 00:04:06.920
+our edges in the graph to
+display their directionality.
+
+96
+00:04:06.920 --> 00:04:09.740
+Now that we have
+are directed graph,
+
+97
+00:04:09.740 --> 00:04:12.880
+how do we find an optimal path
+to our destination?
+
+98
+00:04:12.880 --> 00:04:16.160
+First, we locate the vertices
+in the graph that
+
+99
+00:04:16.160 --> 00:04:19.940
+correspond to our current eagle
+vehicle position which we
+
+100
+00:04:19.940 --> 00:04:21.860
+will denote as S and
+
+101
+00:04:21.860 --> 00:04:23.780
+our desired destination
+which we will
+
+102
+00:04:23.780 --> 00:04:26.810
+denote as t. These two vertices
+
+103
+00:04:26.810 --> 00:04:28.940
+are shown on the graph here.
+
+104
+00:04:28.940 --> 00:04:31.475
+Once we have these two vertices,
+
+105
+00:04:31.475 --> 00:04:34.310
+we can use an efficient
+graph search algorithm to
+
+106
+00:04:34.310 --> 00:04:37.655
+find the optimal or shortest
+path to our destination.
+
+107
+00:04:37.655 --> 00:04:40.940
+Since our graph formulation
+is currently unweighted,
+
+108
+00:04:40.940 --> 00:04:42.860
+a good candidate algorithm is
+
+109
+00:04:42.860 --> 00:04:45.850
+the Breadth-First Search or BFS.
+
+110
+00:04:45.850 --> 00:04:48.230
+At a high level,
+BFS can be thought
+
+111
+00:04:48.230 --> 00:04:50.120
+of as iterating through all of
+
+112
+00:04:50.120 --> 00:04:51.950
+the vertices in the graph but
+
+113
+00:04:51.950 --> 00:04:54.065
+doing so in a manner such that
+
+114
+00:04:54.065 --> 00:04:56.990
+all adjacent vertices
+are evaluated
+
+115
+00:04:56.990 --> 00:05:00.965
+first before proceeding
+deeper into the graph.
+
+116
+00:05:00.965 --> 00:05:04.280
+In this sense, the graph
+search proceeds like
+
+117
+00:05:04.280 --> 00:05:09.180
+a moving wavefront through
+the graph or breadth-first.
+
+118
+00:05:09.180 --> 00:05:12.395
+Let's walk through the steps
+of the BFS algorithm.
+
+119
+00:05:12.395 --> 00:05:15.200
+We construct three data
+structures to aid in
+
+120
+00:05:15.200 --> 00:05:17.165
+our search and open queue
+
+121
+00:05:17.165 --> 00:05:19.565
+of vertices still to be assessed,
+
+122
+00:05:19.565 --> 00:05:21.530
+a closed set of vertices that
+
+123
+00:05:21.530 --> 00:05:23.870
+have been assessed by
+the search algorithm
+
+124
+00:05:23.870 --> 00:05:25.340
+and a dictionary of
+
+125
+00:05:25.340 --> 00:05:28.985
+predecessors which store
+the results of the search.
+
+126
+00:05:28.985 --> 00:05:32.680
+A queue is a first-in-first-out
+data structure,
+
+127
+00:05:32.680 --> 00:05:35.900
+such that the first
+vertex pushed or added to
+
+128
+00:05:35.900 --> 00:05:37.730
+the queue is the first one
+
+129
+00:05:37.730 --> 00:05:40.445
+popped off or returned
+from the queue.
+
+130
+00:05:40.445 --> 00:05:42.980
+A dictionary is
+an unordered set of
+
+131
+00:05:42.980 --> 00:05:46.670
+key-value pairs and for
+each node in the closed set,
+
+132
+00:05:46.670 --> 00:05:48.890
+stores a predecessor vertex
+
+133
+00:05:48.890 --> 00:05:51.250
+that will identify momentarily.
+
+134
+00:05:51.250 --> 00:05:53.750
+The algorithm starts
+by adding our
+
+135
+00:05:53.750 --> 00:05:56.090
+start vertex to the open queue.
+
+136
+00:05:56.090 --> 00:05:59.330
+Then, while the open queue
+contains vertices,
+
+137
+00:05:59.330 --> 00:06:01.160
+we take the first element from
+
+138
+00:06:01.160 --> 00:06:04.340
+the open queue and check if
+it is the goal location.
+
+139
+00:06:04.340 --> 00:06:07.385
+If so, we found
+our shortest path.
+
+140
+00:06:07.385 --> 00:06:11.090
+If not, we then add
+all adjacent vertices not
+
+141
+00:06:11.090 --> 00:06:13.100
+already in the open queue or
+
+142
+00:06:13.100 --> 00:06:15.455
+closed set to the open queue.
+
+143
+00:06:15.455 --> 00:06:17.450
+This prevents us from getting
+
+144
+00:06:17.450 --> 00:06:20.360
+stuck in cycles during
+the graph search.
+
+145
+00:06:20.360 --> 00:06:22.550
+Note that by adjacent,
+
+146
+00:06:22.550 --> 00:06:24.320
+we mean all vertices that can
+
+147
+00:06:24.320 --> 00:06:26.720
+be reached from
+the current vertex.
+
+148
+00:06:26.720 --> 00:06:30.275
+Because we use a queue
+to store open vertices,
+
+149
+00:06:30.275 --> 00:06:32.945
+we ensure that
+all adjacent vertices
+
+150
+00:06:32.945 --> 00:06:34.130
+at the current depth in
+
+151
+00:06:34.130 --> 00:06:35.630
+the search are processed
+
+152
+00:06:35.630 --> 00:06:38.315
+before proceeding
+deeper into the graph.
+
+153
+00:06:38.315 --> 00:06:40.190
+So all vertices that are
+
+154
+00:06:40.190 --> 00:06:42.110
+one step away from
+the start vertex
+
+155
+00:06:42.110 --> 00:06:43.670
+will be processed before moving
+
+156
+00:06:43.670 --> 00:06:46.400
+on to vertices that
+are two steps away.
+
+157
+00:06:46.400 --> 00:06:49.849
+As a vertex is added
+to the open queue,
+
+158
+00:06:49.849 --> 00:06:51.980
+we store its preceding vertex
+
+159
+00:06:51.980 --> 00:06:53.885
+in the predecessor dictionary.
+
+160
+00:06:53.885 --> 00:06:55.790
+This will help us reconstruct
+
+161
+00:06:55.790 --> 00:06:59.005
+the optimal path once
+the goal is found.
+
+162
+00:06:59.005 --> 00:07:02.630
+Finally, we add
+the currently active vertex to
+
+163
+00:07:02.630 --> 00:07:04.790
+the closed set and return to
+
+164
+00:07:04.790 --> 00:07:08.015
+the next element of
+the open queue to process.
+
+165
+00:07:08.015 --> 00:07:11.959
+Because of the breadth-first
+nature of the BFS algorithm,
+
+166
+00:07:11.959 --> 00:07:14.590
+by the time we reach
+the goal vertex,
+
+167
+00:07:14.590 --> 00:07:18.320
+we have processed all possible
+predecessor vertices of
+
+168
+00:07:18.320 --> 00:07:20.780
+the golden vertex
+that are closer to
+
+169
+00:07:20.780 --> 00:07:23.800
+the start vertex
+then the goal vertex.
+
+170
+00:07:23.800 --> 00:07:26.920
+This means that when we
+reach the goal vertex,
+
+171
+00:07:26.920 --> 00:07:29.420
+we have found the
+shortest path to the goal
+
+172
+00:07:29.420 --> 00:07:33.060
+vertex and we can
+terminate the algorithm.
+
+173
+00:07:33.190 --> 00:07:36.380
+To solidify our understanding
+of this algorithm,
+
+174
+00:07:36.380 --> 00:07:39.350
+let's work through
+a concrete example.
+
+175
+00:07:39.350 --> 00:07:42.140
+Suppose our mission
+planner needs to
+
+176
+00:07:42.140 --> 00:07:44.570
+find the optimal path
+from point s to
+
+177
+00:07:44.570 --> 00:07:46.910
+our destination t
+through the set of
+
+178
+00:07:46.910 --> 00:07:49.910
+vertices in our graph
+which are now labeled,
+
+179
+00:07:49.910 --> 00:07:53.000
+the first step would be
+to process the origin
+
+180
+00:07:53.000 --> 00:07:56.210
+s and add all
+adjacent vertices to
+
+181
+00:07:56.210 --> 00:07:59.510
+our queue and set
+their predecessors to
+
+182
+00:07:59.510 --> 00:08:02.210
+s. The outgoing edges that
+
+183
+00:08:02.210 --> 00:08:05.570
+lead to the adjacent vertices
+are highlighted in blue.
+
+184
+00:08:05.570 --> 00:08:07.990
+Once we've added
+these to our queue,
+
+185
+00:08:07.990 --> 00:08:11.115
+we then add s to our closed list.
+
+186
+00:08:11.115 --> 00:08:13.890
+Next, we pop off vertex a.
+
+187
+00:08:13.890 --> 00:08:17.685
+The outgoing edges of
+a lead to d and b,
+
+188
+00:08:17.685 --> 00:08:20.115
+but b is already in
+our queue, thus,
+
+189
+00:08:20.115 --> 00:08:24.745
+we only add d to the queue and
+mark a as its predecessor.
+
+190
+00:08:24.745 --> 00:08:28.040
+We've highlighted
+this duplicate path to be in
+
+191
+00:08:28.040 --> 00:08:31.910
+red to show that we do not
+add b to the queue twice.
+
+192
+00:08:31.910 --> 00:08:34.520
+We've now processed
+all adjacent edges
+
+193
+00:08:34.520 --> 00:08:37.525
+from a and move it
+to the closed set.
+
+194
+00:08:37.525 --> 00:08:39.870
+We repeat the same process for
+
+195
+00:08:39.870 --> 00:08:42.810
+b which adds E to
+the queue with b as
+
+196
+00:08:42.810 --> 00:08:45.710
+its predecessor and c which has
+
+197
+00:08:45.710 --> 00:08:47.750
+no new adjacent vertices so
+
+198
+00:08:47.750 --> 00:08:50.485
+does not add vertices
+to the open queue.
+
+199
+00:08:50.485 --> 00:08:53.160
+Next, we process
+d from the queue,
+
+200
+00:08:53.160 --> 00:08:55.920
+which only adds t
+to the queue with
+
+201
+00:08:55.920 --> 00:08:59.475
+d as its predecessor since
+e has already been added.
+
+202
+00:08:59.475 --> 00:09:01.140
+When e is popped off,
+
+203
+00:09:01.140 --> 00:09:04.370
+it doesn't add c or d to
+the queue because both of
+
+204
+00:09:04.370 --> 00:09:05.630
+these vertices have already been
+
+205
+00:09:05.630 --> 00:09:09.140
+processed and are present
+in the closed set.
+
+206
+00:09:09.140 --> 00:09:12.800
+Finally, we pop off
+t from the queue.
+
+207
+00:09:12.800 --> 00:09:14.500
+This is our goal vertex.
+
+208
+00:09:14.500 --> 00:09:18.470
+So we now reconstruct the path
+from s to t by following
+
+209
+00:09:18.470 --> 00:09:20.600
+the chain of predecessors from t
+
+210
+00:09:20.600 --> 00:09:23.390
+back to s. Once this is done,
+
+211
+00:09:23.390 --> 00:09:25.975
+we've found the optimal path
+to our destination,
+
+212
+00:09:25.975 --> 00:09:28.300
+which is highlighted in green.
+
+213
+00:09:28.300 --> 00:09:30.380
+The sequence of edges
+
+214
+00:09:30.380 --> 00:09:32.450
+corresponding to
+our optimal path in
+
+215
+00:09:32.450 --> 00:09:34.160
+the graph can be turned into
+
+216
+00:09:34.160 --> 00:09:37.070
+a root over the road
+network using our map,
+
+217
+00:09:37.070 --> 00:09:38.930
+which can then be used to govern
+
+218
+00:09:38.930 --> 00:09:40.850
+more detailed motion planning in
+
+219
+00:09:40.850 --> 00:09:43.730
+the subsequent layers of
+our planning hierarchy.
+
+220
+00:09:43.730 --> 00:09:46.145
+Before we wrap up this video,
+
+221
+00:09:46.145 --> 00:09:48.020
+we should note that there is also
+
+222
+00:09:48.020 --> 00:09:50.995
+the highly related
+Depth-First Search algorithm
+
+223
+00:09:50.995 --> 00:09:52.365
+among many others.
+
+224
+00:09:52.365 --> 00:09:55.070
+Depth-First Search
+uses a last-in,
+
+225
+00:09:55.070 --> 00:09:58.865
+first-out stack instead of
+a queue for the open set.
+
+226
+00:09:58.865 --> 00:10:00.350
+This change means that
+
+227
+00:10:00.350 --> 00:10:02.510
+the most recently added vertex is
+
+228
+00:10:02.510 --> 00:10:04.900
+evaluated instead of the oldest.
+
+229
+00:10:04.900 --> 00:10:06.440
+The result is a search that
+
+230
+00:10:06.440 --> 00:10:08.240
+quickly moves deeper in the graph
+
+231
+00:10:08.240 --> 00:10:09.890
+and then eventually backtracks
+
+232
+00:10:09.890 --> 00:10:12.325
+to vertices added much earlier.
+
+233
+00:10:12.325 --> 00:10:14.810
+From this video, you should have
+
+234
+00:10:14.810 --> 00:10:17.960
+an understanding of the mission
+planning problem and
+
+235
+00:10:17.960 --> 00:10:20.330
+how we construct
+and use graphs as
+
+236
+00:10:20.330 --> 00:10:23.450
+a map level representation
+of our planning domain.
+
+237
+00:10:23.450 --> 00:10:27.020
+In addition, you should now
+be comfortable with using
+
+238
+00:10:27.020 --> 00:10:29.180
+Breadth-First Search to navigate
+
+239
+00:10:29.180 --> 00:10:30.830
+an unweighted graph to find
+
+240
+00:10:30.830 --> 00:10:33.410
+the shortest path to
+a given destination.
+
+241
+00:10:33.410 --> 00:10:35.195
+In our next lesson,
+
+242
+00:10:35.195 --> 00:10:37.760
+we're going to make the
+graph more complex by
+
+243
+00:10:37.760 --> 00:10:40.430
+adding different weights
+to the edges in our graph,
+
+244
+00:10:40.430 --> 00:10:42.560
+to better reflect
+the different costs for
+
+245
+00:10:42.560 --> 00:10:45.050
+using different road
+segments and we'll
+
+246
+00:10:45.050 --> 00:10:47.690
+introduce Dykstra's
+algorithm a method for
+
+247
+00:10:47.690 --> 00:10:51.730
+handling this new complexity.
+See you next time.

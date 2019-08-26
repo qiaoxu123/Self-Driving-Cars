@@ -1,0 +1,1488 @@
+WEBVTT
+
+1
+00:00:13.400 --> 00:00:16.460
+Hello, and welcome
+to the last lesson
+
+2
+00:00:16.460 --> 00:00:18.350
+of the Object Detection Module.
+
+3
+00:00:18.350 --> 00:00:19.880
+So far, we have described
+
+4
+00:00:19.880 --> 00:00:22.250
+how to perform 2D
+object detection.
+
+5
+00:00:22.250 --> 00:00:24.380
+However, we still have to discuss
+
+6
+00:00:24.380 --> 00:00:28.195
+why 2D object detection is
+useful for self-driving cars.
+
+7
+00:00:28.195 --> 00:00:29.930
+This lesson, we'll discuss
+
+8
+00:00:29.930 --> 00:00:31.640
+three important applications that
+
+9
+00:00:31.640 --> 00:00:34.640
+require 2D object
+detection to be performed.
+
+10
+00:00:34.640 --> 00:00:37.460
+First, we will discuss
+how we can extend
+
+11
+00:00:37.460 --> 00:00:40.220
+our 2D object detectors to 3D.
+
+12
+00:00:40.220 --> 00:00:43.430
+Second, we'll discuss
+object tracking and
+
+13
+00:00:43.430 --> 00:00:44.870
+important tool for modeling
+
+14
+00:00:44.870 --> 00:00:47.180
+the behavior of
+other agents on the road.
+
+15
+00:00:47.180 --> 00:00:50.540
+Finally, we'll discuss how
+to apply concepts from
+
+16
+00:00:50.540 --> 00:00:52.880
+2D object detection to detecting
+
+17
+00:00:52.880 --> 00:00:55.345
+traffic signs and signals.
+
+18
+00:00:55.345 --> 00:00:58.730
+Self-driving cars require
+scene understanding
+
+19
+00:00:58.730 --> 00:01:02.015
+in 3D to be able to safely
+traverse their environment.
+
+20
+00:01:02.015 --> 00:01:04.940
+Knowing where
+pedestrians, cars, lanes,
+
+21
+00:01:04.940 --> 00:01:07.610
+and signs are around
+the car entirely defines
+
+22
+00:01:07.610 --> 00:01:10.880
+what actions can be taken
+safely when autonomous.
+
+23
+00:01:10.880 --> 00:01:13.130
+This means that detecting objects
+
+24
+00:01:13.130 --> 00:01:15.455
+in the image plane is not enough.
+
+25
+00:01:15.455 --> 00:01:18.755
+We need to extend
+the problem from 2D to 3D,
+
+26
+00:01:18.755 --> 00:01:22.210
+and locate the detected objects
+in the world frame.
+
+27
+00:01:22.210 --> 00:01:23.965
+3D object detection with
+
+28
+00:01:23.965 --> 00:01:26.565
+ConvNets is a
+relatively new topic,
+
+29
+00:01:26.565 --> 00:01:29.480
+and results in this domain
+are constantly changing.
+
+30
+00:01:29.480 --> 00:01:31.760
+As with it's 2D counterpart,
+
+31
+00:01:31.760 --> 00:01:35.540
+3D object detection requires
+category classification.
+
+32
+00:01:35.540 --> 00:01:37.375
+This is essential for tracking
+
+33
+00:01:37.375 --> 00:01:40.440
+objects as cars move
+differently from pedestrians,
+
+34
+00:01:40.440 --> 00:01:42.530
+for example, so
+better predictions are
+
+35
+00:01:42.530 --> 00:01:44.915
+possible if the object
+class is known.
+
+36
+00:01:44.915 --> 00:01:47.104
+In addition, we want to estimate
+
+37
+00:01:47.104 --> 00:01:50.080
+the position of the objects
+centroid in 3D,
+
+38
+00:01:50.080 --> 00:01:52.365
+the extent in 3D,
+
+39
+00:01:52.365 --> 00:01:54.705
+and the orientation in 3D.
+
+40
+00:01:54.705 --> 00:01:57.575
+In each case, this detailed
+state information
+
+41
+00:01:57.575 --> 00:01:59.270
+improves motion prediction,
+
+42
+00:01:59.270 --> 00:02:01.520
+and collision avoidance,
+and improves
+
+43
+00:02:01.520 --> 00:02:04.610
+the cars ability to
+move in traffic.
+
+44
+00:02:04.610 --> 00:02:07.190
+This object's state
+can be expressed
+
+45
+00:02:07.190 --> 00:02:11.360
+as a 3D vector for centroid
+position expressed as the x,
+
+46
+00:02:11.360 --> 00:02:13.550
+y, y position of the object.
+
+47
+00:02:13.550 --> 00:02:16.115
+A 3D vector for extense,
+
+48
+00:02:16.115 --> 00:02:17.555
+expressed as the length,
+
+49
+00:02:17.555 --> 00:02:20.320
+width, and height of an object.
+
+50
+00:02:20.320 --> 00:02:24.790
+A 3D vector of orientation
+angles expressed as the roll,
+
+51
+00:02:24.790 --> 00:02:27.230
+pitch, and yaw angles
+of an object.
+
+52
+00:02:27.230 --> 00:02:30.440
+For road scenes, the orientation
+angle we are interested
+
+53
+00:02:30.440 --> 00:02:32.880
+in is usually only the yaw angle
+
+54
+00:02:32.880 --> 00:02:35.240
+as most road agents
+cannot vary their roll
+
+55
+00:02:35.240 --> 00:02:37.730
+and pitch angles beyond
+what the ground surface
+
+56
+00:02:37.730 --> 00:02:39.485
+dictates for the most part.
+
+57
+00:02:39.485 --> 00:02:43.025
+It is therefore sufficient
+to only track the yaw angle.
+
+58
+00:02:43.025 --> 00:02:45.650
+But how do we get from
+a 2D bounding box
+
+59
+00:02:45.650 --> 00:02:48.500
+to an accurate 3D estimation
+of the location
+
+60
+00:02:48.500 --> 00:02:50.525
+and extent of an object?
+
+61
+00:02:50.525 --> 00:02:53.360
+The most common and
+successful way to extend
+
+62
+00:02:53.360 --> 00:02:55.640
+2D object detection results in 3D
+
+63
+00:02:55.640 --> 00:02:58.295
+is to use LiDAR point clouds.
+
+64
+00:02:58.295 --> 00:03:01.730
+Given a 2D bounding box
+in an image space
+
+65
+00:03:01.730 --> 00:03:04.255
+and a 3D LiDAR point cloud,
+
+66
+00:03:04.255 --> 00:03:08.210
+we can use the inverse of
+the camera projection matrix
+
+67
+00:03:08.210 --> 00:03:10.730
+to project the corners
+of the bounding box
+
+68
+00:03:10.730 --> 00:03:13.505
+as rays into the 3D space.
+
+69
+00:03:13.505 --> 00:03:16.640
+The polygon intersection
+of these lines
+
+70
+00:03:16.640 --> 00:03:18.145
+is called a frustum,
+
+71
+00:03:18.145 --> 00:03:20.840
+and usually contains points in 3D
+
+72
+00:03:20.840 --> 00:03:23.630
+that correspond to
+the object in our image.
+
+73
+00:03:23.630 --> 00:03:27.875
+We then take the data in
+this frustum from the LiDAR,
+
+74
+00:03:27.875 --> 00:03:31.250
+transform it to a
+representation of our choice,
+
+75
+00:03:31.250 --> 00:03:33.170
+and train a small neural network
+
+76
+00:03:33.170 --> 00:03:34.729
+to predict the seven parameters
+
+77
+00:03:34.729 --> 00:03:38.615
+required to define
+our bounding box in 3D.
+
+78
+00:03:38.615 --> 00:03:41.320
+Now, which representation
+of the LiDAR points
+
+79
+00:03:41.320 --> 00:03:44.405
+in the frustum should we
+input to the neural network?
+
+80
+00:03:44.405 --> 00:03:47.050
+Some groups choose to directly
+
+81
+00:03:47.050 --> 00:03:49.780
+process the raw point cloud data.
+
+82
+00:03:49.780 --> 00:03:52.870
+Others choose to normalize
+the point cloud data
+
+83
+00:03:52.870 --> 00:03:55.075
+with respect to some fixed point
+
+84
+00:03:55.075 --> 00:03:57.440
+such as the center
+of the frustum.
+
+85
+00:03:57.440 --> 00:04:01.450
+Finally, one could also
+preprocess the points to build
+
+86
+00:04:01.450 --> 00:04:05.290
+fixed length representations
+such as a histogram of x,
+
+87
+00:04:05.290 --> 00:04:07.090
+y, z had points, for example,
+
+88
+00:04:07.090 --> 00:04:08.954
+making their use as an input
+
+89
+00:04:08.954 --> 00:04:11.900
+to a continent much
+more convenient.
+
+90
+00:04:11.900 --> 00:04:14.465
+Whatever representation we use,
+
+91
+00:04:14.465 --> 00:04:16.750
+we are expected to get
+results in the form
+
+92
+00:04:16.750 --> 00:04:20.330
+of oriented 3D bounding boxes.
+
+93
+00:04:21.170 --> 00:04:24.376
+Keep in mind that
+the procedure discussed above
+
+94
+00:04:24.376 --> 00:04:27.500
+is only one way of performing
+3D object detection.
+
+95
+00:04:27.500 --> 00:04:30.425
+So, why would we choose
+to extend 2D detections
+
+96
+00:04:30.425 --> 00:04:34.250
+to 3D rather than detecting
+objects directly in 3D?
+
+97
+00:04:34.250 --> 00:04:37.670
+First, 2D object detectors are
+
+98
+00:04:37.670 --> 00:04:41.135
+much more well-established
+than 3D object detectors.
+
+99
+00:04:41.135 --> 00:04:42.950
+We are usually able to get
+
+100
+00:04:42.950 --> 00:04:44.990
+a very high precision and recall
+
+101
+00:04:44.990 --> 00:04:47.270
+from a mature 2D object detector.
+
+102
+00:04:47.270 --> 00:04:49.520
+Something that is still
+not available when
+
+103
+00:04:49.520 --> 00:04:52.445
+working in the 3D object
+detection literature.
+
+104
+00:04:52.445 --> 00:04:55.520
+Second, we get
+classification for free
+
+105
+00:04:55.520 --> 00:04:57.560
+from the 2D object
+detector results.
+
+106
+00:04:57.560 --> 00:05:00.590
+There is no need to
+use LiDAR data or pass
+
+107
+00:05:00.590 --> 00:05:02.900
+3D information into the network
+
+108
+00:05:02.900 --> 00:05:05.960
+to determine whether we are
+looking at a car or a post.
+
+109
+00:05:05.960 --> 00:05:09.640
+This is eminently visible
+in the image data in 2D.
+
+110
+00:05:09.640 --> 00:05:12.350
+Finally, searching a 3D space
+
+111
+00:05:12.350 --> 00:05:14.120
+for possible objects is quite
+
+112
+00:05:14.120 --> 00:05:16.790
+computationally expensive
+if no assumptions
+
+113
+00:05:16.790 --> 00:05:19.775
+can be made about where
+the object should be found.
+
+114
+00:05:19.775 --> 00:05:22.700
+Extending 2D
+object detectors to 3D,
+
+115
+00:05:22.700 --> 00:05:25.070
+usually allows us to
+limit the search region
+
+116
+00:05:25.070 --> 00:05:26.660
+for object instances
+
+117
+00:05:26.660 --> 00:05:29.740
+keeping real-time
+performance manageable.
+
+118
+00:05:29.740 --> 00:05:32.851
+However, extending
+2D object detectors
+
+119
+00:05:32.851 --> 00:05:36.605
+to 3D also incurs a set
+of unique problems.
+
+120
+00:05:36.605 --> 00:05:39.530
+One prominent problems
+stemming from using
+
+121
+00:05:39.530 --> 00:05:42.680
+this approach for 3D object
+detection is that we
+
+122
+00:05:42.680 --> 00:05:45.350
+bound the performance of
+the 3D pose estimator
+
+123
+00:05:45.350 --> 00:05:47.990
+by an upper limit which
+is the performance
+
+124
+00:05:47.990 --> 00:05:49.780
+of the 2D detector.
+
+125
+00:05:49.780 --> 00:05:54.140
+Furthermore, 2D to 3D methods
+usually fail when facing
+
+126
+00:05:54.140 --> 00:05:56.210
+severe occlusion
+and truncation from
+
+127
+00:05:56.210 --> 00:05:57.890
+the cameras viewpoint which
+
+128
+00:05:57.890 --> 00:06:00.325
+may not affect the LiDAR data.
+
+129
+00:06:00.325 --> 00:06:03.050
+Finally, the latency induced by
+
+130
+00:06:03.050 --> 00:06:04.520
+the serial nature of
+
+131
+00:06:04.520 --> 00:06:07.175
+this approach is
+usually not negligible.
+
+132
+00:06:07.175 --> 00:06:11.390
+Latency is manifested as
+delayed perception which
+
+133
+00:06:11.390 --> 00:06:12.770
+means that our car will see
+
+134
+00:06:12.770 --> 00:06:15.620
+an object on the road
+after a certain delay.
+
+135
+00:06:15.620 --> 00:06:17.230
+If this delay is significant,
+
+136
+00:06:17.230 --> 00:06:20.450
+the system might not be
+safe enough to operate as
+
+137
+00:06:20.450 --> 00:06:24.620
+vehicle reaction time is
+limited by perception latency.
+
+138
+00:06:24.620 --> 00:06:27.770
+Another very important
+application of 2D
+
+139
+00:06:27.770 --> 00:06:30.770
+to 3D object detection
+is object tracking.
+
+140
+00:06:30.770 --> 00:06:32.780
+Tracking involves
+stitching together
+
+141
+00:06:32.780 --> 00:06:35.930
+a sequence of detections
+of the same object into
+
+142
+00:06:35.930 --> 00:06:39.320
+a track that defines
+the object motion over time.
+
+143
+00:06:39.320 --> 00:06:41.254
+We will begin by describing
+
+144
+00:06:41.254 --> 00:06:44.045
+a simple tracking method
+that can be used both
+
+145
+00:06:44.045 --> 00:06:45.920
+in 2D and in 3D
+
+146
+00:06:45.920 --> 00:06:49.880
+which will hopefully sound
+familiar from course two.
+
+147
+00:06:49.880 --> 00:06:52.805
+When we perform object detection,
+
+148
+00:06:52.805 --> 00:06:56.105
+we usually detect objects
+independently in each frame.
+
+149
+00:06:56.105 --> 00:06:58.219
+In tracking however,
+we incorporate
+
+150
+00:06:58.219 --> 00:07:00.350
+a predicted position usually
+
+151
+00:07:00.350 --> 00:07:02.735
+through known object
+dynamic models.
+
+152
+00:07:02.735 --> 00:07:05.240
+Tracking requires
+a set of assumptions
+
+153
+00:07:05.240 --> 00:07:08.150
+constraining how quickly
+a scene changes.
+
+154
+00:07:08.150 --> 00:07:09.770
+For example, we assume that
+
+155
+00:07:09.770 --> 00:07:11.690
+our camera and
+the tracked objects
+
+156
+00:07:11.690 --> 00:07:14.390
+cannot teleport to
+different locations
+
+157
+00:07:14.390 --> 00:07:15.920
+within a very short time.
+
+158
+00:07:15.920 --> 00:07:17.300
+Also, we assume that
+
+159
+00:07:17.300 --> 00:07:20.000
+the scene changes
+smoothly and gradually.
+
+160
+00:07:20.000 --> 00:07:21.680
+All of these assumptions are
+
+161
+00:07:21.680 --> 00:07:24.155
+logically valid in roads scenes.
+
+162
+00:07:24.155 --> 00:07:27.320
+Let's visually see what object
+tracking looks like.
+
+163
+00:07:27.320 --> 00:07:28.850
+Given a detected object in
+
+164
+00:07:28.850 --> 00:07:31.985
+the first frame along with
+their velocity vectors,
+
+165
+00:07:31.985 --> 00:07:33.620
+we begin by predicting where
+
+166
+00:07:33.620 --> 00:07:35.825
+the objects will end up
+in the second frame.
+
+167
+00:07:35.825 --> 00:07:39.305
+If we model their motion
+using the velocity vector,
+
+168
+00:07:39.305 --> 00:07:42.530
+we then get new detections
+in the second frame.
+
+169
+00:07:42.530 --> 00:07:45.230
+We call these detections
+or measurements,
+
+170
+00:07:45.230 --> 00:07:47.180
+we correlate each detection
+
+171
+00:07:47.180 --> 00:07:49.070
+with a corresponding measurement,
+
+172
+00:07:49.070 --> 00:07:51.245
+and then update
+our object prediction
+
+173
+00:07:51.245 --> 00:07:53.015
+using the correlated measurement.
+
+174
+00:07:53.015 --> 00:07:56.270
+Let's describe each of
+the necessary steps.
+
+175
+00:07:56.270 --> 00:07:58.970
+First, we define a block state as
+
+176
+00:07:58.970 --> 00:08:02.015
+its position and
+velocity in image space.
+
+177
+00:08:02.015 --> 00:08:04.130
+Each object will
+have a motion model
+
+178
+00:08:04.130 --> 00:08:05.960
+that updates its state.
+
+179
+00:08:05.960 --> 00:08:10.130
+As an example, the constant
+velocity motion model shown
+
+180
+00:08:10.130 --> 00:08:11.285
+here is used to move
+
+181
+00:08:11.285 --> 00:08:14.480
+each bounding box to a new
+location in the second frame.
+
+182
+00:08:14.480 --> 00:08:17.390
+Notice that, we added
+a zero mean Gaussian noise to
+
+183
+00:08:17.390 --> 00:08:20.540
+our motion model as
+the model is not perfect.
+
+184
+00:08:20.540 --> 00:08:22.415
+After the prediction step,
+
+185
+00:08:22.415 --> 00:08:23.960
+we get the second
+frame measurement
+
+186
+00:08:23.960 --> 00:08:26.045
+from our 2D object detector.
+
+187
+00:08:26.045 --> 00:08:28.160
+We then proceed to correlate
+
+188
+00:08:28.160 --> 00:08:30.290
+each measurement
+to a prediction by
+
+189
+00:08:30.290 --> 00:08:32.375
+computing the IOU between
+
+190
+00:08:32.375 --> 00:08:34.505
+all predictions and
+all measurements.
+
+191
+00:08:34.505 --> 00:08:36.350
+A measurement is correlated to
+
+192
+00:08:36.350 --> 00:08:38.210
+a corresponding
+prediction if it has
+
+193
+00:08:38.210 --> 00:08:41.030
+the highest IOU with
+that prediction.
+
+194
+00:08:41.030 --> 00:08:43.310
+The final step consists of using
+
+195
+00:08:43.310 --> 00:08:44.720
+a Kalman filter to fuse
+
+196
+00:08:44.720 --> 00:08:46.700
+the measurement and
+prediction updates.
+
+197
+00:08:46.700 --> 00:08:48.080
+We recommend reviewing
+
+198
+00:08:48.080 --> 00:08:49.880
+the Kalman filter
+equations presented
+
+199
+00:08:49.880 --> 00:08:53.300
+in course two to remember
+how this step is performed.
+
+200
+00:08:53.300 --> 00:08:56.000
+The Kalman filter updates
+the whole object state
+
+201
+00:08:56.000 --> 00:08:58.565
+including both the position
+and the velocity,
+
+202
+00:08:58.565 --> 00:09:01.865
+and we can use that in
+our subsequent prediction step.
+
+203
+00:09:01.865 --> 00:09:04.580
+Note that, we do not
+need to track the object
+
+204
+00:09:04.580 --> 00:09:07.205
+sizes but can rely on
+the detector instead.
+
+205
+00:09:07.205 --> 00:09:09.380
+We usually assign an object the
+
+206
+00:09:09.380 --> 00:09:11.795
+size of its last
+known measurement.
+
+207
+00:09:11.795 --> 00:09:14.470
+A few intricacies
+remain to be tackled,
+
+208
+00:09:14.470 --> 00:09:16.180
+specifically how to initiate
+
+209
+00:09:16.180 --> 00:09:18.445
+tracks and how to terminate them.
+
+210
+00:09:18.445 --> 00:09:21.490
+We initiate new tracks
+if we get 2D detector
+
+211
+00:09:21.490 --> 00:09:24.600
+results not correlated to
+any previous prediction.
+
+212
+00:09:24.600 --> 00:09:28.279
+Similarly, we terminate
+inconsistent tracks,
+
+213
+00:09:28.279 --> 00:09:30.890
+if a predicted object
+does not correlate with
+
+214
+00:09:30.890 --> 00:09:33.980
+a measurement for
+a preset number of frames.
+
+215
+00:09:33.980 --> 00:09:38.390
+Finally, we need to note
+that by defining IOU in 3D,
+
+216
+00:09:38.390 --> 00:09:42.965
+we can use the same methodology
+for 3D object tracking.
+
+217
+00:09:42.965 --> 00:09:45.320
+Let's take a look at a video from
+
+218
+00:09:45.320 --> 00:09:48.890
+the autonomous vehicle 3D object
+tracking in action.
+
+219
+00:09:48.890 --> 00:09:51.560
+Note that, the tracks are
+slightly jittery because
+
+220
+00:09:51.560 --> 00:09:53.090
+the detections have some noise in
+
+221
+00:09:53.090 --> 00:09:55.235
+their frame to frame
+position estimates,
+
+222
+00:09:55.235 --> 00:09:57.950
+and the motion model used
+in this code does not
+
+223
+00:09:57.950 --> 00:10:01.610
+include accurate vehicle
+kinematic or dynamic models.
+
+224
+00:10:01.610 --> 00:10:04.160
+This is because of
+a lack of knowledge of
+
+225
+00:10:04.160 --> 00:10:07.670
+the other vehicles steering
+and acceleration inputs.
+
+226
+00:10:07.670 --> 00:10:10.190
+Nonetheless, we can
+still accurately
+
+227
+00:10:10.190 --> 00:10:12.140
+detect multiple vehicles
+moving through
+
+228
+00:10:12.140 --> 00:10:14.450
+the environment and make
+careful decisions about
+
+229
+00:10:14.450 --> 00:10:17.765
+precedence and safe
+interaction along the way.
+
+230
+00:10:17.765 --> 00:10:20.750
+One final concept
+we will describe
+
+231
+00:10:20.750 --> 00:10:23.105
+within the framework of
+2D object detection,
+
+232
+00:10:23.105 --> 00:10:26.405
+is detection of traffic
+signs and traffic signals.
+
+233
+00:10:26.405 --> 00:10:27.740
+The correct detection of
+
+234
+00:10:27.740 --> 00:10:29.900
+these road rule indicators guides
+
+235
+00:10:29.900 --> 00:10:31.580
+the self-driving car as it
+
+236
+00:10:31.580 --> 00:10:33.725
+drives legally on busy streets.
+
+237
+00:10:33.725 --> 00:10:35.810
+However, the detection task
+
+238
+00:10:35.810 --> 00:10:38.465
+incurs its own separate set
+of challenges.
+
+239
+00:10:38.465 --> 00:10:41.480
+Let's take a look at
+the most prominent ones.
+
+240
+00:10:41.480 --> 00:10:45.200
+Here you can see
+a typical dash cam style image
+
+241
+00:10:45.200 --> 00:10:48.360
+from a camera mounted
+on a self-driving car.
+
+242
+00:10:48.580 --> 00:10:51.080
+Usually, traffic signs and
+
+243
+00:10:51.080 --> 00:10:53.240
+traffic signals have
+to be detected at
+
+244
+00:10:53.240 --> 00:10:55.340
+long range for a car to know how
+
+245
+00:10:55.340 --> 00:10:57.950
+to react properly
+in a timely manner.
+
+246
+00:10:57.950 --> 00:11:00.140
+At long range, traffic signs and
+
+247
+00:11:00.140 --> 00:11:02.300
+signals occupy
+a very small number
+
+248
+00:11:02.300 --> 00:11:04.100
+of pixels in the image making
+
+249
+00:11:04.100 --> 00:11:07.025
+the detection problem
+particularly challenging.
+
+250
+00:11:07.025 --> 00:11:10.460
+Furthermore, traffic signs
+are highly variable.
+
+251
+00:11:10.460 --> 00:11:13.190
+Usually, including
+as many as 50 classes
+
+252
+00:11:13.190 --> 00:11:15.695
+that need to be
+classified reliably.
+
+253
+00:11:15.695 --> 00:11:18.020
+Traffic lights on
+the other hand might
+
+254
+00:11:18.020 --> 00:11:20.450
+appear differently in
+different areas of the world,
+
+255
+00:11:20.450 --> 00:11:23.300
+and have multiple states
+that need to be detected for
+
+256
+00:11:23.300 --> 00:11:25.240
+a self-driving car to safely
+
+257
+00:11:25.240 --> 00:11:28.045
+maneuver through
+signalized intersections.
+
+258
+00:11:28.045 --> 00:11:30.220
+In addition, traffic lights
+
+259
+00:11:30.220 --> 00:11:32.515
+change state as the car moves.
+
+260
+00:11:32.515 --> 00:11:34.780
+This might cause
+some problems when trying to
+
+261
+00:11:34.780 --> 00:11:37.210
+track traffic signals
+in image space.
+
+262
+00:11:37.210 --> 00:11:39.170
+As the appearance changes with
+
+263
+00:11:39.170 --> 00:11:42.320
+respect to the state
+the traffic light is in.
+
+264
+00:11:42.320 --> 00:11:45.380
+Luckily, standard
+object detectors
+
+265
+00:11:45.380 --> 00:11:47.000
+we have described so far can be
+
+266
+00:11:47.000 --> 00:11:49.100
+used without
+major modifications to
+
+267
+00:11:49.100 --> 00:11:51.800
+detect traffic signs and signals.
+
+268
+00:11:51.800 --> 00:11:54.200
+However, current
+approaches rely on
+
+269
+00:11:54.200 --> 00:11:56.630
+multistage hierarchical models to
+
+270
+00:11:56.630 --> 00:11:59.615
+perform this detection task
+more robustly.
+
+271
+00:11:59.615 --> 00:12:03.050
+Let's consider the
+two-stage model shown here.
+
+272
+00:12:03.050 --> 00:12:05.360
+The two stages
+share the output of
+
+273
+00:12:05.360 --> 00:12:08.585
+the feature extractor to
+perform their respective task.
+
+274
+00:12:08.585 --> 00:12:10.685
+In this example, the first stage
+
+275
+00:12:10.685 --> 00:12:12.920
+outputs class agnostic bounding
+
+276
+00:12:12.920 --> 00:12:14.675
+boxes that point to
+
+277
+00:12:14.675 --> 00:12:17.570
+all traffic signs and
+signals in the image,
+
+278
+00:12:17.570 --> 00:12:21.830
+without specifying which class
+each box belongs to.
+
+279
+00:12:21.830 --> 00:12:23.690
+The second stage then
+
+280
+00:12:23.690 --> 00:12:25.550
+takes all of
+the bounding boxes from
+
+281
+00:12:25.550 --> 00:12:27.020
+the first stage and
+
+282
+00:12:27.020 --> 00:12:29.855
+classifies them into
+categories such as red,
+
+283
+00:12:29.855 --> 00:12:33.590
+yellow or green signals
+stop signs etc.
+
+284
+00:12:33.590 --> 00:12:37.190
+In addition, some methods
+also use the second stage to
+
+285
+00:12:37.190 --> 00:12:39.050
+further refine the bounding boxes
+
+286
+00:12:39.050 --> 00:12:41.000
+provided in the first stage.
+
+287
+00:12:41.000 --> 00:12:43.790
+This multi-stage approach is not
+
+288
+00:12:43.790 --> 00:12:46.399
+specific to traffic
+signs and signals,
+
+289
+00:12:46.399 --> 00:12:47.630
+and many of the general
+
+290
+00:12:47.630 --> 00:12:49.640
+object detection
+frameworks employ
+
+291
+00:12:49.640 --> 00:12:51.965
+multi-stage methods to generate
+
+292
+00:12:51.965 --> 00:12:54.605
+accurate object class
+and location.
+
+293
+00:12:54.605 --> 00:12:57.170
+If interested, we
+have provided some of
+
+294
+00:12:57.170 --> 00:13:00.470
+these approaches as
+supplementary reading materials.
+
+295
+00:13:00.470 --> 00:13:03.410
+In this video, we saw
+that the output of
+
+296
+00:13:03.410 --> 00:13:05.180
+the 2D object detectors can be
+
+297
+00:13:05.180 --> 00:13:07.970
+used to produce
+3D object locations,
+
+298
+00:13:07.970 --> 00:13:10.670
+we studied how tracking
+can be performed on
+
+299
+00:13:10.670 --> 00:13:12.740
+a 2D object detector output in
+
+300
+00:13:12.740 --> 00:13:14.210
+consecutive image frames to
+
+301
+00:13:14.210 --> 00:13:16.730
+create object tracks
+through the environment,
+
+302
+00:13:16.730 --> 00:13:19.220
+and we explored how
+2D object detectors
+
+303
+00:13:19.220 --> 00:13:20.360
+can be used to detect
+
+304
+00:13:20.360 --> 00:13:21.440
+traffic signs and
+
+305
+00:13:21.440 --> 00:13:24.320
+traffic signals without
+major modifications.
+
+306
+00:13:24.320 --> 00:13:26.960
+However, specialized
+methods that exploit
+
+307
+00:13:26.960 --> 00:13:29.240
+hierarchical models
+usually perform
+
+308
+00:13:29.240 --> 00:13:31.025
+better than standard methods.
+
+309
+00:13:31.025 --> 00:13:33.230
+We now have the tools needed for
+
+310
+00:13:33.230 --> 00:13:35.060
+the main types of
+object detection
+
+311
+00:13:35.060 --> 00:13:37.460
+used in self-driving cars.
+
+312
+00:13:37.460 --> 00:13:39.530
+Congratulations.
+
+313
+00:13:39.530 --> 00:13:41.840
+You've successfully
+completed this module
+
+314
+00:13:41.840 --> 00:13:43.400
+on 2D object detection.
+
+315
+00:13:43.400 --> 00:13:46.610
+This module has been quite
+involved and we recommend that
+
+316
+00:13:46.610 --> 00:13:49.835
+you check our provided resources
+for more information,
+
+317
+00:13:49.835 --> 00:13:51.710
+on how to use neural networks for
+
+318
+00:13:51.710 --> 00:13:54.560
+2D and 3D object
+detection and tracking.
+
+319
+00:13:54.560 --> 00:13:57.920
+Next week, we'll discuss
+another important component of
+
+320
+00:13:57.920 --> 00:13:59.795
+the visual perception stack
+
+321
+00:13:59.795 --> 00:14:02.360
+which operates at
+the pixel level,
+
+322
+00:14:02.360 --> 00:14:05.850
+semantic segmentation.
+See you then.

@@ -1,0 +1,169 @@
+Welcome to the final lesson
+for this week. In the previous lesson, we learned how to perform
+semantic segmentation using convolutional
+neural networks. In this video, we will
+learn how to use the output of these networks for scene
+understanding of road scenes. Specifically, you will
+learn how to use the output of semantic segmentation models to estimate the drivable space
+and lane boundaries. Let's quickly review
+what we expect as an output from
+a semantic segmentation model. A semantic segmentation model
+takes an image as an input, and provides us output, a category classification
+for every pixel. Now let's use
+this output to perform some useful tasks for
+self-driving cars. The first task we will be
+discussing is the estimation of a drivable surface from semantic segmentation
+output in 3D. Drivable space is
+defined as the region in front of the vehicle
+where it is safe to drive. In the context of
+semantic segmentation, the drivable surface includes
+all pixels from the road, crosswalks, lane markings,
+parking spots, and even sometimes rail tracks. Estimating a drivable surface is very important as it
+is one of the main steps for constructing occupancy grids
+from 3D depth sensors. You will learn more about
+occupancy grids in course 4, where they will be used to
+represent where obstacles are located in the environment
+during collision avoidance. But for now, let's
+describe how to perform drivable surface estimation from the semantic segmentation output. First, we use
+a ConvNet to generate the semantic segmentation output
+of an image frame, we then generate 3D coordinates of some of the pixels
+in this frame, either from stereo data or by projecting a lighter point cloud
+to the image plane. With a known extrinsic
+calibration between sensors, we can project lidar points into the image plane and match them to the corresponding pixels. We then proceed to
+choose 3D points that belong to the
+drivable surface category. As we mentioned earlier, this category should at
+least include the road, lane markings, and
+pedestrian crossings. In certain scenarios,
+other classes such as railroad tracks for example
+might also be included, depending on the driving context. All other classes
+are excluded even if their height is similar
+to the drivable surface. Finally, we use this subset of 3D points to estimate
+a drivable surface model. The complexity of
+this model can range from a simple plane to more complex
+spline surface models. Let's describe how
+to robustly fits a planar drivable
+surface model given segmented image data
+and lidar points. We first define the model
+of a plane as ax plus by plus z equals
+d, where x, y, z is any point on the plane, the coefficients a, b, and 1 define the plane
+normal vector, and d is a constant offset. We can form a set of
+linear equations to estimate the parameters of this plane
+model using as measurements, each of the points identified as belonging to
+the drivable surface. The parameters of the model are now summarized by the vector p, and the measurements
+are separated into the matrices A and B. As formulated in course 2, we can find a solution
+for this system of linear equations using
+the method of least squares. As a result, our plane
+parameter vector p is equal to the pseudoinverse
+of A times B. This model has
+three free parameters to be estimated, and as such, we need at least
+three non-colinear 3D points to fit the plane. In practice, we will have many more points
+than are necessary, so we can apply the method of least squares once
+again to identify parameters that minimize
+the mean square distance of all points from the plane. Of course, some points
+will be labeled incorrectly and may not truly belong to
+the drivable surface. So how can we avoid
+incorrect semantic labels negatively affecting
+the quality of a drivable surface
+plane estimation? Fortunately for us, we learned a very powerful and
+robust estimation method in week 2 of this course. Specifically, we can use the RANSAC algorithm
+to robustly fit a drivable surface
+plane model even with some errors in our
+semantic segmentation output. Let's go through
+the RANSAC algorithm for the drivable surface
+estimation as a refresher. First, we randomly select the minimum number of data points required to fit our model. In this case, we randomly
+choose three points in 3D. Second, we use these three points to compute the model
+parameters a, b, and d, and use the method of least squares to solve
+for our plane parameters. We then proceed to
+determine the number of 3D points that satisfy
+these model parameters. Usually for drivable
+surface estimation, most of the outliers
+are a result of the erroneous
+segmentation outputs located at the boundaries. If the number of outliers is low, we terminate and return
+the computed plane parameters. Otherwise, we sample
+three new points at random and repeat the process. Then once the algorithm meets
+its termination condition, we calculate the final
+planar surface model of the road from all of the inliers in
+the largest inlier set. The use of a planar
+surface model works well if the road
+is actually flat, a valid assumption in
+many driving scenarios. For more complex scenarios, such as entering a steeply
+climbing highway entrance from a flat roadway for example, more complex models are needed. Although we estimate
+the drivable surface, we still have not
+determined where the car is allowed to
+drive on this surface. Usually, a vehicle should
+stay within its lane, determined by lane markings
+or the road boundaries. Lane estimation is the task
+of estimating where a self-driving car can drive
+given a drivable surface. Many methods exist in the literature to
+accomplish this task. For example, some methods
+directly estimate lane markings from ConvNets to determine where
+the car can drive. However, for higher-level
+decision-making, a self-driving car should also be aware of what is at
+the boundary of the lane. Classes at the boundary
+of the lame can range from a curb, a road, where opposite traffic resides or dynamic in parked vehicles. The self-driving car has
+to base its maneuvers on what objects occur at
+the boundary of the lane, especially during
+emergency pull overs. We will refer to the task of
+estimating the lane and what occurs at its boundaries as
+semantic lane estimation. Notice that if we
+estimate the lane using the output of
+semantic segmentation, we get boundary
+classification for free. Let's go through
+a simple approach to this problem to clarify
+the lane estimation task. Given the output of
+a semantic segmentation model, we first extract
+a binary mask of the pixels belonging to classes that
+occur as lane separators. Such classes can include curbs, lane markings, or
+rails for example. Then we apply an edge detector
+to the binary mask. As you remember from
+the first week of this course, edge detectors can be as simple as estimating gradients
+from convolutions. Here, we use
+a famous edge detector, the canny edge detector. The output are
+pixels classified as edges that will be used to
+estimate the lane boundaries. The final step is to determine which model is to be used
+to estimate the lanes. The choice of models defines
+what the next step will be. Here we choose
+a linear lane model, where each lane is assumed to be made up of a single line. To detect lines in
+the output edge map, we need aligned detector. The Hough transform line
+detection algorithm is widely used and capable of detecting multiple lines
+in an edge map. Given an edge map, the Hough transform can
+generate a set of lines that link pixels belonging to
+edges in the edge map. The minimum length of
+the required lines can be set as
+a hyperparameter to force the algorithm to only detect lines that are long enough
+to be part of lane markings. Further refinement can be applied based on the scenario at hand. For example, we know that
+our lane should not be a horizontal line
+if our camera is placed forward facing in
+the direction of motion. Furthermore, we can remove any line that does not belong to the drivable surface to get a final set of
+lane boundary primitives. The last step would be
+to determine the classes that occur at
+both sides of the lane, which can easily be done
+by considering the classes on both sides of
+the estimated lane lines. We will not discuss
+edge detectors and Hough transforms in detail, as these topics deserve a separate discussion outside
+the scope of this course. However, powerful computer
+vision libraries such as Open CV, have open-source
+implementations, and tutorials on how to detect lines using the Hough transform, and how to detect edges using
+the Canny edge detector. If interested, take a look at how these
+algorithms are used in practice using the links provided in the
+supplementary material. In summary, semantic
+segmentation can be used to estimate
+the drivable space, to determine what occurs at the boundary of
+the drivable space, and to estimate lanes on
+the drivable surface. The applications discussed so far are very active
+areas of research, and what you've learned
+during this lesson provides a solid starting point and competitive baselines
+for the task of semantic lane detection and
+drivable surface estimation. Furthermore,
+semantic lane detection and drivable surface
+estimation are the most prominent uses for semantic segmentation models in the context of self-driving cars. However, semantic
+segmentation has many more useful applications. Most importantly, aiding the self-driving car
+in performing both 2D object detection
+and localization. With information about
+which pixels to evaluate for objects or weather features are on static or moving objects, the robustness of
+the perception system can be significantly improved. It can act as a sanity check
+or a filter to avoid including incorrect information in other perception tasks. Semantic segmentation
+is a powerful tool for self-driving cars and a core component of the high
+level perception stack. You will have the chance
+to validate its usefulness next week when we discuss our final assignment.
+See you then.

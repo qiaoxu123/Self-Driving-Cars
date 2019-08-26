@@ -1,0 +1,1450 @@
+WEBVTT
+
+1
+00:00:13.820 --> 00:00:16.840
+Welcome back. In this video,
+
+2
+00:00:16.840 --> 00:00:19.279
+we'll discuss some of
+the most important constraints
+
+3
+00:00:19.279 --> 00:00:21.080
+involved in motion planning.
+
+4
+00:00:21.080 --> 00:00:24.200
+These constraints are often
+crucial for maintaining
+
+5
+00:00:24.200 --> 00:00:27.050
+stability and comfort
+within the vehicle,
+
+6
+00:00:27.050 --> 00:00:28.910
+as well as maintaining
+the safety of
+
+7
+00:00:28.910 --> 00:00:31.430
+all agents in
+a given driving scenario.
+
+8
+00:00:31.430 --> 00:00:35.000
+Specifically, you will
+learn about how the vehicle
+
+9
+00:00:35.000 --> 00:00:36.680
+kinematic and dynamic models
+
+10
+00:00:36.680 --> 00:00:39.560
+constrain our motion
+planning for the vehicle.
+
+11
+00:00:39.560 --> 00:00:41.120
+You will learn about
+
+12
+00:00:41.120 --> 00:00:43.100
+how static and dynamic obstacles
+
+13
+00:00:43.100 --> 00:00:45.325
+impact our vehicle
+motion planning.
+
+14
+00:00:45.325 --> 00:00:46.910
+Finally, you will see how
+
+15
+00:00:46.910 --> 00:00:49.400
+regulatory elements
+impact the behaviors
+
+16
+00:00:49.400 --> 00:00:50.990
+available to us during
+
+17
+00:00:50.990 --> 00:00:54.520
+the motion planning process.
+Let's get started.
+
+18
+00:00:54.520 --> 00:00:57.490
+The first of the motion
+planning constraints we will
+
+19
+00:00:57.490 --> 00:01:00.415
+work with is related to
+the vehicle kinematics.
+
+20
+00:01:00.415 --> 00:01:02.710
+In motion planning for
+autonomous driving,
+
+21
+00:01:02.710 --> 00:01:04.890
+as we have discussed
+in course one,
+
+22
+00:01:04.890 --> 00:01:07.600
+the kinematics for
+the ego vehicle are often
+
+23
+00:01:07.600 --> 00:01:09.250
+simplified to what is known as
+
+24
+00:01:09.250 --> 00:01:11.590
+the kinematic bicycle model.
+
+25
+00:01:11.590 --> 00:01:15.730
+One reason why this model is
+chosen is that bicycles have
+
+26
+00:01:15.730 --> 00:01:18.250
+a range of acceptable
+steering angle values
+
+27
+00:01:18.250 --> 00:01:19.770
+similar to a car.
+
+28
+00:01:19.770 --> 00:01:21.630
+For a fixed velocity V,
+
+29
+00:01:21.630 --> 00:01:23.680
+this range of steering
+angle values and
+
+30
+00:01:23.680 --> 00:01:27.400
+delta corresponds to a range
+of admissible curvatures,
+
+31
+00:01:27.400 --> 00:01:29.695
+kappa that the vehicle
+can follow.
+
+32
+00:01:29.695 --> 00:01:31.540
+This means that when performing
+
+33
+00:01:31.540 --> 00:01:34.120
+motion planning while
+using the bicycle model,
+
+34
+00:01:34.120 --> 00:01:37.640
+there is a maximum magnitude
+of curvature that can be
+
+35
+00:01:37.640 --> 00:01:40.610
+executed when
+traversing a given path
+
+36
+00:01:40.610 --> 00:01:42.740
+denoted by kappa max.
+
+37
+00:01:42.740 --> 00:01:45.545
+The same holds for
+autonomous cars.
+
+38
+00:01:45.545 --> 00:01:48.500
+This means that
+the curvature of any path we
+
+39
+00:01:48.500 --> 00:01:52.360
+plan needs to be mindful
+of this maximum curvature.
+
+40
+00:01:52.360 --> 00:01:54.650
+Unfortunately, this
+is what's known
+
+41
+00:01:54.650 --> 00:01:57.095
+as a non-holonomic constraint.
+
+42
+00:01:57.095 --> 00:01:59.900
+Intuitively, this means
+that the constraint
+
+43
+00:01:59.900 --> 00:02:02.960
+doesn't depend on
+the only the state of the robot,
+
+44
+00:02:02.960 --> 00:02:06.710
+but also on how the robot
+got to its current state.
+
+45
+00:02:06.710 --> 00:02:09.680
+Non-holonomic constraints
+reduce the number of
+
+46
+00:02:09.680 --> 00:02:11.480
+directions a robot can take
+
+47
+00:02:11.480 --> 00:02:13.700
+at any given point
+in its workspace.
+
+48
+00:02:13.700 --> 00:02:16.400
+In general, non-holonomic
+constraints
+
+49
+00:02:16.400 --> 00:02:19.060
+make the planning problem
+much more complex.
+
+50
+00:02:19.060 --> 00:02:21.815
+Now you may be wondering
+how does curvature
+
+51
+00:02:21.815 --> 00:02:25.715
+impact the shape of a given path
+in our motion plan.
+
+52
+00:02:25.715 --> 00:02:28.160
+To give you an
+intuitive understanding
+
+53
+00:02:28.160 --> 00:02:29.410
+of what curvature is,
+
+54
+00:02:29.410 --> 00:02:32.015
+here we have an arbitrary curve.
+
+55
+00:02:32.015 --> 00:02:34.240
+For each point along the path,
+
+56
+00:02:34.240 --> 00:02:36.920
+we can fit a circle to
+that point based on
+
+57
+00:02:36.920 --> 00:02:39.320
+the instantaneous rates
+of change of
+
+58
+00:02:39.320 --> 00:02:42.170
+the curve in space at
+that particular point.
+
+59
+00:02:42.170 --> 00:02:43.910
+This is analogous to the idea
+
+60
+00:02:43.910 --> 00:02:45.470
+of the instantaneous center of
+
+61
+00:02:45.470 --> 00:02:47.000
+rotation we use to
+
+62
+00:02:47.000 --> 00:02:49.580
+derive the bicycle model
+in the first place.
+
+63
+00:02:49.580 --> 00:02:51.650
+Based on the shape of the plot,
+
+64
+00:02:51.650 --> 00:02:55.400
+it appears different points
+are more curvy than others.
+
+65
+00:02:55.400 --> 00:02:57.920
+So, our intuition should
+be the different points
+
+66
+00:02:57.920 --> 00:03:00.925
+along the curve will have
+different curvatures.
+
+67
+00:03:00.925 --> 00:03:02.945
+For example, here we have
+
+68
+00:03:02.945 --> 00:03:06.245
+a circle fit to a particular
+point on the curve.
+
+69
+00:03:06.245 --> 00:03:10.160
+As you can see, it has
+quite a large radius r,
+
+70
+00:03:10.160 --> 00:03:11.810
+and intuitive interpretation of
+
+71
+00:03:11.810 --> 00:03:13.190
+the curvature is that it's
+
+72
+00:03:13.190 --> 00:03:15.350
+the inverse of
+the radius of the circle
+
+73
+00:03:15.350 --> 00:03:18.110
+fit to that particular point
+along the curve.
+
+74
+00:03:18.110 --> 00:03:20.660
+Since this radius is quite large,
+
+75
+00:03:20.660 --> 00:03:23.200
+this point has
+relatively low curvature,
+
+76
+00:03:23.200 --> 00:03:25.220
+which can be seen from the plot
+
+77
+00:03:25.220 --> 00:03:28.145
+as the point has
+a more gentle bent.
+
+78
+00:03:28.145 --> 00:03:31.850
+If instead we look at
+a second point on this curve,
+
+79
+00:03:31.850 --> 00:03:33.140
+we can see that it has
+
+80
+00:03:33.140 --> 00:03:36.520
+a smaller radius as it compared
+to the previous point.
+
+81
+00:03:36.520 --> 00:03:39.050
+This in turn corresponds
+to a point of
+
+82
+00:03:39.050 --> 00:03:42.560
+higher curvature and can
+be seen from the plot,
+
+83
+00:03:42.560 --> 00:03:44.165
+this point has much more
+
+84
+00:03:44.165 --> 00:03:47.150
+aggressive bend than
+the previous point.
+
+85
+00:03:47.150 --> 00:03:49.520
+While this circle
+fitting approach is
+
+86
+00:03:49.520 --> 00:03:51.725
+useful as a geometric
+interpretation,
+
+87
+00:03:51.725 --> 00:03:54.155
+a more precise
+mathematical formulation
+
+88
+00:03:54.155 --> 00:03:56.600
+is given here for the curvature.
+
+89
+00:03:56.600 --> 00:03:58.490
+It can be computed using
+
+90
+00:03:58.490 --> 00:04:00.950
+the first and second
+order derivatives of
+
+91
+00:04:00.950 --> 00:04:02.570
+the x and y components of
+
+92
+00:04:02.570 --> 00:04:05.975
+a given path defined with
+respect to arc length.
+
+93
+00:04:05.975 --> 00:04:09.635
+These arc length derivatives
+are given by x prime,
+
+94
+00:04:09.635 --> 00:04:11.750
+y prime, x double prime,
+
+95
+00:04:11.750 --> 00:04:13.370
+and y double prime.
+
+96
+00:04:13.370 --> 00:04:16.070
+The next constraint
+will be discussing
+
+97
+00:04:16.070 --> 00:04:18.905
+is derived from
+the vehicle dynamics.
+
+98
+00:04:18.905 --> 00:04:21.140
+These dynamic
+constraints focus on
+
+99
+00:04:21.140 --> 00:04:24.080
+keeping the car in
+a stable safe state.
+
+100
+00:04:24.080 --> 00:04:26.540
+The first of the
+dynamics constraints is
+
+101
+00:04:26.540 --> 00:04:27.950
+imposed by what is called
+
+102
+00:04:27.950 --> 00:04:30.140
+the friction ellipse of the car.
+
+103
+00:04:30.140 --> 00:04:33.140
+If you recall, we
+discussed tire slip and
+
+104
+00:04:33.140 --> 00:04:34.250
+the friction ellipse in our
+
+105
+00:04:34.250 --> 00:04:36.365
+bicycle model during course one.
+
+106
+00:04:36.365 --> 00:04:39.920
+The friction ellipse denotes
+the maximum magnitude of
+
+107
+00:04:39.920 --> 00:04:41.840
+the friction forces that can be
+
+108
+00:04:41.840 --> 00:04:44.915
+generated between
+a car tire and the road.
+
+109
+00:04:44.915 --> 00:04:46.640
+If the applied forces of
+
+110
+00:04:46.640 --> 00:04:50.015
+the car's engine exceed
+the friction forces of the tire,
+
+111
+00:04:50.015 --> 00:04:52.520
+the tires will slip
+on the road surface.
+
+112
+00:04:52.520 --> 00:04:54.830
+The turning functionality
+of a vehicle
+
+113
+00:04:54.830 --> 00:04:57.770
+relies on the tires
+gripping the road surface.
+
+114
+00:04:57.770 --> 00:05:00.290
+So to maintain control
+and stability,
+
+115
+00:05:00.290 --> 00:05:03.485
+the car must remain within
+the friction circle.
+
+116
+00:05:03.485 --> 00:05:04.880
+At the end of the day,
+
+117
+00:05:04.880 --> 00:05:06.410
+this boils down to lateral
+
+118
+00:05:06.410 --> 00:05:09.710
+and longitudinal
+acceleration constraints.
+
+119
+00:05:09.710 --> 00:05:11.870
+In general, though the
+
+120
+00:05:11.870 --> 00:05:14.060
+acceleration constraints
+are often much
+
+121
+00:05:14.060 --> 00:05:15.590
+higher than what is physically
+
+122
+00:05:15.590 --> 00:05:18.575
+comfortable for the passengers
+inside the car.
+
+123
+00:05:18.575 --> 00:05:22.070
+Therefore, in non-emergency
+situations we often
+
+124
+00:05:22.070 --> 00:05:25.745
+focus on the comfort rectangle
+of accelerations.
+
+125
+00:05:25.745 --> 00:05:27.530
+These values constrain,
+
+126
+00:05:27.530 --> 00:05:29.795
+the lateral and
+longitudinal accelerations
+
+127
+00:05:29.795 --> 00:05:32.540
+to each lie within
+a range of comfort,
+
+128
+00:05:32.540 --> 00:05:34.820
+denoted on the
+longitudinal acceleration
+
+129
+00:05:34.820 --> 00:05:38.885
+along and lateral
+acceleration alat axis.
+
+130
+00:05:38.885 --> 00:05:40.585
+This is shown here,
+
+131
+00:05:40.585 --> 00:05:42.875
+where the comfort
+rectangle in blue
+
+132
+00:05:42.875 --> 00:05:46.385
+lies well within the friction
+ellipse shown in green.
+
+133
+00:05:46.385 --> 00:05:49.040
+This results in
+a tighter constraint on
+
+134
+00:05:49.040 --> 00:05:50.780
+the feasible accelerations for
+
+135
+00:05:50.780 --> 00:05:54.755
+a motion plan than
+the friction ellipse requires.
+
+136
+00:05:54.755 --> 00:05:57.800
+From the lateral
+acceleration constraints,
+
+137
+00:05:57.800 --> 00:05:59.830
+as well as the curvature
+of the path,
+
+138
+00:05:59.830 --> 00:06:01.469
+we have now indirectly
+
+139
+00:06:01.469 --> 00:06:03.810
+constrained the
+velocity of the car.
+
+140
+00:06:03.810 --> 00:06:06.470
+The velocity of the car V
+is a function of
+
+141
+00:06:06.470 --> 00:06:09.335
+the lateral acceleration
+of the car alat,
+
+142
+00:06:09.335 --> 00:06:12.080
+as well as the instantaneous
+turning radius of
+
+143
+00:06:12.080 --> 00:06:14.750
+the path r. Recall that
+
+144
+00:06:14.750 --> 00:06:16.520
+the instantaneous curvature along
+
+145
+00:06:16.520 --> 00:06:17.840
+the path kappa is
+
+146
+00:06:17.840 --> 00:06:21.305
+the inverse of the turning
+radius of the car.
+
+147
+00:06:21.305 --> 00:06:23.960
+If we now combine
+these equations,
+
+148
+00:06:23.960 --> 00:06:26.870
+we can see that the square
+of the velocity is
+
+149
+00:06:26.870 --> 00:06:30.065
+constrained by the
+maximum lateral acceleration,
+
+150
+00:06:30.065 --> 00:06:32.914
+alat max which is a constant,
+
+151
+00:06:32.914 --> 00:06:35.900
+as well as the curvature
+of the path kappa,
+
+152
+00:06:35.900 --> 00:06:38.995
+which changes at
+each point along the path.
+
+153
+00:06:38.995 --> 00:06:42.545
+Because of this, it's clear
+that when we are generating
+
+154
+00:06:42.545 --> 00:06:45.620
+a velocity profile for
+our autonomous vehicle,
+
+155
+00:06:45.620 --> 00:06:48.680
+we have to take the curvature
+of the path as well as
+
+156
+00:06:48.680 --> 00:06:51.005
+the vehicles maximum
+lateral acceleration
+
+157
+00:06:51.005 --> 00:06:53.280
+into consideration.
+
+158
+00:06:53.470 --> 00:06:56.390
+Static obstacles also provide
+
+159
+00:06:56.390 --> 00:06:59.060
+constraints upon
+our path planning process.
+
+160
+00:06:59.060 --> 00:07:02.450
+Since static obstacles
+such as a parked car or
+
+161
+00:07:02.450 --> 00:07:04.390
+a construction pylon have fixed
+
+162
+00:07:04.390 --> 00:07:06.695
+positions that do not
+change with time,
+
+163
+00:07:06.695 --> 00:07:09.140
+they are often modeled
+by blocking out
+
+164
+00:07:09.140 --> 00:07:12.350
+certain portions of
+the ego vehicles workspace.
+
+165
+00:07:12.350 --> 00:07:13.940
+This concept will be covered in
+
+166
+00:07:13.940 --> 00:07:17.000
+greater detail in module
+two of this course,
+
+167
+00:07:17.000 --> 00:07:19.960
+where we discuss
+the occupancy grid map.
+
+168
+00:07:19.960 --> 00:07:22.930
+Essentially, static
+obstacles constrain
+
+169
+00:07:22.930 --> 00:07:26.270
+the locations that a car
+can occupy along its path.
+
+170
+00:07:26.270 --> 00:07:28.250
+There are numerous ways to
+
+171
+00:07:28.250 --> 00:07:30.350
+perform static
+collision checking.
+
+172
+00:07:30.350 --> 00:07:32.750
+One way is to check the swath of
+
+173
+00:07:32.750 --> 00:07:35.900
+the vehicle as it travels
+along a given path.
+
+174
+00:07:35.900 --> 00:07:38.195
+This swath is the union of
+
+175
+00:07:38.195 --> 00:07:41.540
+all positions occupied by
+the body of the ego vehicle,
+
+176
+00:07:41.540 --> 00:07:44.230
+as the ego vehicle
+traverses the path.
+
+177
+00:07:44.230 --> 00:07:47.450
+If the swath overlaps
+with a static obstacle,
+
+178
+00:07:47.450 --> 00:07:49.085
+that path is infeasible.
+
+179
+00:07:49.085 --> 00:07:52.190
+Another option for
+fast collision checking is to
+
+180
+00:07:52.190 --> 00:07:55.730
+approximate the body of
+the car with a set of circles,
+
+181
+00:07:55.730 --> 00:07:57.919
+and calculate
+the circle locations
+
+182
+00:07:57.919 --> 00:08:00.170
+as the car moves along its path.
+
+183
+00:08:00.170 --> 00:08:03.830
+If a static obstacle lies
+within any of the circles,
+
+184
+00:08:03.830 --> 00:08:05.810
+then the path is
+deemed infeasible.
+
+185
+00:08:05.810 --> 00:08:07.910
+The union of these circles is
+
+186
+00:08:07.910 --> 00:08:10.355
+often larger than
+the body of the vehicle,
+
+187
+00:08:10.355 --> 00:08:13.235
+ensuring a conservative
+approximation.
+
+188
+00:08:13.235 --> 00:08:14.750
+We'll be discussing this in
+
+189
+00:08:14.750 --> 00:08:17.730
+more detail in future lessons.
+
+190
+00:08:17.800 --> 00:08:21.380
+Dynamic obstacles on
+the other hand provides some of
+
+191
+00:08:21.380 --> 00:08:23.015
+the most challenging constraints
+
+192
+00:08:23.015 --> 00:08:25.175
+on the motion planning problem.
+
+193
+00:08:25.175 --> 00:08:28.085
+Different classes of
+dynamic obstacles
+
+194
+00:08:28.085 --> 00:08:29.445
+such as cars, bicycles,
+
+195
+00:08:29.445 --> 00:08:31.400
+and pedestrians will all
+
+196
+00:08:31.400 --> 00:08:34.055
+have different behaviors
+and motion models.
+
+197
+00:08:34.055 --> 00:08:36.920
+Constraining our motion plan
+based on the behavior of
+
+198
+00:08:36.920 --> 00:08:40.215
+these other agents will
+often involve prediction,
+
+199
+00:08:40.215 --> 00:08:42.415
+which is subject to uncertainty.
+
+200
+00:08:42.415 --> 00:08:45.230
+However, if we take
+the conservative approach and
+
+201
+00:08:45.230 --> 00:08:46.565
+constrain ourselves to
+
+202
+00:08:46.565 --> 00:08:48.980
+all possible behaviors
+of all agents,
+
+203
+00:08:48.980 --> 00:08:51.080
+our motion planning problem
+quickly becomes
+
+204
+00:08:51.080 --> 00:08:54.605
+over-constrained and impossible
+to solve meaningfully.
+
+205
+00:08:54.605 --> 00:08:58.010
+The degree to which we
+balance between the safety of
+
+206
+00:08:58.010 --> 00:09:00.169
+conservatism and
+the aggressiveness
+
+207
+00:09:00.169 --> 00:09:02.120
+required for forward progress,
+
+208
+00:09:02.120 --> 00:09:04.790
+is an active area of
+autonomous driving research.
+
+209
+00:09:04.790 --> 00:09:07.425
+As a simple example,
+
+210
+00:09:07.425 --> 00:09:09.410
+a case where dynamic
+obstacles will
+
+211
+00:09:09.410 --> 00:09:12.410
+constrain our motion will
+be at an intersection.
+
+212
+00:09:12.410 --> 00:09:14.120
+If two cars are entering
+
+213
+00:09:14.120 --> 00:09:16.880
+the intersection
+orthogonal to one another,
+
+214
+00:09:16.880 --> 00:09:19.445
+then we have a potential
+crash scenario.
+
+215
+00:09:19.445 --> 00:09:23.030
+One way to check for whether
+a collision will occur,
+
+216
+00:09:23.030 --> 00:09:24.350
+is to track the angle
+
+217
+00:09:24.350 --> 00:09:26.330
+formed by the ego
+vehicles direction of
+
+218
+00:09:26.330 --> 00:09:28.580
+travel and the vector from
+
+219
+00:09:28.580 --> 00:09:32.120
+the ego vehicles location to
+the other agent's location.
+
+220
+00:09:32.120 --> 00:09:35.885
+If this angle is unchanging
+as time progresses,
+
+221
+00:09:35.885 --> 00:09:39.080
+then the ego vehicle will
+collide with the other agent,
+
+222
+00:09:39.080 --> 00:09:40.580
+and our motion planner
+will need to
+
+223
+00:09:40.580 --> 00:09:42.640
+decelerate to prevent this.
+
+224
+00:09:42.640 --> 00:09:46.190
+Therefore, the dynamic
+obstacle forces us to modify
+
+225
+00:09:46.190 --> 00:09:47.810
+our behavior based on
+
+226
+00:09:47.810 --> 00:09:51.840
+how the obstacle proceeds
+in our driving scenario.
+
+227
+00:09:52.180 --> 00:09:54.290
+Another example which we
+
+228
+00:09:54.290 --> 00:09:55.940
+discussed in
+the previous lesson was
+
+229
+00:09:55.940 --> 00:09:57.290
+when a leading vehicle is
+
+230
+00:09:57.290 --> 00:09:59.585
+present in front of
+the ego vehicle.
+
+231
+00:09:59.585 --> 00:10:02.930
+This leading vehicle
+places an upper constraint
+
+232
+00:10:02.930 --> 00:10:06.334
+on the ego vehicles
+longitudinal velocity,
+
+233
+00:10:06.334 --> 00:10:09.110
+for if we exceed
+their speed while remaining
+
+234
+00:10:09.110 --> 00:10:12.170
+in the same lane we
+will eventually crash.
+
+235
+00:10:12.170 --> 00:10:14.660
+As you can see,
+dynamic obstacles will
+
+236
+00:10:14.660 --> 00:10:17.404
+constrain both our
+behavior planning process,
+
+237
+00:10:17.404 --> 00:10:19.400
+where we make maneuver decisions,
+
+238
+00:10:19.400 --> 00:10:21.665
+as well as our local
+planning process,
+
+239
+00:10:21.665 --> 00:10:24.595
+where it will affect
+our velocity profile planning.
+
+240
+00:10:24.595 --> 00:10:26.300
+We will be discussing this in
+
+241
+00:10:26.300 --> 00:10:29.450
+further detail in
+subsequent modules.
+
+242
+00:10:29.450 --> 00:10:31.700
+The final constraint that we will
+
+243
+00:10:31.700 --> 00:10:34.265
+discuss encompasses
+the rules of the road
+
+244
+00:10:34.265 --> 00:10:36.050
+as well as the
+regulatory elements
+
+245
+00:10:36.050 --> 00:10:38.960
+present in the ego
+vehicles workspace.
+
+246
+00:10:38.960 --> 00:10:41.210
+While the rules of
+the road provides
+
+247
+00:10:41.210 --> 00:10:43.350
+some constraints to
+the planning problem,
+
+248
+00:10:43.350 --> 00:10:44.720
+they also help us make
+
+249
+00:10:44.720 --> 00:10:46.970
+informed decisions
+about other agents
+
+250
+00:10:46.970 --> 00:10:48.725
+behaviors in the environment.
+
+251
+00:10:48.725 --> 00:10:50.000
+For example,
+
+252
+00:10:50.000 --> 00:10:53.230
+oncoming traffic is highly
+likely to stay in its lane,
+
+253
+00:10:53.230 --> 00:10:56.465
+and not try to collide with
+our ego vehicle head on.
+
+254
+00:10:56.465 --> 00:10:58.700
+This can help reduce
+the search space
+
+255
+00:10:58.700 --> 00:11:01.505
+when trying to predict
+what other agents will do.
+
+256
+00:11:01.505 --> 00:11:04.310
+One of the most common
+constraints imposed by
+
+257
+00:11:04.310 --> 00:11:07.135
+the rules of the road are
+the lane constraints.
+
+258
+00:11:07.135 --> 00:11:08.965
+The lane constraints simply put,
+
+259
+00:11:08.965 --> 00:11:11.780
+are there to prevent
+our motion plan from
+
+260
+00:11:11.780 --> 00:11:13.100
+leaving the ego vehicles
+
+261
+00:11:13.100 --> 00:11:15.830
+current lane unless
+it is legal to do so.
+
+262
+00:11:15.830 --> 00:11:18.680
+Lane constraints also
+inform the ego vehicle
+
+263
+00:11:18.680 --> 00:11:21.890
+where it is safe to perform
+turning maneuvers as well.
+
+264
+00:11:21.890 --> 00:11:24.020
+There are other soft rules of
+
+265
+00:11:24.020 --> 00:11:26.270
+the road that we need
+to respect as well,
+
+266
+00:11:26.270 --> 00:11:28.820
+such as maintaining
+a time gap between
+
+267
+00:11:28.820 --> 00:11:31.790
+the ego vehicle and
+leading vehicles in our lane.
+
+268
+00:11:31.790 --> 00:11:34.160
+The time gap is the amount
+of time that it
+
+269
+00:11:34.160 --> 00:11:36.200
+would take for
+the ego vehicle to reach
+
+270
+00:11:36.200 --> 00:11:38.135
+the leading vehicles
+current position
+
+271
+00:11:38.135 --> 00:11:41.150
+while traveling at
+the ego vehicle's current speed.
+
+272
+00:11:41.150 --> 00:11:43.610
+Maintaining a sizable
+time gap helps
+
+273
+00:11:43.610 --> 00:11:46.280
+ensure safety during
+motion planning,
+
+274
+00:11:46.280 --> 00:11:47.630
+by giving the ego vehicle
+
+275
+00:11:47.630 --> 00:11:51.185
+ample reaction time to
+events in the workspace.
+
+276
+00:11:51.185 --> 00:11:53.630
+The regulatory elements
+in the workspace
+
+277
+00:11:53.630 --> 00:11:56.060
+will also impact
+our driving behavior.
+
+278
+00:11:56.060 --> 00:11:58.460
+The ego vehicle clearly
+needs to respect
+
+279
+00:11:58.460 --> 00:12:01.160
+red lights and stop
+signs to ensure safety,
+
+280
+00:12:01.160 --> 00:12:03.440
+but also needs to be
+aware of speed limits in
+
+281
+00:12:03.440 --> 00:12:06.740
+different areas and other
+dynamic regulatory elements,
+
+282
+00:12:06.740 --> 00:12:10.705
+such as those presented
+by construction sites.
+
+283
+00:12:10.705 --> 00:12:13.070
+In general, regulatory elements
+
+284
+00:12:13.070 --> 00:12:14.810
+will have a large impact on
+
+285
+00:12:14.810 --> 00:12:16.715
+which behaviors are
+available to us
+
+286
+00:12:16.715 --> 00:12:18.830
+when performing motion planning,
+
+287
+00:12:18.830 --> 00:12:22.370
+and will be discussed in
+further detail in module five.
+
+288
+00:12:22.370 --> 00:12:24.260
+Now that we've discussed many of
+
+289
+00:12:24.260 --> 00:12:26.720
+the autonomous driving
+motion planning constraints,
+
+290
+00:12:26.720 --> 00:12:29.555
+let's summarize what
+we've learned so far.
+
+291
+00:12:29.555 --> 00:12:33.365
+In this video, we first
+reviewed our bicycle model,
+
+292
+00:12:33.365 --> 00:12:36.635
+and looked at how the models
+kinematics and dynamics,
+
+293
+00:12:36.635 --> 00:12:38.375
+as well as the path curvature
+
+294
+00:12:38.375 --> 00:12:40.960
+constrain our motion
+planning problem.
+
+295
+00:12:40.960 --> 00:12:43.984
+Next, we looked at
+how static obstacles
+
+296
+00:12:43.984 --> 00:12:47.195
+limit the locations
+our car can safely occupy,
+
+297
+00:12:47.195 --> 00:12:50.945
+which restricts our feasible
+motion planning workspace,
+
+298
+00:12:50.945 --> 00:12:54.530
+as well as how dynamic
+obstacles impact the maneuvers
+
+299
+00:12:54.530 --> 00:12:58.555
+available to the ego vehicle
+and its velocity profile.
+
+300
+00:12:58.555 --> 00:13:01.280
+Finally, we discussed the role of
+
+301
+00:13:01.280 --> 00:13:03.110
+regulatory elements and how
+
+302
+00:13:03.110 --> 00:13:05.380
+they affect
+our driving behaviors.
+
+303
+00:13:05.380 --> 00:13:07.190
+Hopefully, this lesson has given
+
+304
+00:13:07.190 --> 00:13:08.600
+you some insight into some of
+
+305
+00:13:08.600 --> 00:13:10.670
+the constraints of
+the motion planning problem
+
+306
+00:13:10.670 --> 00:13:12.095
+for autonomous driving.
+
+307
+00:13:12.095 --> 00:13:13.460
+In our next video,
+
+308
+00:13:13.460 --> 00:13:16.010
+we'll dive into some of
+the optimization objectives
+
+309
+00:13:16.010 --> 00:13:17.030
+used for solving
+
+310
+00:13:17.030 --> 00:13:20.220
+the motion planning problem.
+See you there.

@@ -1,0 +1,368 @@
+WEBVTT
+
+1
+00:00:00.153 --> 00:00:10.153
+[MUSIC]
+
+2
+00:00:15.566 --> 00:00:17.774
+Now, we've introduced the Kalman Filter,
+
+3
+00:00:17.774 --> 00:00:21.909
+let's discuss little bit about what makes
+it such an appealing estimation method.
+
+4
+00:00:21.909 --> 00:00:23.053
+By the end of this lesson,
+
+5
+00:00:23.053 --> 00:00:27.320
+you'll be able to define a few terms
+that are important in state estimation.
+
+6
+00:00:27.320 --> 00:00:31.680
+First, the concept of bias.
+
+7
+00:00:31.680 --> 00:00:34.280
+And second, consistency.
+
+8
+00:00:34.280 --> 00:00:38.400
+Finally, you'll use these definitions to
+show why the Kalman Filter is the best
+
+9
+00:00:38.400 --> 00:00:41.400
+Linear Unbiased Estimator, or BLUE.
+
+10
+00:00:41.400 --> 00:00:41.940
+Let's dive in.
+
+11
+00:00:43.130 --> 00:00:45.390
+First, let's discuss bias.
+
+12
+00:00:45.390 --> 00:00:48.670
+Let's consider our Kalman Filter
+from the previous lesson and
+
+13
+00:00:48.670 --> 00:00:51.990
+use it to estimate the position
+of our autonomous car.
+
+14
+00:00:51.990 --> 00:00:55.520
+If we have some way of knowing the true
+position of the vehicle, for example,
+
+15
+00:00:55.520 --> 00:00:57.160
+an oracle tells us,
+
+16
+00:00:57.160 --> 00:01:01.870
+we can then use this to record a position
+error of our filter at each time step k.
+
+17
+00:01:01.870 --> 00:01:05.840
+Since we're dealing with random noise,
+doing this once is not enough.
+
+18
+00:01:05.840 --> 00:01:09.440
+We'll need to repeat this same
+process over and over and
+
+19
+00:01:09.440 --> 00:01:12.830
+record our position
+error at each time step.
+
+20
+00:01:12.830 --> 00:01:16.860
+Once we've collected these errors, if they
+average to zero at a particular time step
+
+21
+00:01:16.860 --> 00:01:22.200
+k, then we say the Kalman Filter
+estimate is unbiased at this time step.
+
+22
+00:01:22.200 --> 00:01:25.370
+Graphically, this is what
+the situation may look like.
+
+23
+00:01:25.370 --> 00:01:29.060
+Say the particular time step, we know
+that the true position is the following.
+
+24
+00:01:30.060 --> 00:01:34.620
+We build a histogram of the positions that
+our filter reports over multiple trials,
+
+25
+00:01:34.620 --> 00:01:38.800
+and then compute the difference between
+the average of these estimates and
+
+26
+00:01:38.800 --> 00:01:40.490
+the true position.
+
+27
+00:01:40.490 --> 00:01:43.930
+If this difference does not approach zero,
+then our estimate is biased.
+
+28
+00:01:45.310 --> 00:01:49.832
+However, if this difference does approach
+zero as we repeat this experiment
+
+29
+00:01:49.832 --> 00:01:53.450
+many more times, and
+if this happens for all time intervals,
+
+30
+00:01:53.450 --> 00:01:55.834
+then we say that our filter is unbiased.
+
+31
+00:01:58.143 --> 00:02:01.406
+Although we could potentially verify
+this lack of bias empirically,
+
+32
+00:02:01.406 --> 00:02:05.040
+what we'd really like are some
+theoretical guarantees.
+
+33
+00:02:05.040 --> 00:02:07.150
+Let's consider the error
+dynamics of our filter.
+
+34
+00:02:08.590 --> 00:02:13.221
+Defining our predicted and corrected state
+errors, we can then use the common filter
+
+35
+00:02:13.221 --> 00:02:15.741
+equations to write
+the following relations.
+
+36
+00:02:20.610 --> 00:02:21.943
+For the Kalman Filter,
+
+37
+00:02:21.943 --> 00:02:26.150
+we can show the expectation value of
+these errors is equal to zero exactly.
+
+38
+00:02:27.290 --> 00:02:30.660
+For this to be true, we need to ensure
+that our initial state estimate
+
+39
+00:02:30.660 --> 00:02:35.625
+is unbiased and that our noise is white,
+uncorrelated, and zero mean.
+
+40
+00:02:35.625 --> 00:02:38.557
+While this is a great result for
+linear systems,
+
+41
+00:02:38.557 --> 00:02:43.350
+remember that this doesn't guarantee that
+our estimates will be error free for
+
+42
+00:02:43.350 --> 00:02:47.302
+a given trial, only that the expected
+value of the error is zero.
+
+43
+00:02:49.212 --> 00:02:52.590
+Kalman Filters are also
+what is called consistent.
+
+44
+00:02:52.590 --> 00:02:57.195
+By consistency we mean that for
+all time steps k, the filter
+
+45
+00:02:57.195 --> 00:03:02.910
+co-variants P sub k matches the expected
+value of the square of our error.
+
+46
+00:03:02.910 --> 00:03:06.580
+For scalar parameters,
+this means that the empirical variance
+
+47
+00:03:06.580 --> 00:03:09.749
+of our estimate should match
+the variance reported by the filter.
+
+48
+00:03:10.750 --> 00:03:14.730
+Practically, this means that our
+filter is neither overconfident, nor
+
+49
+00:03:14.730 --> 00:03:17.470
+underconfident in
+the estimate it has produced.
+
+50
+00:03:18.570 --> 00:03:21.370
+A filter that is overconfident,
+and hence inconsistent,
+
+51
+00:03:21.370 --> 00:03:24.770
+will report a covariance
+that is optimistic.
+
+52
+00:03:24.770 --> 00:03:29.000
+That is, the filter will essentially place
+too much emphasis on its own estimate and
+
+53
+00:03:29.000 --> 00:03:32.010
+will be less sensitive to
+future measurement updates,
+
+54
+00:03:32.010 --> 00:03:33.590
+which may provide critical information.
+
+55
+00:03:35.200 --> 00:03:39.390
+It's easy to see how an overconfident
+filter might have a negative or
+
+56
+00:03:39.390 --> 00:03:43.010
+dangerous effect on the performance
+of self-driving car.
+
+57
+00:03:43.010 --> 00:03:47.000
+Showing the consistency property formally
+is outside of the scope of the course.
+
+58
+00:03:47.000 --> 00:03:50.320
+You can take my word that it is
+indeed true for a common filter.
+
+59
+00:03:51.400 --> 00:03:54.270
+So long as our initial
+estimate is consistent, and
+
+60
+00:03:54.270 --> 00:03:58.990
+we have white zero mean noise,
+then all estimates will be consistent.
+
+61
+00:03:58.990 --> 00:04:02.000
+Putting everything together,
+we've shown that given white
+
+62
+00:04:02.000 --> 00:04:06.780
+uncorrelated zero mean noise, the Kalman
+Filter is unbiased and consistent.
+
+63
+00:04:08.150 --> 00:04:09.920
+Because of these two facts,
+
+64
+00:04:09.920 --> 00:04:15.150
+we say that the Kalman Filter is the BLUE,
+the best linear unbiased estimator.
+
+65
+00:04:15.150 --> 00:04:19.025
+It produces unbiased estimates with
+the minimum possible variance.
+
+66
+00:04:22.068 --> 00:04:27.058
+To summarize, in this lesson
+we've defined the terms bias and
+
+67
+00:04:27.058 --> 00:04:32.049
+consistency, and
+showed that the Kalman Filter is unbiased,
+
+68
+00:04:32.049 --> 00:04:37.246
+consistent, and the Best Linear
+Unbiased Estimator, or BLUE.
+
+69
+00:04:37.246 --> 00:04:42.127
+Remember that best here refers to
+the fact that the Kalman Filter minimizes
+
+70
+00:04:42.127 --> 00:04:43.527
+the state variance.
+
+71
+00:04:43.527 --> 00:04:48.738
+Although this is a fantastic result,
+most real systems are not linear.
+
+72
+00:04:48.738 --> 00:04:53.272
+For self-driving cars, we'll
+generally need to estimate non-linear
+
+73
+00:04:53.272 --> 00:04:58.038
+quantities like vehicle poses,
+position, and orientation in 2D and 3D.
+
+74
+00:04:58.038 --> 00:04:58.789
+To do this,
+
+75
+00:04:58.789 --> 00:05:03.682
+we'll need to extend the linear
+Kalman Filter into the non-linear domain.
+
+76
+00:05:03.682 --> 00:05:05.030
+We'll do this in the next lesson.
+
+77
+00:05:05.030 --> 00:05:15.030
+[MUSIC]

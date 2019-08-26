@@ -1,0 +1,67 @@
+Congratulations. You've almost completed this specialization
+on self-driving cars. Now it's time to take everything you've learned in
+the fourth course on planning and apply it
+in a real-world project. In this project we'll be tying together many of
+the concepts we've discussed throughout this course to create a fully functional motion
+planner for an autonomous car. By doing this, you
+will have created a complete motion planner
+that is able to handle real-world scenarios
+that are consistently encountered by autonomous
+vehicles every day. In particular, by
+the end of this project you should be able to use the polynomial spiral
+optimization formulation we've covered in Module seven lectures to generate paths for
+an autonomous car. From these paths, you
+should be able to perform static obstacle avoidance using a circle-based
+collision checking method we developed in Module four. From a feasible
+collision-free path you should then be
+able to generate a velocity profile that takes a leading dynamic obstacles
+into consideration. Finally, you should
+be able to implement a state machine
+behavioral planner that can handle a stop sign scenario using the concepts
+discussed in Module six. The main objective of this project is to integrate
+the knowledge that we've discussed throughout
+the modules of this course to create a full motion planner for an autonomous vehicle. To do this, you will be writing Python code to interact
+with the CARLA simulator, and which we've prepared a scenario that
+you must navigate. We will be reusing the controller developed in course one for
+our autonomous vehicle, so we can focus solely on the planning aspects for the car. We will also be assuming that
+all relevant knowledge of our surroundings is available to us as the car traverses
+the scenario. This means we will
+not be integrating the sensing and image
+processing methods developed in course two on state
+estimation and localization, and in course three
+on visual perception. In this project, you will
+be following a set of way-points in
+a given road network until you reach a goal. There are three
+main challenges in this scenario that you will face before reaching the goal. The first will be
+a static parked obstacle that will be blocking
+your current lane. You'll be given discrete samples of the footprint of the obstacle, and you will need
+to use circles to approximate the footprint
+of the ego vehicle along each plan path in order to
+quickly compute whether or not the path is in
+collision with the obstacle. By removing the paths
+in collision with this obstacle from
+our planning process, you will be able to avoid
+the obstacle entirely. Next, you will encounter
+a lead vehicle. This vehicle will be moving
+below the speed limit, and as such you will
+have to regulate your velocity profile accordingly
+to prevent a collision. Finally, you will reach a stop-sign controlled
+intersection. You will need to develop a state machine that can
+handle the stop sign, which means it must have the ability to
+decelerate to a stop, briefly weight once stopped, and then proceed through
+the intersection. Once this is complete, you will have fully progressed through our simulation scenario, and you will have constructed
+emotion planner that can handle many of the challenges that are present in
+autonomous driving. Your vehicle will
+be operating in one of CARLA tests environments, so don't hesitate to build out your planning solution to handle vehicles at other intersections, or to navigate from a start
+to a goal location, or even to pass a lead vehicle if
+the roadway is clear ahead. There are many more
+scenarios that you can consider based on what you've
+learned in this course, and we encourage you
+to explore as many of the concepts from
+this specialization as you wish. If you have any questions that I didn't answer in this video, there are further instructions in the programming
+assignment itself, and you can always ask in
+the discussion forums as well. I hope you have fun with
+this final project. I'll see you again
+once it's completed to close out the course and
+the overall specialization. Best of luck on
+this final project of this specialization.

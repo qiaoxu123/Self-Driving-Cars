@@ -1,0 +1,994 @@
+WEBVTT
+
+1
+00:00:13.430 --> 00:00:15.840
+So far in this module,
+
+2
+00:00:15.840 --> 00:00:17.310
+you've learned how to detect,
+
+3
+00:00:17.310 --> 00:00:19.350
+describe and match features,
+
+4
+00:00:19.350 --> 00:00:20.415
+as well as how to handle
+
+5
+00:00:20.415 --> 00:00:23.160
+outliers in our feature
+matching results.
+
+6
+00:00:23.160 --> 00:00:25.680
+We've also explored
+an example of how to
+
+7
+00:00:25.680 --> 00:00:28.785
+use features to localize
+an object in an image,
+
+8
+00:00:28.785 --> 00:00:30.540
+which could be used to estimate
+
+9
+00:00:30.540 --> 00:00:34.230
+the depth to the object
+from a pair of images.
+
+10
+00:00:34.230 --> 00:00:36.660
+In this lesson,
+you will learn how
+
+11
+00:00:36.660 --> 00:00:38.775
+to perform visual odometry,
+
+12
+00:00:38.775 --> 00:00:40.230
+a fundamental task for
+
+13
+00:00:40.230 --> 00:00:44.025
+vision-based state estimation
+in autonomous vehicles.
+
+14
+00:00:44.025 --> 00:00:47.115
+Visual odometry, or VO for short,
+
+15
+00:00:47.115 --> 00:00:49.550
+can be defined as
+the process of incrementally
+
+16
+00:00:49.550 --> 00:00:52.130
+estimating the pose
+of the vehicle by
+
+17
+00:00:52.130 --> 00:00:54.050
+examining the changes that motion
+
+18
+00:00:54.050 --> 00:00:57.380
+induces on the images
+of its onboard cameras.
+
+19
+00:00:57.380 --> 00:00:59.240
+It is similar to the concept of
+
+20
+00:00:59.240 --> 00:01:01.805
+wheel odometry you learned
+in the second course,
+
+21
+00:01:01.805 --> 00:01:05.450
+but with cameras
+instead of encoders.
+
+22
+00:01:05.450 --> 00:01:09.035
+What do you think using
+visual odometry might offer
+
+23
+00:01:09.035 --> 00:01:12.920
+over regular wheel odometry
+for autonomous cars?
+
+24
+00:01:12.920 --> 00:01:16.190
+Visual odometry does
+not suffer from wheel
+
+25
+00:01:16.190 --> 00:01:18.665
+slip while turning
+or an uneven terrain
+
+26
+00:01:18.665 --> 00:01:20.900
+and tends to be able to
+produce more accurate
+
+27
+00:01:20.900 --> 00:01:24.215
+trajectory estimates when
+compared to wheel odometry.
+
+28
+00:01:24.215 --> 00:01:26.720
+This is because of
+the larger quantity of
+
+29
+00:01:26.720 --> 00:01:30.025
+information available
+from an image.
+
+30
+00:01:30.025 --> 00:01:32.840
+However, we usually
+cannot estimate
+
+31
+00:01:32.840 --> 00:01:35.780
+the absolute scale
+from a single camera.
+
+32
+00:01:35.780 --> 00:01:38.780
+What this means is
+that estimation of
+
+33
+00:01:38.780 --> 00:01:41.360
+motion produced from
+one camera can be
+
+34
+00:01:41.360 --> 00:01:45.245
+stretched or compressed in the
+3D world without affecting
+
+35
+00:01:45.245 --> 00:01:47.630
+the pixel feature locations by
+
+36
+00:01:47.630 --> 00:01:49.520
+adjusting the relative
+motion estimate
+
+37
+00:01:49.520 --> 00:01:51.125
+between the two images.
+
+38
+00:01:51.125 --> 00:01:54.830
+As a result, we need
+at least one additional sensor,
+
+39
+00:01:54.830 --> 00:01:57.919
+often a second camera or an
+inertial measurement unit,
+
+40
+00:01:57.919 --> 00:01:59.135
+to be able to provide
+
+41
+00:01:59.135 --> 00:02:03.360
+accurately scaled
+trajectories when using VO.
+
+42
+00:02:03.360 --> 00:02:06.140
+Furthermore, cameras
+are sensitive
+
+43
+00:02:06.140 --> 00:02:08.210
+to extreme illumination changes,
+
+44
+00:02:08.210 --> 00:02:10.220
+making it difficult
+to perform VO at
+
+45
+00:02:10.220 --> 00:02:13.325
+night and in the presence of
+headlights and streetlights.
+
+46
+00:02:13.325 --> 00:02:15.485
+Finally, as seen with
+
+47
+00:02:15.485 --> 00:02:17.780
+other odometry
+estimation mechanisms,
+
+48
+00:02:17.780 --> 00:02:20.540
+pose estimates from
+VO will always
+
+49
+00:02:20.540 --> 00:02:23.735
+drift over time as
+estimation errors accumulate.
+
+50
+00:02:23.735 --> 00:02:27.050
+For this reason, we often
+quote VO performance
+
+51
+00:02:27.050 --> 00:02:30.935
+as a percentage error per
+unit distance traveled.
+
+52
+00:02:30.935 --> 00:02:34.835
+Let's define the visual odometry
+problem mathematically.
+
+53
+00:02:34.835 --> 00:02:37.025
+Given two consecutive
+image frames,
+
+54
+00:02:37.025 --> 00:02:39.185
+I_k minus one and I_k,
+
+55
+00:02:39.185 --> 00:02:42.785
+we want to estimate
+a transformation matrix T_k
+
+56
+00:02:42.785 --> 00:02:45.020
+defined by the translation T
+
+57
+00:02:45.020 --> 00:02:47.875
+and a rotation R
+between the two frames.
+
+58
+00:02:47.875 --> 00:02:50.980
+Concatenating the sequence
+of transformations
+
+59
+00:02:50.980 --> 00:02:53.860
+estimated at each time
+step k from k
+
+60
+00:02:53.860 --> 00:02:56.470
+naught to capital K
+will provide us with
+
+61
+00:02:56.470 --> 00:02:57.640
+the full trajectory of
+
+62
+00:02:57.640 --> 00:03:00.230
+the camera over
+the sequence of images.
+
+63
+00:03:00.230 --> 00:03:02.020
+Since the camera is rigidly
+
+64
+00:03:02.020 --> 00:03:03.955
+attached to the
+autonomous vehicle,
+
+65
+00:03:03.955 --> 00:03:05.875
+this also represents an estimate
+
+66
+00:03:05.875 --> 00:03:07.825
+of the vehicle's trajectory.
+
+67
+00:03:07.825 --> 00:03:10.330
+Now we'll describe
+the general process
+
+68
+00:03:10.330 --> 00:03:11.755
+of visual odometry.
+
+69
+00:03:11.755 --> 00:03:14.250
+We are given two
+consecutive image frames,
+
+70
+00:03:14.250 --> 00:03:16.230
+I_k and I_k minus one,
+
+71
+00:03:16.230 --> 00:03:18.480
+and we want to estimate
+the transformation T_k
+
+72
+00:03:18.480 --> 00:03:20.560
+between these two frames.
+
+73
+00:03:20.560 --> 00:03:24.775
+First, we perform feature
+detection and description.
+
+74
+00:03:24.775 --> 00:03:27.970
+We end up with a set
+of features f_k minus
+
+75
+00:03:27.970 --> 00:03:31.210
+one in image k minus
+one and F_k in
+
+76
+00:03:31.210 --> 00:03:34.970
+image of k. We then proceed
+to match the features
+
+77
+00:03:34.970 --> 00:03:37.010
+between the two frames
+to find the ones
+
+78
+00:03:37.010 --> 00:03:39.940
+occurring in both of
+our target frames.
+
+79
+00:03:39.940 --> 00:03:42.470
+After that, we use
+the matched features
+
+80
+00:03:42.470 --> 00:03:43.880
+to estimate the motion between
+
+81
+00:03:43.880 --> 00:03:45.125
+the two camera frames
+
+82
+00:03:45.125 --> 00:03:47.690
+represented by
+the transformation T_k.
+
+83
+00:03:47.690 --> 00:03:51.500
+Motion estimation is
+the most important step in VO,
+
+84
+00:03:51.500 --> 00:03:53.900
+and will be the main theme
+of this lesson.
+
+85
+00:03:53.900 --> 00:03:56.585
+The way we perform the
+motion estimation step
+
+86
+00:03:56.585 --> 00:04:00.515
+depends on what type of feature
+representation we have.
+
+87
+00:04:00.515 --> 00:04:03.754
+In 2D-2D motion estimation,
+
+88
+00:04:03.754 --> 00:04:05.990
+feature matches in
+both frames are
+
+89
+00:04:05.990 --> 00:04:08.840
+described purely in
+image coordinates.
+
+90
+00:04:08.840 --> 00:04:11.000
+This form of visual odometry is
+
+91
+00:04:11.000 --> 00:04:13.865
+great for tracking objects
+in the image frame.
+
+92
+00:04:13.865 --> 00:04:17.090
+This is extremely useful
+for visual tracking and
+
+93
+00:04:17.090 --> 00:04:20.545
+image stabilization in
+videography, for example.
+
+94
+00:04:20.545 --> 00:04:23.785
+In 3D-3D motion estimation,
+
+95
+00:04:23.785 --> 00:04:25.520
+feature matches are described
+
+96
+00:04:25.520 --> 00:04:27.545
+in the world 3D coordinate frame.
+
+97
+00:04:27.545 --> 00:04:30.440
+This approach requires
+the ability to locate
+
+98
+00:04:30.440 --> 00:04:33.080
+new image features in 3D space,
+
+99
+00:04:33.080 --> 00:04:36.555
+and is therefore used with
+depth cameras, stereo cameras,
+
+100
+00:04:36.555 --> 00:04:38.735
+and other multi-camera
+configurations
+
+101
+00:04:38.735 --> 00:04:40.955
+that can provide
+depth information.
+
+102
+00:04:40.955 --> 00:04:43.520
+These two cases are
+important and follow
+
+103
+00:04:43.520 --> 00:04:46.085
+the same general visual
+odometry framework
+
+104
+00:04:46.085 --> 00:04:49.390
+that we'll use for
+the rest of this lesson.
+
+105
+00:04:49.390 --> 00:04:54.384
+Let's take a closer look at
+3D-2D motion estimation,
+
+106
+00:04:54.384 --> 00:04:56.270
+where the features from frame k
+
+107
+00:04:56.270 --> 00:04:58.490
+minus one are specified
+in the 3D world
+
+108
+00:04:58.490 --> 00:05:00.920
+coordinates while
+their matches in frame
+
+109
+00:05:00.920 --> 00:05:04.350
+k are specified in
+image coordinates.
+
+110
+00:05:04.350 --> 00:05:08.825
+Here's how 3D-2D
+motion estimation is performed.
+
+111
+00:05:08.825 --> 00:05:11.900
+We are given the set of
+features in frame k minus
+
+112
+00:05:11.900 --> 00:05:15.290
+one and estimates of their
+3D world coordinates.
+
+113
+00:05:15.290 --> 00:05:17.915
+Furthermore, through
+feature matching,
+
+114
+00:05:17.915 --> 00:05:19.730
+we also have the 2D image
+
+115
+00:05:19.730 --> 00:05:22.520
+coordinates of the same features
+in the new frame
+
+116
+00:05:22.520 --> 00:05:25.670
+k. Note that since we cannot
+
+117
+00:05:25.670 --> 00:05:26.810
+recover the scale for
+
+118
+00:05:26.810 --> 00:05:29.300
+a monocular visual
+odometry directly,
+
+119
+00:05:29.300 --> 00:05:32.060
+we include a scaling
+parameter S when forming
+
+120
+00:05:32.060 --> 00:05:33.785
+the homogeneous feature vector
+
+121
+00:05:33.785 --> 00:05:36.005
+from the image coordinates.
+
+122
+00:05:36.005 --> 00:05:38.870
+We want to use
+this information to estimate
+
+123
+00:05:38.870 --> 00:05:40.520
+the rotation matrix R and
+
+124
+00:05:40.520 --> 00:05:44.300
+a translation vector t between
+the two camera frames.
+
+125
+00:05:44.300 --> 00:05:46.190
+Does this figure remind you of
+
+126
+00:05:46.190 --> 00:05:48.755
+something that we've
+learned about previously?
+
+127
+00:05:48.755 --> 00:05:52.405
+If you're thinking of camera
+calibration, you're correct.
+
+128
+00:05:52.405 --> 00:05:55.700
+In fact, we use the same
+projective geometry equations
+
+129
+00:05:55.700 --> 00:05:59.435
+we used for calibration in
+visual odometry as well.
+
+130
+00:05:59.435 --> 00:06:03.800
+A simplifying distinction to
+note between calibration and
+
+131
+00:06:03.800 --> 00:06:05.030
+VO is that
+
+132
+00:06:05.030 --> 00:06:06.590
+the camera intrinsic calibration
+
+133
+00:06:06.590 --> 00:06:08.570
+matrix k is already known.
+
+134
+00:06:08.570 --> 00:06:11.465
+So we don't have to
+solve for it again.
+
+135
+00:06:11.465 --> 00:06:13.610
+Our problem now reduces to
+
+136
+00:06:13.610 --> 00:06:16.340
+the estimation of the
+transformation components R and
+
+137
+00:06:16.340 --> 00:06:18.560
+t from the system of equations
+
+138
+00:06:18.560 --> 00:06:22.100
+constructed using all of
+our matched features.
+
+139
+00:06:22.100 --> 00:06:24.980
+One way we can solve
+for the rotation and
+
+140
+00:06:24.980 --> 00:06:26.570
+translation t is by
+
+141
+00:06:26.570 --> 00:06:29.255
+using the Perspective-n-Point
+algorithm.
+
+142
+00:06:29.255 --> 00:06:31.580
+Given feature locations in 3D,
+
+143
+00:06:31.580 --> 00:06:34.190
+their corresponding
+projection in 2D,
+
+144
+00:06:34.190 --> 00:06:37.150
+and the camera intrinsic
+calibration matrix k,
+
+145
+00:06:37.150 --> 00:06:41.630
+PnP solves for the extrinsic
+transformations as follows.
+
+146
+00:06:41.630 --> 00:06:46.130
+First, PnP uses the Direct
+Linear Transform to solve for
+
+147
+00:06:46.130 --> 00:06:50.610
+an initial guess for R
+and t. The DLT method
+
+148
+00:06:50.610 --> 00:06:52.250
+for estimating R and t
+
+149
+00:06:52.250 --> 00:06:54.890
+requires a linear model
+and constructs
+
+150
+00:06:54.890 --> 00:06:56.795
+a set of linear
+equations to solve
+
+151
+00:06:56.795 --> 00:06:59.675
+using standard methods
+such as SVD.
+
+152
+00:06:59.675 --> 00:07:02.970
+However, the equations
+we have are nonlinear in
+
+153
+00:07:02.970 --> 00:07:06.090
+the parameters of R and
+t. In the next step,
+
+154
+00:07:06.090 --> 00:07:08.810
+we'll refine the initial
+DLT solution with
+
+155
+00:07:08.810 --> 00:07:11.285
+an iterative nonlinear
+optimization technique
+
+156
+00:07:11.285 --> 00:07:14.005
+such as the Luvenburg
+Marquardt method.
+
+157
+00:07:14.005 --> 00:07:18.070
+The PnP algorithm requires
+at least three features
+
+158
+00:07:18.070 --> 00:07:21.460
+to solve for R and t. When
+only three features are used,
+
+159
+00:07:21.460 --> 00:07:23.280
+four possible solutions results,
+
+160
+00:07:23.280 --> 00:07:25.150
+and so a fourth feature point is
+
+161
+00:07:25.150 --> 00:07:27.965
+employed to decide
+which solution is valid.
+
+162
+00:07:27.965 --> 00:07:32.320
+Finally, RANSAC can be
+incorporated into PnP by
+
+163
+00:07:32.320 --> 00:07:34.720
+assuming that the
+transformation generated by
+
+164
+00:07:34.720 --> 00:07:37.540
+PnP on four points is our model.
+
+165
+00:07:37.540 --> 00:07:39.430
+We then choose a subset of all
+
+166
+00:07:39.430 --> 00:07:42.310
+feature matches to evaluate
+this model and check
+
+167
+00:07:42.310 --> 00:07:44.665
+the percentage of
+inliers that result
+
+168
+00:07:44.665 --> 00:07:47.845
+to confirm the validity of
+the point matches selected.
+
+169
+00:07:47.845 --> 00:07:49.590
+The PnP method is
+
+170
+00:07:49.590 --> 00:07:50.740
+an efficient approach to
+
+171
+00:07:50.740 --> 00:07:52.810
+solving the visual
+odometry problem,
+
+172
+00:07:52.810 --> 00:07:54.460
+but uses only a subset of
+
+173
+00:07:54.460 --> 00:07:56.870
+the available matches to
+compute the solution.
+
+174
+00:07:56.870 --> 00:07:59.360
+We can improve on PnP by applying
+
+175
+00:07:59.360 --> 00:08:01.025
+the batch estimation techniques
+
+176
+00:08:01.025 --> 00:08:02.840
+you studied in course two.
+
+177
+00:08:02.840 --> 00:08:04.730
+By doing so, we can also
+
+178
+00:08:04.730 --> 00:08:06.725
+incorporate additional
+measurements from
+
+179
+00:08:06.725 --> 00:08:08.600
+other onboard sensors and
+
+180
+00:08:08.600 --> 00:08:11.735
+incorporate vision into
+the state estimation pipeline.
+
+181
+00:08:11.735 --> 00:08:13.610
+With vision included,
+we can better
+
+182
+00:08:13.610 --> 00:08:16.040
+handle GPS-denied
+environments and
+
+183
+00:08:16.040 --> 00:08:18.155
+improve both the accuracy
+
+184
+00:08:18.155 --> 00:08:21.260
+and reliability of
+our pose estimates.
+
+185
+00:08:21.260 --> 00:08:23.570
+There are many more
+interesting details to
+
+186
+00:08:23.570 --> 00:08:26.455
+consider when implementing
+VO algorithms.
+
+187
+00:08:26.455 --> 00:08:28.520
+Fortunately, the PnP method has
+
+188
+00:08:28.520 --> 00:08:31.490
+a robust implementation
+available in OpenCV.
+
+189
+00:08:31.490 --> 00:08:34.565
+In fact, OpenCV even
+contains a version
+
+190
+00:08:34.565 --> 00:08:38.015
+of PnP with RANSAC incorporated
+for outlier rejection.
+
+191
+00:08:38.015 --> 00:08:41.180
+You can follow the link in
+the supplementary reading for
+
+192
+00:08:41.180 --> 00:08:45.240
+a description on how
+to use PnP in OpenCV.
+
+193
+00:08:45.240 --> 00:08:47.750
+In this lesson, you learned why
+
+194
+00:08:47.750 --> 00:08:50.600
+visual odometry is an
+attractive solution to estimate
+
+195
+00:08:50.600 --> 00:08:53.630
+the trajectory of a self-driving
+car and how to perform
+
+196
+00:08:53.630 --> 00:08:57.290
+visual odometry for
+3D-2D correspondences.
+
+197
+00:08:57.290 --> 00:08:59.150
+Next week, we'll delve into
+
+198
+00:08:59.150 --> 00:09:01.040
+a fundamental approach
+to extracting
+
+199
+00:09:01.040 --> 00:09:02.540
+information from images for
+
+200
+00:09:02.540 --> 00:09:06.280
+self-driving car perception,
+deep neural networks.
+
+201
+00:09:06.280 --> 00:09:08.420
+By this point,
+you've now finished
+
+202
+00:09:08.420 --> 00:09:10.190
+the second week of
+visual perception
+
+203
+00:09:10.190 --> 00:09:11.555
+for self-driving cars.
+
+204
+00:09:11.555 --> 00:09:13.430
+Don't worry if you
+did not acquire
+
+205
+00:09:13.430 --> 00:09:16.520
+a full grasp of all the material
+explained in this week.
+
+206
+00:09:16.520 --> 00:09:18.020
+In this week's assignment,
+
+207
+00:09:18.020 --> 00:09:19.925
+you'll be gaining
+hands-on experience
+
+208
+00:09:19.925 --> 00:09:21.905
+on all of these topics.
+
+209
+00:09:21.905 --> 00:09:24.335
+You'll use feature
+detection, matching,
+
+210
+00:09:24.335 --> 00:09:26.300
+and the PnP algorithm to build
+
+211
+00:09:26.300 --> 00:09:28.084
+your own autonomous vehicle
+
+212
+00:09:28.084 --> 00:09:30.710
+visual odometry system in Python.
+
+213
+00:09:30.710 --> 00:09:33.250
+See you in the next module.

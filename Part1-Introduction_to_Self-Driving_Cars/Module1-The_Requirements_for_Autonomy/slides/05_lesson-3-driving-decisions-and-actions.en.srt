@@ -1,0 +1,615 @@
+1
+00:00:13,640 --> 00:00:18,200
+Welcome to the third and final video of this week.
+
+2
+00:00:18,200 --> 00:00:23,405
+In this video, we will be discussing decision-making in the self-driving car system.
+
+3
+00:00:23,405 --> 00:00:25,310
+Recall that in the last video,
+
+4
+00:00:25,310 --> 00:00:30,365
+we discussed the perception which forms the first step in performing a driving task.
+
+5
+00:00:30,365 --> 00:00:33,620
+The other steps in driving include decision-making and then,
+
+6
+00:00:33,620 --> 00:00:36,310
+finally, executing the decisions.
+
+7
+00:00:36,310 --> 00:00:41,750
+In this video, we will categorize planning informally on the basis of the window
+
+8
+00:00:41,750 --> 00:00:47,350
+of time over which the decision has to be made and discuss some examples.
+
+9
+00:00:47,350 --> 00:00:52,340
+Then we will go over a simple intersection scenario and try to list out
+
+10
+00:00:52,340 --> 00:00:57,190
+some of the various decisions needed to complete the driving task successfully.
+
+11
+00:00:57,190 --> 00:01:00,050
+We will then categorize planning formerly
+
+12
+00:01:00,050 --> 00:01:03,290
+based on the type of logic we use to make the decisions.
+
+13
+00:01:03,290 --> 00:01:06,800
+So, is our logic made up of well-defined rules that
+
+14
+00:01:06,800 --> 00:01:11,095
+react only to currently available information about the driving environment?
+
+15
+00:01:11,095 --> 00:01:16,430
+Or is it also dependent on trajectory predictions of other agents?
+
+16
+00:01:16,430 --> 00:01:18,605
+Let's get started.
+
+17
+00:01:18,605 --> 00:01:23,120
+Making driving decisions falls under the bigger umbrella of planning.
+
+18
+00:01:23,120 --> 00:01:25,010
+When we make driving decisions,
+
+19
+00:01:25,010 --> 00:01:28,340
+we usually have three kinds of decisions to make.
+
+20
+00:01:28,340 --> 00:01:31,475
+The first type is a long-term planning decision.
+
+21
+00:01:31,475 --> 00:01:32,960
+A question such as,
+
+22
+00:01:32,960 --> 00:01:37,465
+how do I navigate from New York to Los Angeles or from my home to work?
+
+23
+00:01:37,465 --> 00:01:38,955
+By answering this question,
+
+24
+00:01:38,955 --> 00:01:40,420
+we have a mission plan,
+
+25
+00:01:40,420 --> 00:01:44,195
+a high-level plan for the entire driving task.
+
+26
+00:01:44,195 --> 00:01:47,720
+Mapping applications that you use today are able to give you
+
+27
+00:01:47,720 --> 00:01:51,060
+these driving instructions: which roads to take,
+
+28
+00:01:51,060 --> 00:01:53,390
+which lanes to be in, and so on.
+
+29
+00:01:53,390 --> 00:01:56,000
+But driving needs much more than that.
+
+30
+00:01:56,000 --> 00:02:00,470
+The second type is a short-term driving decision with questions like,
+
+31
+00:02:00,470 --> 00:02:02,540
+is it safe to change lanes now?
+
+32
+00:02:02,540 --> 00:02:06,425
+Or when should I execute a left turn at an intersection?
+
+33
+00:02:06,425 --> 00:02:11,110
+Driving also needs some immediate decisions or reactions.
+
+34
+00:02:11,110 --> 00:02:16,630
+These decisions involve control and trajectory planning and answer questions like,
+
+35
+00:02:16,630 --> 00:02:19,420
+how do I follow my lane on this curved road?
+
+36
+00:02:19,420 --> 00:02:21,505
+What steering input should I apply?
+
+37
+00:02:21,505 --> 00:02:23,245
+Should I accelerate or brake?
+
+38
+00:02:23,245 --> 00:02:25,505
+If so, by how much.
+
+39
+00:02:25,505 --> 00:02:29,390
+Let's discuss a very simple example of a driving task
+
+40
+00:02:29,390 --> 00:02:32,845
+and try to think about what kind of decisions are involved.
+
+41
+00:02:32,845 --> 00:02:35,620
+Note that throughout this specialization,
+
+42
+00:02:35,620 --> 00:02:39,630
+we will assume right-handed driving for all scenarios.
+
+43
+00:02:39,630 --> 00:02:43,360
+Suppose you are approaching an intersection on your way home.
+
+44
+00:02:43,360 --> 00:02:47,740
+The long-term planning stage requires you to turn left at this intersection.
+
+45
+00:02:47,740 --> 00:02:53,210
+Now, let's look at the intermediate and short-term decisions that need to be made.
+
+46
+00:02:53,480 --> 00:02:58,180
+First, let's assume that the intersection is controlled.
+
+47
+00:02:58,180 --> 00:03:00,715
+That is, it has traffic lights.
+
+48
+00:03:00,715 --> 00:03:02,270
+Since you are turning left,
+
+49
+00:03:02,270 --> 00:03:07,700
+you have to identify if you need to make a lane change into a left turning lane.
+
+50
+00:03:07,700 --> 00:03:10,670
+Then, as you're approaching this intersection,
+
+51
+00:03:10,670 --> 00:03:12,175
+you choose to slow down,
+
+52
+00:03:12,175 --> 00:03:16,525
+and to do so smoothly so that the passengers don't experience discomfort.
+
+53
+00:03:16,525 --> 00:03:19,390
+Nobody likes a jerky driver after all.
+
+54
+00:03:19,390 --> 00:03:23,155
+You then come to a stop just before the stop line,
+
+55
+00:03:23,155 --> 00:03:25,270
+before a pedestrian crossing.
+
+56
+00:03:25,270 --> 00:03:28,930
+These decisions on lane changes and stopping locations are
+
+57
+00:03:28,930 --> 00:03:32,300
+all short-term planning decisions. But wait!
+
+58
+00:03:32,300 --> 00:03:36,940
+You also need to think and respond to situations that arise along the way.
+
+59
+00:03:36,940 --> 00:03:41,280
+We still need object and event detection and response.
+
+60
+00:03:41,280 --> 00:03:44,900
+What if a vehicle pulls into the turn lane in front of you?
+
+61
+00:03:44,900 --> 00:03:48,785
+You would want to stop earlier to make room for the other vehicle.
+
+62
+00:03:48,785 --> 00:03:51,340
+What if the stop lines weren't marked?
+
+63
+00:03:51,340 --> 00:03:53,810
+You would have to approximately judge where
+
+64
+00:03:53,810 --> 00:03:58,220
+the implied stop line is and stop before the pedestrian crossing.
+
+65
+00:03:58,220 --> 00:04:03,070
+What if there were other vehicles behind you or even stalled in the intersection?
+
+66
+00:04:03,070 --> 00:04:07,250
+How does the decision to execute a left turn change
+
+67
+00:04:07,250 --> 00:04:11,780
+based on the many possible scenarios that can rapidly arise in normal driving?
+
+68
+00:04:11,780 --> 00:04:13,910
+All of these decisions fall into
+
+69
+00:04:13,910 --> 00:04:19,370
+the immediate decision category and requires safe reactions from the planning system.
+
+70
+00:04:19,370 --> 00:04:22,070
+The end result is an exploding list of
+
+71
+00:04:22,070 --> 00:04:25,280
+possible decisions to evaluate on different timescales,
+
+72
+00:04:25,280 --> 00:04:27,980
+even for a simple left turn scenario.
+
+73
+00:04:27,980 --> 00:04:30,980
+This amounts to talking about different cases for
+
+74
+00:04:30,980 --> 00:04:34,615
+the same intersection crossing or scenarios.
+
+75
+00:04:34,615 --> 00:04:38,960
+In each scenario, we need a consistent set of choices to be evaluated in
+
+76
+00:04:38,960 --> 00:04:44,370
+real time and updated as new information about the scene becomes available.
+
+77
+00:04:44,370 --> 00:04:48,520
+Furthermore, because decisions to change lanes affect
+
+78
+00:04:48,520 --> 00:04:52,960
+where to drive and which cars to regulate our position relative to,
+
+79
+00:04:52,960 --> 00:04:58,865
+even a seemingly simple driving scenario requires three or four levels of decisions,
+
+80
+00:04:58,865 --> 00:05:02,660
+and must then still be executed with careful vehicle control.
+
+81
+00:05:02,660 --> 00:05:06,110
+This example is really only scratching the surface of
+
+82
+00:05:06,110 --> 00:05:10,025
+the constant stream of decisions needed for motion planning.
+
+83
+00:05:10,025 --> 00:05:13,760
+The bottom line is, driving is complicated.
+
+84
+00:05:13,760 --> 00:05:19,895
+Let's go ahead and discuss a possible structure to represent these decisions in software.
+
+85
+00:05:19,895 --> 00:05:25,880
+One method to address the challenge of multilevel decision-making is reactive planning.
+
+86
+00:05:25,880 --> 00:05:31,460
+In reactive planning, we define sets of rules that take into account the current state of
+
+87
+00:05:31,460 --> 00:05:37,255
+the ego vehicle and other objects in the environment and produce immediate actions.
+
+88
+00:05:37,255 --> 00:05:43,445
+So, these are rules that only consider the current state and not future predictions.
+
+89
+00:05:43,445 --> 00:05:46,700
+Some examples of such rules would be,
+
+90
+00:05:46,700 --> 00:05:49,420
+if there is a pedestrian on the road, stop.
+
+91
+00:05:49,420 --> 00:05:52,005
+Or if the speed limit changes,
+
+92
+00:05:52,005 --> 00:05:54,285
+adjust your speed to match it.
+
+93
+00:05:54,285 --> 00:05:56,260
+In both of these rules,
+
+94
+00:05:56,260 --> 00:05:59,240
+we just observe what is happening right now and make
+
+95
+00:05:59,240 --> 00:06:02,540
+our decision based on immediately available information.
+
+96
+00:06:02,540 --> 00:06:05,255
+But there are other kinds of planning as well.
+
+97
+00:06:05,255 --> 00:06:09,575
+In predictive planning, we make predictions on how other agents in the environment,
+
+98
+00:06:09,575 --> 00:06:11,210
+like vehicles and pedestrians,
+
+99
+00:06:11,210 --> 00:06:12,860
+will move over time.
+
+100
+00:06:12,860 --> 00:06:19,235
+We use this current state and prediction information to define all of our decisions.
+
+101
+00:06:19,235 --> 00:06:23,645
+Some examples of rules in predictive planning would be,
+
+102
+00:06:23,645 --> 00:06:26,690
+that car has stopped for the last 10 seconds.
+
+103
+00:06:26,690 --> 00:06:29,890
+It's probably going to stay stopped for the next few seconds.
+
+104
+00:06:29,890 --> 00:06:33,650
+So, perhaps there is a way that I can move past it safely.
+
+105
+00:06:33,650 --> 00:06:36,440
+Or a pedestrian is jaywalking.
+
+106
+00:06:36,440 --> 00:06:39,170
+They will enter our lane by the time I get close to them.
+
+107
+00:06:39,170 --> 00:06:43,885
+Let me slow down and give them a chance to cross the road ahead of me.
+
+108
+00:06:43,885 --> 00:06:47,480
+As you can see, this is a more natural way to think,
+
+109
+00:06:47,480 --> 00:06:50,945
+and relates closely to how humans operate vehicles.
+
+110
+00:06:50,945 --> 00:06:53,780
+We predict where other objects on the road will
+
+111
+00:06:53,780 --> 00:06:56,765
+be in the future before we make our decisions.
+
+112
+00:06:56,765 --> 00:06:58,720
+This type of planning, however,
+
+113
+00:06:58,720 --> 00:07:04,400
+relies on accurate predictions of the actions of the other actors in the environment,
+
+114
+00:07:04,400 --> 00:07:09,460
+which adds a significant layer of complexity to the perception tasks.
+
+115
+00:07:09,460 --> 00:07:14,240
+Nonetheless, predictive planning is the predominant method for self-driving cars,
+
+116
+00:07:14,240 --> 00:07:18,935
+as it greatly expands the scenarios a vehicle can handle safely.
+
+117
+00:07:18,935 --> 00:07:22,680
+We will discuss all aspects of planning in
+
+118
+00:07:22,680 --> 00:07:27,410
+a further detail in course four on planning for self-driving cars,
+
+119
+00:07:27,410 --> 00:07:30,545
+where we will show you the methods to solve long-term,
+
+120
+00:07:30,545 --> 00:07:34,015
+short-term, and immediate-term planning problems.
+
+121
+00:07:34,015 --> 00:07:36,990
+All right. Let's summarize this video.
+
+122
+00:07:36,990 --> 00:07:40,960
+We discussed the planning problem and the different types of planning
+
+123
+00:07:40,960 --> 00:07:45,445
+based on the window of time over which we have to act.
+
+124
+00:07:45,445 --> 00:07:48,135
+These types are long-term,
+
+125
+00:07:48,135 --> 00:07:50,895
+short-term, and immediate planning.
+
+126
+00:07:50,895 --> 00:07:54,380
+Then we discussed a simple intersection scenario,
+
+127
+00:07:54,380 --> 00:07:56,240
+where we had to make a left turn.
+
+128
+00:07:56,240 --> 00:07:59,870
+We concluded that driving is a really hard problem
+
+129
+00:07:59,870 --> 00:08:03,350
+since we have so many variables and possibilities that result.
+
+130
+00:08:03,350 --> 00:08:07,385
+Then we discussed two different planning approaches:
+
+131
+00:08:07,385 --> 00:08:10,480
+reactive planning and predictive planning.
+
+132
+00:08:10,480 --> 00:08:13,025
+This is just the tip of the iceberg.
+
+133
+00:08:13,025 --> 00:08:15,410
+There's clearly so much more we need to think about
+
+134
+00:08:15,410 --> 00:08:18,695
+before making a decision during the driving task.
+
+135
+00:08:18,695 --> 00:08:23,960
+Once again, we will go through all of these ideas in much greater detail in course four.
+
+136
+00:08:23,960 --> 00:08:26,960
+That brings us to the end of the first week of
+
+137
+00:08:26,960 --> 00:08:29,960
+course one in our self-driving car specialization.
+
+138
+00:08:29,960 --> 00:08:33,065
+Let's quickly recap what we learned this week.
+
+139
+00:08:33,065 --> 00:08:35,329
+In this module, we explored
+
+140
+00:08:35,329 --> 00:08:38,195
+the basic autonomous driving terminology
+
+141
+00:08:38,195 --> 00:08:41,300
+that's useful for later weeks of the specialization.
+
+142
+00:08:41,300 --> 00:08:43,819
+We then discussed the levels of automation,
+
+143
+00:08:43,819 --> 00:08:48,005
+and came up with a taxonomy to characterize self-driving capabilities.
+
+144
+00:08:48,005 --> 00:08:51,475
+Then we define the driving task and the major components of
+
+145
+00:08:51,475 --> 00:08:55,295
+driving: perception, planning, and execution.
+
+146
+00:08:55,295 --> 00:08:58,250
+We then listed the elements and agents in
+
+147
+00:08:58,250 --> 00:09:01,340
+the environment we need to identify and track for perception.
+
+148
+00:09:01,340 --> 00:09:04,440
+We also discussed why perception is so hard.
+
+149
+00:09:04,440 --> 00:09:07,369
+Then we discussed planning with its different horizons,
+
+150
+00:09:07,369 --> 00:09:09,920
+and looked at some decision-making approaches.
+
+151
+00:09:09,920 --> 00:09:11,419
+In the next module,
+
+152
+00:09:11,419 --> 00:09:14,660
+we will define the main components of self-driving cars,
+
+153
+00:09:14,660 --> 00:09:17,825
+including both the hardware and software elements
+
+154
+00:09:17,825 --> 00:09:21,840
+that make up a complete system. See you then.

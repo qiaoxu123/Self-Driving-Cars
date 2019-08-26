@@ -1,0 +1,879 @@
+WEBVTT
+
+1
+00:00:13.820 --> 00:00:16.275
+So far in this module,
+
+2
+00:00:16.275 --> 00:00:18.330
+you've learned how to use
+the linear Kalman filter
+
+3
+00:00:18.330 --> 00:00:20.070
+for state estimation and you
+
+4
+00:00:20.070 --> 00:00:22.110
+also saw that the Kalman
+filter is the best
+
+5
+00:00:22.110 --> 00:00:24.630
+linear unbiased estimator or blue.
+
+6
+00:00:24.630 --> 00:00:26.880
+However, the linear Kalman filter
+
+7
+00:00:26.880 --> 00:00:29.100
+cannot be used directly
+to estimate states that
+
+8
+00:00:29.100 --> 00:00:33.675
+are nonlinear functions of either
+the measurements or the control inputs.
+
+9
+00:00:33.675 --> 00:00:36.210
+For example, the pose of the car includes
+
+10
+00:00:36.210 --> 00:00:39.210
+its orientation which is
+not a linear quantity,
+
+11
+00:00:39.210 --> 00:00:42.225
+orientations in 3D live
+on a sphere, in fact.
+
+12
+00:00:42.225 --> 00:00:44.675
+So, we need to look for something else.
+
+13
+00:00:44.675 --> 00:00:46.610
+In this video, we'll be learning about
+
+14
+00:00:46.610 --> 00:00:48.890
+one important and widely
+used variation of
+
+15
+00:00:48.890 --> 00:00:53.245
+a Kalman filter called
+the Extended Kalman Filter or EKF.
+
+16
+00:00:53.245 --> 00:00:55.410
+The EKF is designed to work with
+
+17
+00:00:55.410 --> 00:00:59.480
+nonlinear systems and it's often
+considered one of the workhorses
+
+18
+00:00:59.480 --> 00:01:02.270
+of state estimation because it's used in
+
+19
+00:01:02.270 --> 00:01:06.145
+all sorts of applications
+including self-driving cars.
+
+20
+00:01:06.145 --> 00:01:08.125
+By the end of the video,
+
+21
+00:01:08.125 --> 00:01:11.630
+you'll be able to
+describe how the EKF uses
+
+22
+00:01:11.630 --> 00:01:16.750
+first-order linearization to turn
+a nonlinear problem into a linear one,
+
+23
+00:01:16.750 --> 00:01:19.700
+understand the role of Jacobian matrices
+
+24
+00:01:19.700 --> 00:01:22.255
+in the EKF and how to compute them,
+
+25
+00:01:22.255 --> 00:01:28.130
+and apply the EKF to
+a simple nonlinear tracking problem.
+
+26
+00:01:29.320 --> 00:01:32.300
+The filter works by first predicting
+
+27
+00:01:32.300 --> 00:01:35.300
+the mean and co-variance of
+the updated state estimate at
+
+28
+00:01:35.300 --> 00:01:37.280
+some time step k based on
+
+29
+00:01:37.280 --> 00:01:40.340
+the previous state and any inputs
+we give to the system,
+
+30
+00:01:40.340 --> 00:01:42.965
+such as the position of
+the accelerator pedal.
+
+31
+00:01:42.965 --> 00:01:45.860
+The filter then uses a
+measurement model to
+
+32
+00:01:45.860 --> 00:01:48.290
+predict what measurements
+should arrive based on
+
+33
+00:01:48.290 --> 00:01:50.930
+the state estimate and compares
+these predictions with
+
+34
+00:01:50.930 --> 00:01:54.365
+the measurements that actually
+arrive from our sensors.
+
+35
+00:01:54.365 --> 00:01:59.580
+The Kalman gain tells us how to weight
+all of these pieces of information,
+
+36
+00:01:59.580 --> 00:02:03.305
+so that we can optimally combine
+them into a corrected estimate,
+
+37
+00:02:03.305 --> 00:02:06.695
+that is, a new state and
+an updated co-variance.
+
+38
+00:02:06.695 --> 00:02:10.600
+This is sometimes called a
+predictor-corrector architecture.
+
+39
+00:02:10.600 --> 00:02:12.415
+As we saw in the last video,
+
+40
+00:02:12.415 --> 00:02:14.570
+the Kalman filter is actually the best
+
+41
+00:02:14.570 --> 00:02:17.645
+of all possible estimators
+for linear systems.
+
+42
+00:02:17.645 --> 00:02:19.850
+Unfortunately, there is a catch.
+
+43
+00:02:19.850 --> 00:02:22.775
+Linear systems don't exist in reality.
+
+44
+00:02:22.775 --> 00:02:24.980
+Even a very simple system like
+
+45
+00:02:24.980 --> 00:02:28.880
+a resistor with a voltage
+applied isn't truly linear,
+
+46
+00:02:28.880 --> 00:02:30.680
+at least not all the time.
+
+47
+00:02:30.680 --> 00:02:32.990
+For a certain range of voltages,
+
+48
+00:02:32.990 --> 00:02:36.785
+the current is a linear function of
+the voltage and follows Ohm's Law.
+
+49
+00:02:36.785 --> 00:02:38.690
+But as the voltage gets higher,
+
+50
+00:02:38.690 --> 00:02:42.860
+the resistor heats up which alters
+the resistance in a nonlinear way.
+
+51
+00:02:42.860 --> 00:02:46.205
+Since the systems that we encounter
+in practice are nonlinear,
+
+52
+00:02:46.205 --> 00:02:48.365
+this raises an important question.
+
+53
+00:02:48.365 --> 00:02:51.305
+Can we still use the Kalman filter
+for nonlinear systems?
+
+54
+00:02:51.305 --> 00:02:54.060
+If so, how?
+
+55
+00:02:57.380 --> 00:03:01.120
+The key concept in
+the Extended Kalman Filter
+
+56
+00:03:01.120 --> 00:03:04.400
+is the idea of linearizing
+a nonlinear system.
+
+57
+00:03:04.400 --> 00:03:06.830
+For this reason, the EKF is sometimes
+
+58
+00:03:06.830 --> 00:03:10.060
+referred to as the
+Linearized Kalman filter.
+
+59
+00:03:10.060 --> 00:03:14.840
+Linearizing a system just means
+picking some operating point a and
+
+60
+00:03:14.840 --> 00:03:16.730
+finding a linear approximation to
+
+61
+00:03:16.730 --> 00:03:19.495
+the nonlinear function in
+the neighborhood of a.
+
+62
+00:03:19.495 --> 00:03:22.640
+In two dimensions, this means
+finding the tangent line to
+
+63
+00:03:22.640 --> 00:03:26.075
+the function f of x when x equals a.
+
+64
+00:03:26.075 --> 00:03:28.340
+Mathematically, we do this by taking
+
+65
+00:03:28.340 --> 00:03:30.500
+the Taylor series expansion
+of the function.
+
+66
+00:03:30.500 --> 00:03:32.700
+Thinking back to your calculus courses,
+
+67
+00:03:32.700 --> 00:03:35.570
+you may remember that
+the Taylor series expansion is a way of
+
+68
+00:03:35.570 --> 00:03:39.005
+representing a function
+as an infinite possibly,
+
+69
+00:03:39.005 --> 00:03:41.120
+some whose terms are calculated
+
+70
+00:03:41.120 --> 00:03:43.475
+from the function's derivatives
+at a single point.
+
+71
+00:03:43.475 --> 00:03:45.740
+For linearization, we're
+only interested in
+
+72
+00:03:45.740 --> 00:03:50.610
+the first order terms of the Taylor
+series expansion highlighted in red.
+
+73
+00:03:51.250 --> 00:03:54.710
+Let's return to
+our general nonlinear motion
+
+74
+00:03:54.710 --> 00:03:57.455
+and measurement models and
+try to linearize them.
+
+75
+00:03:57.455 --> 00:04:01.190
+What should we choose as the operating
+point for our Taylor's expansion?
+
+76
+00:04:01.190 --> 00:04:04.820
+Ideally, we would like to linearize
+the models about the true value of
+
+77
+00:04:04.820 --> 00:04:06.455
+the state but we can't do that
+
+78
+00:04:06.455 --> 00:04:08.390
+because we already knew
+the true value of the state,
+
+79
+00:04:08.390 --> 00:04:09.995
+we wouldn't need to estimate it.
+
+80
+00:04:09.995 --> 00:04:12.625
+So instead, let's pick
+the next best thing,
+
+81
+00:04:12.625 --> 00:04:14.895
+the most recent estimate of the state.
+
+82
+00:04:14.895 --> 00:04:16.530
+For our emotion model,
+
+83
+00:04:16.530 --> 00:04:19.055
+we'll linearize about
+the posterior estimate
+
+84
+00:04:19.055 --> 00:04:21.860
+of the previous state and
+for the measurement model,
+
+85
+00:04:21.860 --> 00:04:24.110
+we'll linearize about our prediction of
+
+86
+00:04:24.110 --> 00:04:26.665
+the current state based
+on the motion model.
+
+87
+00:04:26.665 --> 00:04:30.870
+So, now we have a linear system in
+state space and the matrices F,
+
+88
+00:04:30.870 --> 00:04:35.690
+L, H and M are called Jacobian
+matrices of the system.
+
+89
+00:04:35.690 --> 00:04:37.790
+Computing these matrices correctly is
+
+90
+00:04:37.790 --> 00:04:40.190
+the most important and difficult step
+
+91
+00:04:40.190 --> 00:04:42.410
+in the Extended Kalman filter algorithm,
+
+92
+00:04:42.410 --> 00:04:45.410
+and it's also the most common
+place to make mistakes.
+
+93
+00:04:45.410 --> 00:04:48.515
+But what are these
+Jacobian matrix exactly?
+
+94
+00:04:48.515 --> 00:04:53.480
+In vector calculus, a Jacobian
+or Jacobian matrix is
+
+95
+00:04:53.480 --> 00:04:56.570
+the matrix of all
+first-order partial derivatives
+
+96
+00:04:56.570 --> 00:04:58.400
+of a vector valued function.
+
+97
+00:04:58.400 --> 00:05:01.220
+Each column of the Jacobian
+contains the derivatives of
+
+98
+00:05:01.220 --> 00:05:04.595
+the function outputs with
+respect to a given input.
+
+99
+00:05:04.595 --> 00:05:06.575
+For example, if your function takes
+
+100
+00:05:06.575 --> 00:05:09.920
+a three-dimensional vector and
+spits out a two-dimensional vector,
+
+101
+00:05:09.920 --> 00:05:13.210
+the Jacobian would be
+a two by three matrix.
+
+102
+00:05:13.210 --> 00:05:17.060
+Intuitively, the Jacobian matrix
+tells you how fast each output of
+
+103
+00:05:17.060 --> 00:05:20.780
+your function is changing
+along each input dimension,
+
+104
+00:05:20.780 --> 00:05:23.720
+just like how the derivative
+of a scalar function tells
+
+105
+00:05:23.720 --> 00:05:27.080
+you how fast the output is
+changing as you vary the input.
+
+106
+00:05:27.080 --> 00:05:29.630
+The Jacobian is really
+just a generalization
+
+107
+00:05:29.630 --> 00:05:32.210
+of the first derivative
+to multiple dimensions.
+
+108
+00:05:32.210 --> 00:05:34.940
+Here's a simple example
+of the Jacobian of
+
+109
+00:05:34.940 --> 00:05:37.895
+a two-dimensional function
+with two inputs.
+
+110
+00:05:37.895 --> 00:05:41.480
+The Jacobian matrix captures
+the first derivatives of each of
+
+111
+00:05:41.480 --> 00:05:45.515
+the two output variables with respect
+to each of the two input variables.
+
+112
+00:05:45.515 --> 00:05:49.175
+The best way to get comfortable with
+driving Jacobian is just practice.
+
+113
+00:05:49.175 --> 00:05:53.220
+Try deriving the Jacobian of
+this vector valued function.
+
+114
+00:05:59.650 --> 00:06:04.270
+Now, we know how to compute the
+Jacobian matrices needed for the EKF,
+
+115
+00:06:04.270 --> 00:06:06.200
+and all that's left is to plug them
+
+116
+00:06:06.200 --> 00:06:08.360
+into our standard Kalman
+filter equations.
+
+117
+00:06:08.360 --> 00:06:10.430
+There are a couple of
+differences to notice in
+
+118
+00:06:10.430 --> 00:06:11.960
+the EKF equations compared to
+
+119
+00:06:11.960 --> 00:06:14.540
+the Kalman filter equations
+we saw in module two.
+
+120
+00:06:14.540 --> 00:06:17.680
+First, in the prediction
+and correction steps,
+
+121
+00:06:17.680 --> 00:06:21.530
+we're still using the nonlinear models
+to propagate the mean of
+
+122
+00:06:21.530 --> 00:06:25.670
+the state estimate and to compute
+the measurement residual or innovation.
+
+123
+00:06:25.670 --> 00:06:28.055
+That's because we
+linearized our motion model
+
+124
+00:06:28.055 --> 00:06:30.210
+about the previous state estimate,
+
+125
+00:06:30.210 --> 00:06:33.800
+and we linearized the measurement model
+about the predicted state.
+
+126
+00:06:33.800 --> 00:06:36.830
+By definition,
+the linearized model exactly
+
+127
+00:06:36.830 --> 00:06:39.905
+coincides with the nonlinear model
+at the operating points.
+
+128
+00:06:39.905 --> 00:06:41.750
+The second difference
+is the appearance of
+
+129
+00:06:41.750 --> 00:06:46.505
+the L and M Jacobians related to
+the process and measurement noise.
+
+130
+00:06:46.505 --> 00:06:50.300
+In many cases, both of these matrices
+will be identity since
+
+131
+00:06:50.300 --> 00:06:54.960
+noise is often assumed to be additive
+but this is not always the case.
+
+132
+00:06:57.250 --> 00:07:00.140
+So far, this has all been very abstract.
+
+133
+00:07:00.140 --> 00:07:04.265
+So, let's walk through a concrete
+example of actually using the EKF.
+
+134
+00:07:04.265 --> 00:07:08.000
+We'll use the same example from
+module two but with a twist.
+
+135
+00:07:08.000 --> 00:07:09.620
+We're going to track the position and
+
+136
+00:07:09.620 --> 00:07:11.840
+velocity of a car moving along a rail.
+
+137
+00:07:11.840 --> 00:07:13.580
+But now, instead of receiving
+
+138
+00:07:13.580 --> 00:07:16.270
+periodic GPS measurements
+that tell us our position,
+
+139
+00:07:16.270 --> 00:07:19.475
+we're going to use
+an on-board sensor like a camera
+
+140
+00:07:19.475 --> 00:07:22.940
+to measure the altitude of distant
+landmarks relative to the horizon.
+
+141
+00:07:22.940 --> 00:07:27.050
+We'll keep the same linear motion model
+as in the original example,
+
+142
+00:07:27.050 --> 00:07:28.760
+and assume we know both the height of
+
+143
+00:07:28.760 --> 00:07:32.735
+the landmark and its position
+in a global reference frame.
+
+144
+00:07:32.735 --> 00:07:35.630
+Because our sensor is measuring an angle,
+
+145
+00:07:35.630 --> 00:07:36.770
+our measurement model has
+
+146
+00:07:36.770 --> 00:07:39.725
+a nonlinear dependence on
+the position of the car.
+
+147
+00:07:39.725 --> 00:07:41.540
+We're going to need to linearize
+
+148
+00:07:41.540 --> 00:07:44.885
+the measurement model and use it
+in our Extended Kalman Filter.
+
+149
+00:07:44.885 --> 00:07:48.350
+The Jacobians for
+this problem look like this.
+
+150
+00:07:48.350 --> 00:07:51.080
+Notice that the F matrix
+in this problem is
+
+151
+00:07:51.080 --> 00:07:54.275
+exactly the same as the F matrix
+in the original problem.
+
+152
+00:07:54.275 --> 00:07:58.585
+That's because our motion model
+is already linear in the state.
+
+153
+00:07:58.585 --> 00:08:01.875
+Also notice that
+the noise Jacobians, L and M,
+
+154
+00:08:01.875 --> 00:08:03.620
+are both identity since
+
+155
+00:08:03.620 --> 00:08:06.830
+both the emotion and the measurement
+model have additive noise.
+
+156
+00:08:06.830 --> 00:08:09.890
+Try using the data given here
+to estimate the position of
+
+157
+00:08:09.890 --> 00:08:13.960
+the vehicle at time one using the EKF.
+
+158
+00:08:16.090 --> 00:08:18.800
+Here is the result of the prediction step
+
+159
+00:08:18.800 --> 00:08:20.795
+for the mean and
+co-variance of the state.
+
+160
+00:08:20.795 --> 00:08:23.090
+Notice that the result is identical to
+
+161
+00:08:23.090 --> 00:08:27.840
+the linear Kalman filter case because
+the motion model actually is linear.
+
+162
+00:08:27.840 --> 00:08:29.865
+For the correction step,
+
+163
+00:08:29.865 --> 00:08:31.520
+this is what you should get.
+
+164
+00:08:31.520 --> 00:08:33.530
+Keep in mind that you should use
+
+165
+00:08:33.530 --> 00:08:37.460
+the nonlinear measurement model to
+compute the measurement residual,
+
+166
+00:08:37.460 --> 00:08:39.530
+not the linearized model.
+
+167
+00:08:39.530 --> 00:08:41.800
+Also note that in this case,
+
+168
+00:08:41.800 --> 00:08:43.280
+even though the corrected mean at
+
+169
+00:08:43.280 --> 00:08:46.100
+the state estimate is different
+from the predicted mean,
+
+170
+00:08:46.100 --> 00:08:48.470
+the corrected co-variance didn't change
+
+171
+00:08:48.470 --> 00:08:51.395
+that much from the predicted co-variance.
+
+172
+00:08:51.395 --> 00:08:56.090
+This is because the Azimuth angle
+changes slowly at this distance
+
+173
+00:08:56.090 --> 00:08:58.040
+and doesn't provide
+much information about
+
+174
+00:08:58.040 --> 00:09:01.605
+the vehicle state compared
+to a GPS measurement.
+
+175
+00:09:01.605 --> 00:09:06.704
+So, to recap, we saw that
+the Extended Kalman Filter or EKF
+
+176
+00:09:06.704 --> 00:09:11.630
+uses linearization to adopt
+the Kalman filter to nonlinear systems.
+
+177
+00:09:11.630 --> 00:09:14.390
+We'll encounter several
+different nonlinear systems
+
+178
+00:09:14.390 --> 00:09:16.700
+to which we can apply
+the EKF or its cousin,
+
+179
+00:09:16.700 --> 00:09:19.720
+the UKF, in the upcoming course project.
+
+180
+00:09:19.720 --> 00:09:23.960
+Linearization works by computing
+a local linear approximation to
+
+181
+00:09:23.960 --> 00:09:25.460
+a nonlinear function using
+
+182
+00:09:25.460 --> 00:09:28.865
+a first-order Taylor series expansion
+about an operating point.
+
+183
+00:09:28.865 --> 00:09:31.445
+This requires several Jacobian matrices
+
+184
+00:09:31.445 --> 00:09:35.105
+which contain the set of
+first-order partial derivatives.
+
+185
+00:09:35.105 --> 00:09:37.070
+In the next video,
+
+186
+00:09:37.070 --> 00:09:39.200
+we'll discuss an
+alternative formulation of
+
+187
+00:09:39.200 --> 00:09:42.845
+the EKF called the error
+state Extended Kalman Filter.
+
+188
+00:09:42.845 --> 00:09:46.040
+This would be a useful tool later
+in the course when we talk about
+
+189
+00:09:46.040 --> 00:09:50.130
+estimating the vehicle
+orientation in 3D space.

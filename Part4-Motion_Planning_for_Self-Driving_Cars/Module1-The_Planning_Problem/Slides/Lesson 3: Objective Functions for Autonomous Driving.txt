@@ -1,0 +1,139 @@
+Hi everyone, and welcome
+to lesson three. In this video, we will explore some of the objective
+functions most commonly used in the autonomous driving motion planning problem formulation. In this context, the
+objective function of our motion planning
+problem gives us a way of scoring
+our current motion plan, and allows us to optimize the motion plans such that it has desirable characteristics. After completing this lesson, you'll be able to list some useful objective
+functions that can be used in motion planning
+for autonomous driving. You will also understand
+the benefits that each objective function offers to the motion planning process. So let's get started. When performing path planning, the simplest and most intuitive
+goal is that we would like to reach our destination
+as efficiently as possible. In the path planning
+context this, often translates to minimizing the arc length of the
+path that we're planning. What is the arc length? Intuitively, the
+arc length of the path is the total accumulated distance the car will travel as
+it traverses the path. In many cases, the path will be parameterized by arc length. So this can be formulated as a penalty term proportional
+to the arc length. In other cases, we
+will have to solve an integral numerically to calculate the arc length of a path. The general arc length integral is shown here
+in the first equation, where Sf is the total
+accumulated arc length, Xi is the starting x
+coordinate of the path, and Xf is the end x
+coordinate of the path. By minimizing arc length, we are computing
+the shortest path from our current location, through our required destination. When optimizing a
+velocity profile, time to destination is often the objective we
+would like to minimize. In terms of arc length, this is the same as
+integrating the inverse of the longitudinal velocity over the path as a function
+of arc length. Intuitively, this is
+equivalent to dividing the total distance by the velocity traveled along
+the curve at each point. Except since the velocity
+changes along the path, we formulate it as an integral. This integral is given
+in the second equation, where Tf is the total time
+of the profile. By minimizing this integral, we are minimizing
+the time to reach the destination while following
+a given planned path. As an example, let's look at two possible paths between the same start and end locations. The first path clearly has a longer arc length
+than the second path, and is therefore
+less efficient at the task of reaching
+its destination. We can see that even
+though they have the same initial
+and final states, the second path will result in a lower value of the arc length
+objective function, which suits are driving
+task more favorably. Now, in path planning
+for autonomous driving, we may be given a reference path
+we'd like to follow. In many cases, this
+will be given to us by our mapping module as
+the center line of a length, or the required path for
+a turn in an intersection. To ensure that we follow the reference path as
+closely as possible, we include what is known as an integral of difference term, or IOD for short. Essentially, it
+penalizes deviations from the input
+reference path Xref, as we traverse
+are calculated path as shown in the first equation. Similarly, when performing
+velocity profile optimization, we often want to minimize the difference between
+our velocity profiles speed throughout the path with
+some reference speed Vref, whether it will be
+the speed limit or determined otherwise. This is shown in
+the second equation. While this can be formulated as an absolute difference penalty, it is often the case
+that we want to penalize exceeding speed limits more harshly than staying
+below the speed limit. So we may add what is
+called a hinge loss term to our objective shown
+in the third equation. Essentially, this term is only active when the velocity profile
+exceeds the speed limit, that is when
+the difference between our speed and the speed
+limit is positive, otherwise this term is zero. This allows us to penalize speed limit violations more
+harshly while still allowing us to encourage
+the autonomous vehicle to reach its required
+reference velocity. The next objective we'd like to tackle is rides smoothness. Recall from the previous lesson
+that in order to maintain stability and comfort, we constrained our maximum
+acceleration magnitude. When optimizing comfort in the objective function
+of our velocity profile, we instead turn our focus to minimizing the jerk
+along our trajectory. What is jerk? We're
+not referring to that of noxious driver
+that you just cut off. Jerk is the rate of change of acceleration with
+respect to time, or the third derivative
+of position. The jerk along the car's
+trajectory greatly impacts the user's comfort
+while in the car. So when planning
+our velocity profile, we would like to keep
+the accumulated absolute value of jerk as small as possible, shown here by this integral. Let's look at an example of two different velocity profiles. On the left is
+a linear ramp profile which maximizes jerk at the
+start and end of the profile. This is shown in
+the large spikes in the jerk at the start
+and end of our plot. For passengers, this can
+be quite uncomfortable. If we compare this with a bi quadratic profile
+as seen on the right, We can see that there are
+no jerk spikes which will result in a much smoother
+ride for the passengers. Because of this
+difference in comfort, it is important to
+choose profiles that reduce jerk that passengers
+feel when possible. Now, when planning paths, we have to be mindful that
+the structure of our path will impact the comfort of
+our velocity profile as well. Recall from the
+previous lesson that paths with high
+curvature constrained the maximum velocity
+along the path to a low value in order to remain within the friction
+ellipse of the vehicle. To ensure that we avoid points of high curvature along our path, we need to formulate some penalty for
+large absolute curvature values, and objective function that
+is commonly used to represent this penalty is known as
+the bending energy of the path. Essentially, it is
+the square curvature integrated along the path, where once again Kappa
+denotes the curvature. This objective
+distributes the curvature more evenly along the path, preventing any one
+along the path from reaching too high a
+total curvature value. As an example, in this path, we have a path planned
+for a left turn with quite a harsh bend before
+reaching the goal state. According to our bending
+energy objective, this will be highly
+penalized as there is a point of peaks
+curvature along the path. If we were to plan a
+velocity profile for this path, we would need to decelerate greatly by the time we reached
+the bend in the curve. Otherwise we would
+sacrifice comfort of our passengers and potentially
+even vehicle stability. If we instead look at
+the path on the right, we have a path for
+a left turn with a more widely distributed
+lower overall curvature. This will result in a smoother
+more comfortable term, and will allow us to maintain a reasonable speed while still staying within
+the comfort rectangle when optimizing
+our velocity profile. Now that we've gone
+through a variety of objective functions
+for motion planning, let's take some time to summarize what we've
+discussed in this video. We first discussed objective functions
+related to efficiency, and also discussed how they reduce path length
+and transit time. We discussed how to
+encourage trajectories to track reference paths
+and velocity profiles, as well as how to
+improve comfort along a given trajectory by penalizing high-path
+curvature and jerk. By now, you should have
+a general idea of some types of objective functions
+you will need to consider when optimizing paths
+and trajectories. When designing an over-arching
+objective function, each of these terms will need to be combined into one function, often as a weighted sum. The particular
+combination of weights you choose is
+an engineering decision, and you will need to
+fine tune your choice depending on
+a specific application. Of course, we have only
+scratched the surface on a rich topic of optimization objectives for
+path and trajectory planning. As you progress as an autonomy engineer I'm
+sure you'll be able to come up with interesting
+and useful objectives functions yourself. In our next video, we will discuss ways to decouple the motion planning problem into simpler and smaller sub-problems, as well as outline
+different approaches to solving each sub-problem.
+See you there.

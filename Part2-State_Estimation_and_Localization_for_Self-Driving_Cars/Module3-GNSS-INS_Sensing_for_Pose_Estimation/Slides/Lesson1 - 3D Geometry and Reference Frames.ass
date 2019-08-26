@@ -1,0 +1,687 @@
+WEBVTT
+
+1
+00:00:20.570 --> 00:00:24.750
+Welcome to module three of
+our state estimation course.
+
+2
+00:00:24.750 --> 00:00:27.360
+In this module, we're
+going to introduce you to
+
+3
+00:00:27.360 --> 00:00:31.545
+two sensors that you can use to
+help localize our self-driving car.
+
+4
+00:00:31.545 --> 00:00:34.580
+To do this, we'll first review
+
+5
+00:00:34.580 --> 00:00:38.525
+some 3D kinematics and several
+important reference frames,
+
+6
+00:00:38.525 --> 00:00:43.070
+then discuss some details about
+how we can represent rotations,
+
+7
+00:00:43.070 --> 00:00:45.080
+and finally, we'll present
+
+8
+00:00:45.080 --> 00:00:49.945
+the inertial measurement unit and
+Global Navigation Satellite Systems.
+
+9
+00:00:49.945 --> 00:00:54.635
+But first, it's useful to
+review a bit of 3D geometry.
+
+10
+00:00:54.635 --> 00:00:56.965
+To track how our car moves,
+
+11
+00:00:56.965 --> 00:00:58.700
+we'll need to know how we can express
+
+12
+00:00:58.700 --> 00:01:01.985
+that motion using
+mathematical tools and notation.
+
+13
+00:01:01.985 --> 00:01:04.760
+In this lesson, we'll
+
+14
+00:01:04.760 --> 00:01:08.305
+review how reference frames
+affect vector coordinates,
+
+15
+00:01:08.305 --> 00:01:12.515
+compare and contrast different
+rotation representations,
+
+16
+00:01:12.515 --> 00:01:14.690
+and present several
+reference frames that'll be
+
+17
+00:01:14.690 --> 00:01:17.945
+important in our next lesson on sensors.
+
+18
+00:01:17.945 --> 00:01:20.030
+Recall that a vector is
+
+19
+00:01:20.030 --> 00:01:23.765
+a geometric object that has
+a magnitude and a direction.
+
+20
+00:01:23.765 --> 00:01:26.390
+Often, we treat the concept of a vector
+
+21
+00:01:26.390 --> 00:01:29.645
+interchangeably with the concept
+of vector coordinates,
+
+22
+00:01:29.645 --> 00:01:33.995
+or the set of numbers that represent
+the vector's direction and magnitude.
+
+23
+00:01:33.995 --> 00:01:37.415
+This however is not necessarily correct.
+
+24
+00:01:37.415 --> 00:01:40.865
+If we imagine that the vector
+is fixed in space,
+
+25
+00:01:40.865 --> 00:01:42.650
+then its coordinates will change
+
+26
+00:01:42.650 --> 00:01:44.770
+depending on the way in
+which we observe it.
+
+27
+00:01:44.770 --> 00:01:48.260
+More precisely, the same
+vector quantity will have
+
+28
+00:01:48.260 --> 00:01:50.180
+different coordinates depending
+
+29
+00:01:50.180 --> 00:01:52.960
+on which coordinate
+frame or reference frame
+
+30
+00:01:52.960 --> 00:01:55.260
+we choose to express it in.
+
+31
+00:01:55.260 --> 00:01:59.580
+We will use the following
+notation: In frame a,
+
+32
+00:01:59.580 --> 00:02:02.310
+the vector r has notation r sub a.
+
+33
+00:02:02.310 --> 00:02:04.515
+Likewise in frame b,
+
+34
+00:02:04.515 --> 00:02:07.490
+it has the coordinates r sub b.
+
+35
+00:02:07.490 --> 00:02:11.450
+To convert from one set of
+coordinates to another,
+
+36
+00:02:11.450 --> 00:02:14.380
+we will require a rotation
+matrix that tells us
+
+37
+00:02:14.380 --> 00:02:18.700
+exactly how one frame is rotated
+with respect to the other.
+
+38
+00:02:18.700 --> 00:02:23.650
+For this, we will use the notation
+bold capital C with the subscripts
+
+39
+00:02:23.650 --> 00:02:29.000
+indicating the initial and final
+reference frames from right to left.
+
+40
+00:02:29.720 --> 00:02:34.150
+Often, it will also be useful for
+us to discuss how the coordinates
+
+41
+00:02:34.150 --> 00:02:38.155
+of points change as we move from
+one reference frame to another.
+
+42
+00:02:38.155 --> 00:02:42.740
+For example, we may know the position
+of a building in some frame,
+
+43
+00:02:42.740 --> 00:02:46.745
+and now we'd like to know its position
+in our current vehicle frame.
+
+44
+00:02:46.745 --> 00:02:50.090
+To compute this, we use vector addition
+
+45
+00:02:50.090 --> 00:02:54.455
+making sure to express all of the
+coordinates in the same reference frame.
+
+46
+00:02:54.455 --> 00:02:57.890
+We will use superscripts
+on the coordinates to
+
+47
+00:02:57.890 --> 00:03:01.055
+indicate the start and
+end point of a 3D vector,
+
+48
+00:03:01.055 --> 00:03:03.785
+again from right to left,
+
+49
+00:03:03.785 --> 00:03:06.350
+and a subscript to indicate
+the frame in which
+
+50
+00:03:06.350 --> 00:03:09.610
+this is expressed just as before.
+
+51
+00:03:09.610 --> 00:03:13.190
+We can manipulate this expression
+to solve for the coordinates in
+
+52
+00:03:13.190 --> 00:03:17.360
+the vehicle frame or an appropriate
+inertial frame, for example.
+
+53
+00:03:17.360 --> 00:03:20.750
+A critical component of tracking
+reference frames is tracking
+
+54
+00:03:20.750 --> 00:03:25.400
+their orientation or rotation with
+respect to some base reference frame.
+
+55
+00:03:25.400 --> 00:03:29.210
+Rotations are particularly tricky
+mathematical objects and they can be
+
+56
+00:03:29.210 --> 00:03:33.845
+the source of major bugs if not
+dealt with carefully and diligently.
+
+57
+00:03:33.845 --> 00:03:37.925
+There are many different ways
+to represent rotations.
+
+58
+00:03:37.925 --> 00:03:39.780
+The most common is to use a three by
+
+59
+00:03:39.780 --> 00:03:43.235
+three rotation matrix
+as we've done before.
+
+60
+00:03:43.235 --> 00:03:46.340
+This matrix defines
+the relationship between
+
+61
+00:03:46.340 --> 00:03:50.620
+the basis vectors of two reference
+frames in terms of dot products.
+
+62
+00:03:50.620 --> 00:03:55.265
+For this reason, it's often called
+the direction cosine matrix.
+
+63
+00:03:55.265 --> 00:03:58.670
+An important property to
+remember is that the inverse
+
+64
+00:03:58.670 --> 00:04:02.280
+of a rotation matrix
+is just its transpose.
+
+65
+00:04:04.700 --> 00:04:07.610
+A second way to represent rotations is to
+
+66
+00:04:07.610 --> 00:04:10.115
+use something called unit quaternions.
+
+67
+00:04:10.115 --> 00:04:12.620
+Quaternions are an interesting
+mathematical topic
+
+68
+00:04:12.620 --> 00:04:14.855
+in their own right, but for us,
+
+69
+00:04:14.855 --> 00:04:17.330
+it's sufficient to note
+that a unit quaternion
+
+70
+00:04:17.330 --> 00:04:20.060
+can be represented as
+a four-dimensional vector of
+
+71
+00:04:20.060 --> 00:04:22.385
+unit length that parameterizes
+
+72
+00:04:22.385 --> 00:04:25.590
+a rotation about an axis
+defined by the vector u,
+
+73
+00:04:25.590 --> 00:04:28.955
+and an angle phi about that vector.
+
+74
+00:04:28.955 --> 00:04:32.750
+We can convert a quaternion
+to a rotation matrix by using
+
+75
+00:04:32.750 --> 00:04:36.545
+this somewhat tedious but
+straightforward algebraic expression.
+
+76
+00:04:36.545 --> 00:04:39.415
+Why would we ever want
+to use quaternions?
+
+77
+00:04:39.415 --> 00:04:40.970
+Well, they don't suffer from
+
+78
+00:04:40.970 --> 00:04:45.840
+singularities and they only need
+four parameters instead of nine.
+
+79
+00:04:46.210 --> 00:04:48.860
+Finally, another way of representing
+
+80
+00:04:48.860 --> 00:04:53.040
+a rotation is using three numbers
+called Euler angles.
+
+81
+00:04:53.410 --> 00:04:57.800
+These angles represent an arbitrary
+rotation as the composition of
+
+82
+00:04:57.800 --> 00:05:01.925
+three separate rotations about
+different principal axes.
+
+83
+00:05:01.925 --> 00:05:04.380
+Euler angles are attractive in part
+
+84
+00:05:04.380 --> 00:05:06.880
+because they are
+a parsimonious representation
+
+85
+00:05:06.880 --> 00:05:12.515
+requiring only three parameters instead
+of nine for a full rotation matrix.
+
+86
+00:05:12.515 --> 00:05:15.485
+Unfortunately,
+Euler angle representations
+
+87
+00:05:15.485 --> 00:05:18.265
+are subject to what are
+called singularities.
+
+88
+00:05:18.265 --> 00:05:21.950
+Singularities complicate
+state estimation because they represent
+
+89
+00:05:21.950 --> 00:05:27.335
+particular rotations from which to
+Euler angles are indistinguishable.
+
+90
+00:05:27.335 --> 00:05:31.070
+Neither quaternions nor
+rotation matrices suffer
+
+91
+00:05:31.070 --> 00:05:35.280
+from this problem at the expense
+of using more parameters.
+
+92
+00:05:35.830 --> 00:05:40.505
+So, which of these representations do
+self-driving vehicle engineers use?
+
+93
+00:05:40.505 --> 00:05:42.710
+Well, it depends.
+
+94
+00:05:42.710 --> 00:05:46.290
+Each has advantages and disadvantages.
+
+95
+00:05:46.370 --> 00:05:50.240
+A rotation matrix can
+represent any rotation but
+
+96
+00:05:50.240 --> 00:05:54.845
+requires nine parameters
+and had six constraints.
+
+97
+00:05:54.845 --> 00:05:59.269
+A unit quaternion can also be
+used to represent any rotation,
+
+98
+00:05:59.269 --> 00:06:01.675
+but it also has a constraint.
+
+99
+00:06:01.675 --> 00:06:05.400
+To use a unit quaternion to
+actually rotate a vector,
+
+100
+00:06:05.400 --> 00:06:07.715
+we also require some additional algebra
+
+101
+00:06:07.715 --> 00:06:10.770
+beyond simple matrix multiplication.
+
+102
+00:06:10.780 --> 00:06:14.910
+Finally, Euler angles are unconstrained,
+
+103
+00:06:14.910 --> 00:06:18.730
+intuitive to visualize and
+use only three parameters,
+
+104
+00:06:18.730 --> 00:06:21.500
+but are subject to singularities.
+
+105
+00:06:22.110 --> 00:06:24.850
+Finally, let's look at
+
+106
+00:06:24.850 --> 00:06:29.600
+four important reference frames that
+we'll use when localizing our vehicle.
+
+107
+00:06:30.080 --> 00:06:36.075
+The first frame is the Earth-Centered
+Inertial Frame or ECIF.
+
+108
+00:06:36.075 --> 00:06:39.815
+This frame has its origin
+at the center of the earth,
+
+109
+00:06:39.815 --> 00:06:42.080
+the z axis points true north,
+
+110
+00:06:42.080 --> 00:06:46.465
+and the x and y axis are fixed with
+respect to the very distant stars.
+
+111
+00:06:46.465 --> 00:06:50.320
+This means that although the earth
+rotates about the z axis,
+
+112
+00:06:50.320 --> 00:06:53.450
+the x and y axes do not move.
+
+113
+00:06:54.770 --> 00:06:58.485
+Next, the Earth-Eentered
+Earth-Fixed Frame,
+
+114
+00:06:58.485 --> 00:07:03.340
+or ECEF is just like ECIF except that
+
+115
+00:07:03.340 --> 00:07:08.440
+it's x axis is aligned with the Prime
+Meridian and spins with the earth.
+
+116
+00:07:08.440 --> 00:07:12.350
+The y-axis is determined
+by the right-hand rule.
+
+117
+00:07:13.080 --> 00:07:19.270
+Here, you can see an animation that
+shows the difference between the ECEF,
+
+118
+00:07:19.270 --> 00:07:21.035
+which is fixed to the earth,
+
+119
+00:07:21.035 --> 00:07:25.760
+and the ECIF, which is fixed with
+respect to the distance stars.
+
+120
+00:07:25.950 --> 00:07:30.010
+Although ECEF and ECIF are useful when
+
+121
+00:07:30.010 --> 00:07:33.534
+we discuss satellites and
+inertial sensing onboard aircraft,
+
+122
+00:07:33.534 --> 00:07:35.990
+for practical car applications,
+
+123
+00:07:35.990 --> 00:07:40.955
+we'll usually want to use a frame that
+is fixed with respect to the ground.
+
+124
+00:07:40.955 --> 00:07:45.680
+For this, we'll use what we referred
+to as the navigation frame.
+
+125
+00:07:45.680 --> 00:07:49.130
+A very common navigation frame
+is one that is attached to
+
+126
+00:07:49.130 --> 00:07:55.030
+some germane starting point and
+aligned with north, east, and down.
+
+127
+00:07:55.030 --> 00:07:58.550
+Finally, we also often
+need to think about
+
+128
+00:07:58.550 --> 00:08:02.494
+a sensor frame that is rigidly
+attached to a sensor like a LIDAR,
+
+129
+00:08:02.494 --> 00:08:05.705
+a GPS receiver, or
+an inertial measurement unit.
+
+130
+00:08:05.705 --> 00:08:09.680
+This frame will typically be distinct
+from the general vehicle frame,
+
+131
+00:08:09.680 --> 00:08:12.755
+which can be placed anywhere on
+the vehicle that is convenient,
+
+132
+00:08:12.755 --> 00:08:15.020
+at the center of mass for example.
+
+133
+00:08:15.020 --> 00:08:18.920
+For localization, we will often
+ignore the distinction between
+
+134
+00:08:18.920 --> 00:08:23.450
+the vehicle and sensor frame and assume
+that if we can track the sensor,
+
+135
+00:08:23.450 --> 00:08:25.280
+we should be able to track any point on
+
+136
+00:08:25.280 --> 00:08:27.815
+the vehicle given proper calibration,
+
+137
+00:08:27.815 --> 00:08:30.660
+a topic we investigate later.
+
+138
+00:08:30.710 --> 00:08:34.700
+To summarize, vector quantities can be
+
+139
+00:08:34.700 --> 00:08:39.410
+expressed in different reference frames
+through rotations and translations.
+
+140
+00:08:39.410 --> 00:08:43.535
+Rotations can be parameterized
+by rotation matrices,
+
+141
+00:08:43.535 --> 00:08:45.935
+quaternions, or Euler angles,
+
+142
+00:08:45.935 --> 00:08:49.800
+each of which has advantages
+and disadvantages.
+
+143
+00:08:49.900 --> 00:08:54.840
+The Earth-Centered Earth-Fixed,
+Earth-Centered Inertial,
+
+144
+00:08:54.840 --> 00:09:00.330
+and navigation frames are important
+reference frames for localization.
+
+145
+00:09:01.150 --> 00:09:03.740
+In the next video, we'll discuss how we
+
+146
+00:09:03.740 --> 00:09:05.570
+can use the tools we learned about in
+
+147
+00:09:05.570 --> 00:09:10.380
+this lesson to track motion by
+using an inertial measurement unit.

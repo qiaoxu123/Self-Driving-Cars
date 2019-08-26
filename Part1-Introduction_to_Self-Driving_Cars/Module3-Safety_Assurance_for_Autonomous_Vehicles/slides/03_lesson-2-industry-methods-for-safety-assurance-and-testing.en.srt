@@ -1,0 +1,1035 @@
+1
+00:00:13,250 --> 00:00:16,815
+Welcome to the second lesson this week.
+
+2
+00:00:16,815 --> 00:00:21,960
+In this lesson, we will discuss the various industry perspectives on safety and testing.
+
+3
+00:00:21,960 --> 00:00:24,210
+Specifically, we'll first analyze
+
+4
+00:00:24,210 --> 00:00:29,115
+the safety perspectives of two big names in the industry: Waymo and GM.
+
+5
+00:00:29,115 --> 00:00:32,430
+Then we'll discuss two different approaches to assessing
+
+6
+00:00:32,430 --> 00:00:36,865
+safety: analytical versus empirical. Let's begin.
+
+7
+00:00:36,865 --> 00:00:39,275
+As we saw in the last video,
+
+8
+00:00:39,275 --> 00:00:42,800
+the NHTSA requested that each self-driving developer,
+
+9
+00:00:42,800 --> 00:00:46,640
+should develop and describe a comprehensive safety strategy that
+
+10
+00:00:46,640 --> 00:00:50,725
+covered the 12 concepts included in their guidance document.
+
+11
+00:00:50,725 --> 00:00:55,230
+To date, two prominent reports have emerged from Waymo and GM,
+
+12
+00:00:55,230 --> 00:01:00,785
+and we'll use both as our basis for our discussion of industry approaches to safety.
+
+13
+00:01:00,785 --> 00:01:04,550
+The Waymo Safety Report was released in 2017,
+
+14
+00:01:04,550 --> 00:01:07,625
+and has a lot of great insight into how to organize
+
+15
+00:01:07,625 --> 00:01:11,530
+a comprehensive safety strategy for self-driving cars.
+
+16
+00:01:11,530 --> 00:01:15,630
+Waymo covers all 12 of the NHTSA concepts,
+
+17
+00:01:15,630 --> 00:01:19,325
+but organizes them into a five level safety approach.
+
+18
+00:01:19,325 --> 00:01:25,190
+First, Waymo systems are designed to perform safe driving at the behavioral level.
+
+19
+00:01:25,190 --> 00:01:29,330
+This includes decisions that follow the traffic rules,
+
+20
+00:01:29,330 --> 00:01:32,870
+can handle a wide range of scenarios within the ODD,
+
+21
+00:01:32,870 --> 00:01:35,840
+and maintain vehicle safety through it.
+
+22
+00:01:35,840 --> 00:01:41,525
+Second, Waymo ensures that the systems have backups and redundancies.
+
+23
+00:01:41,525 --> 00:01:45,410
+This is so that even if a fault or failure occurs,
+
+24
+00:01:45,410 --> 00:01:49,940
+the car can switch to a secondary component or a backup process to
+
+25
+00:01:49,940 --> 00:01:54,770
+minimize the severity of failures and return the vehicle to a safe state,
+
+26
+00:01:54,770 --> 00:01:57,230
+continuing the drive if possible.
+
+27
+00:01:57,230 --> 00:02:00,410
+This is referred to as Functional Safety.
+
+28
+00:02:00,410 --> 00:02:06,055
+Next, Waymo emphasizes crash safety as recommended by the NHTSA.
+
+29
+00:02:06,055 --> 00:02:09,620
+It designs systems that ensure minimum damage
+
+30
+00:02:09,620 --> 00:02:13,640
+to people inside the car in the event of a crash.
+
+31
+00:02:13,640 --> 00:02:17,500
+Next, it tries to ensure Operational Safety.
+
+32
+00:02:17,500 --> 00:02:22,700
+So, that means its interfaces are usable and convenient and intuitive.
+
+33
+00:02:22,700 --> 00:02:28,220
+The focus here is on allowing passengers to have some level of control over the vehicle,
+
+34
+00:02:28,220 --> 00:02:31,960
+but only in ways that maintain system safety.
+
+35
+00:02:31,960 --> 00:02:36,530
+Finally, Waymo fosters Non-collision safety.
+
+36
+00:02:36,530 --> 00:02:39,170
+This refers to system designs that minimize
+
+37
+00:02:39,170 --> 00:02:42,530
+the danger to people that may interact with the system in some way,
+
+38
+00:02:42,530 --> 00:02:46,640
+first responders, mechanics, hardware engineers, and so on.
+
+39
+00:02:46,640 --> 00:02:51,075
+These five pillars form Waymo's safety by design system,
+
+40
+00:02:51,075 --> 00:02:55,939
+and leads to a system of extensive requirement definition, design iteration,
+
+41
+00:02:55,939 --> 00:03:01,390
+and testing to ensure that the objectives of the system are met by each component.
+
+42
+00:03:01,390 --> 00:03:04,010
+The process uses several tools from
+
+43
+00:03:04,010 --> 00:03:09,300
+existing domains and we'll go into more details of these tools in the next video.
+
+44
+00:03:09,770 --> 00:03:14,990
+At the outset, the Waymo team identifies as many hazard scenarios
+
+45
+00:03:14,990 --> 00:03:19,385
+as possible and analyzes possible mitigation strategies for each,
+
+46
+00:03:19,385 --> 00:03:22,280
+that is, how to ensure that the vehicle can
+
+47
+00:03:22,280 --> 00:03:25,970
+still reach a safe state when a hazard occurs.
+
+48
+00:03:25,970 --> 00:03:32,360
+Then, they use a hazard assessment method to identify more specific safety requirements.
+
+49
+00:03:32,360 --> 00:03:38,240
+The various methods they use are preliminary analysis of possible safety risk,
+
+50
+00:03:38,240 --> 00:03:41,150
+a fault tree hazard assessment which works from the
+
+51
+00:03:41,150 --> 00:03:44,395
+top down in terms of the dynamic driving task,
+
+52
+00:03:44,395 --> 00:03:49,355
+and some design failure modes and effects analysis which works from the bottom-up
+
+53
+00:03:49,355 --> 00:03:50,960
+assessing the effects of
+
+54
+00:03:50,960 --> 00:03:55,555
+small subsystem failures on the overall capabilities of the system.
+
+55
+00:03:55,555 --> 00:04:01,415
+Finally, they perform lots of testing to ensure that the requirements are met.
+
+56
+00:04:01,415 --> 00:04:04,700
+Let's discuss the kind of testing procedures that Waymo
+
+57
+00:04:04,700 --> 00:04:07,685
+follows specifically to evaluate its software,
+
+58
+00:04:07,685 --> 00:04:11,905
+as it is the most publicly visible and well-documented program out there.
+
+59
+00:04:11,905 --> 00:04:14,660
+First, they test all software changes in
+
+60
+00:04:14,660 --> 00:04:19,160
+simulation on the order of 10 million miles of simulation per day.
+
+61
+00:04:19,160 --> 00:04:22,970
+This represents an enormous computing effort running continuously to
+
+62
+00:04:22,970 --> 00:04:27,875
+confirm the expected improvements to safety requirements for the system.
+
+63
+00:04:27,875 --> 00:04:32,210
+To do this, they mine all of their on-road experiences for challenging
+
+64
+00:04:32,210 --> 00:04:36,665
+scenarios and perform systematic scenario fuzzing,
+
+65
+00:04:36,665 --> 00:04:38,630
+which changes the position and
+
+66
+00:04:38,630 --> 00:04:42,470
+velocity parameters of other vehicles and pedestrians randomly,
+
+67
+00:04:42,470 --> 00:04:47,610
+so they can test if the ego-vehicle behaves safely throughout all of them.
+
+68
+00:04:47,610 --> 00:04:51,860
+This approach is particularly useful for finding hard edge cases,
+
+69
+00:04:51,860 --> 00:04:56,915
+with hard to resolve time gaps for merging or crossing intersections for example.
+
+70
+00:04:56,915 --> 00:04:59,675
+Then they do Closed-course Testing,
+
+71
+00:04:59,675 --> 00:05:02,900
+in which they test their software on private tracks.
+
+72
+00:05:02,900 --> 00:05:08,570
+They cover 28 core scenarios as identified by an UC Berkeley study,
+
+73
+00:05:08,570 --> 00:05:12,455
+as well as 19 additional scenarios that Waymo added.
+
+74
+00:05:12,455 --> 00:05:15,140
+These scenarios are organized around avoiding
+
+75
+00:05:15,140 --> 00:05:19,130
+the four most common accident scenarios which are rear-end,
+
+76
+00:05:19,130 --> 00:05:23,525
+intersection, road departure, and lane change.
+
+77
+00:05:23,525 --> 00:05:27,110
+There are obviously many variations of each of these categories but
+
+78
+00:05:27,110 --> 00:05:31,470
+together they account for over 84 percent of all crashes.
+
+79
+00:05:31,470 --> 00:05:35,120
+Finally, they do real-world testing which are
+
+80
+00:05:35,120 --> 00:05:39,110
+regularly seen on the streets of many different cities in the United States,
+
+81
+00:05:39,110 --> 00:05:43,070
+including Mountain View California right near the main Google campus.
+
+82
+00:05:43,070 --> 00:05:45,590
+This testing allows them to identify
+
+83
+00:05:45,590 --> 00:05:49,645
+more and more cases that are out of the ordinary and primarily rely
+
+84
+00:05:49,645 --> 00:05:52,674
+on the dynamic driving task fallback strategy
+
+85
+00:05:52,674 --> 00:05:56,875
+of having humans monitor the autonomy software during testing.
+
+86
+00:05:56,875 --> 00:06:02,350
+The combination of these strategies for testing is by no means unique to Waymo,
+
+87
+00:06:02,350 --> 00:06:05,560
+but has emerged as the de facto standard as it provides
+
+88
+00:06:05,560 --> 00:06:09,625
+the maximum flexibility and feedback for a fixed investment,
+
+89
+00:06:09,625 --> 00:06:12,700
+focusing each test method on what it does best,
+
+90
+00:06:12,700 --> 00:06:16,450
+simulation on manipulating scenarios that make them hard,
+
+91
+00:06:16,450 --> 00:06:20,320
+closed-course testing on confirming specific gains in
+
+92
+00:06:20,320 --> 00:06:25,870
+safety performance and real-world testing on finding evermore challenging scenarios,
+
+93
+00:06:25,870 --> 00:06:29,100
+and increasing public confidence in the technology.
+
+94
+00:06:29,100 --> 00:06:34,550
+Okay. Now let's turn our attention to the safety ideology for General Motors,
+
+95
+00:06:34,550 --> 00:06:38,690
+who acquired Cruise Automation in 2016 and has propelled
+
+96
+00:06:38,690 --> 00:06:43,680
+itself to a leading position in self-driving development as a result.
+
+97
+00:06:43,780 --> 00:06:48,290
+GM strategy follows the NHTSA safety framework very
+
+98
+00:06:48,290 --> 00:06:52,370
+closely and addresses each of the 12 main areas individually.
+
+99
+00:06:52,370 --> 00:06:58,400
+GM's safety strategy does not try to reorganize or simplify the NHTSA guidance,
+
+100
+00:06:58,400 --> 00:07:00,200
+but instead focuses on
+
+101
+00:07:00,200 --> 00:07:05,180
+its implementation strategies for achieving the required safety assessments.
+
+102
+00:07:05,180 --> 00:07:10,220
+First and foremost, GM emphasized their iterative design model,
+
+103
+00:07:10,220 --> 00:07:12,690
+in which the first analyze scenarios,
+
+104
+00:07:12,690 --> 00:07:16,200
+then build software, then simulate the scenarios,
+
+105
+00:07:16,200 --> 00:07:17,820
+and test their software.
+
+106
+00:07:17,820 --> 00:07:21,730
+Finally, deploy their software on real world cars,
+
+107
+00:07:21,730 --> 00:07:24,920
+and they keep adding improvements and refinements to
+
+108
+00:07:24,920 --> 00:07:28,985
+both the requirements and the autonomous system iteratively.
+
+109
+00:07:28,985 --> 00:07:33,110
+Second, whereas Waymo relies on OEMs to design
+
+110
+00:07:33,110 --> 00:07:35,060
+its vehicles and only discusses
+
+111
+00:07:35,060 --> 00:07:38,660
+mechanical and electrical hazards related to its autonomy hardware,
+
+112
+00:07:38,660 --> 00:07:43,295
+GM manufactures their cars entirely themselves and so can enforce
+
+113
+00:07:43,295 --> 00:07:45,350
+a more integrated design with
+
+114
+00:07:45,350 --> 00:07:49,360
+consistent quality standards throughout the self-driving hardware.
+
+115
+00:07:49,360 --> 00:07:54,680
+Next, GM ensures safety through a comprehensive risk management scheme.
+
+116
+00:07:54,680 --> 00:07:57,920
+They identify and address risks and try
+
+117
+00:07:57,920 --> 00:08:01,325
+to eliminate them completely and not just mitigate them.
+
+118
+00:08:01,325 --> 00:08:07,235
+Finally, all their systems follow there internally well defined standards of safety,
+
+119
+00:08:07,235 --> 00:08:10,040
+reliability, security, and so on.
+
+120
+00:08:10,040 --> 00:08:14,450
+They have years of experience of developing vehicles in the automotive industry,
+
+121
+00:08:14,450 --> 00:08:18,230
+and have developed extensive safety processes as a result.
+
+122
+00:08:18,230 --> 00:08:22,745
+Their safety processes involve three types of analysis.
+
+123
+00:08:22,745 --> 00:08:25,820
+First, they perform deductive analysis through
+
+124
+00:08:25,820 --> 00:08:28,190
+the fault tree method and pinpoint
+
+125
+00:08:28,190 --> 00:08:32,220
+components that could possibly have faults and address them.
+
+126
+00:08:32,250 --> 00:08:37,465
+Next, they perform inductive analysis through design, FMEA.
+
+127
+00:08:37,465 --> 00:08:42,010
+So, they do a failure modes and effect analysis on their design proposals,
+
+128
+00:08:42,010 --> 00:08:45,340
+and try to ensure safety from the bottom up.
+
+129
+00:08:45,340 --> 00:08:51,820
+Finally, they employ hazard and operability studies to perform exploratory analysis,
+
+130
+00:08:51,820 --> 00:08:55,855
+and figure out when the system may potentially not work as expected.
+
+131
+00:08:55,855 --> 00:08:58,540
+Now, this may all sound familiar and indeed,
+
+132
+00:08:58,540 --> 00:09:02,140
+these are the same pillars of analysis that Waymo describes.
+
+133
+00:09:02,140 --> 00:09:07,720
+In the next video, we'll go through more details on how these methods actually work.
+
+134
+00:09:07,720 --> 00:09:12,040
+Let's talk about safety thresholds and GM vehicles.
+
+135
+00:09:12,040 --> 00:09:18,190
+All GM vehicles have to follow two critical safety thresholds at the very least.
+
+136
+00:09:18,190 --> 00:09:23,680
+First, the GM defines a clear set of fail safes, back-up systems,
+
+137
+00:09:23,680 --> 00:09:26,350
+and redundancies for different components so
+
+138
+00:09:26,350 --> 00:09:29,830
+that the system continues to work even after a failure.
+
+139
+00:09:29,830 --> 00:09:32,680
+Second, the components must pass
+
+140
+00:09:32,680 --> 00:09:37,690
+the SOTIF evaluation which we'll discuss in more detail in the next video.
+
+141
+00:09:37,690 --> 00:09:40,480
+With this evaluation, we ensure that
+
+142
+00:09:40,480 --> 00:09:46,465
+all critical functionalities are evaluated in both known and unknown scenarios.
+
+143
+00:09:46,465 --> 00:09:52,445
+Finally, GM follows a rigorous testing mechanism consisting of performance testing,
+
+144
+00:09:52,445 --> 00:09:55,770
+requirements validation, fault injection,
+
+145
+00:09:55,770 --> 00:10:01,040
+intrusive testing, and durability tests, and simulation-based testing.
+
+146
+00:10:01,040 --> 00:10:05,380
+Both these companies rigorously follow safety standards and are
+
+147
+00:10:05,380 --> 00:10:09,745
+therefore great examples of how to do safety practically and effectively.
+
+148
+00:10:09,745 --> 00:10:14,710
+So, we now have a clearer picture of how safety assessment is performed in industry,
+
+149
+00:10:14,710 --> 00:10:18,580
+but we're still left with this question: is it really possible to
+
+150
+00:10:18,580 --> 00:10:22,855
+truly precisely assess whether an autonomous car is safe?
+
+151
+00:10:22,855 --> 00:10:26,050
+Or at least safer than a human driver?
+
+152
+00:10:26,050 --> 00:10:29,170
+Let's discuss the various approaches that can be
+
+153
+00:10:29,170 --> 00:10:32,575
+used to assess the safety of an autonomous driving system.
+
+154
+00:10:32,575 --> 00:10:37,990
+We have two possible approaches: analytical or data-driven safety assessment.
+
+155
+00:10:37,990 --> 00:10:40,495
+By analytical safety assessment,
+
+156
+00:10:40,495 --> 00:10:43,330
+we mean that the system can be analyzed to define
+
+157
+00:10:43,330 --> 00:10:46,120
+quantifiable safety performance or
+
+158
+00:10:46,120 --> 00:10:50,995
+failure rates based on critical assessment of hazards and scenarios.
+
+159
+00:10:50,995 --> 00:10:55,150
+If the overall system failure rates can be determined through analysis,
+
+160
+00:10:55,150 --> 00:10:58,060
+it can provide strong guidance on which aspects of
+
+161
+00:10:58,060 --> 00:11:02,065
+the system are the biggest contributors to overall safety.
+
+162
+00:11:02,065 --> 00:11:07,000
+A great example is the Space Shuttle program for which initial estimates of
+
+163
+00:11:07,000 --> 00:11:11,920
+analytical failure rates were pegged at one in 100,000 flights.
+
+164
+00:11:11,920 --> 00:11:14,230
+After the program ended however,
+
+165
+00:11:14,230 --> 00:11:16,405
+a forensic study revealed that
+
+166
+00:11:16,405 --> 00:11:21,040
+early shuttle program flights had failure rates closer to one in 10,
+
+167
+00:11:21,040 --> 00:11:24,730
+and that this only progressed to one in a hundred by the end of the program.
+
+168
+00:11:24,730 --> 00:11:28,450
+It is a marvel that such analysis is even possible for
+
+169
+00:11:28,450 --> 00:11:31,270
+such a complex system when considering all of
+
+170
+00:11:31,270 --> 00:11:34,315
+the thousands of subsystems that go into a shuttle launch,
+
+171
+00:11:34,315 --> 00:11:38,905
+and all of the millions of variables that can affect the operations of these systems.
+
+172
+00:11:38,905 --> 00:11:43,765
+This sort of detailed analysis is also applicable to self-driving cars,
+
+173
+00:11:43,765 --> 00:11:46,750
+but may arguably be more complex due to
+
+174
+00:11:46,750 --> 00:11:50,680
+the infinite variety of situations of vehicle confined itself in.
+
+175
+00:11:50,680 --> 00:11:53,770
+In the end, analytic methods can only
+
+176
+00:11:53,770 --> 00:11:57,775
+provide guidance on the safety performance of the self-driving system,
+
+177
+00:11:57,775 --> 00:12:01,705
+and their results need to be validated through experience.
+
+178
+00:12:01,705 --> 00:12:05,830
+To evaluate experience, we use data-driven testing.
+
+179
+00:12:05,830 --> 00:12:08,560
+This is the concept whereby we are assured that
+
+180
+00:12:08,560 --> 00:12:11,905
+the system is safe because it has demonstrated that,
+
+181
+00:12:11,905 --> 00:12:14,260
+using a specific version of the software,
+
+182
+00:12:14,260 --> 00:12:17,260
+it can achieve desired failure rates on a set of
+
+183
+00:12:17,260 --> 00:12:21,715
+roads and scenarios that are included in the operational design domain.
+
+184
+00:12:21,715 --> 00:12:23,740
+In the case of self-driving,
+
+185
+00:12:23,740 --> 00:12:28,600
+these desired failure rates can be tied to human level driving performance,
+
+186
+00:12:28,600 --> 00:12:35,500
+where we hope to reduce accidents by 10x or 100x over the performance of today's drivers.
+
+187
+00:12:35,500 --> 00:12:37,915
+So, what does the data say?
+
+188
+00:12:37,915 --> 00:12:41,005
+Are autonomous cars actually safer?
+
+189
+00:12:41,005 --> 00:12:45,550
+First, know the driving is still dangerous by human standards.
+
+190
+00:12:45,550 --> 00:12:49,810
+A report in 2015 concluded that of all the fatalities in driving,
+
+191
+00:12:49,810 --> 00:12:53,380
+about 90 percent of these occurred due to human errors,
+
+192
+00:12:53,380 --> 00:12:55,540
+sometimes through a lack of judgment,
+
+193
+00:12:55,540 --> 00:12:59,110
+sometimes through a failure of human perception, et cetera.
+
+194
+00:12:59,110 --> 00:13:03,580
+But humans are also extremely good at driving, and indeed,
+
+195
+00:13:03,580 --> 00:13:06,190
+the entire driving environment has been designed
+
+196
+00:13:06,190 --> 00:13:09,130
+based on human perception and planning abilities.
+
+197
+00:13:09,130 --> 00:13:10,555
+In the United States,
+
+198
+00:13:10,555 --> 00:13:15,610
+there is roughly one fatality per 146 million kilometres driven.
+
+199
+00:13:15,610 --> 00:13:19,285
+One injury per 2.1 million kilometres driven,
+
+200
+00:13:19,285 --> 00:13:23,500
+and approximately one collision per 400,000 kilometres.
+
+201
+00:13:23,500 --> 00:13:28,570
+This last number is only estimated as most smaller collisions are not actually reported.
+
+202
+00:13:28,570 --> 00:13:31,360
+In fact, autonomous driving may do a lot to
+
+203
+00:13:31,360 --> 00:13:34,420
+shed more light on these statistics as much more
+
+204
+00:13:34,420 --> 00:13:37,270
+comprehensive reporting and reconstruction will be
+
+205
+00:13:37,270 --> 00:13:40,900
+possible with the additional sensors available to us.
+
+206
+00:13:40,900 --> 00:13:45,565
+Now, let's consider the preliminary self-driving vehicle statistics,
+
+207
+00:13:45,565 --> 00:13:48,670
+more specifically, the disengagement rates
+
+208
+00:13:48,670 --> 00:13:53,140
+published by all autonomous driving vehicles being tested in California.
+
+209
+00:13:53,140 --> 00:13:57,890
+A disengagement is when either this autonomy software requests
+
+210
+00:13:57,890 --> 00:14:03,120
+the driver to take over control or the safety driver feels the need to intervene.
+
+211
+00:14:03,120 --> 00:14:07,140
+It is understandably challenging to get true crash statistics for
+
+212
+00:14:07,140 --> 00:14:11,120
+the entire fleets being tested as these are sensitive statistics.
+
+213
+00:14:11,120 --> 00:14:16,795
+Fortunately, testing in California comes along with some useful reporting requirements.
+
+214
+00:14:16,795 --> 00:14:23,200
+In 2017, Waymo drove 563,000 kilometres in California and
+
+215
+00:14:23,200 --> 00:14:26,380
+experienced 63 disengagement for
+
+216
+00:14:26,380 --> 00:14:30,685
+a rate of roughly one disengagement every 9,000 kilometres.
+
+217
+00:14:30,685 --> 00:14:35,290
+GM Cruise drove 210,000 kilometres in California with
+
+218
+00:14:35,290 --> 00:14:40,195
+105 disengagement for roughly one every 2,000 kilometres.
+
+219
+00:14:40,195 --> 00:14:43,870
+Both were improving quickly throughout the year reaching
+
+220
+00:14:43,870 --> 00:14:47,680
+disengagement rates of once every 12,500 kilometres,
+
+221
+00:14:47,680 --> 00:14:52,780
+and every 8,300 kilometres respectively for the last three months of the year.
+
+222
+00:14:52,780 --> 00:14:58,240
+These are hard numbers to relate to in terms of human performance but roughly mean that
+
+223
+00:14:58,240 --> 00:15:00,715
+a typical commuter would only have to
+
+224
+00:15:00,715 --> 00:15:04,735
+intervene once a year for a failure of the autonomy system.
+
+225
+00:15:04,735 --> 00:15:08,560
+This is enormous progress but also still a ways off from the
+
+226
+00:15:08,560 --> 00:15:14,770
+400,000 kilometres between crashes that humans achieve on trillions of miles every year.
+
+227
+00:15:14,770 --> 00:15:20,365
+The primary causes of the 63 Waymo disengagements in order of frequency,
+
+228
+00:15:20,365 --> 00:15:22,795
+were unwanted vehicle manoeuvres,
+
+229
+00:15:22,795 --> 00:15:26,650
+perception discrepancies, hardware issues,
+
+230
+00:15:26,650 --> 00:15:29,680
+software issues, behavior predictions,
+
+231
+00:15:29,680 --> 00:15:33,385
+and finally, a single case of a reckless road user.
+
+232
+00:15:33,385 --> 00:15:36,475
+It's clear that the core tasks of perception,
+
+233
+00:15:36,475 --> 00:15:40,450
+prediction and behavior planning remain challenging problems,
+
+234
+00:15:40,450 --> 00:15:42,790
+and much work still needs to be done.
+
+235
+00:15:42,790 --> 00:15:46,570
+Lastly, a word about statistical significance.
+
+236
+00:15:46,570 --> 00:15:50,575
+The performance observed from today's fleet are impressive,
+
+237
+00:15:50,575 --> 00:15:55,375
+but how well do they represent an accurate comparison to human capabilities?
+
+238
+00:15:55,375 --> 00:15:58,060
+How many miles do we really need to drive to
+
+239
+00:15:58,060 --> 00:16:01,765
+demonstrate autonomous vehicles are safer than human drivers,
+
+240
+00:16:01,765 --> 00:16:05,050
+particularly in terms of fatalities?
+
+241
+00:16:05,050 --> 00:16:07,285
+In the supplemental material,
+
+242
+00:16:07,285 --> 00:16:09,310
+we've included a link to a report by
+
+243
+00:16:09,310 --> 00:16:12,415
+Rand Corporation that attempts to address this question,
+
+244
+00:16:12,415 --> 00:16:14,350
+and the numbers are startling.
+
+245
+00:16:14,350 --> 00:16:19,825
+Since fatalities are such rare events and with a numerous factors under consideration,
+
+246
+00:16:19,825 --> 00:16:23,890
+the report states that upwards of 8 billion miles would be needed if
+
+247
+00:16:23,890 --> 00:16:28,960
+pure on road testing is used to validate the safety case for a self-driving system.
+
+248
+00:16:28,960 --> 00:16:35,335
+It would take at least 400 years to do so with a fleet of 100 vehicles traveling 24/7,
+
+249
+00:16:35,335 --> 00:16:37,450
+that's a long time to wait.
+
+250
+00:16:37,450 --> 00:16:42,205
+It is for this reason that we see such multifaceted approaches to safety,
+
+251
+00:16:42,205 --> 00:16:45,355
+and every company is expanding vehicle fleets
+
+252
+00:16:45,355 --> 00:16:49,195
+to increase the experience gained with autonomous systems on the road.
+
+253
+00:16:49,195 --> 00:16:51,865
+To summarize, in this video,
+
+254
+00:16:51,865 --> 00:16:56,275
+we looked at two industry perspectives on autonomous driving safety assessment,
+
+255
+00:16:56,275 --> 00:17:00,775
+Waymo and GM, and found many methods borrowed from other industries.
+
+256
+00:17:00,775 --> 00:17:03,460
+We discussed the current disengagement rates and
+
+257
+00:17:03,460 --> 00:17:07,160
+road testing requirements to demonstrate better than human performance.
+
+258
+00:17:07,160 --> 00:17:09,560
+In the next lesson, we'll explore a few of
+
+259
+00:17:09,560 --> 00:17:14,810
+the most commonly used safety framework and methodologies. We'll see you there.

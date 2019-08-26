@@ -1,0 +1,519 @@
+1
+00:00:14,210 --> 00:00:17,295
+Welcome back. In the last lesson,
+
+2
+00:00:17,295 --> 00:00:21,825
+we defined important concepts relevant for the lateral vehicle control.
+
+3
+00:00:21,825 --> 00:00:25,575
+In this lesson, we will put these concepts to good use.
+
+4
+00:00:25,575 --> 00:00:27,720
+We'll first introduce the concept of
+
+5
+00:00:27,720 --> 00:00:30,300
+a geometric path tracking controller which
+
+6
+00:00:30,300 --> 00:00:32,940
+relies on our kinematic vehicle model for selecting
+
+7
+00:00:32,940 --> 00:00:36,015
+steering commands and then we'll design
+
+8
+00:00:36,015 --> 00:00:37,620
+a pure pursuit controller for
+
+9
+00:00:37,620 --> 00:00:41,730
+our self-driving cars to track a reference path through the environment.
+
+10
+00:00:41,730 --> 00:00:47,255
+Let's get started. So what is a geometric path tracking controller?
+
+11
+00:00:47,255 --> 00:00:51,425
+Generically, it is any controller that tracks a reference path
+
+12
+00:00:51,425 --> 00:00:56,210
+using only the geometry of the vehicle kinematics and the reference path.
+
+13
+00:00:56,210 --> 00:00:58,240
+In the case of self-driving cars,
+
+14
+00:00:58,240 --> 00:01:02,900
+a geometric path tracking controller is a type of lateral controller that
+
+15
+00:01:02,900 --> 00:01:05,490
+ignores dynamic forces on the vehicles
+
+16
+00:01:05,490 --> 00:01:08,690
+and assumes the no-slip condition holds at the wheels.
+
+17
+00:01:08,690 --> 00:01:13,130
+It relies on a kinematic bicycle model and the error measures defined in
+
+18
+00:01:13,130 --> 00:01:18,460
+the previous video to construct a steering command rule that achieves path tracking.
+
+19
+00:01:18,460 --> 00:01:20,425
+Because of its simple nature,
+
+20
+00:01:20,425 --> 00:01:24,515
+it is very popular and useful in robotics and autonomous driving.
+
+21
+00:01:24,515 --> 00:01:27,850
+However, this simple approach has a downside in that
+
+22
+00:01:27,850 --> 00:01:32,840
+its performance suffers when the vehicle motion does not match the no-slip assumption,
+
+23
+00:01:32,840 --> 00:01:37,735
+as is the case in aggressive vehicle maneuvers with high lateral acceleration.
+
+24
+00:01:37,735 --> 00:01:40,900
+In these cases, a deeper understanding of
+
+25
+00:01:40,900 --> 00:01:43,600
+the limits of the available tire forces is needed,
+
+26
+00:01:43,600 --> 00:01:47,020
+as are more involved control strategies.
+
+27
+00:01:47,020 --> 00:01:52,150
+When the vehicle is operating in the linear tire region and a tire is not saturated,
+
+28
+00:01:52,150 --> 00:01:56,560
+however, geometric path tracking controllers can work very well.
+
+29
+00:01:56,560 --> 00:02:02,150
+Geometric path tracking controllers rely on a reference point along the desired path,
+
+30
+00:02:02,150 --> 00:02:06,820
+which can be the same reference point used to compute heading and cross track errors,
+
+31
+00:02:06,820 --> 00:02:12,260
+or it can be a look-ahead point some distance in front of the vehicle along the path,
+
+32
+00:02:12,260 --> 00:02:15,760
+an example of which is shown in red here.
+
+33
+00:02:15,760 --> 00:02:19,250
+In fact, the pure pursuit controller we're about to
+
+34
+00:02:19,250 --> 00:02:22,820
+derive uses a look-ahead point on the reference path,
+
+35
+00:02:22,820 --> 00:02:25,940
+while the Stanley controller in the next video uses
+
+36
+00:02:25,940 --> 00:02:29,720
+the same reference point as is needed for error calculations.
+
+37
+00:02:29,720 --> 00:02:34,010
+Let's now take a closer look at the pure pursuit controller.
+
+38
+00:02:34,010 --> 00:02:35,900
+In the pure pursuit method,
+
+39
+00:02:35,900 --> 00:02:38,780
+the core idea is that a reference point can be
+
+40
+00:02:38,780 --> 00:02:42,065
+placed on the path a fixed distance ahead of the vehicle,
+
+41
+00:02:42,065 --> 00:02:45,080
+and the steering commands needed to intersect with
+
+42
+00:02:45,080 --> 00:02:49,235
+this point using a constant steering angle can be computed.
+
+43
+00:02:49,235 --> 00:02:53,870
+As the vehicle turns towards the path to follow this curve,
+
+44
+00:02:53,870 --> 00:02:56,030
+the point continues to move forward,
+
+45
+00:02:56,030 --> 00:03:00,965
+reducing the steering angle and gently bringing the vehicle towards the path.
+
+46
+00:03:00,965 --> 00:03:03,260
+In this method, the center of
+
+47
+00:03:03,260 --> 00:03:06,800
+the rear axle is used as the reference point on the vehicle,
+
+48
+00:03:06,800 --> 00:03:10,730
+and we define the line that connects the center of the rear axle
+
+49
+00:03:10,730 --> 00:03:15,304
+to the target reference point as a line of fixed distance ld,
+
+50
+00:03:15,304 --> 00:03:17,405
+known as the look-ahead distance,
+
+51
+00:03:17,405 --> 00:03:20,645
+which is the red dashed line in this figure.
+
+52
+00:03:20,645 --> 00:03:23,650
+The angle between the vehicle's body heading
+
+53
+00:03:23,650 --> 00:03:26,975
+and the look-ahead line is referred to as alpha.
+
+54
+00:03:26,975 --> 00:03:30,185
+To construct the pure pursuit controller,
+
+55
+00:03:30,185 --> 00:03:34,975
+we once again turn to the concept of the instantaneous center of rotation.
+
+56
+00:03:34,975 --> 00:03:37,274
+The target point on the trajectory,
+
+57
+00:03:37,274 --> 00:03:39,175
+the center of the rear axle,
+
+58
+00:03:39,175 --> 00:03:42,275
+and the instantaneous center of rotation form
+
+59
+00:03:42,275 --> 00:03:47,230
+a triangle with two sides of length R and one of length ld.
+
+60
+00:03:47,230 --> 00:03:49,730
+We'd like to define the arc that takes
+
+61
+00:03:49,730 --> 00:03:53,090
+the vehicle reference point to the target point on the path.
+
+62
+00:03:53,090 --> 00:03:59,180
+This arc is the part of the ICR circle that covers the angle of two alpha.
+
+63
+00:03:59,180 --> 00:04:03,890
+The angle two alpha can be derived using standard trigonometric identities.
+
+64
+00:04:03,890 --> 00:04:05,915
+Based on the law of sines,
+
+65
+00:04:05,915 --> 00:04:10,010
+we can write the following equation: ld over the sine of
+
+66
+00:04:10,010 --> 00:04:16,025
+two alpha is equal to r over the sine of pi over two minus alpha.
+
+67
+00:04:16,025 --> 00:04:19,310
+Then using some more trigonometric identities,
+
+68
+00:04:19,310 --> 00:04:22,530
+we can simplify the equations as follows,
+
+69
+00:04:22,530 --> 00:04:30,765
+which leads to the compact expression ld over sine alpha is equal to two R. Finally,
+
+70
+00:04:30,765 --> 00:04:35,990
+the curvature kappa, which is the inverse of the arc radius R,
+
+71
+00:04:35,990 --> 00:04:39,670
+is equal to two sine alpha over ld.
+
+72
+00:04:39,670 --> 00:04:42,770
+Now, let's take a look at the bicycle model to calculate
+
+73
+00:04:42,770 --> 00:04:45,995
+the steering angle needed to track this arc.
+
+74
+00:04:45,995 --> 00:04:49,895
+Recall that the steering angle defines the arc radius
+
+75
+00:04:49,895 --> 00:04:54,215
+and yields the relation tan delta is equal to the car length l,
+
+76
+00:04:54,215 --> 00:04:57,260
+over the arc radius R. Combining
+
+77
+00:04:57,260 --> 00:05:00,560
+this expression with the expression for R derived earlier,
+
+78
+00:05:00,560 --> 00:05:03,710
+we can now express the steering angle needed to follow
+
+79
+00:05:03,710 --> 00:05:07,235
+the arc in terms of easily computed values.
+
+80
+00:05:07,235 --> 00:05:14,280
+The steering angle delta is set to the inverse tan of 2L sine alpha over ld.
+
+81
+00:05:14,280 --> 00:05:17,530
+This is an easily implemented controller for steering,
+
+82
+00:05:17,530 --> 00:05:19,520
+but how well will it perform?
+
+83
+00:05:19,520 --> 00:05:26,345
+To understand this, we need to dig into how the error values evolve in closed loop.
+
+84
+00:05:26,345 --> 00:05:29,060
+For the pure pursuit controller,
+
+85
+00:05:29,060 --> 00:05:31,610
+we can define the cross track error as
+
+86
+00:05:31,610 --> 00:05:35,205
+the distance between the heading vector and the target point.
+
+87
+00:05:35,205 --> 00:05:39,425
+Once again, we'll use e to denote the cross track error.
+
+88
+00:05:39,425 --> 00:05:45,155
+We now arrive at the expression sine alpha equals e over ld.
+
+89
+00:05:45,155 --> 00:05:48,335
+Combining this with the expression for curvature
+
+90
+00:05:48,335 --> 00:05:51,380
+shows us that the curvature of the path created by
+
+91
+00:05:51,380 --> 00:05:54,320
+the pure pursuit controller is proportional
+
+92
+00:05:54,320 --> 00:05:57,985
+to the cross track error at the look-ahead reference point.
+
+93
+00:05:57,985 --> 00:06:00,030
+As the error increases,
+
+94
+00:06:00,030 --> 00:06:01,560
+so does the curvature,
+
+95
+00:06:01,560 --> 00:06:05,020
+bringing the vehicle back to the path more aggressively.
+
+96
+00:06:05,020 --> 00:06:10,430
+This equation demonstrates that the pure pursuit controller works in a manner similar to
+
+97
+00:06:10,430 --> 00:06:12,740
+proportional control to correct
+
+98
+00:06:12,740 --> 00:06:17,945
+cross track error using path curvature as the output of the controller.
+
+99
+00:06:17,945 --> 00:06:22,895
+The proportional gain depends on two over ld squared.
+
+100
+00:06:22,895 --> 00:06:25,505
+So as the look-ahead distance increases,
+
+101
+00:06:25,505 --> 00:06:29,195
+the proportional gain decreases in a nonlinear manner.
+
+102
+00:06:29,195 --> 00:06:33,590
+It's important to note that the pure pursuit controller with a fixed value of
+
+103
+00:06:33,590 --> 00:06:39,430
+ld leads to a curvature controller that does not take into account the vehicle speed.
+
+104
+00:06:39,430 --> 00:06:43,910
+This means that the selected steering angle would be the same regardless of
+
+105
+00:06:43,910 --> 00:06:48,770
+whether the vehicle is going 10 kilometers per hour or 100 kilometers per hour,
+
+106
+00:06:48,770 --> 00:06:51,830
+leading to very different lateral acceleration's.
+
+107
+00:06:51,830 --> 00:06:56,300
+A controller tuned for high-speed would be far too sluggish at low speed,
+
+108
+00:06:56,300 --> 00:07:01,085
+and one tuned for low speed would be dangerously aggressive at high speeds.
+
+109
+00:07:01,085 --> 00:07:03,200
+To overcome this limitation,
+
+110
+00:07:03,200 --> 00:07:07,210
+we add one more modification to our pure pursuit controller.
+
+111
+00:07:07,210 --> 00:07:12,575
+We can vary the look-ahead distance ld based on the speed of the vehicle.
+
+112
+00:07:12,575 --> 00:07:18,445
+We define the look-ahead distance to increase proportional to the vehicle forward speed.
+
+113
+00:07:18,445 --> 00:07:24,920
+The addition to the controller takes the form ld is equal to K sub PP,
+
+114
+00:07:24,920 --> 00:07:27,005
+the pure pursuit look-ahead gain,
+
+115
+00:07:27,005 --> 00:07:29,945
+times the forward velocity, vf.
+
+116
+00:07:29,945 --> 00:07:34,685
+Substituting this adjustment into the steering angle command equation,
+
+117
+00:07:34,685 --> 00:07:38,105
+we arrive at the complete pure pursuit controller.
+
+118
+00:07:38,105 --> 00:07:40,700
+The controller selects the steering angle that
+
+119
+00:07:40,700 --> 00:07:43,525
+will form an arc to the look-ahead reference point,
+
+120
+00:07:43,525 --> 00:07:48,830
+and adjusts this look-ahead point to be further away the faster the vehicle is traveling.
+
+121
+00:07:48,830 --> 00:07:51,800
+This design results in steering commands and turn
+
+122
+00:07:51,800 --> 00:07:55,160
+rates that are achievable given available tire forces,
+
+123
+00:07:55,160 --> 00:07:57,485
+although it must be tuned to do so.
+
+124
+00:07:57,485 --> 00:07:59,990
+You now are ready to start building
+
+125
+00:07:59,990 --> 00:08:05,270
+geometric lateral controllers for self-driving cars. Let's summarize.
+
+126
+00:08:05,270 --> 00:08:08,030
+In this lesson, we defined the class of
+
+127
+00:08:08,030 --> 00:08:12,620
+geometric path tracking controllers and derived the pure proceed controller,
+
+128
+00:08:12,620 --> 00:08:17,540
+which is one of two geometric path following controllers that we'll study in this course.
+
+129
+00:08:17,540 --> 00:08:21,950
+In the next video, we'll explore the second geometric path tracking controller,
+
+130
+00:08:21,950 --> 00:08:25,150
+the Stanley controller. We'll see you there.

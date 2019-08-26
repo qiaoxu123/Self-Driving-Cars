@@ -1,0 +1,746 @@
+1
+00:00:00,000 --> 00:00:10,000
+[MUSIC]
+
+2
+00:00:14,416 --> 00:00:18,906
+In the last lesson, we developed the
+kinematic bicycle model to capture vehicle
+
+3
+00:00:18,906 --> 00:00:22,530
+motion with steering rates and
+velocity inputs.
+
+4
+00:00:22,530 --> 00:00:26,370
+In this lesson, we will move into
+the realm of dynamic modeling.
+
+5
+00:00:26,370 --> 00:00:30,210
+To start taking into account the forces
+and moments acting on the vehicle.
+
+6
+00:00:31,260 --> 00:00:34,265
+This type of model can lead to
+higher fidelity predictions.
+
+7
+00:00:34,265 --> 00:00:37,275
+Than are possible with kinematic models.
+
+8
+00:00:37,275 --> 00:00:38,245
+This higher fidelity,
+
+9
+00:00:38,245 --> 00:00:42,205
+however, comes at the cost of
+higher computational complexity.
+
+10
+00:00:42,205 --> 00:00:47,525
+So both kinematic and dynamic models have
+their uses in self driving development.
+
+11
+00:00:47,525 --> 00:00:50,735
+Dynamic modeling is likely
+very familiar to many of you.
+
+12
+00:00:50,735 --> 00:00:53,385
+So if you're comfortable
+making free body diagrams and
+
+13
+00:00:53,385 --> 00:00:58,270
+applying Newton's equations, Don't
+hesitate to jump forward in the course.
+
+14
+00:00:58,270 --> 00:00:59,480
+If you need a refresher, or
+
+15
+00:00:59,480 --> 00:01:03,125
+haven't done dynamic modeling before,
+this introductory video is for you.
+
+16
+00:01:03,125 --> 00:01:07,048
+[SOUND] So
+why do we need dynamic modeling?
+
+17
+00:01:07,048 --> 00:01:10,110
+In vehicle modeling,
+when the vehicle is moving and
+
+18
+00:01:10,110 --> 00:01:13,450
+turning at higher speeds, or
+when the road is slippery,
+
+19
+00:01:13,450 --> 00:01:18,040
+the assumptions defined by the no
+slip condition may no longer hold.
+
+20
+00:01:18,040 --> 00:01:22,700
+As the forces exerted on the vehicle cause
+the tires to slip over the pavement.
+
+21
+00:01:22,700 --> 00:01:27,130
+Modeling the balance of forces during slip
+conditions can expand the set of driving
+
+22
+00:01:27,130 --> 00:01:31,420
+conditions for which our model remains
+an accurate prediction of motion.
+
+23
+00:01:33,270 --> 00:01:38,520
+Also, many sub systems in the car have
+similar conditions where a hard kinematic
+
+24
+00:01:38,520 --> 00:01:43,020
+constraint is not correctly captured
+the evolution of that sub system, and
+
+25
+00:01:43,020 --> 00:01:45,560
+dynamic models are needed there as well.
+
+26
+00:01:45,560 --> 00:01:47,870
+An example would be the drive train for
+
+27
+00:01:47,870 --> 00:01:52,380
+which the balance of torques is needed
+to capture the connection from throttle
+
+28
+00:01:52,380 --> 00:01:57,880
+position to wheel torque through
+the engine and transmission systems.
+
+29
+00:01:57,880 --> 00:02:02,510
+By explicitly modeling the balance of
+forces in moments acting on the vehicle,
+
+30
+00:02:02,510 --> 00:02:06,900
+we can determine the accelerations
+the vehicle is experiencing and
+
+31
+00:02:06,900 --> 00:02:08,610
+use them to model our vehicle motion.
+
+32
+00:02:09,790 --> 00:02:13,600
+We now turn to the task of defining
+the dynamic modelling process for
+
+33
+00:02:13,600 --> 00:02:15,280
+a rigid body.
+
+34
+00:02:15,280 --> 00:02:19,110
+To build a typical dynamic model,
+we can follow the following steps.
+
+35
+00:02:20,570 --> 00:02:24,100
+First we set up the coordinate
+frames to be used in the model.
+
+36
+00:02:24,100 --> 00:02:27,680
+For example, the body frame and
+the inertial frame we discussed before.
+
+37
+00:02:29,030 --> 00:02:33,950
+Next, we break down the dynamic
+system into lumped dynamic elements.
+
+38
+00:02:33,950 --> 00:02:37,870
+These elements combine potentially
+distributed aspects of the system
+
+39
+00:02:37,870 --> 00:02:40,510
+into discrete or lumped elements.
+
+40
+00:02:40,510 --> 00:02:44,630
+In the case of a spring mass damper,
+the lumped elements would be the spring,
+
+41
+00:02:44,630 --> 00:02:45,980
+the mass, and the damper.
+
+42
+00:02:47,170 --> 00:02:50,250
+We also define a model for
+each lumped element.
+
+43
+00:02:50,250 --> 00:02:55,410
+For example, the linear spring provides
+a force proportional to a displacement for
+
+44
+00:02:55,410 --> 00:02:56,320
+a resting position.
+
+45
+00:02:58,280 --> 00:03:04,240
+Next, we sketch the free body diagram for
+each rigid body in the list of elements.
+
+46
+00:03:04,240 --> 00:03:08,550
+And properly name and model all the forces
+and moments acting on the body.
+
+47
+00:03:10,430 --> 00:03:12,980
+Finally, by using Newton's second law,
+
+48
+00:03:12,980 --> 00:03:17,260
+we write the mathematical equations
+that define our dynamic model,
+
+49
+00:03:17,260 --> 00:03:21,950
+summing all forces along each axis for
+translational dynamics.
+
+50
+00:03:21,950 --> 00:03:26,010
+In all moments about each rotational
+axis for rotational dynamics.
+
+51
+00:03:27,340 --> 00:03:30,750
+The result is an ordinary
+differential equation describing
+
+52
+00:03:30,750 --> 00:03:34,240
+the motion of our rigid body and
+this is our dynamic model.
+
+53
+00:03:36,530 --> 00:03:38,610
+Let's follow our four step process for
+
+54
+00:03:38,610 --> 00:03:41,370
+a one dimensional translational system,
+a rolling cart.
+
+55
+00:03:42,610 --> 00:03:46,460
+This figure shows the cart of mass m
+whose position we'd like to track.
+
+56
+00:03:47,460 --> 00:03:49,940
+We start by defining
+the coordinate frame for
+
+57
+00:03:49,940 --> 00:03:52,520
+the position of the cart, denoted with x.
+
+58
+00:03:54,220 --> 00:04:00,060
+Then we identify the rigid body, which
+is in this case, is the cart of mass m.
+
+59
+00:04:00,060 --> 00:04:02,250
+Next, we draw a free body diagram and
+
+60
+00:04:02,250 --> 00:04:05,430
+define all of the forces
+acting on the carts.
+
+61
+00:04:05,430 --> 00:04:08,220
+In this case, there were three
+forces acting on the cart,
+
+62
+00:04:08,220 --> 00:04:13,400
+f1 pulling the cart to the right, and
+f2 and f3 pulling the cart to the left.
+
+63
+00:04:14,510 --> 00:04:20,220
+Finally, we apply Newton's second law in
+the x direction to form the dynamic model.
+
+64
+00:04:20,220 --> 00:04:24,240
+The resulting dynamic equation
+describing the motion of the carts
+
+65
+00:04:24,240 --> 00:04:29,420
+Is m times the acceleration in the x
+direction denoted by x double dot
+
+66
+00:04:29,420 --> 00:04:33,140
+is equal to the summation of f1,
+f2, and f3.
+
+67
+00:04:33,140 --> 00:04:35,810
+Note that f2 and f3
+
+68
+00:04:35,810 --> 00:04:40,320
+have negative signs due to the fact that
+they point in the negative x direction.
+
+69
+00:04:41,790 --> 00:04:45,990
+The same process can be applied for
+a shock absorber in a car
+
+70
+00:04:45,990 --> 00:04:50,180
+The dynamic model of a shock absorber
+helps the engineers to design and
+
+71
+00:04:50,180 --> 00:04:53,630
+tune the vehicle suspension for
+better ride comfort and driveability.
+
+72
+00:04:54,850 --> 00:04:56,130
+To model this component,
+
+73
+00:04:56,130 --> 00:05:01,350
+we can go through the same four steps that
+we introduced in the previous slides.
+
+74
+00:05:01,350 --> 00:05:03,380
+We again set up the coordinate system,
+
+75
+00:05:03,380 --> 00:05:06,720
+which in this case is one coordinate
+y in the vertical direction.
+
+76
+00:05:08,390 --> 00:05:12,380
+The identified of rigid bodies or
+lump dynamic elements.
+
+77
+00:05:12,380 --> 00:05:14,150
+In the case of a real physical system,
+
+78
+00:05:14,150 --> 00:05:16,560
+there is notion of lump
+element very important.
+
+79
+00:05:16,560 --> 00:05:19,750
+The shock absorber relies
+on it's spring and
+
+80
+00:05:19,750 --> 00:05:23,670
+hydraulics cylinder with flow
+restriction to absorb shocks.
+
+81
+00:05:23,670 --> 00:05:27,540
+We model this system as
+three separate long elements
+
+82
+00:05:27,540 --> 00:05:31,570
+A mass a spring and
+hydraulic cylinder or damper.
+
+83
+00:05:33,030 --> 00:05:38,750
+We use a linear spring and damper model
+where the spring resist displacement in y
+
+84
+00:05:38,750 --> 00:05:40,940
+and damper resist the y velocity.
+
+85
+00:05:42,650 --> 00:05:46,180
+The third step is sketching
+the free body diagram.
+
+86
+00:05:46,180 --> 00:05:48,330
+Normally we show the forces Or
+
+87
+00:05:48,330 --> 00:05:51,840
+torques along with the velocities and
+directions in this diagram.
+
+88
+00:05:53,650 --> 00:05:56,040
+Finally, we form the dynamic equation,
+
+89
+00:05:56,040 --> 00:06:00,260
+which in this case is the famous second
+order spring mass damper equation.
+
+90
+00:06:01,460 --> 00:06:06,139
+There is no variation in this process to
+handle rotational or torsional systems.
+
+91
+00:06:07,140 --> 00:06:11,880
+Rotational systems are very common in the
+automobile with examples like the internal
+
+92
+00:06:11,880 --> 00:06:15,990
+combustion engine chaps, gear boxes,
+[INAUDIBLE] converters and tires.
+
+93
+00:06:17,200 --> 00:06:18,450
+In a rotational system,
+
+94
+00:06:18,450 --> 00:06:22,940
+we sum the [INAUDIBLE] about each
+access of rotation and lump.
+
+95
+00:06:22,940 --> 00:06:25,810
+Inertia is J, torsional springs and
+
+96
+00:06:25,810 --> 00:06:28,479
+dampers in the same way as
+in the translational case.
+
+97
+00:06:29,610 --> 00:06:33,610
+We refer to the rotational
+acceleration of a rigid body as alpha.
+
+98
+00:06:35,500 --> 00:06:38,090
+Let's model the rotational
+dynamics of a wheel,
+
+99
+00:06:38,090 --> 00:06:41,280
+using our four-step modeling process.
+
+100
+00:06:41,280 --> 00:06:43,310
+First, we set up the coordinate system.
+
+101
+00:06:43,310 --> 00:06:47,710
+One coordinate in the rotational direction
+is enough to represent the wheel's motion.
+
+102
+00:06:49,070 --> 00:06:53,780
+We defined theta as the angular
+position of the wheel, with theta dot
+
+103
+00:06:53,780 --> 00:06:57,740
+as its rotation rate and theta double dot,
+its angular acceleration.
+
+104
+00:06:59,170 --> 00:07:01,760
+Next, we formed the lumped
+dynamic elements.
+
+105
+00:07:02,990 --> 00:07:07,620
+The tire model has rotational
+inertia J due to its rotating mass.
+
+106
+00:07:07,620 --> 00:07:09,220
+And torsional stiffness k and
+
+107
+00:07:09,220 --> 00:07:13,530
+damping b, defined by the material
+properties of the tire in the wheel hub.
+
+108
+00:07:14,740 --> 00:07:19,620
+We drive the wheel with the a drive torque
+from the vehicles drive shaft and resist
+
+109
+00:07:19,620 --> 00:07:23,739
+this with a load torque coming from the
+tires interaction with the road's surface.
+
+110
+00:07:25,580 --> 00:07:27,670
+Now we sketch the freebody diagram.
+
+111
+00:07:27,670 --> 00:07:31,650
+The drive torque and low torque
+are defined in opposite directions
+
+112
+00:07:31,650 --> 00:07:34,860
+as the load resists the drive
+torque's acceleration of the wheel.
+
+113
+00:07:36,950 --> 00:07:39,610
+We can now form the dynamic model for
+the wheel system.
+
+114
+00:07:40,740 --> 00:07:42,610
+The difference between
+the drive torque and
+
+115
+00:07:42,610 --> 00:07:46,200
+the load torque define the net
+torque acting on the wheel.
+
+116
+00:07:46,200 --> 00:07:47,720
+While the rotational spring and
+
+117
+00:07:47,720 --> 00:07:52,130
+the damper from the lump element
+models resist the acceleration.
+
+118
+00:07:52,130 --> 00:07:56,150
+The final dynamic model describes
+how the wheels position changes
+
+119
+00:07:56,150 --> 00:07:57,609
+when subject to this net torque.
+
+120
+00:07:59,810 --> 00:08:03,940
+Dynamic models of vehicles are useful for
+multiple applications.
+
+121
+00:08:03,940 --> 00:08:06,870
+They can be used to improve
+state estimation methods
+
+122
+00:08:06,870 --> 00:08:09,900
+when fusing sensor data to track motion.
+
+123
+00:08:09,900 --> 00:08:13,270
+They can be used to aid in
+controller design to track a desired
+
+124
+00:08:13,270 --> 00:08:14,259
+trajectory or path.
+
+125
+00:08:15,270 --> 00:08:19,800
+And they can help self-driving engineers
+define the limits of vehicle performance
+
+126
+00:08:19,800 --> 00:08:23,540
+to avoid from planning unsafe
+trajectories that a car cannot track.
+
+127
+00:08:24,950 --> 00:08:28,290
+However, a full three-dimensional
+model of the vehicle,
+
+128
+00:08:28,290 --> 00:08:31,110
+taking into account body roll and pitch.
+
+129
+00:08:31,110 --> 00:08:34,230
+And arbitrarily inclined roads,
+and different forces and
+
+130
+00:08:34,230 --> 00:08:37,720
+moments at each tire makes for
+a very complex model.
+
+131
+00:08:38,730 --> 00:08:43,990
+Instead, it's possible to separate our
+model into two 2D models that split our
+
+132
+00:08:43,990 --> 00:08:48,639
+vehicle control into a steering control
+and a throttle and brake control problem.
+
+133
+00:08:49,640 --> 00:08:53,280
+Full 3D vehicle modeling
+is a fascinating field.
+
+134
+00:08:53,280 --> 00:08:56,940
+And we've introduced some links in
+the supplementary materials if you'd like
+
+135
+00:08:56,940 --> 00:08:57,490
+to learn more.
+
+136
+00:08:58,960 --> 00:09:02,420
+For these reasons,
+we'll build a separate longitudinal and
+
+137
+00:09:02,420 --> 00:09:05,790
+lateral dynamic model for
+our self-driving car.
+
+138
+00:09:05,790 --> 00:09:09,679
+The longitudinal model considers
+a vehicle traveling on an inclined road.
+
+139
+00:09:10,810 --> 00:09:13,130
+We restrict the vehicle
+motion to the XZ plane.
+
+140
+00:09:13,130 --> 00:09:17,360
+There are several forces
+acting on the vehicle body and
+
+141
+00:09:17,360 --> 00:09:22,550
+tires, including the Traction force,
+the Rolling resistance,
+
+142
+00:09:22,550 --> 00:09:27,910
+Aerodynamic force, and
+Gradient resistance force due to gravity.
+
+143
+00:09:27,910 --> 00:09:31,960
+In the next video we'll go through
+the Longitudinal Vehicle Dynamics model,
+
+144
+00:09:31,960 --> 00:09:32,760
+in more detail.
+
+145
+00:09:34,376 --> 00:09:37,416
+Similarly, the Lateral Vehicle Dynamics
+model,
+
+146
+00:09:37,416 --> 00:09:40,900
+can be developed from
+motion in the xy plane.
+
+147
+00:09:40,900 --> 00:09:43,970
+When looking at the vehicle from
+the top down or birds eye view.
+
+148
+00:09:45,080 --> 00:09:49,500
+In this 2D model there is also several
+forces in the lateral direction
+
+149
+00:09:49,500 --> 00:09:55,030
+acting on the vehicle such as the slip
+forces and centrifugal forces,
+
+150
+00:09:55,030 --> 00:10:00,090
+this topic would be discuss in
+the future lesson as well in this video
+
+151
+00:10:00,090 --> 00:10:06,910
+we cover the basic of 2D dynamic model and
+apply it to a server and wheel subsystem.
+
+152
+00:10:06,910 --> 00:10:11,100
+These models are helpful in determining
+how those systems evolved over time.
+
+153
+00:10:12,320 --> 00:10:16,610
+In the next lesson we will cover
+the vehicle longitudinal dynamics.
+
+154
+00:10:16,610 --> 00:10:21,130
+And study the drive train components
+that provide tweak to the drive wheels.
+
+155
+00:10:21,130 --> 00:10:21,750
+Will see there.
+
+156
+00:10:21,750 --> 00:10:25,846
+[MUSIC]
+
+157
+00:10:25,846 --> 00:10:29,441
+[SOUND]

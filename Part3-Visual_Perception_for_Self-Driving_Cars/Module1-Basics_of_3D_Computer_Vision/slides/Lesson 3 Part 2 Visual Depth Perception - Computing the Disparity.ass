@@ -1,0 +1,581 @@
+WEBVTT
+
+1
+00:00:14.510 --> 00:00:17.985
+It's great to see you
+again. Welcome back.
+
+2
+00:00:17.985 --> 00:00:20.000
+So far we have learned
+
+3
+00:00:20.000 --> 00:00:21.590
+the essential equations to
+
+4
+00:00:21.590 --> 00:00:24.475
+extract 3D information
+from a stereo pair.
+
+5
+00:00:24.475 --> 00:00:26.150
+However, we were faced with
+
+6
+00:00:26.150 --> 00:00:29.090
+some unknown parameters
+that we have to estimate.
+
+7
+00:00:29.090 --> 00:00:31.760
+In this lesson you will
+learn how to estimate
+
+8
+00:00:31.760 --> 00:00:33.500
+these missing parameters such as
+
+9
+00:00:33.500 --> 00:00:36.395
+the disparity through
+stereo matching.
+
+10
+00:00:36.395 --> 00:00:37.850
+You will also learn
+
+11
+00:00:37.850 --> 00:00:39.890
+that efficient
+disparity estimation is
+
+12
+00:00:39.890 --> 00:00:44.390
+possible due to epipolar
+constraints. Let's get started.
+
+13
+00:00:44.390 --> 00:00:47.690
+Recall from the previous video
+that we identified
+
+14
+00:00:47.690 --> 00:00:49.100
+two primary issues with
+
+15
+00:00:49.100 --> 00:00:52.385
+the visual depth estimation
+from stereo images.
+
+16
+00:00:52.385 --> 00:00:56.270
+The first is that the camera
+parameters focal length F
+
+17
+00:00:56.270 --> 00:00:58.070
+baseline B and camera
+
+18
+00:00:58.070 --> 00:01:00.020
+pixel centers U_naught
+and V_naught,
+
+19
+00:01:00.020 --> 00:01:03.650
+need to be estimated from
+stereo camera calibration.
+
+20
+00:01:03.650 --> 00:01:06.230
+Similar to monocular
+camera calibration,
+
+21
+00:01:06.230 --> 00:01:09.230
+stereo calibration is
+a well-studied problem with
+
+22
+00:01:09.230 --> 00:01:11.644
+lots of user-friendly
+free software
+
+23
+00:01:11.644 --> 00:01:13.525
+capable of performing in.
+
+24
+00:01:13.525 --> 00:01:16.790
+This lesson we'll be
+targeting the second problem,
+
+25
+00:01:16.790 --> 00:01:20.510
+mainly stereo matching
+to compute disparities.
+
+26
+00:01:20.510 --> 00:01:23.360
+As a reminder, disparity is
+
+27
+00:01:23.360 --> 00:01:25.760
+the difference in
+the image location of
+
+28
+00:01:25.760 --> 00:01:30.815
+the same 3D point as observed
+by two different cameras.
+
+29
+00:01:30.815 --> 00:01:34.640
+To compute the disparity
+we need to be able to find
+
+30
+00:01:34.640 --> 00:01:36.470
+the same point in the left and
+
+31
+00:01:36.470 --> 00:01:38.750
+right stereo camera images.
+
+32
+00:01:38.750 --> 00:01:40.160
+This problem is known as
+
+33
+00:01:40.160 --> 00:01:42.385
+the stereo
+correspondence problem.
+
+34
+00:01:42.385 --> 00:01:44.300
+The most naive solution for
+
+35
+00:01:44.300 --> 00:01:46.730
+this problem is
+an exhaustive search,
+
+36
+00:01:46.730 --> 00:01:48.500
+where we searched
+the whole rate image
+
+37
+00:01:48.500 --> 00:01:50.735
+for every pixel in
+the left image.
+
+38
+00:01:50.735 --> 00:01:54.050
+Such a solution is extremely
+inefficient and will
+
+39
+00:01:54.050 --> 00:01:55.250
+usually not run in
+
+40
+00:01:55.250 --> 00:01:58.100
+real time to be used
+on self-driving cars.
+
+41
+00:01:58.100 --> 00:02:00.710
+It's also unlikely to succeed as
+
+42
+00:02:00.710 --> 00:02:03.740
+many pixels will have
+similar local characteristics,
+
+43
+00:02:03.740 --> 00:02:06.980
+making it difficult to
+match them correctly.
+
+44
+00:02:06.980 --> 00:02:11.375
+Luckily for us, we can use
+stereo geometry to constrain
+
+45
+00:02:11.375 --> 00:02:13.190
+our search problem from 2D over
+
+46
+00:02:13.190 --> 00:02:16.085
+the entire image space
+to a 1D line.
+
+47
+00:02:16.085 --> 00:02:18.650
+Let's revisit
+our stereo camera setup
+
+48
+00:02:18.650 --> 00:02:21.635
+and see why such a
+simplification is valid.
+
+49
+00:02:21.635 --> 00:02:23.840
+We've already determined, how
+
+50
+00:02:23.840 --> 00:02:26.890
+a single point is
+projected to both cameras.
+
+51
+00:02:26.890 --> 00:02:29.750
+Now, let's move
+our 3D point along
+
+52
+00:02:29.750 --> 00:02:33.050
+the line connecting it with
+the left cameras center.
+
+53
+00:02:33.050 --> 00:02:34.160
+Its projection on
+
+54
+00:02:34.160 --> 00:02:36.920
+the left camera image plane
+does not change.
+
+55
+00:02:36.920 --> 00:02:38.630
+However, what can
+you notice about
+
+56
+00:02:38.630 --> 00:02:41.270
+the projection on
+the right camera plane,
+
+57
+00:02:41.270 --> 00:02:44.465
+the projection moves along
+the horizontal line.
+
+58
+00:02:44.465 --> 00:02:48.830
+This is called an epipolar
+line and follows directly from
+
+59
+00:02:48.830 --> 00:02:50.615
+the fixed lateral offset and
+
+60
+00:02:50.615 --> 00:02:51.830
+image plane alignment of
+
+61
+00:02:51.830 --> 00:02:54.245
+the two cameras in a stereo pair.
+
+62
+00:02:54.245 --> 00:02:57.140
+We can constrain
+our correspondence search
+
+63
+00:02:57.140 --> 00:02:58.955
+to be along the epipolar line,
+
+64
+00:02:58.955 --> 00:03:02.260
+reducing the search
+from 2D to 1D.
+
+65
+00:03:02.260 --> 00:03:06.080
+One thing to note is that
+horizontal epipolar lines
+
+66
+00:03:06.080 --> 00:03:08.180
+only occur if the optical axes
+
+67
+00:03:08.180 --> 00:03:10.220
+of the two cameras are parallel.
+
+68
+00:03:10.220 --> 00:03:13.460
+In the case of
+non parallel optical axis,
+
+69
+00:03:13.460 --> 00:03:15.650
+the epipolar lines are skewed.
+
+70
+00:03:15.650 --> 00:03:18.200
+In such cases we will
+have to result to
+
+71
+00:03:18.200 --> 00:03:20.510
+multiple view geometry rather
+
+72
+00:03:20.510 --> 00:03:22.610
+than the stereo equations
+we have developed,
+
+73
+00:03:22.610 --> 00:03:24.845
+which is out of the scope
+of this lesson.
+
+74
+00:03:24.845 --> 00:03:27.650
+In the case of two calibrated use
+
+75
+00:03:27.650 --> 00:03:29.720
+such as our stereo camera,
+
+76
+00:03:29.720 --> 00:03:32.660
+a skewed epipolar line
+is not a huge problem.
+
+77
+00:03:32.660 --> 00:03:35.570
+In fact, we can work
+the optical axis to be
+
+78
+00:03:35.570 --> 00:03:39.565
+parallel through a process
+known as stereo rectification.
+
+79
+00:03:39.565 --> 00:03:41.920
+After rectification we arrive
+
+80
+00:03:41.920 --> 00:03:44.585
+back to our horizontal
+epipolar line.
+
+81
+00:03:44.585 --> 00:03:46.370
+We will not go through how to
+
+82
+00:03:46.370 --> 00:03:48.980
+perform rectification
+as implementations
+
+83
+00:03:48.980 --> 00:03:51.830
+are available in standard
+computer vision packages
+
+84
+00:03:51.830 --> 00:03:54.260
+such as OpenCV and MATLAB.
+
+85
+00:03:54.260 --> 00:03:56.960
+To put it all together
+we will go over
+
+86
+00:03:56.960 --> 00:03:59.510
+our first basic stereo algorithm.
+
+87
+00:03:59.510 --> 00:04:02.000
+For each epipolar line take
+
+88
+00:04:02.000 --> 00:04:05.305
+a pixel on this line
+in the left image,
+
+89
+00:04:05.305 --> 00:04:08.135
+compare these left
+image pixels to
+
+90
+00:04:08.135 --> 00:04:12.595
+every pixel in the right image
+on the same epipolar line.
+
+91
+00:04:12.595 --> 00:04:16.760
+Next, select the right
+image pixel that matches
+
+92
+00:04:16.760 --> 00:04:18.590
+the left pixel the most closely
+
+93
+00:04:18.590 --> 00:04:21.365
+which can be done by
+minimizing the cost.
+
+94
+00:04:21.365 --> 00:04:23.990
+For example, a very
+simple cost here can be
+
+95
+00:04:23.990 --> 00:04:27.130
+the squared difference
+in pixel intensities.
+
+96
+00:04:27.130 --> 00:04:30.310
+Finally, we can compute
+the disparity by
+
+97
+00:04:30.310 --> 00:04:33.730
+subtracting the right image
+location from the left one.
+
+98
+00:04:33.730 --> 00:04:35.290
+Stereo matching is
+
+99
+00:04:35.290 --> 00:04:37.885
+a very well-studied problem
+in computer vision.
+
+100
+00:04:37.885 --> 00:04:39.820
+Many more complex costs and
+
+101
+00:04:39.820 --> 00:04:41.710
+search regions can be defined,
+
+102
+00:04:41.710 --> 00:04:43.165
+which attempts to improve
+
+103
+00:04:43.165 --> 00:04:47.260
+either computational efficiency
+or disparity accuracy.
+
+104
+00:04:47.260 --> 00:04:49.674
+There are a wide range
+of approaches
+
+105
+00:04:49.674 --> 00:04:52.090
+including both local
+and global methods,
+
+106
+00:04:52.090 --> 00:04:55.300
+which differ in the main
+image region considered when
+
+107
+00:04:55.300 --> 00:04:59.215
+identifying correspondences
+and computing disparities.
+
+108
+00:04:59.215 --> 00:05:02.440
+As with most problems
+in computer vision,
+
+109
+00:05:02.440 --> 00:05:04.120
+the stereo vision algorithms are
+
+110
+00:05:04.120 --> 00:05:06.310
+evaluated on a public benchmark.
+
+111
+00:05:06.310 --> 00:05:07.840
+The most famous of which is
+
+112
+00:05:07.840 --> 00:05:09.830
+the middlebury stereo benchmark.
+
+113
+00:05:09.830 --> 00:05:11.140
+If you are interested,
+
+114
+00:05:11.140 --> 00:05:13.925
+many of the top-performing
+stereo matching algorithms
+
+115
+00:05:13.925 --> 00:05:17.780
+have results published there
+and have code available too.
+
+116
+00:05:17.780 --> 00:05:21.830
+With this lesson, you should
+now know how a stereo sensor
+
+117
+00:05:21.830 --> 00:05:25.460
+generates depth from images
+through disparity estimation.
+
+118
+00:05:25.460 --> 00:05:27.260
+This week's assignment will give
+
+119
+00:05:27.260 --> 00:05:29.855
+a chance to compute
+your own disparity maps
+
+120
+00:05:29.855 --> 00:05:31.460
+and to use them to create
+
+121
+00:05:31.460 --> 00:05:34.805
+your own distance to impact
+driver assist module.
+
+122
+00:05:34.805 --> 00:05:38.470
+In the next lesson, we will
+describe image filtering,
+
+123
+00:05:38.470 --> 00:05:41.420
+an important concept we will
+later use when designing
+
+124
+00:05:41.420 --> 00:05:44.570
+convolutional neural networks
+for visual perception.
+
+125
+00:05:44.570 --> 00:05:47.590
+Thanks for watching.
+See you next time.

@@ -1,0 +1,803 @@
+1
+00:00:13,970 --> 00:00:17,115
+Welcome back. In the last lesson,
+
+2
+00:00:17,115 --> 00:00:19,800
+we derived the pure pursuit controller,
+
+3
+00:00:19,800 --> 00:00:22,500
+a geometric path tracking controller that defined
+
+4
+00:00:22,500 --> 00:00:25,950
+steering input based on a look ahead reference point.
+
+5
+00:00:25,950 --> 00:00:27,855
+In this lesson, we will cover
+
+6
+00:00:27,855 --> 00:00:31,965
+a second geometric path tracking controller, the Stanley controller.
+
+7
+00:00:31,965 --> 00:00:33,630
+This controller was used by
+
+8
+00:00:33,630 --> 00:00:37,755
+the Stanford racing team to win the second Darpa Grand Challenge event.
+
+9
+00:00:37,755 --> 00:00:40,045
+Specifically in this video,
+
+10
+00:00:40,045 --> 00:00:43,880
+you will derive the Stanley geometric controller,
+
+11
+00:00:43,880 --> 00:00:49,144
+analyze the evolution of its steering commands for small and large errors,
+
+12
+00:00:49,144 --> 00:00:52,580
+and evaluate the control performance in the form of
+
+13
+00:00:52,580 --> 00:00:57,305
+convergence to the desired path from arbitrary starting conditions.
+
+14
+00:00:57,305 --> 00:01:00,530
+Let's get started. The Stanley controller is
+
+15
+00:01:00,530 --> 00:01:03,755
+a geometric path tracking controller which is simple
+
+16
+00:01:03,755 --> 00:01:07,595
+but useful for autonomous robotics and autonomous cars.
+
+17
+00:01:07,595 --> 00:01:10,715
+The method was originally developed by Gabe Hoffman,
+
+18
+00:01:10,715 --> 00:01:13,369
+a fellow lab-mate of mine at Stanford University
+
+19
+00:01:13,369 --> 00:01:16,670
+as his contribution to the winning teams entry,
+
+20
+00:01:16,670 --> 00:01:19,715
+and is named after the vehicle Stanley.
+
+21
+00:01:19,715 --> 00:01:24,230
+The main concept that went into the creation of the Stanley controller
+
+22
+00:01:24,230 --> 00:01:28,370
+was that a change in the reference position could lead to different,
+
+23
+00:01:28,370 --> 00:01:31,580
+possibly more desirable properties of the control.
+
+24
+00:01:31,580 --> 00:01:35,810
+Dr. Hoffman was seeking a control law with global convergence to
+
+25
+00:01:35,810 --> 00:01:41,345
+the path and predictable decay of the errors that would be independent of vehicle speed.
+
+26
+00:01:41,345 --> 00:01:44,270
+So, one day in a fit of inspiration,
+
+27
+00:01:44,270 --> 00:01:49,460
+Dr. Hoffman switched the vehicle reference point used for the controller to the center of
+
+28
+00:01:49,460 --> 00:01:52,790
+the front axle instead of either the CG or
+
+29
+00:01:52,790 --> 00:01:56,800
+the rear axle to see how this new controller might behave.
+
+30
+00:01:56,800 --> 00:02:00,030
+The next modifications he added were to consider
+
+31
+00:02:00,030 --> 00:02:04,435
+both heading alignment and cross track error without a look-ahead distance,
+
+32
+00:02:04,435 --> 00:02:07,030
+but directly at the reference point.
+
+33
+00:02:07,030 --> 00:02:10,370
+Finally, the Stanley controller caps its outputs to
+
+34
+00:02:10,370 --> 00:02:13,745
+fall within the limits of the maximum steering angle.
+
+35
+00:02:13,745 --> 00:02:19,350
+In all these three considerations formed the basis for the resulting control law.
+
+36
+00:02:19,360 --> 00:02:23,375
+Let's define each of the terms of the Stanley controller.
+
+37
+00:02:23,375 --> 00:02:25,310
+In this diagram, you can see
+
+38
+00:02:25,310 --> 00:02:29,810
+the slight modifications to the relevant terms based on the Stanley assumptions.
+
+39
+00:02:29,810 --> 00:02:33,800
+The cross track error is measured relative to the front axle,
+
+40
+00:02:33,800 --> 00:02:38,060
+and the reference point on the path has no look ahead distance associated with it.
+
+41
+00:02:38,060 --> 00:02:43,025
+Let's make each of the three components of the Stanley controller more concrete.
+
+42
+00:02:43,025 --> 00:02:47,029
+First, to eliminate heading error relative to the path,
+
+43
+00:02:47,029 --> 00:02:50,990
+the steering angle is set equal to the heading directly.
+
+44
+00:02:50,990 --> 00:02:54,289
+Then to eliminate cross track error,
+
+45
+00:02:54,289 --> 00:02:56,599
+a proportional control is added,
+
+46
+00:02:56,599 --> 00:03:00,290
+whose gain is scaled by the inverse of the forward velocity.
+
+47
+00:03:00,290 --> 00:03:04,700
+The control is then passed through an inverse tan function which maps
+
+48
+00:03:04,700 --> 00:03:09,880
+the proportional control signal to the angular range of minus Pi to Pi.
+
+49
+00:03:09,880 --> 00:03:13,055
+Finally, the steering angle command is kept
+
+50
+00:03:13,055 --> 00:03:15,800
+to fall within the minimum and maximum steering angles,
+
+51
+00:03:15,800 --> 00:03:17,810
+Delta min and Delta max,
+
+52
+00:03:17,810 --> 00:03:20,920
+which are usually symmetric about 0.
+
+53
+00:03:20,920 --> 00:03:25,280
+The similarities with the pure pursuit controller are not surprising,
+
+54
+00:03:25,280 --> 00:03:30,290
+as both are seeking to perform the same task with the same kinematic model.
+
+55
+00:03:30,290 --> 00:03:33,230
+The Stanley controller scales its gains by
+
+56
+00:03:33,230 --> 00:03:37,160
+the forward speed in the same way as pure pursuit control,
+
+57
+00:03:37,160 --> 00:03:42,040
+and also has the same inverse tangent of the proportional control signal.
+
+58
+00:03:42,040 --> 00:03:47,540
+However, the independent penalization of heading and cross track errors and
+
+59
+00:03:47,540 --> 00:03:49,880
+the elimination of the look-ahead distance
+
+60
+00:03:49,880 --> 00:03:53,305
+make this a different approach from pure pursuit.
+
+61
+00:03:53,305 --> 00:03:56,060
+The final control law simply combines
+
+62
+00:03:56,060 --> 00:04:00,545
+these three elements to set the steering angle of the car as follows.
+
+63
+00:04:00,545 --> 00:04:06,065
+Let's now take a look at what's steering angle is requested for different error signals.
+
+64
+00:04:06,065 --> 00:04:09,470
+For heading error, the steering command points
+
+65
+00:04:09,470 --> 00:04:12,260
+in the opposite direction to the heading error,
+
+66
+00:04:12,260 --> 00:04:16,700
+causing the vehicle to turn to correct the misalignment with the path.
+
+67
+00:04:16,700 --> 00:04:19,220
+For large heading errors, for example,
+
+68
+00:04:19,220 --> 00:04:22,460
+if the heading error exceeds the maximum steering angle,
+
+69
+00:04:22,460 --> 00:04:24,350
+this part of the controller requests
+
+70
+00:04:24,350 --> 00:04:30,140
+the maximum steering command until alignment falls back within the available balance.
+
+71
+00:04:30,140 --> 00:04:32,920
+For large positive cross track error,
+
+72
+00:04:32,920 --> 00:04:39,305
+ke over vf becomes large and the inverse tangent approaches Pi over 2.
+
+73
+00:04:39,305 --> 00:04:45,365
+So we can approximate the Stanley control law as the heading error plus Pi over 2.
+
+74
+00:04:45,365 --> 00:04:48,620
+This large value clamps the steering command to the
+
+75
+00:04:48,620 --> 00:04:52,265
+maximum and the vehicle turns towards the path.
+
+76
+00:04:52,265 --> 00:04:56,930
+The effect of this term is to increase the heading error in the opposite direction,
+
+77
+00:04:56,930 --> 00:04:59,180
+and so the steering command will drop to
+
+78
+00:04:59,180 --> 00:05:03,455
+0 once the heading error reaches minus Pi over 2.
+
+79
+00:05:03,455 --> 00:05:09,290
+The vehicle then proceeds straight to the path until the cross track error decreases.
+
+80
+00:05:09,290 --> 00:05:12,260
+At this point, the heading term starts correcting
+
+81
+00:05:12,260 --> 00:05:14,930
+the alignment with the path again and ultimately,
+
+82
+00:05:14,930 --> 00:05:17,950
+the vehicle starts to track the path more closely.
+
+83
+00:05:17,950 --> 00:05:22,460
+But how does this control actually converge to the path?
+
+84
+00:05:22,460 --> 00:05:25,580
+As it turns out, it's possible to use
+
+85
+00:05:25,580 --> 00:05:28,970
+our expression for the cross track aerodynamics defined in
+
+86
+00:05:28,970 --> 00:05:31,700
+the first video of this module to get a sense
+
+87
+00:05:31,700 --> 00:05:35,090
+for the convergence characteristics of the Stanley controller.
+
+88
+00:05:35,090 --> 00:05:38,690
+Recall that the rate of change of the cross track error for
+
+89
+00:05:38,690 --> 00:05:43,760
+a front axle reference point is equal to minus the forward velocity,
+
+90
+00:05:43,760 --> 00:05:46,880
+times the sine of the heading minus the steering angle.
+
+91
+00:05:46,880 --> 00:05:50,960
+If we substitute in the Stanley control law without limits,
+
+92
+00:05:50,960 --> 00:05:54,260
+we get the final expression in this equation.
+
+93
+00:05:54,260 --> 00:06:00,050
+Using a trigonometric identity for simplifying the sign of the inverse of 10,
+
+94
+00:06:00,050 --> 00:06:04,340
+we can find that the rate of change of the cross track error evolves according
+
+95
+00:06:04,340 --> 00:06:08,540
+to minus the gain k times the cross track error,
+
+96
+00:06:08,540 --> 00:06:14,205
+divided by the square root of 1 plus ke over vf squared.
+
+97
+00:06:14,205 --> 00:06:16,755
+For small cross track errors,
+
+98
+00:06:16,755 --> 00:06:19,280
+we can simplify the denominator of this expression
+
+99
+00:06:19,280 --> 00:06:22,655
+by assuming the quadratic term is negligible.
+
+100
+00:06:22,655 --> 00:06:25,460
+This leads to the realization that
+
+101
+00:06:25,460 --> 00:06:30,530
+the cross track error evolution follows a first-order differential equation,
+
+102
+00:06:30,530 --> 00:06:34,480
+and the solution for this ODE is an exponential.
+
+103
+00:06:34,480 --> 00:06:36,355
+Since k is positive,
+
+104
+00:06:36,355 --> 00:06:40,130
+we see that the error decays exponentially to 0.
+
+105
+00:06:40,130 --> 00:06:43,580
+The most interesting aspect of this investigation is that
+
+106
+00:06:43,580 --> 00:06:47,630
+the decay rate is completely independent of the speed.
+
+107
+00:06:47,630 --> 00:06:52,340
+So faster vehicles will travel farther while converging to the path,
+
+108
+00:06:52,340 --> 00:06:57,665
+but will converge to the path at the same time as slower moving vehicles.
+
+109
+00:06:57,665 --> 00:07:02,480
+Let's now dive into a simulation example of the error dynamics for
+
+110
+00:07:02,480 --> 00:07:07,025
+the Stanley controller to observe its convergence characteristics.
+
+111
+00:07:07,025 --> 00:07:11,780
+In this example, let's take a look at two extreme scenarios,
+
+112
+00:07:11,780 --> 00:07:17,030
+large initial cross track error and large initial heading error.
+
+113
+00:07:17,030 --> 00:07:18,665
+In the first case,
+
+114
+00:07:18,665 --> 00:07:20,930
+for large initial cross track error,
+
+115
+00:07:20,930 --> 00:07:24,190
+let's assume the initial cross track error is five meters,
+
+116
+00:07:24,190 --> 00:07:26,870
+and that the maximum allowable steering angle is
+
+117
+00:07:26,870 --> 00:07:30,950
+25 degrees and the forward velocity is five meters per second.
+
+118
+00:07:30,950 --> 00:07:33,980
+We'll set the vehicle wheel base length to one meter for
+
+119
+00:07:33,980 --> 00:07:38,525
+simplicity and the gain k will be set to a value of 2.5.
+
+120
+00:07:38,525 --> 00:07:41,120
+This was selected based on chosen parameters for
+
+121
+00:07:41,120 --> 00:07:44,270
+the simulation and some trial and error testing.
+
+122
+00:07:44,270 --> 00:07:47,990
+The simulation shows how the Stanley controller corrects
+
+123
+00:07:47,990 --> 00:07:51,710
+for a large cross track error and converges to the desired path.
+
+124
+00:07:51,710 --> 00:07:53,870
+The large initial error leads to
+
+125
+00:07:53,870 --> 00:07:58,280
+a large steering command that quickly turns the vehicle towards the path.
+
+126
+00:07:58,280 --> 00:08:02,210
+The heading error and cross track error terms then reach an equilibrium,
+
+127
+00:08:02,210 --> 00:08:05,930
+and the vehicle continues in a straight line towards the path.
+
+128
+00:08:05,930 --> 00:08:08,530
+As the cross track error decreases,
+
+129
+00:08:08,530 --> 00:08:11,630
+the exponential decay to the path becomes visible.
+
+130
+00:08:11,630 --> 00:08:17,075
+Finally, the vehicle safely tracks the path in the final stages of the simulation.
+
+131
+00:08:17,075 --> 00:08:21,530
+We can also run the same simulation at different forward velocities.
+
+132
+00:08:21,530 --> 00:08:23,270
+So, let's try speeds of two,
+
+133
+00:08:23,270 --> 00:08:25,565
+five and 10 meters per second.
+
+134
+00:08:25,565 --> 00:08:29,795
+The results show the main characteristics of the Stanley controller.
+
+135
+00:08:29,795 --> 00:08:32,900
+In all cases, the turn towards the path,
+
+136
+00:08:32,900 --> 00:08:37,535
+straight line progress and then exponential decay to the path are visible.
+
+137
+00:08:37,535 --> 00:08:39,290
+The higher the speed,
+
+138
+00:08:39,290 --> 00:08:42,380
+the further the car travels before reaching the path.
+
+139
+00:08:42,380 --> 00:08:44,420
+But the final convergence for
+
+140
+00:08:44,420 --> 00:08:48,485
+small cross track errors takes the same amount of time in each case.
+
+141
+00:08:48,485 --> 00:08:49,970
+In the second case,
+
+142
+00:08:49,970 --> 00:08:54,965
+the simulation can be regenerated for the scenario at a large initial heading error.
+
+143
+00:08:54,965 --> 00:08:58,610
+The parameters are the same as the previous case but the vehicle
+
+144
+00:08:58,610 --> 00:09:02,840
+starts out on the path pointing very much in the wrong direction.
+
+145
+00:09:02,840 --> 00:09:08,045
+The simulation results show the heading error is corrected by the Stanley control law.
+
+146
+00:09:08,045 --> 00:09:13,475
+First, the steering command is up against its limit as the heading error is corrected.
+
+147
+00:09:13,475 --> 00:09:16,670
+Then as the cross track error starts to grow,
+
+148
+00:09:16,670 --> 00:09:19,010
+the steering commands continue to correct
+
+149
+00:09:19,010 --> 00:09:22,245
+the heading of the car beyond the alignment with the path.
+
+150
+00:09:22,245 --> 00:09:26,930
+Finally, the car enters the exponential convergence segment as before.
+
+151
+00:09:26,930 --> 00:09:30,350
+These simulation results give us a good idea of the ability of
+
+152
+00:09:30,350 --> 00:09:33,935
+the Stanley controller to correct arbitrarily large errors.
+
+153
+00:09:33,935 --> 00:09:37,520
+In fact, it comes with a global stability proof,
+
+154
+00:09:37,520 --> 00:09:39,950
+meaning that no matter what the initial conditions,
+
+155
+00:09:39,950 --> 00:09:43,100
+the controller will guide the car back to its path.
+
+156
+00:09:43,100 --> 00:09:45,980
+In practice however, the Stanley controller is
+
+157
+00:09:45,980 --> 00:09:48,820
+still a geometric path tracking controller,
+
+158
+00:09:48,820 --> 00:09:54,185
+and as such does not consider many different aspects of real self-driving car.
+
+159
+00:09:54,185 --> 00:09:57,850
+For example, it does not consider noisy measurements,
+
+160
+00:09:57,850 --> 00:10:00,890
+actuator dynamics or tire force effects,
+
+161
+00:10:00,890 --> 00:10:05,600
+all of which can cause undesirable ride characteristics during maneuvers.
+
+162
+00:10:05,600 --> 00:10:07,400
+It is possible, however,
+
+163
+00:10:07,400 --> 00:10:10,130
+to make a few adjustments to the geometric path tracking
+
+164
+00:10:10,130 --> 00:10:15,720
+controllers that help mitigate some of these most undesirable effects.
+
+165
+00:10:15,720 --> 00:10:20,690
+During low-speed operation, the pure pursuit and Stanley controllers can behave
+
+166
+00:10:20,690 --> 00:10:25,150
+quite aggressively when confronted with noisy velocity estimates.
+
+167
+00:10:25,150 --> 00:10:30,875
+Since the velocity term is in the denominator of the fraction inside the inverse tangent,
+
+168
+00:10:30,875 --> 00:10:35,375
+errors in low speed estimates tend to get amplified in the steering command.
+
+169
+00:10:35,375 --> 00:10:38,839
+This leads to wild swings in the steering wheel,
+
+170
+00:10:38,839 --> 00:10:41,105
+which is not desirable for rider comfort.
+
+171
+00:10:41,105 --> 00:10:46,520
+So to get rid of this issue and to increase the stability of our solution at low speeds,
+
+172
+00:10:46,520 --> 00:10:49,265
+we add a positive softening constant
+
+173
+00:10:49,265 --> 00:10:52,970
+that ensures the denominator always has a minimum value.
+
+174
+00:10:52,970 --> 00:10:56,495
+This softening constant can be tuned in the field.
+
+175
+00:10:56,495 --> 00:11:00,350
+At higher speeds, we have the issue that steering commands need to
+
+176
+00:11:00,350 --> 00:11:04,045
+vary slowly to ensure lateral forces are not excessive.
+
+177
+00:11:04,045 --> 00:11:06,380
+Even with this scaling on speeds,
+
+178
+00:11:06,380 --> 00:11:10,130
+Stanley's response was overly aggressive at high speeds,
+
+179
+00:11:10,130 --> 00:11:13,835
+and so a damping term on heading rate was also added.
+
+180
+00:11:13,835 --> 00:11:19,255
+This essentially converts the heading error control portion to a PD controller,
+
+181
+00:11:19,255 --> 00:11:25,015
+and the same idea can be applied to the pure pursuit control of curvature as well.
+
+182
+00:11:25,015 --> 00:11:28,585
+Finally, for curved paths with high curvature,
+
+183
+00:11:28,585 --> 00:11:32,390
+the controller fails to track them well as the reference dynamics
+
+184
+00:11:32,390 --> 00:11:36,500
+were not considered in the derivation of the geometric controllers.
+
+185
+00:11:36,500 --> 00:11:41,330
+It is also possible as we saw in longitudinal control to enhance
+
+186
+00:11:41,330 --> 00:11:43,790
+the performance and drive errors to 0 more
+
+187
+00:11:43,790 --> 00:11:47,720
+quickly by adding a feed forward term to the controller.
+
+188
+00:11:47,720 --> 00:11:51,770
+In this case, it is sufficient to simply include the steering angle
+
+189
+00:11:51,770 --> 00:11:56,045
+required to maintain the curvature of the desired path.
+
+190
+00:11:56,045 --> 00:12:01,190
+With these modifications, the Stanley controller becomes a useful tool for
+
+191
+00:12:01,190 --> 00:12:06,740
+moderate driving tasks as long as the vehicle avoids exiting the linear tire region.
+
+192
+00:12:06,740 --> 00:12:09,500
+We'll look more at defining paths that are safe to
+
+193
+00:12:09,500 --> 00:12:12,845
+track in the fourth course of this specialization.
+
+194
+00:12:12,845 --> 00:12:16,190
+In this lesson, you learned how to apply
+
+195
+00:12:16,190 --> 00:12:20,330
+the Stanley controller as a geometric path tracking controller,
+
+196
+00:12:20,330 --> 00:12:25,370
+what the convergence properties are for the Stanley controller and how
+
+197
+00:12:25,370 --> 00:12:30,485
+to add further enhancements that improve the controllers real-world performance.
+
+198
+00:12:30,485 --> 00:12:32,030
+In the next video,
+
+199
+00:12:32,030 --> 00:12:35,090
+we'll introduce the model predictive control method and
+
+200
+00:12:35,090 --> 00:12:38,690
+advanced model-based control method that can overcome many of
+
+201
+00:12:38,690 --> 00:12:43,410
+the limitations of geometric controllers. See you next time.

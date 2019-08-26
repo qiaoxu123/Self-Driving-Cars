@@ -1,0 +1,152 @@
+In the last video, we introduced the concept
+of a behavior planner, and described the basics of the finite state machine to
+implement behavior planning. In this video, we will
+see how to build out our system to handle a more complete
+intersection scenario. We will start by defining the specifics of the scenario
+that will be handled. We will then look at how we can discretize the
+intersection map into sections to establish clear
+transitions between states. Then we will define the states
+and transitions which are required to complete the given scenario
+safely and efficiently. To finish this video, we will highlight the
+testing procedure required to confirm the correctness and accuracy of our behavior planning
+system. Let's begin. The scenario which we
+will be attempting to handle is a four-way
+intersection, with two lanes and stop
+signs for every direction. A diagram of such an
+intersection can be seen here, where the red lines represent the stop lines which the car
+is required to stop behind. By the end of the video, this vehicle should be
+able to travel left, right, or straight through
+this intersection. We'll leave dynamic objects
+out of the scenario for now, and we'll address them
+in the next video. We've now defined a very restricted operational
+design domain for our behavior
+planner to handle. It's now time to implement
+the behavior planner. Let's start by looking
+at how to discretize an intersection so
+that we can more simply make decisions
+in the environment. The area of
+the intersection where a vehicle should
+begin safely braking is defined as
+the approaching zone of the intersection,
+highlighted in red. The zone of the
+intersection in which the vehicle must
+stop and wait until the appropriate time
+to proceed will be known as the at zone,
+highlighted in green. Finally, the zone in which
+the vehicle is crossing the actual intersection is defined as on the intersection, and is highlighted in orange. The size of each
+of the above zones are dynamically changed based on two primary factors:
+the ego vehicle speed, at higher speed, we will require more distance to safely
+and comfortably stop, and the size of the intersection. The bigger the intersection, the bigger each zone has to be. To handle this scenario, we will require three
+high-level driving maneuvers. Track speed,
+this maneuver state is only bounded by the current
+speed limit of the road. Traditionally, this
+is the maneuver given before entering any region
+of the intersection, or after entering the on
+the intersection zone safely. The state entry action
+sets the speed limit. Decelerate to stop,
+this maneuver state forces the future trajectory
+of the object to stop before reaching
+the stop point. The entry action defines
+the stop point location. Stop, this maneuver tells the vehicle to stay stopped
+in its current location. The entry action is to
+start a timer to wait for a fixed amount of time before proceeding through
+the intersection. We will now look at
+the different situations the ego vehicle will
+encounter in this scenario, and figure out the finite
+state machine elements needed to encode the correct
+behavior planning solution. Let's start by looking
+at the ego vehicle before it enters
+the intersection region, where it has
+a single constraint to follow the speed limit
+of the road. This constraint is set based on the entry action of
+the track speed state. When the ego vehicle enters the approaching zone,
+the red zone, it must begin decelerating
+to the stop sign, thus will transition to
+the decelerate to stop state. The transition condition on
+moving from track speed to decelerate to stop is therefore entry into
+the approaching zone. Then, once decelerating, the next maneuver which
+the autonomous vehicle must execute is to come to a full stop before the stop line, or in the at zone of
+the intersection. To make sure this happens, the vehicle stays in the decelerate to stop
+state until it has both a zero velocity and
+a position within the at zone. The entry action in
+the decelerate to stop state is the establishment
+of a safe stop location. Due to the simplicity
+of this scenario, this is a single stop location, the stop line as given to the planner by
+the high-definition roadmap. This, however, we will
+see in the next lesson, will become harder to do once other dynamic objects interact
+with the ego vehicle. Once fully stopped, the car
+enters the stop state. As the entry action, a timer is started to make sure that the vehicle stays
+in the stopped state for three seconds before proceeding in accordance
+with typical driving rules. Once the timer is complete, the planner automatically
+transitions to the track speed state and follows the route
+provided to it by the mission planner
+through the intersection, be at left, right,
+or straight through. This is all the required
+computation to handle the simple four-way intersection with the finite state machine. Throughout this process, it
+is vitally important that we understand how we the human
+expert analyze the scenario, and what the specific
+capabilities of the resulting
+behavior planner are. These need to be captured in the operational design
+domain definition, and we need to ensure
+that we create a complete state machine able to handle every possible
+case that can arise for the given scenarios. One particular issue that has a big impact on
+the performance of our state machine is the issue
+of noise in the inputs. The state transition conditions
+defined above are exact, and rely on the vehicle
+reaching the stop point and achieving
+a zero velocity exactly. Even with no other dynamic
+objects to detect, the localization estimates
+of the vehicle state may contain noise and not satisfy
+these conditions exactly. To handle this type
+of input noise, we can introduce
+noise threshold hyperparameters. This is a small
+threshold value allowing speeds close to zero to
+be accepted as stopped. We will continue to see these hyperparameters more
+and more in the next lesson, when handling
+more complex scenarios with dynamic objects. Now that we've finished creating the finite
+state machine, how do we test if it works? Well, traditionally, there
+are four stages of testing required to confirm functionality of a behavior planning system, which follow from
+our discussion of safety assessment for
+the full vehicle in course 1. First, we perform
+code-based tests, which are done to confirm that the logic of the code is correct. For example, code-based tests
+can tell the programmer if the speed limits set
+in the roadmap will be the speed limit produced by
+the finite state machine. However, these checks
+are incapable of confirming if the state
+transitions are correct, or if the states are
+capable of handling all of the situations
+in a given scenario. For this, we have to
+see if the program code correctly handles
+all situations as intended. Next, we move to
+simulation testing, which is performed in a simulated
+environment like Carla, in which the state
+machine performs the scenarios which it
+was designed to handle. This type of testing
+is able to confirm if the state machine transitions and state coverage are correct. The number of tests performed in the simulation should
+be representative of all possible situations which
+can be seen when driving the scenario to catch any edge cases which
+programmers might have missed. Many times selecting
+a representative set of tests is not trivial, especially as the complexity
+of the scenarios increases. We then move into
+closed track testing, once confident that
+the state machine performs as intended
+in simulation. This type of testing tests specific scenarios which are hard to confirm exactly in simulation, such as parameter
+tuning and noise, and errors in
+the perception output in a real environment. Finally, we proceed to
+on-road validation testing. Whereas all previous tests were performed in a highly
+controlled environment, road tests can be
+highly unpredictable, and often break the system in a manner otherwise not
+imagined by engineers. New variations on
+scenarios can then be incorporated into earlier stages
+of the testing process. Let's review what we've
+learned in this video. We first defined the scenario and the operational design
+domain to be handled, a single intersection scenario with a stop sign
+in all directions. We then saw how the intersection can be discretized so that each zone can be used when making the transitions
+of the state diagram. We then built up the states in transitions at the system
+to correctly define the required behaviors
+throughout the intersection. Finally, we reviewed
+four stages of testing that can be used to confirm proper
+behaviors in the scenario. In the next video, we will
+show you how to handle the same intersection scenario while interacting with
+other dynamic objects. As we will see, this
+makes the state machines significantly more complex and interesting. We'll see you then.

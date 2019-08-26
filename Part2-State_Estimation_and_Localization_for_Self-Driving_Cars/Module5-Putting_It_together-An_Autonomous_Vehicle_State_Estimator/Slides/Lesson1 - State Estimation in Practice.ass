@@ -1,0 +1,677 @@
+WEBVTT
+
+1
+00:00:20.600 --> 00:00:23.955
+Now, that you've learned the basics of estimation theory,
+
+2
+00:00:23.955 --> 00:00:27.225
+3D geometry, and some common sensing modalities,
+
+3
+00:00:27.225 --> 00:00:31.110
+it's time to put it into practice and think about how we can use all of these tools
+
+4
+00:00:31.110 --> 00:00:35.300
+together to build an estimator we can use on a real self-driving car.
+
+5
+00:00:35.300 --> 00:00:37.865
+A real self-driving car like the autonomous
+
+6
+00:00:37.865 --> 00:00:40.685
+will be equipped with many different kinds of sensors.
+
+7
+00:00:40.685 --> 00:00:45.665
+For example, the autonomous is equipped with five cameras, a 3D LiDAR,
+
+8
+00:00:45.665 --> 00:00:48.320
+an IMU, four radar units,
+
+9
+00:00:48.320 --> 00:00:52.295
+a GPS or GNSS receiver, and a wheel encoder.
+
+10
+00:00:52.295 --> 00:00:56.420
+All of these sensors give us different types of data at different rates.
+
+11
+00:00:56.420 --> 00:00:59.030
+For example, the IMU might report accelerations
+
+12
+00:00:59.030 --> 00:01:01.595
+and angular velocities 200 times per second,
+
+13
+00:01:01.595 --> 00:01:06.205
+while the LiDAR completes a full scan only 20 times per second.
+
+14
+00:01:06.205 --> 00:01:09.605
+So, in this module, we're going to talk about how we can combine
+
+15
+00:01:09.605 --> 00:01:15.170
+all the different information to get the best possible estimate of the vehicle state.
+
+16
+00:01:15.170 --> 00:01:18.170
+This process is called sensor fusion and it's one of
+
+17
+00:01:18.170 --> 00:01:21.810
+the most important techniques for self-driving cars.
+
+18
+00:01:21.820 --> 00:01:24.065
+But in order to do sensor fusion,
+
+19
+00:01:24.065 --> 00:01:27.890
+we also need to calibrate our sensors to ensure that the sensor models are
+
+20
+00:01:27.890 --> 00:01:29.630
+accurate and so that we know how
+
+21
+00:01:29.630 --> 00:01:33.530
+the reference frames of all of the sensors are related to each other.
+
+22
+00:01:33.530 --> 00:01:36.830
+We'll also discuss what happens when one or more sensors
+
+23
+00:01:36.830 --> 00:01:39.680
+fails and give you an overview of
+
+24
+00:01:39.680 --> 00:01:42.395
+the final project where you'll have an opportunity to implement
+
+25
+00:01:42.395 --> 00:01:46.655
+a full vehicle state estimator using sensors in the Carlo simulator.
+
+26
+00:01:46.655 --> 00:01:48.140
+In this first video,
+
+27
+00:01:48.140 --> 00:01:51.380
+we'll give you a bird's-eye view of some practical considerations you
+
+28
+00:01:51.380 --> 00:01:55.340
+should take into account when designing systems for self-driving cars.
+
+29
+00:01:55.340 --> 00:01:57.290
+What kind of considerations?
+
+30
+00:01:57.290 --> 00:02:00.215
+Well, we've already touched on sensor fusion and calibration,
+
+31
+00:02:00.215 --> 00:02:04.160
+but we'll also need to think about speed and accuracy requirements as well as
+
+32
+00:02:04.160 --> 00:02:06.710
+localization failures and how to cope with
+
+33
+00:02:06.710 --> 00:02:10.115
+parts of the environment that are moving and changing around us.
+
+34
+00:02:10.115 --> 00:02:12.380
+Let's start with sensor fusion.
+
+35
+00:02:12.380 --> 00:02:16.925
+If we have a car like the autonomous that's equipped with a number of different sensors,
+
+36
+00:02:16.925 --> 00:02:19.610
+what we would like to do is figure out how to combine all of
+
+37
+00:02:19.610 --> 00:02:24.725
+this different information to get the best possible estimate of the vehicle state.
+
+38
+00:02:24.725 --> 00:02:28.429
+It might seem like a daunting task to fuse all of this data,
+
+39
+00:02:28.429 --> 00:02:31.295
+but in fact, we already have the tools to do this.
+
+40
+00:02:31.295 --> 00:02:33.050
+In lesson two of this module,
+
+41
+00:02:33.050 --> 00:02:34.700
+we'll discuss exactly how we can use
+
+42
+00:02:34.700 --> 00:02:37.620
+the familiar tools like the extended Kalman filter to
+
+43
+00:02:37.620 --> 00:02:43.235
+combine all of the sensor data into a single consistent estimate of the vehicle state.
+
+44
+00:02:43.235 --> 00:02:45.530
+But in order to do sensor fusion,
+
+45
+00:02:45.530 --> 00:02:47.180
+we first need to know some things about
+
+46
+00:02:47.180 --> 00:02:50.875
+our sensors and how they're configured on board the vehicle.
+
+47
+00:02:50.875 --> 00:02:54.380
+For one thing, our sensor models might depend on parameters
+
+48
+00:02:54.380 --> 00:02:57.725
+that are specific to the car or to the sensor itself.
+
+49
+00:02:57.725 --> 00:03:03.080
+A good example of this is using wheel encoders to measure the forward speed of the car.
+
+50
+00:03:03.080 --> 00:03:06.860
+A wheel encoder measures the angular velocity of the axle.
+
+51
+00:03:06.860 --> 00:03:10.475
+But if we want to use that to get the forward velocity of the vehicle,
+
+52
+00:03:10.475 --> 00:03:13.390
+we also need to know the radius of a tire.
+
+53
+00:03:13.390 --> 00:03:17.410
+Another thing we need to know about the vehicle is the pose or position and
+
+54
+00:03:17.410 --> 00:03:21.430
+orientation of each sensor relative to the vehicle reference frame.
+
+55
+00:03:21.430 --> 00:03:25.630
+Because we're combining information from sensors located in different places,
+
+56
+00:03:25.630 --> 00:03:27.895
+we need to know how to transform all of the measurements
+
+57
+00:03:27.895 --> 00:03:30.635
+so they're expressed in a common reference frame.
+
+58
+00:03:30.635 --> 00:03:33.580
+Finally, we need to think about how well our sensor measurements are
+
+59
+00:03:33.580 --> 00:03:36.550
+synchronized so that we can fuse them all properly.
+
+60
+00:03:36.550 --> 00:03:39.340
+Intuitively, you might expect that directly combining
+
+61
+00:03:39.340 --> 00:03:43.450
+a LiDAR scan you just received with a GPS measurement you received, say,
+
+62
+00:03:43.450 --> 00:03:46.945
+five seconds ago, won't produce as good of a result
+
+63
+00:03:46.945 --> 00:03:51.160
+as if the LiDAR scan and the GPS measurement were taken at the same time.
+
+64
+00:03:51.160 --> 00:03:54.100
+So, the more accurately you can synchronize your sensors,
+
+65
+00:03:54.100 --> 00:03:56.485
+the better your state estimate will be.
+
+66
+00:03:56.485 --> 00:04:00.830
+A part of this involves determining the time offset between when the sensor
+
+67
+00:04:00.830 --> 00:04:05.940
+records a measurement and when the estimator receives it for processing.
+
+68
+00:04:06.130 --> 00:04:08.870
+All of these factors are critical forms of
+
+69
+00:04:08.870 --> 00:04:12.995
+calibration which we'll discuss in more detail in lesson three.
+
+70
+00:04:12.995 --> 00:04:15.920
+How accurate does a estimator need to be for
+
+71
+00:04:15.920 --> 00:04:18.670
+a self-driving car to drive safely on the road?
+
+72
+00:04:18.670 --> 00:04:21.105
+Well, it depends on the size of the car,
+
+73
+00:04:21.105 --> 00:04:22.140
+the width of the lanes,
+
+74
+00:04:22.140 --> 00:04:23.669
+and the density of traffic,
+
+75
+00:04:23.669 --> 00:04:25.315
+but to get a ballpark estimate,
+
+76
+00:04:25.315 --> 00:04:29.480
+you might consider the margin of error available for a task leak lane keeping.
+
+77
+00:04:29.480 --> 00:04:32.500
+A typical car is about 1.8 meters wide,
+
+78
+00:04:32.500 --> 00:04:36.310
+an average highway lane might be about three meters wide, give or take.
+
+79
+00:04:36.310 --> 00:04:39.530
+So, our estimator would need to be good enough to position the car within
+
+80
+00:04:39.530 --> 00:04:42.650
+60 centimeters or so on either side of the lane.
+
+81
+00:04:42.650 --> 00:04:47.695
+That's assuming we know exactly where the lanes are and that there's no traffic.
+
+82
+00:04:47.695 --> 00:04:51.530
+For comparison, an optimistic range for GPS accuracy is
+
+83
+00:04:51.530 --> 00:04:55.205
+between one and five meters depending on the specific hardware,
+
+84
+00:04:55.205 --> 00:04:58.290
+the number of satellites that are visible, and other factors.
+
+85
+00:04:58.290 --> 00:05:02.450
+So, clearly, GPS alone is not enough even for lane keeping.
+
+86
+00:05:02.450 --> 00:05:04.430
+This is one important reason why we'll need to
+
+87
+00:05:04.430 --> 00:05:07.580
+combine information from many different sensors.
+
+88
+00:05:07.580 --> 00:05:12.020
+What about speed? How fast we need to update the vehicles states whether
+
+89
+00:05:12.020 --> 00:05:16.855
+the car can react to rapidly changing environments or unexpected events?
+
+90
+00:05:16.855 --> 00:05:20.560
+Well, this all depends on what kind of environment the car is operating in.
+
+91
+00:05:20.560 --> 00:05:23.790
+Imagine that you're driving a car with your eyes closed,
+
+92
+00:05:23.790 --> 00:05:26.600
+and you open your eyes exactly once every second to
+
+93
+00:05:26.600 --> 00:05:30.110
+take a look at what's around you and make some adjustments.
+
+94
+00:05:30.110 --> 00:05:33.935
+This corresponds to an update rate of one hertz.
+
+95
+00:05:33.935 --> 00:05:37.340
+For driving down a street country road with no traffic in sight,
+
+96
+00:05:37.340 --> 00:05:39.830
+maybe you'll feel relatively safe doing this.
+
+97
+00:05:39.830 --> 00:05:43.640
+But what if you're driving through a busy city intersection with dozens of other cars,
+
+98
+00:05:43.640 --> 00:05:44.780
+and buses, and cyclists,
+
+99
+00:05:44.780 --> 00:05:46.460
+and pedestrians around you?
+
+100
+00:05:46.460 --> 00:05:50.770
+You would probably feel much less safe opening your eyes once a second.
+
+101
+00:05:50.770 --> 00:05:52.360
+As a rule of thumb,
+
+102
+00:05:52.360 --> 00:05:57.020
+an update rate of 15 hertz to 30 hertz is a reasonable target for self-driving.
+
+103
+00:05:57.020 --> 00:05:59.780
+But of course, there's a trade-off to think about here.
+
+104
+00:05:59.780 --> 00:06:01.490
+A self-driving car will only have
+
+105
+00:06:01.490 --> 00:06:05.450
+so much on-board computing power available and the computer will need to juggle
+
+106
+00:06:05.450 --> 00:06:07.910
+many different processes like control and
+
+107
+00:06:07.910 --> 00:06:11.510
+path planning and perception in addition to state estimation.
+
+108
+00:06:11.510 --> 00:06:15.680
+What's more, the total amount of compute power available on board may be limited
+
+109
+00:06:15.680 --> 00:06:20.600
+by restrictions on how much power the computer is actually allowed to consume.
+
+110
+00:06:20.600 --> 00:06:24.100
+Produce state estimation with fixed computational resources,
+
+111
+00:06:24.100 --> 00:06:27.200
+there's a trade-off between how complicated our algorithms can
+
+112
+00:06:27.200 --> 00:06:31.225
+be and the amount of time are allowed to spend computing a solution.
+
+113
+00:06:31.225 --> 00:06:34.490
+It's up to you as a self-driving car engineer to
+
+114
+00:06:34.490 --> 00:06:38.645
+decide where your car is going to be on this trade off curve.
+
+115
+00:06:38.645 --> 00:06:41.990
+Even if we had a fast and accurate estimation algorithm,
+
+116
+00:06:41.990 --> 00:06:47.235
+there are going to be cases where our localization might fail. How could this happen?
+
+117
+00:06:47.235 --> 00:06:48.820
+Well, for one thing,
+
+118
+00:06:48.820 --> 00:06:53.300
+we might have one or more of our sensors report bad data or maybe even fail entirely.
+
+119
+00:06:53.300 --> 00:06:57.590
+A good example of this is GPS which doesn't work at all in tunnels and which
+
+120
+00:06:57.590 --> 00:06:59.120
+can have a difficult time coping with
+
+121
+00:06:59.120 --> 00:07:02.330
+reflected signals in cities with a lot of tall buildings.
+
+122
+00:07:02.330 --> 00:07:06.755
+We might also encounter errors in our state estimation algorithm itself.
+
+123
+00:07:06.755 --> 00:07:08.630
+For example, if we're using
+
+124
+00:07:08.630 --> 00:07:11.840
+an extended common filter with a highly nonlinear sensor model,
+
+125
+00:07:11.840 --> 00:07:16.850
+we might find that the inherent linearization error in the estimator means that we can
+
+126
+00:07:16.850 --> 00:07:19.230
+lose accuracy in our state estimate
+
+127
+00:07:19.230 --> 00:07:22.475
+even though the estimator is pretty confident in its output.
+
+128
+00:07:22.475 --> 00:07:26.015
+Or maybe, our estimator is not very confident at all.
+
+129
+00:07:26.015 --> 00:07:28.430
+Thinking back to the Kalman filter equations,
+
+130
+00:07:28.430 --> 00:07:30.590
+you might remember that the uncertainty in our state
+
+131
+00:07:30.590 --> 00:07:33.770
+grows as we propagate forward through the motion model and it
+
+132
+00:07:33.770 --> 00:07:40.470
+only shrinks once we incorporate outside observations from LiDAR or GPS for example.
+
+133
+00:07:40.670 --> 00:07:44.795
+If our LiDAR is broken and we're driving in a tunnel without GPS,
+
+134
+00:07:44.795 --> 00:07:47.720
+how long can we rely on an IMU and a motion model before
+
+135
+00:07:47.720 --> 00:07:52.560
+our estate uncertainty grows too large and it's no longer safe to drive?
+
+136
+00:07:52.700 --> 00:07:55.820
+We'll talk about strategies for detecting and coping with
+
+137
+00:07:55.820 --> 00:07:59.480
+localization failures like these in lesson four.
+
+138
+00:07:59.480 --> 00:08:03.230
+Finally, we need to think about the world the car lives in.
+
+139
+00:08:03.230 --> 00:08:05.660
+For the most part, we've developed our models for sensors like
+
+140
+00:08:05.660 --> 00:08:09.620
+LiDAR under the assumption that the world is static and unchanging.
+
+141
+00:08:09.620 --> 00:08:11.375
+But of course, in reality,
+
+142
+00:08:11.375 --> 00:08:13.625
+the world is always moving and changing.
+
+143
+00:08:13.625 --> 00:08:15.765
+For example, other cars,
+
+144
+00:08:15.765 --> 00:08:18.860
+pedestrians, and cyclists are probably moving.
+
+145
+00:08:18.860 --> 00:08:21.680
+Lighting changes over the course of a day and
+
+146
+00:08:21.680 --> 00:08:24.895
+even the geometry of the world can change with the seasons.
+
+147
+00:08:24.895 --> 00:08:27.860
+One of the big challenges for self-driving cars is
+
+148
+00:08:27.860 --> 00:08:30.845
+finding ways to account for these kinds of changes,
+
+149
+00:08:30.845 --> 00:08:33.230
+whether by modeling them or by finding ways of
+
+150
+00:08:33.230 --> 00:08:37.145
+identifying and ignoring objects that violate our assumptions.
+
+151
+00:08:37.145 --> 00:08:41.465
+In fact, this is still a very active area of research.
+
+152
+00:08:41.465 --> 00:08:44.435
+So, to summarize this video,
+
+153
+00:08:44.435 --> 00:08:48.380
+state estimation in practice will typically rely on sensor fusion to
+
+154
+00:08:48.380 --> 00:08:51.940
+combine information from many different kinds of sensors,
+
+155
+00:08:51.940 --> 00:08:54.735
+like IMUs, LiDAR, cameras,
+
+156
+00:08:54.735 --> 00:08:57.865
+and GPS or GNSS receivers.
+
+157
+00:08:57.865 --> 00:09:00.770
+In order for sensor fusion to work as intended,
+
+158
+00:09:00.770 --> 00:09:05.420
+we need to calibrate the sensors by determining the parameters of our sensor models.
+
+159
+00:09:05.420 --> 00:09:08.480
+The relative positions and orientations of all of
+
+160
+00:09:08.480 --> 00:09:12.395
+the sensors and any differences in polling times.
+
+161
+00:09:12.395 --> 00:09:16.310
+We also need to consider trade-offs between speed and accuracy in
+
+162
+00:09:16.310 --> 00:09:18.290
+our algorithms which may be different
+
+163
+00:09:18.290 --> 00:09:21.365
+depending on the type of self-driving car you're working on.
+
+164
+00:09:21.365 --> 00:09:24.710
+Ask yourself, how accurately do I need to know
+
+165
+00:09:24.710 --> 00:09:30.245
+the vehicle state and how often do I need to update it for my particular use case?
+
+166
+00:09:30.245 --> 00:09:34.820
+Finally, we need to think about how to safely cope with localization failures and
+
+167
+00:09:34.820 --> 00:09:39.880
+aspects of the world that do not conform to our assumptions such as moving objects.
+
+168
+00:09:39.880 --> 00:09:42.770
+In the next three videos, we'll dig into some of these topics in
+
+169
+00:09:42.770 --> 00:09:47.070
+more detail starting with multi-sensory fusion in the next video.

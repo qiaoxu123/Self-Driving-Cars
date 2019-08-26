@@ -1,0 +1,760 @@
+WEBVTT
+
+1
+00:00:14.240 --> 00:00:17.490
+Hi everyone. I'd like
+to congratulate you on
+
+2
+00:00:17.490 --> 00:00:20.280
+completing the course
+for final project.
+
+3
+00:00:20.280 --> 00:00:22.230
+It combined many of the concepts
+
+4
+00:00:22.230 --> 00:00:24.000
+we covered throughout the course,
+
+5
+00:00:24.000 --> 00:00:26.370
+and the other courses
+in this specialization.
+
+6
+00:00:26.370 --> 00:00:28.470
+So you should be proud
+of your efforts to
+
+7
+00:00:28.470 --> 00:00:31.245
+accomplish this
+challenging final task.
+
+8
+00:00:31.245 --> 00:00:33.395
+In this video we
+will be discussing
+
+9
+00:00:33.395 --> 00:00:35.360
+our solution to
+the final project,
+
+10
+00:00:35.360 --> 00:00:37.010
+which you can use to compare
+
+11
+00:00:37.010 --> 00:00:39.050
+your code to in order
+to help you with
+
+12
+00:00:39.050 --> 00:00:40.550
+sections of the project
+you struggled
+
+13
+00:00:40.550 --> 00:00:43.355
+with or we're unsure if
+your answer was correct.
+
+14
+00:00:43.355 --> 00:00:45.920
+In particular for
+our solution there were
+
+15
+00:00:45.920 --> 00:00:48.170
+four main tasks to
+complete in order to
+
+16
+00:00:48.170 --> 00:00:49.670
+enable all of the functionality
+
+17
+00:00:49.670 --> 00:00:53.285
+required for our three-stage
+scenario and Carla.
+
+18
+00:00:53.285 --> 00:00:55.615
+These were past generation,
+
+19
+00:00:55.615 --> 00:00:57.240
+path collision checking,
+
+20
+00:00:57.240 --> 00:01:00.935
+velocity profile generation,
+and behavior planning.
+
+21
+00:01:00.935 --> 00:01:03.620
+Let's take a look at
+each of these steps.
+
+22
+00:01:03.620 --> 00:01:07.265
+The first task you had to
+complete was path generation.
+
+23
+00:01:07.265 --> 00:01:09.680
+For this assignment, we
+had given you all of
+
+24
+00:01:09.680 --> 00:01:13.880
+the required code to optimize
+a spiral to a given point.
+
+25
+00:01:13.880 --> 00:01:16.430
+So all you needed to
+add was to extract
+
+26
+00:01:16.430 --> 00:01:17.840
+the goal points from the way
+
+27
+00:01:17.840 --> 00:01:19.730
+points sequence you were given.
+
+28
+00:01:19.730 --> 00:01:22.845
+We did this by iterating
+through the way points
+
+29
+00:01:22.845 --> 00:01:25.700
+and finding the closest
+one to the ego vehicle,
+
+30
+00:01:25.700 --> 00:01:27.320
+and then progressing through way
+
+31
+00:01:27.320 --> 00:01:29.450
+points until we
+arrived at a way point
+
+32
+00:01:29.450 --> 00:01:33.370
+that was at least a look
+ahead distance away from us.
+
+33
+00:01:33.370 --> 00:01:36.050
+The look ahead distance
+represents how far ahead of
+
+34
+00:01:36.050 --> 00:01:39.020
+the vehicle we are
+planning during any cycle.
+
+35
+00:01:39.020 --> 00:01:41.675
+Once this goal point is selected,
+
+36
+00:01:41.675 --> 00:01:44.630
+we laterally offset
+additional goal points from
+
+37
+00:01:44.630 --> 00:01:48.380
+the selected way point to
+generate a goal state set.
+
+38
+00:01:48.380 --> 00:01:49.940
+We do this to give the car
+
+39
+00:01:49.940 --> 00:01:52.250
+multiple options to select from,
+
+40
+00:01:52.250 --> 00:01:54.845
+which will allow it
+to avoid obstacles.
+
+41
+00:01:54.845 --> 00:01:58.115
+The lateral spacing
+is 90 degrees rotated
+
+42
+00:01:58.115 --> 00:01:59.210
+away from the heading of
+
+43
+00:01:59.210 --> 00:02:01.375
+the road at the target way point.
+
+44
+00:02:01.375 --> 00:02:03.380
+This ensures that
+our planned path
+
+45
+00:02:03.380 --> 00:02:06.005
+set conforms to
+the structure of the road.
+
+46
+00:02:06.005 --> 00:02:09.050
+We then have to rotate and
+translate these points
+
+47
+00:02:09.050 --> 00:02:11.960
+from the global frame to
+the ego vehicles frame,
+
+48
+00:02:11.960 --> 00:02:13.610
+such that the ego vehicle is at
+
+49
+00:02:13.610 --> 00:02:15.880
+the origin with zero heading.
+
+50
+00:02:15.880 --> 00:02:17.760
+Once this is done, we can
+
+51
+00:02:17.760 --> 00:02:19.850
+pass these goal points
+to the spiral
+
+52
+00:02:19.850 --> 00:02:22.490
+optimizer which will
+then compute the path
+
+53
+00:02:22.490 --> 00:02:26.165
+that we can use in
+our future planning steps.
+
+54
+00:02:26.165 --> 00:02:28.460
+Once we have our path set,
+
+55
+00:02:28.460 --> 00:02:30.140
+the next step to perform is
+
+56
+00:02:30.140 --> 00:02:32.540
+collision checking
+and path selection.
+
+57
+00:02:32.540 --> 00:02:35.780
+To compute the best feasible
+and collision-free path
+
+58
+00:02:35.780 --> 00:02:37.955
+for our ego vehicle to follow.
+
+59
+00:02:37.955 --> 00:02:41.090
+The way we performed
+collision checking was to use
+
+60
+00:02:41.090 --> 00:02:44.360
+the circle based method we
+introduced in Module Four.
+
+61
+00:02:44.360 --> 00:02:47.420
+In particular, we overlaid
+circles on top of
+
+62
+00:02:47.420 --> 00:02:50.380
+the vehicle location at
+each point along the path.
+
+63
+00:02:50.380 --> 00:02:52.850
+This generates a set of
+circles which gives us
+
+64
+00:02:52.850 --> 00:02:56.780
+a conservative approximation
+of the ego vehicle swath.
+
+65
+00:02:56.780 --> 00:02:59.900
+We then checked if each of
+the obstacle points was
+
+66
+00:02:59.900 --> 00:03:03.125
+located within any of
+the circles along the path.
+
+67
+00:03:03.125 --> 00:03:06.050
+If any of the points did
+fall within the circles,
+
+68
+00:03:06.050 --> 00:03:08.915
+then this path was labeled
+as having a collision.
+
+69
+00:03:08.915 --> 00:03:11.015
+We then repeated this process for
+
+70
+00:03:11.015 --> 00:03:12.770
+each of the paths removing all
+
+71
+00:03:12.770 --> 00:03:14.150
+of those that collided with
+
+72
+00:03:14.150 --> 00:03:16.825
+obstacles from future
+consideration.
+
+73
+00:03:16.825 --> 00:03:19.320
+Once our collision check
+was complete,
+
+74
+00:03:19.320 --> 00:03:21.875
+we then selected
+the collision-free path
+
+75
+00:03:21.875 --> 00:03:23.840
+whose end-point was closest to
+
+76
+00:03:23.840 --> 00:03:27.040
+the line center line
+as our best path.
+
+77
+00:03:27.040 --> 00:03:30.100
+We select this because
+it allows us to track
+
+78
+00:03:30.100 --> 00:03:32.560
+the global way points
+along the center of
+
+79
+00:03:32.560 --> 00:03:34.810
+the lane even if
+we had to veer off
+
+80
+00:03:34.810 --> 00:03:37.765
+course temporarily due to
+an obstacle along our path.
+
+81
+00:03:37.765 --> 00:03:40.000
+This choice does lead us to cut
+
+82
+00:03:40.000 --> 00:03:42.175
+as close as possible
+to obstacles.
+
+83
+00:03:42.175 --> 00:03:44.125
+So we had to be careful to ensure
+
+84
+00:03:44.125 --> 00:03:47.530
+our collision checks were
+conservative with some buffer.
+
+85
+00:03:47.530 --> 00:03:50.200
+Once we have a suitable
+path selected,
+
+86
+00:03:50.200 --> 00:03:53.050
+we need to generate
+a velocity profile for it.
+
+87
+00:03:53.050 --> 00:03:55.210
+We are given a reference velocity
+
+88
+00:03:55.210 --> 00:03:57.910
+depending on the behavior
+we are trying to execute.
+
+89
+00:03:57.910 --> 00:04:01.325
+If we are decelerating to
+a stop or staying stopped,
+
+90
+00:04:01.325 --> 00:04:03.555
+our target velocity
+should be zero.
+
+91
+00:04:03.555 --> 00:04:05.760
+Otherwise, it should
+be the speed limit.
+
+92
+00:04:05.760 --> 00:04:07.420
+However, we need to take
+
+93
+00:04:07.420 --> 00:04:09.505
+leading vehicles
+into consideration.
+
+94
+00:04:09.505 --> 00:04:11.240
+Because if a leading vehicle is
+
+95
+00:04:11.240 --> 00:04:13.670
+moving more slowly
+than us we may hit it.
+
+96
+00:04:13.670 --> 00:04:15.290
+To handle this, we set
+
+97
+00:04:15.290 --> 00:04:16.940
+our target velocity to be
+
+98
+00:04:16.940 --> 00:04:19.100
+the minimum of
+the reference velocity,
+
+99
+00:04:19.100 --> 00:04:21.395
+and the lead vehicle speed.
+
+100
+00:04:21.395 --> 00:04:23.480
+We also need to make sure that
+
+101
+00:04:23.480 --> 00:04:25.190
+we reach the lead vehicle speed
+
+102
+00:04:25.190 --> 00:04:28.820
+by the time we reach the
+lead vehicles original location.
+
+103
+00:04:28.820 --> 00:04:30.980
+Otherwise we risk a collision.
+
+104
+00:04:30.980 --> 00:04:33.635
+From this information,
+we can now construct
+
+105
+00:04:33.635 --> 00:04:36.560
+a ramp trajectory from
+our current velocity,
+
+106
+00:04:36.560 --> 00:04:39.020
+to the target velocity
+along our path.
+
+107
+00:04:39.020 --> 00:04:40.685
+If there is a lead vehicle,
+
+108
+00:04:40.685 --> 00:04:43.040
+the end-point of
+the ramp profile will be
+
+109
+00:04:43.040 --> 00:04:46.430
+the lead vehicles position
+less a time gap buffer.
+
+110
+00:04:46.430 --> 00:04:47.990
+Otherwise the end-point of
+
+111
+00:04:47.990 --> 00:04:50.635
+the ramp profile will
+be the end of the path.
+
+112
+00:04:50.635 --> 00:04:52.790
+Finally, we must implement
+
+113
+00:04:52.790 --> 00:04:55.460
+the behavioral planner
+for our ego vehicle.
+
+114
+00:04:55.460 --> 00:04:57.770
+The only regulatory
+element we will
+
+115
+00:04:57.770 --> 00:05:00.095
+face in this project
+is a stop sign,
+
+116
+00:05:00.095 --> 00:05:03.200
+so that will be the focus
+of the behavioral planner.
+
+117
+00:05:03.200 --> 00:05:05.660
+To handle it,
+our behavioral planner
+
+118
+00:05:05.660 --> 00:05:07.235
+will have three states.
+
+119
+00:05:07.235 --> 00:05:09.620
+A nominal lane following state,
+
+120
+00:05:09.620 --> 00:05:11.870
+a decelerate to stop state,
+
+121
+00:05:11.870 --> 00:05:13.805
+and a stay stop state.
+
+122
+00:05:13.805 --> 00:05:16.010
+During the course of
+normal driving we will
+
+123
+00:05:16.010 --> 00:05:18.655
+stay in the lane following state.
+
+124
+00:05:18.655 --> 00:05:21.260
+Once the endpoint
+of our planned path
+
+125
+00:05:21.260 --> 00:05:23.720
+crosses the stop
+line of a stop sign,
+
+126
+00:05:23.720 --> 00:05:27.049
+we then switch from driving
+normally to decelerating
+
+127
+00:05:27.049 --> 00:05:30.470
+to a stop at the stop point
+defined by that stopline.
+
+128
+00:05:30.470 --> 00:05:32.630
+To do this, we must transition to
+
+129
+00:05:32.630 --> 00:05:34.700
+the decelerate to stop state,
+
+130
+00:05:34.700 --> 00:05:36.590
+and ensure our planned length
+
+131
+00:05:36.590 --> 00:05:39.695
+provides sufficient time
+to decelerate comfortably.
+
+132
+00:05:39.695 --> 00:05:42.080
+Once we've stopped we transition
+
+133
+00:05:42.080 --> 00:05:44.000
+to the stay stopped state to make
+
+134
+00:05:44.000 --> 00:05:46.010
+sure the car is at
+a complete stop at
+
+135
+00:05:46.010 --> 00:05:48.560
+the stop sign for
+a fixed period of time.
+
+136
+00:05:48.560 --> 00:05:51.560
+In this case, we
+choose two seconds.
+
+137
+00:05:51.560 --> 00:05:52.970
+Once that is done,
+
+138
+00:05:52.970 --> 00:05:56.090
+we then transition back to
+the lane following state,
+
+139
+00:05:56.090 --> 00:05:58.400
+and continue with
+nominal driving.
+
+140
+00:05:58.400 --> 00:06:01.760
+This completes the state
+machine transition cycle,
+
+141
+00:06:01.760 --> 00:06:03.590
+and allows us to
+handle the presence of
+
+142
+00:06:03.590 --> 00:06:06.320
+a stop sign along our path.
+
+143
+00:06:06.320 --> 00:06:09.500
+Once we've completed
+each of these steps,
+
+144
+00:06:09.500 --> 00:06:12.290
+we now have a fully
+functional motion planner,
+
+145
+00:06:12.290 --> 00:06:15.545
+that can handle the scenario
+presented in this project.
+
+146
+00:06:15.545 --> 00:06:19.130
+If you struggled with
+any portion of this project,
+
+147
+00:06:19.130 --> 00:06:21.830
+try implementing
+that portion as discussed in
+
+148
+00:06:21.830 --> 00:06:25.385
+this video to see if you can
+improve its performance.
+
+149
+00:06:25.385 --> 00:06:27.920
+Of course, there are
+multiple approaches
+
+150
+00:06:27.920 --> 00:06:30.830
+defined in the course for
+many aspects of this project.
+
+151
+00:06:30.830 --> 00:06:32.450
+There is no restriction on
+
+152
+00:06:32.450 --> 00:06:34.580
+which approach you choose to use.
+
+153
+00:06:34.580 --> 00:06:36.440
+If you found
+an alternative method
+
+154
+00:06:36.440 --> 00:06:37.460
+that worked really well,
+
+155
+00:06:37.460 --> 00:06:39.470
+be sure to let us
+know in the forums.
+
+156
+00:06:39.470 --> 00:06:41.570
+Now that you've completed
+the course project,
+
+157
+00:06:41.570 --> 00:06:43.430
+you should have
+a strong grasp for
+
+158
+00:06:43.430 --> 00:06:44.810
+the motion planning concepts
+
+159
+00:06:44.810 --> 00:06:46.370
+we've covered in course four.
+
+160
+00:06:46.370 --> 00:06:48.080
+In the final two videos,
+
+161
+00:06:48.080 --> 00:06:51.485
+we'll close out both this course
+and the specialization.
+
+162
+00:06:51.485 --> 00:06:54.380
+Thanks for all your hard work
+and we wish you the best of
+
+163
+00:06:54.380 --> 00:06:58.230
+luck through all your future
+autonomous driving projects.

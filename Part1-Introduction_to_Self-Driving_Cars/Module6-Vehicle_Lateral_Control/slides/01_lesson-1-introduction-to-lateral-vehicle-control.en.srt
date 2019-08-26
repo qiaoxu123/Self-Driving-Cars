@@ -1,0 +1,902 @@
+1
+00:00:18,710 --> 00:00:21,675
+Welcome to this week's first lesson.
+
+2
+00:00:21,675 --> 00:00:23,190
+In the previous module,
+
+3
+00:00:23,190 --> 00:00:25,680
+we learned some basic
+longitudinal control
+
+4
+00:00:25,680 --> 00:00:28,035
+for autonomous car
+controlled development.
+
+5
+00:00:28,035 --> 00:00:31,725
+In this module, we will go
+through the lateral control.
+
+6
+00:00:31,725 --> 00:00:34,400
+We will cover four lessons this week.
+
+7
+00:00:34,400 --> 00:00:35,960
+In the first lesson,
+
+8
+00:00:35,960 --> 00:00:39,500
+we'll see the introduction
+to lateral vehicle control.
+
+9
+00:00:39,500 --> 00:00:41,225
+In lessons two and three,
+
+10
+00:00:41,225 --> 00:00:43,580
+we'll introduce
+two geometric path following
+
+11
+00:00:43,580 --> 00:00:45,800
+control strategies that are built on
+
+12
+00:00:45,800 --> 00:00:48,695
+the no-slip assumption
+of kinematic modeling.
+
+13
+00:00:48,695 --> 00:00:51,035
+Finally, in the last lesson,
+
+14
+00:00:51,035 --> 00:00:53,330
+we will focus on
+model predictive control,
+
+15
+00:00:53,330 --> 00:00:54,500
+as an example of
+
+16
+00:00:54,500 --> 00:00:56,090
+an advanced control strategy
+
+17
+00:00:56,090 --> 00:00:59,260
+regularly used in
+autonomous vehicles.
+
+18
+00:00:59,260 --> 00:01:01,540
+In this lesson specifically,
+
+19
+00:01:01,540 --> 00:01:03,470
+we'll introduce the core concepts
+
+20
+00:01:03,470 --> 00:01:05,615
+needed to perform lateral control,
+
+21
+00:01:05,615 --> 00:01:07,400
+and you'll learn how to define
+
+22
+00:01:07,400 --> 00:01:09,910
+different types of
+reference path and how
+
+23
+00:01:09,910 --> 00:01:11,290
+to compute heading and
+
+24
+00:01:11,290 --> 00:01:14,130
+crosstrack errors relative
+to those reference paths.
+
+25
+00:01:14,130 --> 00:01:16,175
+So, let's get started.
+
+26
+00:01:16,175 --> 00:01:20,210
+One of the main concerns in
+autonomous vehicles is ensuring
+
+27
+00:01:20,210 --> 00:01:23,570
+the vehicle can precisely
+follow a predefined path,
+
+28
+00:01:23,570 --> 00:01:25,160
+executing the motion plan
+
+29
+00:01:25,160 --> 00:01:28,010
+devised in the higher level
+planning module.
+
+30
+00:01:28,010 --> 00:01:30,140
+This is the main goal of
+
+31
+00:01:30,140 --> 00:01:33,860
+lateral control which must select
+the steering angle required
+
+32
+00:01:33,860 --> 00:01:36,140
+to correct any errors that accumulate
+
+33
+00:01:36,140 --> 00:01:39,560
+and track changes in the path
+direction as they appear.
+
+34
+00:01:39,560 --> 00:01:41,510
+To design the lateral controller,
+
+35
+00:01:41,510 --> 00:01:44,510
+we need to define the error between
+
+36
+00:01:44,510 --> 00:01:48,665
+the vehicle position and the
+appropriate desired path coordinates,
+
+37
+00:01:48,665 --> 00:01:52,370
+select a control design strategy
+that drives errors to
+
+38
+00:01:52,370 --> 00:01:56,140
+zero while still satisfying
+steering angle limits,
+
+39
+00:01:56,140 --> 00:01:59,960
+and consider the dynamic limitations
+of vehicle and desired
+
+40
+00:01:59,960 --> 00:02:01,880
+ride characteristics such as
+
+41
+00:02:01,880 --> 00:02:04,910
+maximum lateral acceleration
+and minimum jerk.
+
+42
+00:02:04,910 --> 00:02:09,230
+Control command must be cognizant
+of the available tire forces and
+
+43
+00:02:09,230 --> 00:02:10,850
+not exceed the capabilities of
+
+44
+00:02:10,850 --> 00:02:14,260
+the vehicle when correcting
+for tracking errors.
+
+45
+00:02:14,260 --> 00:02:17,450
+The reference path is
+a fundamental interface
+
+46
+00:02:17,450 --> 00:02:20,390
+between the planning system
+in the lateral controller,
+
+47
+00:02:20,390 --> 00:02:22,955
+and can be defined in multiple ways.
+
+48
+00:02:22,955 --> 00:02:26,210
+The easiest approach is
+to define a sequence of
+
+49
+00:02:26,210 --> 00:02:28,820
+straight line segments by requiring
+
+50
+00:02:28,820 --> 00:02:32,750
+a sequence of end point vertices
+that are connected linearly.
+
+51
+00:02:32,750 --> 00:02:36,985
+This path definition can be very
+compact and easy to construct,
+
+52
+00:02:36,985 --> 00:02:39,015
+assuming points are well spaced and
+
+53
+00:02:39,015 --> 00:02:41,905
+the environment allows for
+mostly straight line motion,
+
+54
+00:02:41,905 --> 00:02:44,655
+as in a Manhattan grid of roadways.
+
+55
+00:02:44,655 --> 00:02:48,265
+However, the path includes
+heading discontinuities,
+
+56
+00:02:48,265 --> 00:02:52,550
+which make precise tracking
+a challenge with a steered vehicle.
+
+57
+00:02:52,550 --> 00:02:56,030
+A refinement of the line
+segment approach is to
+
+58
+00:02:56,030 --> 00:02:59,345
+provide a series of
+tightly spaced waypoints.
+
+59
+00:02:59,345 --> 00:03:04,540
+This spacing is usually fixed in
+terms of distance or travel time.
+
+60
+00:03:04,540 --> 00:03:07,220
+The relative position
+of the waypoints can be
+
+61
+00:03:07,220 --> 00:03:11,300
+restricted to satisfy
+an approximate curvature constraint.
+
+62
+00:03:11,300 --> 00:03:13,820
+Waypoint paths are very common,
+
+63
+00:03:13,820 --> 00:03:17,150
+as they are easy to work with and
+can be directly constructed from
+
+64
+00:03:17,150 --> 00:03:19,520
+state estimates or GPS waypoints
+
+65
+00:03:19,520 --> 00:03:22,925
+collected in earlier runs
+of a particular route.
+
+66
+00:03:22,925 --> 00:03:26,345
+It is also possible to
+define a path using
+
+67
+00:03:26,345 --> 00:03:29,635
+a sequence of continuous
+parameterized curves,
+
+68
+00:03:29,635 --> 00:03:32,390
+which can be either drawn
+from a fixed set of
+
+69
+00:03:32,390 --> 00:03:34,220
+motion primitives or can be
+
+70
+00:03:34,220 --> 00:03:37,280
+identified through
+optimization during planning.
+
+71
+00:03:37,280 --> 00:03:41,945
+These curves provide the benefit
+of continuously varying motion,
+
+72
+00:03:41,945 --> 00:03:45,710
+and can be constructed to have
+smooth derivatives to aid in
+
+73
+00:03:45,710 --> 00:03:49,945
+the consistency of error and
+error rate calculations.
+
+74
+00:03:49,945 --> 00:03:52,285
+In all cases of path following,
+
+75
+00:03:52,285 --> 00:03:56,000
+the controller tries to eliminate
+the offset of the vehicle to
+
+76
+00:03:56,000 --> 00:03:57,800
+the desired path and to
+
+77
+00:03:57,800 --> 00:04:00,650
+align the vehicle heading
+with the path heading.
+
+78
+00:04:00,650 --> 00:04:03,140
+For each of these paths definitions,
+
+79
+00:04:03,140 --> 00:04:06,650
+the direction of travel along
+the path is also provided,
+
+80
+00:04:06,650 --> 00:04:10,640
+which can be encoded with the
+point ordering or curve ordering.
+
+81
+00:04:10,640 --> 00:04:13,369
+We will define
+these two terms shortly,
+
+82
+00:04:13,369 --> 00:04:15,290
+as they both play a critical role
+
+83
+00:04:15,290 --> 00:04:18,185
+in the design of lateral controllers.
+
+84
+00:04:18,185 --> 00:04:21,365
+Let's now introduced
+the two main categories
+
+85
+00:04:21,365 --> 00:04:22,820
+of lateral control design,
+
+86
+00:04:22,820 --> 00:04:25,625
+which are widely used
+in autonomous vehicles.
+
+87
+00:04:25,625 --> 00:04:29,960
+The first category of controllers
+are geometric controllers,
+
+88
+00:04:29,960 --> 00:04:32,780
+which rely on the geometry
+and coordinates of
+
+89
+00:04:32,780 --> 00:04:36,395
+the desired path and
+the kinematic models of the vehicle.
+
+90
+00:04:36,395 --> 00:04:39,500
+We'll consider two types
+of controllers that are
+
+91
+00:04:39,500 --> 00:04:41,480
+geometric controllers: the pure
+
+92
+00:04:41,480 --> 00:04:43,935
+pursuit and the Stanley controllers.
+
+93
+00:04:43,935 --> 00:04:47,750
+We'll look at these in detail in
+the next lessons in this module.
+
+94
+00:04:47,750 --> 00:04:52,070
+The other category of controllers
+is called dynamic controllers.
+
+95
+00:04:52,070 --> 00:04:54,620
+The most popular
+advanced controller in
+
+96
+00:04:54,620 --> 00:04:58,570
+this category is the model
+predictive controller or MPC,
+
+97
+00:04:58,570 --> 00:05:02,060
+which performs a finite
+horizon optimization
+
+98
+00:05:02,060 --> 00:05:05,485
+to identify the control
+command to apply.
+
+99
+00:05:05,485 --> 00:05:07,970
+MPC is commonly used because of
+
+100
+00:05:07,970 --> 00:05:10,220
+its ability to handle
+a wide variety of
+
+101
+00:05:10,220 --> 00:05:12,575
+constraints and to identify
+
+102
+00:05:12,575 --> 00:05:14,840
+optimized solutions that consider
+
+103
+00:05:14,840 --> 00:05:16,945
+more than just the current errors.
+
+104
+00:05:16,945 --> 00:05:22,275
+We'll look at MPC design in
+the final video in this module.
+
+105
+00:05:22,275 --> 00:05:25,179
+Let's now investigate the definitions
+
+106
+00:05:25,179 --> 00:05:27,430
+of errors in path tracking control.
+
+107
+00:05:27,430 --> 00:05:29,770
+We'll use the kinematic bicycle model
+
+108
+00:05:29,770 --> 00:05:31,625
+as our basis for this discussion.
+
+109
+00:05:31,625 --> 00:05:32,980
+So, let's quickly review
+
+110
+00:05:32,980 --> 00:05:35,710
+the important parameters
+of the bicycle model.
+
+111
+00:05:35,710 --> 00:05:37,630
+The bicycle model is
+
+112
+00:05:37,630 --> 00:05:41,530
+a suitable control oriented model
+of a four-wheel vehicle,
+
+113
+00:05:41,530 --> 00:05:43,570
+where the front left
+and right wheels are
+
+114
+00:05:43,570 --> 00:05:46,150
+combined into
+a single steerable wheel,
+
+115
+00:05:46,150 --> 00:05:48,070
+and the rear left
+and right wheels are
+
+116
+00:05:48,070 --> 00:05:51,070
+combined together in
+a single drive wheel.
+
+117
+00:05:51,070 --> 00:05:53,530
+For this discussion, we'll use
+
+118
+00:05:53,530 --> 00:05:55,900
+a line segment as our reference path,
+
+119
+00:05:55,900 --> 00:05:59,240
+shown as a solid black line
+in the diagram.
+
+120
+00:05:59,240 --> 00:06:02,890
+A dashed black line that is
+parallel to the path but
+
+121
+00:06:02,890 --> 00:06:07,275
+runs through the center of
+the front axle is also visible.
+
+122
+00:06:07,275 --> 00:06:09,950
+For the purposes of lateral control,
+
+123
+00:06:09,950 --> 00:06:14,045
+we redefine our heading relative
+to the current path line segment.
+
+124
+00:06:14,045 --> 00:06:17,000
+The variable side will
+be reused to represent
+
+125
+00:06:17,000 --> 00:06:18,440
+the relative heading angle of
+
+126
+00:06:18,440 --> 00:06:21,775
+the vehicle with respect
+to the path line.
+
+127
+00:06:21,775 --> 00:06:24,800
+The front wheel velocity V and
+
+128
+00:06:24,800 --> 00:06:26,330
+the steering angle relative to
+
+129
+00:06:26,330 --> 00:06:29,045
+the heading direction delta
+do not change,
+
+130
+00:06:29,045 --> 00:06:31,765
+and are also shown in this diagram.
+
+131
+00:06:31,765 --> 00:06:35,030
+Note that we can place
+a reference frame for
+
+132
+00:06:35,030 --> 00:06:37,625
+the vehicle at the center
+of the rear axle,
+
+133
+00:06:37,625 --> 00:06:39,665
+at the center of the front axle,
+
+134
+00:06:39,665 --> 00:06:43,970
+or at the center of gravity
+depending on our controller design.
+
+135
+00:06:43,970 --> 00:06:46,745
+As mentioned in the previous section,
+
+136
+00:06:46,745 --> 00:06:51,350
+we'll introduce two types of error:
+heading and crosstrack error.
+
+137
+00:06:51,350 --> 00:06:55,220
+The heading error is equal to
+the difference between path heading
+
+138
+00:06:55,220 --> 00:06:59,345
+and vehicle heading at
+the reference point along the path.
+
+139
+00:06:59,345 --> 00:07:02,570
+It is a principal measure
+of how well the vehicle is
+
+140
+00:07:02,570 --> 00:07:06,620
+aligned with and moving in
+the direction of the desired path.
+
+141
+00:07:06,620 --> 00:07:09,830
+The rate of heading
+error psi dot helps us
+
+142
+00:07:09,830 --> 00:07:12,910
+understand how the heading
+error evolves over time,
+
+143
+00:07:12,910 --> 00:07:16,820
+and can be computed from the
+kinematic bicycle model equations.
+
+144
+00:07:16,820 --> 00:07:20,360
+The rate of heading error
+can be expressed in
+
+145
+00:07:20,360 --> 00:07:24,020
+terms of any of the three vehicle
+reference points as well.
+
+146
+00:07:24,020 --> 00:07:26,330
+Here we present the rate
+of heading error
+
+147
+00:07:26,330 --> 00:07:28,280
+relative to the front axle,
+
+148
+00:07:28,280 --> 00:07:29,360
+as will be used in
+
+149
+00:07:29,360 --> 00:07:31,070
+the Stanley controller presented
+
+150
+00:07:31,070 --> 00:07:33,680
+in the third video in this module.
+
+151
+00:07:33,680 --> 00:07:36,035
+For straight line segments,
+
+152
+00:07:36,035 --> 00:07:38,720
+the desired heading rate
+of change is zero,
+
+153
+00:07:38,720 --> 00:07:40,115
+and it can be removed.
+
+154
+00:07:40,115 --> 00:07:42,410
+This is because
+the reference heading is
+
+155
+00:07:42,410 --> 00:07:44,615
+not time-varying for a straight line,
+
+156
+00:07:44,615 --> 00:07:46,505
+and is in fact equal to zero,
+
+157
+00:07:46,505 --> 00:07:48,215
+as we have redefined our heading
+
+158
+00:07:48,215 --> 00:07:50,705
+relative to the current
+path direction.
+
+159
+00:07:50,705 --> 00:07:52,550
+The other type of error is
+
+160
+00:07:52,550 --> 00:07:55,655
+an offset error called
+the crosstrack error.
+
+161
+00:07:55,655 --> 00:07:57,250
+The crosstrack error is
+
+162
+00:07:57,250 --> 00:07:59,350
+the distance between
+the reference point on
+
+163
+00:07:59,350 --> 00:08:02,900
+the vehicle and the closest point
+on the desired path.
+
+164
+00:08:02,900 --> 00:08:05,380
+It is the principal
+measure of how close
+
+165
+00:08:05,380 --> 00:08:09,220
+the vehicle's position is to
+the desired position along the path.
+
+166
+00:08:09,220 --> 00:08:12,730
+Both heading error and crosstrack
+error must converge to
+
+167
+00:08:12,730 --> 00:08:17,530
+zero for the vehicle to be properly
+tracking the desired path.
+
+168
+00:08:17,530 --> 00:08:20,350
+The line from the vehicle
+reference point to
+
+169
+00:08:20,350 --> 00:08:23,860
+the path reference point is
+perpendicular to the path.
+
+170
+00:08:23,860 --> 00:08:27,609
+The rate of change of the
+crosstrack error can be calculated
+
+171
+00:08:27,609 --> 00:08:31,360
+by extracting the lateral component
+of the forward velocity.
+
+172
+00:08:31,360 --> 00:08:35,305
+From this equation, we can see
+that as the velocity increases,
+
+173
+00:08:35,305 --> 00:08:37,965
+the crosstrack error
+changes more quickly,
+
+174
+00:08:37,965 --> 00:08:40,730
+meaning that smaller steering
+angles are needed to
+
+175
+00:08:40,730 --> 00:08:43,790
+correct for the same size
+crosstrack errors.
+
+176
+00:08:43,790 --> 00:08:46,880
+Extending this discussion
+of the heading and
+
+177
+00:08:46,880 --> 00:08:49,205
+crosstrack errors to the curved paths
+
+178
+00:08:49,205 --> 00:08:51,275
+adds some additional complexity,
+
+179
+00:08:51,275 --> 00:08:53,420
+as it is not immediately clear where
+
+180
+00:08:53,420 --> 00:08:56,690
+the reference point on
+the curved path should lie.
+
+181
+00:08:56,690 --> 00:08:59,150
+The geometric relations required
+
+182
+00:08:59,150 --> 00:09:01,400
+fall outside the scope of this video.
+
+183
+00:09:01,400 --> 00:09:05,285
+We've nonetheless provided links
+in the supplemental materials
+
+184
+00:09:05,285 --> 00:09:06,605
+for those interested in
+
+185
+00:09:06,605 --> 00:09:09,770
+error calculations
+relative to curved paths.
+
+186
+00:09:09,770 --> 00:09:13,805
+Let's summarize our discussion
+of the lateral control concepts.
+
+187
+00:09:13,805 --> 00:09:17,810
+In this lesson, you've studied
+three approaches to defining
+
+188
+00:09:17,810 --> 00:09:22,200
+reference paths: line segments,
+waypoints, and curves.
+
+189
+00:09:22,200 --> 00:09:26,360
+You've learned how to construct
+error metrics for lateral control,
+
+190
+00:09:26,360 --> 00:09:28,805
+including heading and
+crosstrack error.
+
+191
+00:09:28,805 --> 00:09:30,320
+In the next video,
+
+192
+00:09:30,320 --> 00:09:32,000
+we'll use these definitions to
+
+193
+00:09:32,000 --> 00:09:34,775
+construct our first lateral
+vehicle controller,
+
+194
+00:09:34,775 --> 00:09:36,785
+the pure pursuit controller,
+
+195
+00:09:36,785 --> 00:09:38,690
+to define steering commands that will
+
+196
+00:09:38,690 --> 00:09:42,360
+track our reference path.
+See you there.

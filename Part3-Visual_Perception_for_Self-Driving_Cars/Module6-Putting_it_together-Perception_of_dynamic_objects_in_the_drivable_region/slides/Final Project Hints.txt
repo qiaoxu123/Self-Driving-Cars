@@ -1,0 +1,85 @@
+In the last video, you were introduced to
+the final course assessment in which you will have to develop three major aspects of the procession stack
+of a self-driving car. This lesson, we
+will expose you to some algorithmic
+concepts that will be useful to finish
+this assessment. The first thing to be aware of while attempting the assignment, is the coordinate frames
+you are working in. All the required 3D estimation will be performed in
+the camera coordinate frame. That includes the ground plane, distance to impact, and
+other 3D quantities. However, the camera as
+a sensor is usually oriented with its y-axis
+pointing downward. What does that mean for you while working on the assessment? The only thing you will
+need to be careful about, is the sign of
+the height value of pixels. Points higher than the camera will have a negative height, while points lower than the camera will have
+a positive height. The second topic you
+should be aware of, is how to solve
+linear least squares problems for plane
+estimation in Python. For this part of the assessment, you will have a couple
+of alternatives. We provide you with
+a function that does the plane estimation for you using singular value
+decomposition or SVD for short. However, if you
+want to challenge, you could try solving the plane estimation problem
+yourself by solving the least squares problem using the NumPy native function lstsq. If you choose this path, be careful to choose more than three points for
+each iteration of RANSAC, as the solver might not provide any useful results in certain edge cases where the system is poorly conditioned. A greater challenge
+would be to implement SVD plane fitting from scratch. SVD almost always provides
+a numerically stable solution. In addition, it
+can be faster than the NumPy lstsq function. It's up to you which path to
+take to estimate the plane. As long as the plane is correct, the method that generated it
+will be given full marks. The second perception task
+that needs to be performed, is lane boundary detection. The output of the Hough
+transform line detection, is any line belonging to
+the boundary of the lane including horizontal ones and lines on the far side
+of sidewalks. Furthermore, each of
+the lane boundaries will have multiple associated output lines from the Hough transform
+line estimator. You are required to filter
+out all irrelevant lines and merge relevant lines to produce one line
+per lane boundary. To filter out the
+horizontal lines, we can rely on the slope
+of the estimated lines. Horizontal lines and images tend to have a slope
+very close to zero. However, we also want to
+remove heavily slanted lines. As such, a threshold
+is introduced as a lower limit of allowed slopes for the output
+of this filtering step. The exact value of this threshold needs to be
+determined empirically, try values between 0.1
+and 0.3 for best results. Having removed horizontal lines from the output of
+the half transform, you will need to cluster
+similar lines and then merge them to produce
+a single line per lane boundary. A simple clustering algorithm
+would be to first choose a cluster center at random from the
+remaining filter lines, then add to the cluster
+any lines that have a similar slope or intercept
+to the cluster line. A line is considered close to the cluster center if
+the difference between its slope and slope of the cluster center is less than a specific slope threshold, and the distance between its intercept and
+the intercept of the cluster center is less than a specific intercept
+threshold as well. The slope difference threshold is usually chosen to be
+a maximum of 0.3, while the intercept
+difference threshold is defined in pixels, and is usually chosen
+between 20 and 50 pixels. You will need to test
+various values before arriving at a satisfactory
+threshold for the assessment. The final step to produce
+one line per lane boundary, is to merge lines
+inside each cluster. The simplest way to do
+so is through averaging the slope and intercept
+of all cluster members. The final concept that you will need to finish the assessment, is how to filter out
+uncertain output of object detectors using the output from the semantic segmentation. The output of object detection
+is usually reliable. But for this assessment, you are given a high
+recall low precision detector that detects
+all objects in the scene, but also provides
+some false positives. You are required to use the output from
+semantic segmentation to eliminate these false positives before estimating the distance
+to the obstacles. The results should
+be bounding boxes that reliably contain obstacles. To perform this filtering, you will need to use the semantic segmentation output to count the number of pixels in the bounding box that
+have the same category as the classification output
+from the 2D object detector. The trick here, is
+that this number will depend on the size
+of the bounding box. You will need to normalize
+the pixel count by the area of the bounding box
+before attempting to filter out the detections
+with a threshold. The final normalized count is equivalent to computing
+the area inside the bounding box occupied by pixels belonging to
+the correct category. At this point, you
+should be ready to tackle the final
+assessment confidently. As a final note, I encourage you to think of
+different ways you could achieve the final output
+for the required tasks, other than the suggested outline. I hope you enjoy this assessment and find it beneficial
+to your learning.

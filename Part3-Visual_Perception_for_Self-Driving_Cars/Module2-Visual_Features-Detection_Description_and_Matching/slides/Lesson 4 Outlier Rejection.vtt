@@ -1,0 +1,881 @@
+WEBVTT
+
+1
+00:00:13.430 --> 00:00:17.390
+So far we have described
+the three steps we need
+
+2
+00:00:17.390 --> 00:00:18.590
+to use image features
+
+3
+00:00:18.590 --> 00:00:20.600
+for autonomous
+vehicle applications.
+
+4
+00:00:20.600 --> 00:00:21.920
+We also mentioned that
+
+5
+00:00:21.920 --> 00:00:24.875
+feature matchers are not
+very robust to outliers.
+
+6
+00:00:24.875 --> 00:00:26.960
+In this lesson, we will describe
+
+7
+00:00:26.960 --> 00:00:29.030
+what outliers are
+and how they might
+
+8
+00:00:29.030 --> 00:00:30.290
+affect our usage of
+
+9
+00:00:30.290 --> 00:00:33.545
+image features to solve
+real-world problems.
+
+10
+00:00:33.545 --> 00:00:36.440
+We will also provide
+a powerful method to handle
+
+11
+00:00:36.440 --> 00:00:39.620
+outliers called random
+sample consensus,
+
+12
+00:00:39.620 --> 00:00:41.300
+or RANSAC for short.
+
+13
+00:00:41.300 --> 00:00:43.415
+This method will help us account
+
+14
+00:00:43.415 --> 00:00:45.350
+for and eliminate outliers,
+
+15
+00:00:45.350 --> 00:00:47.480
+as they can have
+a strong negative impact on
+
+16
+00:00:47.480 --> 00:00:50.450
+the use of features in
+other perception tasks.
+
+17
+00:00:50.450 --> 00:00:53.060
+But first, let us
+introduce the use of
+
+18
+00:00:53.060 --> 00:00:55.510
+the three-step feature
+extraction framework
+
+19
+00:00:55.510 --> 00:00:58.670
+for the real-world problem
+of vehicle localization.
+
+20
+00:00:58.670 --> 00:01:02.435
+Our localization problem is
+defined as follows: given
+
+21
+00:01:02.435 --> 00:01:03.500
+any two images of
+
+22
+00:01:03.500 --> 00:01:06.035
+the same scene from
+different perspectives,
+
+23
+00:01:06.035 --> 00:01:08.210
+find the translation T,
+
+24
+00:01:08.210 --> 00:01:09.650
+between the coordinate system of
+
+25
+00:01:09.650 --> 00:01:11.240
+the first image shown in red,
+
+26
+00:01:11.240 --> 00:01:12.620
+and the coordinate system of
+
+27
+00:01:12.620 --> 00:01:15.050
+the second image shown in green.
+
+28
+00:01:15.050 --> 00:01:17.900
+In practice, we'd also
+want to solve for
+
+29
+00:01:17.900 --> 00:01:20.860
+the scale and skew due
+to different viewpoints.
+
+30
+00:01:20.860 --> 00:01:22.400
+But we'll keep
+this example simple
+
+31
+00:01:22.400 --> 00:01:24.470
+to stay focused on
+the current topic.
+
+32
+00:01:24.470 --> 00:01:26.730
+To solve this
+localization problem,
+
+33
+00:01:26.730 --> 00:01:29.795
+we need to perform
+the following steps.
+
+34
+00:01:29.795 --> 00:01:33.000
+First, we need to find
+the displacement of image
+
+35
+00:01:33.000 --> 00:01:36.020
+one on the u image axis
+of image two.
+
+36
+00:01:36.020 --> 00:01:38.810
+We call this
+displacement t sub u.
+
+37
+00:01:38.810 --> 00:01:41.390
+Second, we need to
+find the displacement
+
+38
+00:01:41.390 --> 00:01:44.015
+of image one on the
+v axis of image two,
+
+39
+00:01:44.015 --> 00:01:48.110
+and we'll call this displacement
+t sub v. We will find
+
+40
+00:01:48.110 --> 00:01:50.330
+t sub u and t sub v by
+
+41
+00:01:50.330 --> 00:01:53.154
+matching features
+between the images,
+
+42
+00:01:53.154 --> 00:01:55.505
+and then solving for
+the displacements
+
+43
+00:01:55.505 --> 00:01:58.950
+that best align
+these matched features.
+
+44
+00:01:59.050 --> 00:02:01.850
+We begin by
+computing features and
+
+45
+00:02:01.850 --> 00:02:04.110
+their descriptors in
+image one and image two.
+
+46
+00:02:04.110 --> 00:02:06.230
+We then match
+these features using
+
+47
+00:02:06.230 --> 00:02:07.520
+the brute force matcher we
+
+48
+00:02:07.520 --> 00:02:09.560
+developed in the previous lesson.
+
+49
+00:02:09.560 --> 00:02:11.755
+Do you notice
+anything a little off
+
+50
+00:02:11.755 --> 00:02:14.045
+in the results from
+our brute force match?
+
+51
+00:02:14.045 --> 00:02:15.880
+Don't worry. We will come
+
+52
+00:02:15.880 --> 00:02:17.910
+back to these results
+in a little bit.
+
+53
+00:02:17.910 --> 00:02:20.920
+But first, let's
+define the solution of
+
+54
+00:02:20.920 --> 00:02:22.420
+our problem mathematically in
+
+55
+00:02:22.420 --> 00:02:24.475
+terms of our matched features.
+
+56
+00:02:24.475 --> 00:02:27.850
+We denote a feature pair
+from images one and two,
+
+57
+00:02:27.850 --> 00:02:30.715
+as f1 sub i and f2 sub i.
+
+58
+00:02:30.715 --> 00:02:33.000
+Where i ranges
+between zero and n,
+
+59
+00:02:33.000 --> 00:02:34.750
+the total number of feature pairs
+
+60
+00:02:34.750 --> 00:02:36.805
+returned by our
+matching algorithm.
+
+61
+00:02:36.805 --> 00:02:39.760
+Each feature in the feature pair
+is represented by
+
+62
+00:02:39.760 --> 00:02:42.935
+its pixel coordinates ui and vi.
+
+63
+00:02:42.935 --> 00:02:45.670
+Note that every pixel in
+the image ones should
+
+64
+00:02:45.670 --> 00:02:48.595
+coincide with its corresponding
+pixel in image two
+
+65
+00:02:48.595 --> 00:02:52.120
+after application of the
+translation t sub q and t sub
+
+66
+00:02:52.120 --> 00:02:54.280
+v. We can then
+
+67
+00:02:54.280 --> 00:02:56.950
+use our feature pairs to
+model the translation
+
+68
+00:02:56.950 --> 00:02:58.930
+as follows: the location of
+
+69
+00:02:58.930 --> 00:03:01.000
+a feature in image
+one is translated to
+
+70
+00:03:01.000 --> 00:03:02.710
+a corresponding location in image
+
+71
+00:03:02.710 --> 00:03:05.260
+two through model
+parameters t sub u and
+
+72
+00:03:05.260 --> 00:03:07.030
+t sub v. Here
+
+73
+00:03:07.030 --> 00:03:10.420
+the translations on
+the u image axis t sub u,
+
+74
+00:03:10.420 --> 00:03:12.580
+and the v image axis t sub v,
+
+75
+00:03:12.580 --> 00:03:14.670
+are the same for
+all feature pairs.
+
+76
+00:03:14.670 --> 00:03:17.320
+Since we assume
+a rigid body motion.
+
+77
+00:03:17.320 --> 00:03:19.710
+Now we can solve for t sub u and
+
+78
+00:03:19.710 --> 00:03:22.525
+t sub v using
+least squares estimation.
+
+79
+00:03:22.525 --> 00:03:25.120
+The solution to the least
+squares problem will be
+
+80
+00:03:25.120 --> 00:03:27.460
+the values for t
+sub u and t sub v
+
+81
+00:03:27.460 --> 00:03:29.410
+that minimize the sum of
+
+82
+00:03:29.410 --> 00:03:32.875
+squared errors between
+all pairs of pixels.
+
+83
+00:03:32.875 --> 00:03:35.620
+Now that we have our
+localization problem defined,
+
+84
+00:03:35.620 --> 00:03:38.980
+let's return to the results
+of our feature matching.
+
+85
+00:03:38.980 --> 00:03:42.020
+By observing the feature
+locations visually,
+
+86
+00:03:42.020 --> 00:03:44.000
+it can be seen that
+the feature pair in
+
+87
+00:03:44.000 --> 00:03:47.765
+the purple circles is
+actually an incorrect match.
+
+88
+00:03:47.765 --> 00:03:49.550
+This happens even though we
+
+89
+00:03:49.550 --> 00:03:51.080
+use the distance ratio method,
+
+90
+00:03:51.080 --> 00:03:54.100
+and is a common occurrence
+in feature matching.
+
+91
+00:03:54.100 --> 00:03:57.435
+We call such
+feature pairs outliers.
+
+92
+00:03:57.435 --> 00:04:01.325
+Outliers can comprise a large
+portion of our feature set,
+
+93
+00:04:01.325 --> 00:04:04.295
+and typically have
+an out-sized negative effect
+
+94
+00:04:04.295 --> 00:04:05.810
+on our model solution,
+
+95
+00:04:05.810 --> 00:04:08.915
+especially when using
+least squares estimation.
+
+96
+00:04:08.915 --> 00:04:11.810
+Let us see if we can
+identify these outliers and
+
+97
+00:04:11.810 --> 00:04:14.825
+avoid using them in
+our least squares solution.
+
+98
+00:04:14.825 --> 00:04:16.700
+Outliers can be handled using
+
+99
+00:04:16.700 --> 00:04:18.890
+a model-based
+outlier rejection method
+
+100
+00:04:18.890 --> 00:04:20.495
+called Random Sample Consensus,
+
+101
+00:04:20.495 --> 00:04:22.060
+or RANSAC for short.
+
+102
+00:04:22.060 --> 00:04:25.880
+RANSAC developed by Martin
+Fischler and Robert Bolles in
+
+103
+00:04:25.880 --> 00:04:27.410
+1981 is one of
+
+104
+00:04:27.410 --> 00:04:29.210
+the most used model-based methods
+
+105
+00:04:29.210 --> 00:04:31.205
+for outlier rejection
+in robotics.
+
+106
+00:04:31.205 --> 00:04:34.740
+The RANSAC algorithm
+proceeds as follows: first,
+
+107
+00:04:34.740 --> 00:04:36.260
+given a model for identifying
+
+108
+00:04:36.260 --> 00:04:38.740
+a problem solution from
+a set of data points,
+
+109
+00:04:38.740 --> 00:04:41.510
+find the smallest number M
+of data points or
+
+110
+00:04:41.510 --> 00:04:44.495
+samples needed to compute
+the parameters of this model.
+
+111
+00:04:44.495 --> 00:04:46.685
+In our case,
+the problem localization
+
+112
+00:04:46.685 --> 00:04:48.009
+and the model parameters,
+
+113
+00:04:48.009 --> 00:04:49.960
+are the t sub u and t sub v
+
+114
+00:04:49.960 --> 00:04:52.100
+offsets of the least
+square solution.
+
+115
+00:04:52.100 --> 00:04:56.375
+Second, randomly select
+M samples from your data.
+
+116
+00:04:56.375 --> 00:04:59.195
+Third, compute the model
+parameters using
+
+117
+00:04:59.195 --> 00:05:02.275
+only the M samples selected
+from your data set.
+
+118
+00:05:02.275 --> 00:05:06.320
+Forth, use the computed
+parameters and count how many
+
+119
+00:05:06.320 --> 00:05:07.880
+of the remaining data points
+
+120
+00:05:07.880 --> 00:05:10.430
+agree with this
+computed solution.
+
+121
+00:05:10.430 --> 00:05:12.410
+The accepted points are retained
+
+122
+00:05:12.410 --> 00:05:14.585
+and referred to as inliers.
+
+123
+00:05:14.585 --> 00:05:19.055
+Fifth, if the number of
+inliers C is satisfactory,
+
+124
+00:05:19.055 --> 00:05:20.855
+or if the algorithm has iterated
+
+125
+00:05:20.855 --> 00:05:23.090
+a pre-set maximum number
+of iterations,
+
+126
+00:05:23.090 --> 00:05:25.970
+terminate and return
+the computed solution
+
+127
+00:05:25.970 --> 00:05:27.725
+and the inlier set.
+
+128
+00:05:27.725 --> 00:05:30.820
+Else, go back to
+step two and repeat.
+
+129
+00:05:30.820 --> 00:05:33.650
+Finally, recompute and return
+
+130
+00:05:33.650 --> 00:05:36.605
+the model parameters from
+the best inlier set.
+
+131
+00:05:36.605 --> 00:05:39.515
+The one with the largest
+number of features.
+
+132
+00:05:39.515 --> 00:05:42.680
+Now we can revisit
+our localization problem and try
+
+133
+00:05:42.680 --> 00:05:46.515
+to accommodate for the outliers
+from our feature matcher.
+
+134
+00:05:46.515 --> 00:05:50.905
+As a reminder, our model
+parameters t sub u and t sub v,
+
+135
+00:05:50.905 --> 00:05:52.475
+shift each feature pair
+
+136
+00:05:52.475 --> 00:05:54.710
+equally from the first image
+to the second.
+
+137
+00:05:54.710 --> 00:05:57.260
+To estimate t sub u and t sub v,
+
+138
+00:05:57.260 --> 00:05:59.170
+we need one pair of features.
+
+139
+00:05:59.170 --> 00:06:00.410
+Now, let us go through
+
+140
+00:06:00.410 --> 00:06:03.020
+the RANSAC algorithm
+for this problem.
+
+141
+00:06:03.020 --> 00:06:05.150
+First, we randomly select
+
+142
+00:06:05.150 --> 00:06:08.045
+one feature pair from
+the matched samples.
+
+143
+00:06:08.045 --> 00:06:10.280
+Now, we need to estimate
+
+144
+00:06:10.280 --> 00:06:13.405
+our model using
+the computed feature pair.
+
+145
+00:06:13.405 --> 00:06:16.565
+Using the feature
+pair, we compute
+
+146
+00:06:16.565 --> 00:06:21.005
+the displacement along
+the u image axis, t sub u,
+
+147
+00:06:21.005 --> 00:06:24.020
+and the displacement
+along the v image axis,
+
+148
+00:06:24.020 --> 00:06:26.810
+t sub v. We now need to check if
+
+149
+00:06:26.810 --> 00:06:30.170
+our model is valid by computing
+the number of inliers.
+
+150
+00:06:30.170 --> 00:06:33.060
+Here, we use a tolerance
+to determine the inliers,
+
+151
+00:06:33.060 --> 00:06:34.580
+since it is highly
+unlikely that we
+
+152
+00:06:34.580 --> 00:06:38.140
+satisfy the model with
+a 100 percent precision.
+
+153
+00:06:38.140 --> 00:06:41.255
+Unfortunately,
+our first iteration chose
+
+154
+00:06:41.255 --> 00:06:44.870
+a poor feature match to
+compute the model parameters.
+
+155
+00:06:44.870 --> 00:06:46.490
+When using this model to
+
+156
+00:06:46.490 --> 00:06:48.140
+compute how many
+features in image
+
+157
+00:06:48.140 --> 00:06:51.985
+one translate to their matched
+location in image two,
+
+158
+00:06:51.985 --> 00:06:54.020
+we notice that none of them do.
+
+159
+00:06:54.020 --> 00:06:56.230
+Since our number of
+inliers is zero,
+
+160
+00:06:56.230 --> 00:06:59.900
+we go back and choose
+another feature pair at random,
+
+161
+00:06:59.900 --> 00:07:02.435
+and restart the RANSAC process.
+
+162
+00:07:02.435 --> 00:07:05.980
+Once again, we compute
+t sub u and t sub v,
+
+163
+00:07:05.980 --> 00:07:08.675
+using a new randomly
+sampled feature pair
+
+164
+00:07:08.675 --> 00:07:11.650
+to get our new model parameters.
+
+165
+00:07:11.650 --> 00:07:14.030
+Using the model, we compute
+
+166
+00:07:14.030 --> 00:07:15.450
+how many features and image
+
+167
+00:07:15.450 --> 00:07:18.475
+one translate to
+their match in image two.
+
+168
+00:07:18.475 --> 00:07:20.600
+This time we can see that most of
+
+169
+00:07:20.600 --> 00:07:22.310
+the features actually
+fit this model.
+
+170
+00:07:22.310 --> 00:07:25.655
+In fact 11 out of 12 features
+are considered in inliers.
+
+171
+00:07:25.655 --> 00:07:27.680
+Since most of
+our features are inliers,
+
+172
+00:07:27.680 --> 00:07:29.555
+we're satisfied with this model,
+
+173
+00:07:29.555 --> 00:07:32.345
+and we can stop
+the RANSAC algorithm.
+
+174
+00:07:32.345 --> 00:07:35.690
+At this point you should now
+understand the proper use
+
+175
+00:07:35.690 --> 00:07:38.975
+of image features for an
+autonomous vehicle applications.
+
+176
+00:07:38.975 --> 00:07:40.870
+You've learned what outliers are
+
+177
+00:07:40.870 --> 00:07:42.460
+within the scope of
+feature matching,
+
+178
+00:07:42.460 --> 00:07:45.655
+and how to handle outliers
+through the RANSAC algorithm.
+
+179
+00:07:45.655 --> 00:07:48.730
+Outlier removal is
+a key process in
+
+180
+00:07:48.730 --> 00:07:51.460
+improving robustness when
+using feature matching,
+
+181
+00:07:51.460 --> 00:07:54.880
+and greatly improves the quality
+of localization results.
+
+182
+00:07:54.880 --> 00:07:57.010
+In the next video,
+we will use what
+
+183
+00:07:57.010 --> 00:07:58.720
+we learned so far to estimate
+
+184
+00:07:58.720 --> 00:08:00.880
+the position of
+our autonomous vehicle
+
+185
+00:08:00.880 --> 00:08:02.860
+using camera image features.
+
+186
+00:08:02.860 --> 00:08:04.180
+This will help us track
+
+187
+00:08:04.180 --> 00:08:06.580
+our own vehicles motion
+through the environment.
+
+188
+00:08:06.580 --> 00:08:09.800
+Which is a process known
+as Visual Odometry,
+
+189
+00:08:09.800 --> 00:08:13.610
+and is essential to navigating
+smoothly and safely

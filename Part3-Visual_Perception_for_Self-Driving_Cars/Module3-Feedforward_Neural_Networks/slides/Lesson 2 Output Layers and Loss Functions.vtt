@@ -1,0 +1,1193 @@
+WEBVTT
+
+1
+00:00:13.580 --> 00:00:15.990
+In the last lesson, we introduced
+
+2
+00:00:15.990 --> 00:00:17.460
+feed-forward neural networks,
+
+3
+00:00:17.460 --> 00:00:19.155
+a powerful machine
+learning model.
+
+4
+00:00:19.155 --> 00:00:21.330
+We saw the tasks we
+would like this model to
+
+5
+00:00:21.330 --> 00:00:23.580
+perform such as object detection,
+
+6
+00:00:23.580 --> 00:00:26.415
+semantic segmentation
+and depth estimation.
+
+7
+00:00:26.415 --> 00:00:28.710
+In this lesson, we
+will first review
+
+8
+00:00:28.710 --> 00:00:29.760
+the general process of
+
+9
+00:00:29.760 --> 00:00:31.770
+designing machine-learning
+algorithms.
+
+10
+00:00:31.770 --> 00:00:33.150
+We will then introduce
+
+11
+00:00:33.150 --> 00:00:35.445
+the missing components
+still required to define
+
+12
+00:00:35.445 --> 00:00:36.720
+a suitable neural network for
+
+13
+00:00:36.720 --> 00:00:38.480
+a specific perception tasks
+
+14
+00:00:38.480 --> 00:00:41.085
+including the choice
+of a loss function.
+
+15
+00:00:41.085 --> 00:00:43.080
+Let's begin with
+a general machine
+
+16
+00:00:43.080 --> 00:00:45.355
+learning algorithm
+design process.
+
+17
+00:00:45.355 --> 00:00:48.380
+Generally, supervised machine
+learning models including
+
+18
+00:00:48.380 --> 00:00:50.030
+neural networks have two modes of
+
+19
+00:00:50.030 --> 00:00:52.790
+operation, inference
+and training.
+
+20
+00:00:52.790 --> 00:00:55.615
+Recall are basic neural
+network formulation.
+
+21
+00:00:55.615 --> 00:00:58.010
+Given a set of parameters data,
+
+22
+00:00:58.010 --> 00:00:59.750
+the input x is passed through
+
+23
+00:00:59.750 --> 00:01:03.470
+the model f of x and
+data to get an output y.
+
+24
+00:01:03.470 --> 00:01:06.380
+This mode of operation
+is called inference,
+
+25
+00:01:06.380 --> 00:01:08.030
+and is usually the one we usually
+
+26
+00:01:08.030 --> 00:01:10.970
+deploy the machine learning
+algorithms in the real world.
+
+27
+00:01:10.970 --> 00:01:14.330
+The network and its parameters
+are fixed and we use it to
+
+28
+00:01:14.330 --> 00:01:18.010
+extract perception information
+from new input data.
+
+29
+00:01:18.010 --> 00:01:20.300
+However, we still
+need to define how to
+
+30
+00:01:20.300 --> 00:01:22.550
+obtain the parameter set data.
+
+31
+00:01:22.550 --> 00:01:24.875
+Here we need a second mode
+of operation involving
+
+32
+00:01:24.875 --> 00:01:27.545
+optimization over
+the network parameters.
+
+33
+00:01:27.545 --> 00:01:30.560
+This mode is called training
+and has the sole purpose of
+
+34
+00:01:30.560 --> 00:01:32.600
+generating a
+satisfactory parameter
+
+35
+00:01:32.600 --> 00:01:34.295
+set for the task at hand.
+
+36
+00:01:34.295 --> 00:01:37.130
+Let's see how training
+is usually performed.
+
+37
+00:01:37.130 --> 00:01:39.590
+We start with the same
+workflow as inference.
+
+38
+00:01:39.590 --> 00:01:42.575
+However, during training
+we have training data.
+
+39
+00:01:42.575 --> 00:01:45.575
+As such we know what
+f star of x is,
+
+40
+00:01:45.575 --> 00:01:47.825
+the expected output of the model.
+
+41
+00:01:47.825 --> 00:01:49.250
+For self-driving,
+
+42
+00:01:49.250 --> 00:01:51.560
+this training data
+often takes the form of
+
+43
+00:01:51.560 --> 00:01:55.610
+human annotated images which
+take a long time to produce.
+
+44
+00:01:55.610 --> 00:01:59.015
+We compare our inference
+to a predicted output y,
+
+45
+00:01:59.015 --> 00:02:01.400
+to the true output f star of x,
+
+46
+00:02:01.400 --> 00:02:03.500
+through a loss or
+a cost function.
+
+47
+00:02:03.500 --> 00:02:05.675
+The loss function
+takes as an input
+
+48
+00:02:05.675 --> 00:02:08.120
+the predicted output
+y from the network,
+
+49
+00:02:08.120 --> 00:02:10.505
+and the true output f star of x,
+
+50
+00:02:10.505 --> 00:02:13.475
+and provides a measure of
+the difference between the two.
+
+51
+00:02:13.475 --> 00:02:16.100
+We usually try to
+minimize this measure by
+
+52
+00:02:16.100 --> 00:02:18.590
+modifying the
+parameters data so that
+
+53
+00:02:18.590 --> 00:02:21.170
+the output y from
+the network is as similar as
+
+54
+00:02:21.170 --> 00:02:23.870
+possible to the f star of x.
+
+55
+00:02:23.870 --> 00:02:25.430
+We do this modification to data
+
+56
+00:02:25.430 --> 00:02:27.320
+via an optimization procedure.
+
+57
+00:02:27.320 --> 00:02:29.570
+This optimization
+procedure takes in
+
+58
+00:02:29.570 --> 00:02:31.880
+the output of the
+loss function and
+
+59
+00:02:31.880 --> 00:02:34.070
+provides a new set of
+parameters data that
+
+60
+00:02:34.070 --> 00:02:36.755
+provide a lower value
+for that loss function.
+
+61
+00:02:36.755 --> 00:02:39.470
+We will learn about
+this optimization process
+
+62
+00:02:39.470 --> 00:02:41.420
+in detail during the next lesson.
+
+63
+00:02:41.420 --> 00:02:43.250
+But for now, let's extend
+
+64
+00:02:43.250 --> 00:02:45.650
+the design process
+to neural networks.
+
+65
+00:02:45.650 --> 00:02:47.780
+We discussed in the last lesson a
+
+66
+00:02:47.780 --> 00:02:51.770
+feed-forward neural network
+which takes an input x,
+
+67
+00:02:51.770 --> 00:02:54.949
+passes it through a sequence
+of hidden layers,
+
+68
+00:02:54.949 --> 00:02:56.720
+then passes the output of
+
+69
+00:02:56.720 --> 00:02:59.135
+the hidden layers
+through an output layer.
+
+70
+00:02:59.135 --> 00:03:00.800
+This is the end of the inference
+
+71
+00:03:00.800 --> 00:03:02.890
+stage of the neural network.
+
+72
+00:03:02.890 --> 00:03:05.120
+For training, we pass
+
+73
+00:03:05.120 --> 00:03:07.550
+the predicted output
+through the loss function,
+
+74
+00:03:07.550 --> 00:03:09.860
+then use an
+optimization procedure
+
+75
+00:03:09.860 --> 00:03:11.150
+to produce a new set of
+
+76
+00:03:11.150 --> 00:03:12.860
+parameters data that provide
+
+77
+00:03:12.860 --> 00:03:15.110
+a lower value for
+the loss function.
+
+78
+00:03:15.110 --> 00:03:16.820
+The major difference between
+
+79
+00:03:16.820 --> 00:03:18.290
+the design of traditional machine
+
+80
+00:03:18.290 --> 00:03:19.760
+learning algorithms in the design
+
+81
+00:03:19.760 --> 00:03:21.530
+of artificial neural networks,
+
+82
+00:03:21.530 --> 00:03:24.110
+is that the neural network
+only interacts
+
+83
+00:03:24.110 --> 00:03:26.815
+with the loss function
+via the output layer.
+
+84
+00:03:26.815 --> 00:03:28.400
+Therefore, it is quite
+
+85
+00:03:28.400 --> 00:03:30.170
+reasonable that the
+output layer and
+
+86
+00:03:30.170 --> 00:03:32.030
+the loss function are designed
+
+87
+00:03:32.030 --> 00:03:34.685
+together depending
+on the task at hand.
+
+88
+00:03:34.685 --> 00:03:36.020
+Let's dig deeper into
+
+89
+00:03:36.020 --> 00:03:37.650
+the major perception tasks
+
+90
+00:03:37.650 --> 00:03:39.995
+we usually encounter
+in autonomous driving.
+
+91
+00:03:39.995 --> 00:03:41.960
+The first important task
+that we use for
+
+92
+00:03:41.960 --> 00:03:44.645
+autonomous driving perception
+is classification.
+
+93
+00:03:44.645 --> 00:03:47.300
+Classification can be
+described as taking
+
+94
+00:03:47.300 --> 00:03:49.280
+an input x and mapping it to one
+
+95
+00:03:49.280 --> 00:03:51.910
+of k classes or categories.
+
+96
+00:03:51.910 --> 00:03:55.225
+Examples include,
+image classification,
+
+97
+00:03:55.225 --> 00:03:56.780
+where we just want to map
+
+98
+00:03:56.780 --> 00:03:58.864
+an image to
+a particular category,
+
+99
+00:03:58.864 --> 00:04:01.190
+to say whether or
+not it contains cats
+
+100
+00:04:01.190 --> 00:04:03.470
+or dogs for example and
+
+101
+00:04:03.470 --> 00:04:05.720
+semantic segmentation
+where we want to
+
+102
+00:04:05.720 --> 00:04:08.780
+map every pixel in
+the image to a category.
+
+103
+00:04:08.780 --> 00:04:11.330
+The second task that
+we usually use for
+
+104
+00:04:11.330 --> 00:04:14.060
+autonomous driving perception
+is a regression.
+
+105
+00:04:14.060 --> 00:04:15.980
+In regression, we want to map
+
+106
+00:04:15.980 --> 00:04:18.800
+inputs to a set of real numbers.
+
+107
+00:04:18.800 --> 00:04:22.310
+Examples of regression
+include, depth estimation,
+
+108
+00:04:22.310 --> 00:04:23.690
+where we want to estimate
+
+109
+00:04:23.690 --> 00:04:26.915
+a real depth value for
+every pixel in an image.
+
+110
+00:04:26.915 --> 00:04:29.750
+We can also mix the two
+tasks together.
+
+111
+00:04:29.750 --> 00:04:32.090
+For example, object
+detection is usually
+
+112
+00:04:32.090 --> 00:04:34.880
+comprised of a regression task
+where we estimate
+
+113
+00:04:34.880 --> 00:04:37.340
+the bounding box that
+contains an object and
+
+114
+00:04:37.340 --> 00:04:39.560
+a classification task
+where we identify
+
+115
+00:04:39.560 --> 00:04:42.260
+which type of object is
+in the bounding box.
+
+116
+00:04:42.260 --> 00:04:45.830
+We will now describe the output
+layer loss function pairs
+
+117
+00:04:45.830 --> 00:04:48.980
+associated with each of
+these basic perception tasks.
+
+118
+00:04:48.980 --> 00:04:51.450
+Let's start with
+the classification task first.
+
+119
+00:04:51.450 --> 00:04:54.825
+Usually, for a k class
+classification tasks,
+
+120
+00:04:54.825 --> 00:04:57.470
+we use the softmax output layer.
+
+121
+00:04:57.470 --> 00:05:00.530
+Softmax output layers are
+capable of representing
+
+122
+00:05:00.530 --> 00:05:03.530
+a probability distribution
+over k classes.
+
+123
+00:05:03.530 --> 00:05:06.710
+The softmax output
+layer takes as input h,
+
+124
+00:05:06.710 --> 00:05:08.810
+the output of
+the last hidden layer
+
+125
+00:05:08.810 --> 00:05:10.120
+of the neural network.
+
+126
+00:05:10.120 --> 00:05:11.570
+It then passes it through
+
+127
+00:05:11.570 --> 00:05:13.850
+an affine transformation
+resulting
+
+128
+00:05:13.850 --> 00:05:16.355
+in a transformed output vector z.
+
+129
+00:05:16.355 --> 00:05:19.250
+Next, the vector z
+is transformed into
+
+130
+00:05:19.250 --> 00:05:21.544
+a discrete probability
+distribution
+
+131
+00:05:21.544 --> 00:05:24.230
+using the softmax
+element-wise function.
+
+132
+00:05:24.230 --> 00:05:26.130
+For each element z_i,
+
+133
+00:05:26.130 --> 00:05:30.920
+this function computes
+the ratio of the exponential of
+
+134
+00:05:30.920 --> 00:05:33.365
+element z_i over the sum
+
+135
+00:05:33.365 --> 00:05:36.500
+of the exponentials of
+all of the elements of z.
+
+136
+00:05:36.500 --> 00:05:39.235
+The result is a value
+between zero and one
+
+137
+00:05:39.235 --> 00:05:41.990
+and the sum of all of
+these elements is one,
+
+138
+00:05:41.990 --> 00:05:44.495
+making it a proper
+probability distribution.
+
+139
+00:05:44.495 --> 00:05:46.940
+Let's take a look at
+a numerical example
+
+140
+00:05:46.940 --> 00:05:49.675
+to better explain
+the softmax output layer.
+
+141
+00:05:49.675 --> 00:05:51.470
+In this example, we'd like to
+
+142
+00:05:51.470 --> 00:05:53.690
+classify images containing a cat,
+
+143
+00:05:53.690 --> 00:05:55.250
+a dog or a fox.
+
+144
+00:05:55.250 --> 00:05:57.350
+First we define the first element
+
+145
+00:05:57.350 --> 00:05:59.405
+of our output vector
+to correspond
+
+146
+00:05:59.405 --> 00:06:01.070
+to the probability that
+
+147
+00:06:01.070 --> 00:06:03.920
+the image is a cat
+according to our network.
+
+148
+00:06:03.920 --> 00:06:06.470
+The ordering of
+classes is arbitrary
+
+149
+00:06:06.470 --> 00:06:08.900
+and has no impact on
+network performance.
+
+150
+00:06:08.900 --> 00:06:11.600
+Taking the output of
+the affine transformation,
+
+151
+00:06:11.600 --> 00:06:15.305
+we compute the probability by
+dividing the exponential of
+
+152
+00:06:15.305 --> 00:06:17.090
+each elements of the output by
+
+153
+00:06:17.090 --> 00:06:20.135
+the sum of the exponentials
+of all of the elements.
+
+154
+00:06:20.135 --> 00:06:23.480
+Given values of 13
+minus seven and 11
+
+155
+00:06:23.480 --> 00:06:27.110
+as the outputs of
+the linear transformation layer,
+
+156
+00:06:27.110 --> 00:06:28.600
+we achieve a probability of
+
+157
+00:06:28.600 --> 00:06:31.200
+88 percent that
+this image is a cat,
+
+158
+00:06:31.200 --> 00:06:33.260
+11.9 percent that this image is
+
+159
+00:06:33.260 --> 00:06:35.360
+a fox and a very low probability
+
+160
+00:06:35.360 --> 00:06:36.775
+that this image is a dog.
+
+161
+00:06:36.775 --> 00:06:38.570
+Now, let's see how to design
+
+162
+00:06:38.570 --> 00:06:40.490
+a loss function that
+uses the output of
+
+163
+00:06:40.490 --> 00:06:42.140
+the softmax output layer
+
+164
+00:06:42.140 --> 00:06:44.510
+to show us how accurate
+our estimate is.
+
+165
+00:06:44.510 --> 00:06:46.880
+The standard loss
+function to be used with
+
+166
+00:06:46.880 --> 00:06:50.060
+the softmax output layer
+is the Cross-Entropy Loss,
+
+167
+00:06:50.060 --> 00:06:51.200
+which is formed by taking
+
+168
+00:06:51.200 --> 00:06:53.885
+the negative log of
+the softmax function.
+
+169
+00:06:53.885 --> 00:06:56.870
+The Cross-Entropy Loss
+has two terms to control
+
+170
+00:06:56.870 --> 00:06:57.920
+how close the output of
+
+171
+00:06:57.920 --> 00:06:59.975
+the network is to
+the true probability.
+
+172
+00:06:59.975 --> 00:07:03.020
+Z_i is the output of the
+hidden layer corresponding to
+
+173
+00:07:03.020 --> 00:07:04.850
+the true class before
+
+174
+00:07:04.850 --> 00:07:07.430
+being passed through
+the softmax function.
+
+175
+00:07:07.430 --> 00:07:09.050
+This is usually called
+
+176
+00:07:09.050 --> 00:07:10.670
+the class logit which
+
+177
+00:07:10.670 --> 00:07:12.980
+comes from the field of
+logistic regression.
+
+178
+00:07:12.980 --> 00:07:15.290
+When minimizing
+this loss function,
+
+179
+00:07:15.290 --> 00:07:18.680
+the negative of
+the class logit z_i encourages
+
+180
+00:07:18.680 --> 00:07:19.730
+the network to output
+
+181
+00:07:19.730 --> 00:07:22.895
+a large value for the probability
+of the correct class.
+
+182
+00:07:22.895 --> 00:07:24.980
+The second term on
+the other hand,
+
+183
+00:07:24.980 --> 00:07:26.210
+encourages the output of
+
+184
+00:07:26.210 --> 00:07:28.805
+the affine transformation
+to be small.
+
+185
+00:07:28.805 --> 00:07:31.010
+The two terms together encourages
+
+186
+00:07:31.010 --> 00:07:33.170
+the network to minimize
+the difference
+
+187
+00:07:33.170 --> 00:07:35.540
+between the predicted
+class probabilities
+
+188
+00:07:35.540 --> 00:07:37.670
+and the true class probability.
+
+189
+00:07:37.670 --> 00:07:39.590
+To understand this loss better.
+
+190
+00:07:39.590 --> 00:07:42.200
+Let's take a look at
+a numerical example on how
+
+191
+00:07:42.200 --> 00:07:44.390
+the Cross-Entropy
+Loss is computed from
+
+192
+00:07:44.390 --> 00:07:47.045
+the output of a classification
+neural network.
+
+193
+00:07:47.045 --> 00:07:48.990
+Revisiting our previous example,
+
+194
+00:07:48.990 --> 00:07:52.550
+we first need to choose
+what our z sub i is.
+
+195
+00:07:52.550 --> 00:07:55.790
+Z sub i is the linear
+transformation output
+
+196
+00:07:55.790 --> 00:07:58.775
+corresponding to
+the true class of inputs.
+
+197
+00:07:58.775 --> 00:08:01.640
+In this case, z_i is
+the element of the output of
+
+198
+00:08:01.640 --> 00:08:05.750
+the linear transformation
+corresponding to the cat class.
+
+199
+00:08:05.750 --> 00:08:07.775
+Once we determine z sub i,
+
+200
+00:08:07.775 --> 00:08:11.510
+we use the Cross-Entropy to
+compute the final loss value.
+
+201
+00:08:11.510 --> 00:08:13.250
+In this case, the network
+
+202
+00:08:13.250 --> 00:08:15.290
+correctly predicts
+that the input is
+
+203
+00:08:15.290 --> 00:08:19.715
+a cat and sees a loss
+function value of 0.12.
+
+204
+00:08:19.715 --> 00:08:21.800
+Let us now do
+the computation again but
+
+205
+00:08:21.800 --> 00:08:23.530
+with an erroneous network output.
+
+206
+00:08:23.530 --> 00:08:25.960
+The input to the network
+is still a cat image.
+
+207
+00:08:25.960 --> 00:08:28.700
+The network still
+assigns the value of 13
+
+208
+00:08:28.700 --> 00:08:30.260
+to the cat entry of the output
+
+209
+00:08:30.260 --> 00:08:31.790
+of the linear transformation.
+
+210
+00:08:31.790 --> 00:08:35.590
+But this time the fox entry
+will get a value of 14.
+
+211
+00:08:35.590 --> 00:08:37.935
+Computing the Cross-Entropy Loss,
+
+212
+00:08:37.935 --> 00:08:39.860
+we find that it evaluates to
+
+213
+00:08:39.860 --> 00:08:44.480
+1.31 more than ten times
+the value of the previous slide.
+
+214
+00:08:44.480 --> 00:08:47.704
+Note how the loss function
+heavily penalizes
+
+215
+00:08:47.704 --> 00:08:49.640
+erroneous predictions even when
+
+216
+00:08:49.640 --> 00:08:52.025
+the difference in
+output is only one.
+
+217
+00:08:52.025 --> 00:08:55.220
+This difference accelerates
+the learning process and
+
+218
+00:08:55.220 --> 00:08:57.020
+rapidly steers network outputs
+
+219
+00:08:57.020 --> 00:08:59.060
+to the true values
+during training.
+
+220
+00:08:59.060 --> 00:09:01.940
+So far we've presented
+an output layer and
+
+221
+00:09:01.940 --> 00:09:05.420
+loss functions specific to
+the classification task.
+
+222
+00:09:05.420 --> 00:09:07.670
+Let's now go through
+the most common output layer
+
+223
+00:09:07.670 --> 00:09:09.155
+for the regression task.
+
+224
+00:09:09.155 --> 00:09:11.690
+The linear output layer
+is mostly used for
+
+225
+00:09:11.690 --> 00:09:13.969
+regression tasks to
+model statistics
+
+226
+00:09:13.969 --> 00:09:16.365
+of common probability
+distributions.
+
+227
+00:09:16.365 --> 00:09:18.710
+The linear output layer
+is simply comprised of
+
+228
+00:09:18.710 --> 00:09:22.745
+a single affine transformation
+without any non-linearity.
+
+229
+00:09:22.745 --> 00:09:25.610
+The statistics to be modeled
+with the linear output layer
+
+230
+00:09:25.610 --> 00:09:28.340
+depends on the loss function
+we choose to go with it.
+
+231
+00:09:28.340 --> 00:09:30.050
+For example, to model
+
+232
+00:09:30.050 --> 00:09:32.450
+the mean of a probability
+distribution,
+
+233
+00:09:32.450 --> 00:09:35.810
+we use the mean squared
+error as our loss function.
+
+234
+00:09:35.810 --> 00:09:38.630
+The linear and softmax
+output units described
+
+235
+00:09:38.630 --> 00:09:40.220
+above are the most
+common output layers
+
+236
+00:09:40.220 --> 00:09:41.840
+used in neural networks today
+
+237
+00:09:41.840 --> 00:09:44.090
+and can be coupled with
+a variety of tasks
+
+238
+00:09:44.090 --> 00:09:46.430
+specific loss
+functions to perform
+
+239
+00:09:46.430 --> 00:09:47.870
+a variety of useful perception
+
+240
+00:09:47.870 --> 00:09:49.505
+tasks for autonomous driving.
+
+241
+00:09:49.505 --> 00:09:51.260
+Many other output layers
+
+242
+00:09:51.260 --> 00:09:52.580
+and loss functions exist and this
+
+243
+00:09:52.580 --> 00:09:55.675
+remains an active area of
+research in deep learning.
+
+244
+00:09:55.675 --> 00:09:58.595
+In this lesson, you
+learned that to build
+
+245
+00:09:58.595 --> 00:10:00.320
+a machine learning model you need
+
+246
+00:10:00.320 --> 00:10:02.060
+to define a network model,
+
+247
+00:10:02.060 --> 00:10:04.340
+a loss function and
+
+248
+00:10:04.340 --> 00:10:05.990
+an optimization procedure to
+
+249
+00:10:05.990 --> 00:10:07.865
+learn the network parameters.
+
+250
+00:10:07.865 --> 00:10:11.120
+You also learn what loss
+function to choose based on
+
+251
+00:10:11.120 --> 00:10:12.290
+the task that needs to be
+
+252
+00:10:12.290 --> 00:10:14.165
+done by the neural network model.
+
+253
+00:10:14.165 --> 00:10:16.130
+In the next video, we
+will be discussing
+
+254
+00:10:16.130 --> 00:10:17.480
+the final components of
+
+255
+00:10:17.480 --> 00:10:19.459
+our neural network
+design process;
+
+256
+00:10:19.459 --> 00:10:21.980
+optimization, which
+involves how to get
+
+257
+00:10:21.980 --> 00:10:23.870
+the best parameter set data for
+
+258
+00:10:23.870 --> 00:10:27.250
+a specific task.
+See you next time.

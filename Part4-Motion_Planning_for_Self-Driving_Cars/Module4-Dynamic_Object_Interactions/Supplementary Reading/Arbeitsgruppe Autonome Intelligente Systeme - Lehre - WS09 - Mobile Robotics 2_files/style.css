@@ -1,0 +1,280 @@
+html {
+	height: 100%;
+}
+
+IMG {
+	border: 0;
+}
+
+body {
+	min-height: 100.1%;
+	font-size: 0.8em;
+	line-height: 1.8em;
+	font-family: arial, helvetica, sans-serif;
+	margin: 0;	
+	padding: 0;
+	background: rgb(237,237,237);		
+}
+
+A 	{  text-decoration: none; color: rgb(0,63,127); }
+A:hover {  text-decoration: underline; color: rgb(0,63,127); }
+
+ul {
+	padding-left: 20px;
+}
+
+.side_img {
+	float: right;
+	margin-left: 2em;
+	margin-right: 1em;
+	margin-bottom: 2em;
+	border: 1px solid rgb(180,180,180);
+}
+
+.link_img {
+	border: 1px solid rgb(180,180,180);
+}
+
+.line {
+	width: 600px;
+	height: 1em;
+	margin-bottom: 1em;
+	border-bottom: 1px solid silver;
+}
+
+.extflashvid {
+  display: block;
+  margin: 0px auto;
+}
+
+/* header  ---------------------------------------------- */
+#header {
+	padding: 10px 20px 10px 20px;
+	height: 60px;
+	background: rgb(0,63,127);
+	font-size: 28pt;
+	color: white;
+}
+
+#header TABLE {
+	border-collapse: collapse;
+        padding: 0px;
+        margin: 0px;
+}
+
+#header TD {
+        padding: 0px;
+        margin: 0px;
+	border-spacing: 0px;
+}
+
+
+/* menu  ------------------------------------------------ */
+#menu {
+	position: absolute;
+	top: 80px;
+	width: 100%;
+	height: 45px;
+	color: white;
+}
+
+#menu A {  color: white;}
+
+#section_bar {
+	width: 100%;
+	height: 22px;
+	background: rgb(45,109,174);
+	border-bottom: 1px solid rgb(0,63,127);
+}
+
+#home_btn { 	left: 0px; }
+#news_btn { left: 100px; }
+#research_btn { left: 200px; }
+#projects_btn { left: 300px; }
+#teaching_btn { left: 400px; }
+#staff_btn { left: 500px; }
+#robots_btn { left: 500px; }
+#publications_btn { left: 600px; }
+#contact_btn { left: 700px;  }
+
+
+#section_bar .button {
+	position: absolute;
+	padding-top: 3px;
+	height: 19px;
+	width: 98px;
+	font: normal 13px arial,sans-serif;
+	text-align: center;
+	background: rgb(45,109,174);
+	border-right: 2px solid rgb(0,63,127);
+}
+
+#section_bar .active_button {
+	position: absolute;
+	padding-top: 3px;
+	height: 20px;
+	width: 98px;
+	font: normal 13px arial,sans-serif;
+	text-align: center;
+	background: #2d82d8;
+	border-right: 2px solid rgb(0,63,127);
+}
+
+
+#subsection_bar {
+	top: 23px;
+	width: 100%;
+	height: 22px;
+	background: #2d82d8;
+	border-bottom: 1px solid rgb(100,100,100);	
+}
+
+#subsection_bar .button {
+ 	display: inline;
+	margin: 0px 15px 2px 15px;
+	font: normal 11px arial,sans-serif;
+	background: #2d82d8;
+}
+
+#subsection_bar .lang_sel {
+	position: absolute;
+	left: 605px;
+	top: 23px;
+	height: 19px;
+	width: 150px;
+	margin: 0px 15px 2px 15px;
+	padding-top: 3px;
+	font: normal 12px arial,sans-serif;
+	background: #2d82d8;
+	text-align: right;
+}
+
+#subsection_bar .align_middle {
+	vertical-align: middle;
+}
+
+/* main  ------------------------------------------------ */
+#main {
+	position: absolute;
+	top: 125px;
+	margin: 0px 20px 20px 0px;
+	width: 100%;
+}
+
+#sidebar {
+	position: absolute;
+	top: 0px; left: 0px;
+	width: 100px;
+	padding-top:30px;
+	padding-left:10px;
+}
+
+
+#content {
+	position: absolute;
+	top: 0px; left: 100px;
+	width: 680px;
+}
+
+#content h1 {
+        font-size: 14pt;
+	font-weight: bold;
+}
+
+#content h2 {
+  font-size: 12pt;
+	font-weight: bold;
+	padding-top: 1em;
+}
+
+#content h3 {
+	font-size: 12pt;
+}
+
+#content .important {
+	padding-top: 1em;
+	font-weight: bold;
+	color: rgb(200,50,50);
+}
+
+/* news  ------------------------------------------------ */
+
+#news .date {
+	font-weight: bold;
+	padding-right: 1.5em;
+}
+
+#news .item {
+	width: 550px;
+}
+
+/* teaching  -------------------------------------------- */
+#teaching A {
+	color: rgb(0,63,227);
+}
+
+/* robots  ---------------------------------------------- */
+#robots div {
+	clear: right;
+}
+
+#robots H3 {
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+/* publications  ---------------------------------------- */
+#publications TABLE {
+	margin-top: 1em;
+}
+
+#publications TD {
+	padding-bottom: 1em;
+}
+
+/* publications / bibtexbrowser  ------------------------ */
+
+#publications TD.header {
+    font-size: 14pt;
+    padding-top: 2em;
+    margin-bottom: 2em;
+}
+
+
+/* staff  ----------------------------------------------- */
+#staff H1 {
+	font-size: 14pt;
+	margin-top: 2em;
+	margin-bottom: 20px;
+}
+
+#staff IMG {
+	margin-top: 6px;
+	margin-bottom: 6px;
+	vertical-align: middle;
+}	
+
+#staff TD {
+ 	padding: 0px;
+ 	margin: 0px;
+}	
+
+/* multibot  -------------------------------------------- */
+#projects .mtable {
+	vertical-align: top;
+	padding-right: 20px;
+}
+
+#projects .aligntop {
+	vertical-align: top;
+	padding-top: 5px;
+}
+
+
+
+/* footer  ---------------------------------------------- */
+#footer {
+	padding-top: 50px;
+}
+
+
