@@ -1,6 +1,25 @@
-# Introduction
+# Thanks
 
-> Coursera Opencourses
+> [**Coursera  Self-Driving Cars**](https://www.coursera.org/specializations/self-driving-cars) 
+>
+> Thanks to the teachers in this courses very much !!!
+
+I have to say that this courses surprise me a lot , as a postgraduate student aimed at working on automotive motion planning ,it is so hard to find so completed and excited sources, especially in China. So, i think it is beneficial and essential for everyone who aims at working or doing researching work on automotive. and make the decision to take the note and share the all sources of the courses.
+
+This repository includes all the videos, subtitles and PDFs of this courses. You can download and watch it. Especially, i make a rough notebook based on the subtitles for better review. and i will step by step to complete it. Everyone can read and submit issue , i will try to replay it. Finally, hope everyone can enjoy it !!!
+
+[Notebook(Incomplete)](https://qiaoxu123.github.io/Self-Driving-Cars/#/)
+
+Class links:
+
+- [1. Introduction to Self-Driving Cars](https://www.coursera.org/learn/intro-self-driving-cars)
+- [2. State Estimation and Localization for Self-Driving Cars](https://www.coursera.org/learn/state-estimation-localization-self-driving-cars)
+- [3. Visual Perception for Self-Driving Cars](https://www.coursera.org/learn/visual-perception-self-driving-cars)
+- [4. Motion Planning for Self-Driving Cars](https://www.coursera.org/learn/motion-planning-self-driving-cars)
+
+---
+
+# Introduction
 
 ## 1. Overview
 
@@ -22,14 +41,4 @@ It is recommended that you have some background in linear algebra, probability, 
 - Implement methods for static and dynamic object detection, localization and mapping, behaviour and maneuver planning, and vehicle control
 - Use realistic vehicle physics, complete sensor suite: camera, LIDAR, GPS/INS, wheel odometry, depth map, semantic segmentation, object bounding boxes
 - Demonstrate skills in CARLA and build programs with Python
-
----
-
-## 3. Contents
-
-- [1. Introduction to Self-Driving Cars](https://www.coursera.org/learn/intro-self-driving-cars)
-
-- [2. State Estimation and Localization for Self-Driving Cars](https://www.coursera.org/learn/state-estimation-localization-self-driving-cars)
-- [3. Visual Perception for Self-Driving Cars](https://www.coursera.org/learn/visual-perception-self-driving-cars)
-- [4. Motion Planning for Self-Driving Cars](https://www.coursera.org/learn/motion-planning-self-driving-cars)
 
