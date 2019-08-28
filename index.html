@@ -5,8 +5,8 @@
   <title>Document</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.2, maximum-scale=2.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
 </head>
 <body>
   <div id="app"></div>
@@ -20,7 +20,49 @@
         '/.*/SUMMARY.md': '/SUMMARY.md'
       },
       autoHeader: true,
-      subMaxLevel: 2
+      subMaxLevel: 2,
+      themeable: {
+          readyTransition : true, // default
+          responsiveTables: true  // default
+      },
+      search: 'auto', // default
+
+      search : [
+        '/',            // => /README.md
+        '/guide',       // => /guide.md
+        '/get-started', // => /get-started.md
+        '/zh-cn/',      // => /zh-cn/README.md
+      ],
+
+      // complete configuration parameters
+      search: {
+        maxAge: 86400000, // Expiration time, the default one day
+        paths: [], // or 'auto'
+        placeholder: 'Type to search',
+
+        // Localization
+        placeholder: {
+          '/zh-cn/': '搜索',
+          '/': 'Type to search'
+        },
+
+        noData: 'No Results!',
+
+        // Localization
+        noData: {
+          '/zh-cn/': '找不到结果',
+          '/': 'No Results'
+        },
+
+        // Headline depth, 1 - 6
+        depth: 2,
+
+        hideOtherSidebarContent: false, // whether or not to hide other sidebar content
+
+        // To avoid search index collision
+        // between multiple websites under the same domain
+        namespace: 'website-1',
+      }
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
@@ -31,3 +73,380 @@
 <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
 <!-- or <script src="//cdn.jsdelivr.net/gh/upupming/docsify-katex@latest/dist/docsify-katex.js"></script> -->
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"/>
+
+<!-- docsify-themeable (latest v0.x.x) -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script> -->
+
+<!-- Custom theme styles -->
+<style>
+
+/* Plugin: Search
+============================================================================= */
+:root {
+    --search-background                      : ;
+    --search-margin                          : 1.5rem 0 0;
+    --search-padding                         : ;
+
+    /* Clear Button */
+    --search-clear-icon-color1               : ;
+    --search-clear-icon-color2               : ;
+
+    /* Input */
+    --search-input-background-color          : ;
+    --search-input-background-color--focus   : ;
+    --search-input-background-image          : ;
+    --search-input-background-image--focus   : ;
+    --search-input-background-position       : ;
+    --search-input-background-position--focus: ;
+    --search-input-background-repeat         : no-repeat;
+    --search-input-background-size           : ;
+    --search-input-background-size--focus    : ;
+    --search-input-border-color              : var(--mono-tint1);
+    --search-input-border-radius             : ;
+    --search-input-border-width              : 1px;
+    --search-input-color                     : ;
+    --search-input-font-size                 : ;
+    --search-input-margin                    : ;
+    --search-input-padding                   : 0.5em;
+    --search-input-placeholder-color         : ;
+    --search-input-transition                : ;
+
+    /* Order */
+    --search-flex-order                      : 1;
+
+    /* Results */
+    --search-result-heading-color            : var(--heading-color);
+    --search-result-heading-font-size        : var(--base-font-size);
+    --search-result-heading-font-weight      : normal;
+    --search-result-heading-margin           : 0 0 0.25em;
+    --search-result-item-border-color        : var(--mono-tint2);
+    --search-result-item-border-style        : solid;
+    --search-result-item-border-width        : 0 0 1px 0;
+    --search-result-item-color               : ;
+    --search-result-item-font-size           : ;
+    --search-result-item-font-weight         : normal;
+    --search-result-item-margin              : ;
+    --search-result-item-padding             : 1em 0;
+    --search-result-keyword-background       : var(--mark-background);
+    --search-result-keyword-border-radius    : var(--border-radius-s);
+    --search-result-keyword-color            : var(--mark-color);
+    --search-result-keyword-font-weight      : normal;
+    --search-result-keyword-margin           : 0 0.1em;
+    --search-result-keyword-padding          : 0.2em 0;
+}
+Copy to clipboardErrorCopied
+
+
+/* App
+============================================================================= */
+:root {
+    /* Color
+    ------------------------------------------------------------------------- */
+    /* Monochrome */
+    --mono-hue        : 113;
+    --mono-saturation : 0%;
+
+    /* Monochrome shades (darker) and tints (lighter) */
+    --mono-shade3     : hsl(var(--mono-hue), var(--mono-saturation), 20%); /* #333333 */
+    --mono-shade2     : hsl(var(--mono-hue), var(--mono-saturation), 30%); /* #4d4d4d */
+    --mono-shade1     : hsl(var(--mono-hue), var(--mono-saturation), 40%); /* #666666 */
+    --mono-base       : hsl(var(--mono-hue), var(--mono-saturation), 50%); /* #808080 */
+    --mono-tint1      : hsl(var(--mono-hue), var(--mono-saturation), 70%); /* #b3b3b3 */
+    --mono-tint2      : hsl(var(--mono-hue), var(--mono-saturation), 89%); /* #e3e3e3 */
+    --mono-tint3      : hsl(var(--mono-hue), var(--mono-saturation), 97%); /* #f7f7f7 */
+
+    /* Theme */
+    --theme-hue       : 204;
+    --theme-saturation: 90%;
+    --theme-lightness : 45%;
+    --theme-color     : hsl(var(--theme-hue), var(--theme-saturation), var(--theme-lightness));
+
+    /* Typography
+    ------------------------------------------------------------------------- */
+    /* Modular Scale */
+    --modular-scale   : 1.333;
+
+    /* Module Scale Calculations (do not edit these) */
+    --modular-scale--2: calc(var(--modular-scale--1) / var(--modular-scale));
+    --modular-scale--1: calc(var(--modular-scale-1) / var(--modular-scale));
+    --modular-scale-1 : 1rem;
+    --modular-scale-2 : calc(var(--modular-scale-1) * var(--modular-scale));
+    --modular-scale-3 : calc(var(--modular-scale-2) * var(--modular-scale));
+    --modular-scale-4 : calc(var(--modular-scale-3) * var(--modular-scale));
+    --modular-scale-5 : calc(var(--modular-scale-4) * var(--modular-scale));
+
+    /* Font size */
+    --font-size-xxxl  : var(--modular-scale-5);
+    --font-size-xxl   : var(--modular-scale-4);
+    --font-size-xl    : var(--modular-scale-3);
+    --font-size-l     : var(--modular-scale-2);
+    --font-size-m     : var(--modular-scale-1);
+    --font-size-s     : var(--modular-scale--1);
+    --font-size-xs    : var(--modular-scale--2);
+
+    /* Utility
+    ------------------------------------------------------------------------- */
+    /* Borders */
+    --border-radius-s : ;
+    --border-radius-m : ;
+    --border-radius-l : ;
+
+    /* Animations and transitions */
+    --duration-slow   : 1s;
+    --duration-medium : 0.5s;
+    --duration-fast   : 0.25s;
+
+    /* Misc
+    ------------------------------------------------------------------------- */
+    /* Spinner */
+    --spinner-size               : 60px;
+    --spinner-track-width        : 4px;
+    --spinner-track-color        : rgba(0, 0, 0, 0.15);
+    --spinner-transition-duration: var(--duration-medium);
+}
+
+/* Base
+============================================================================= */
+:root {
+    --base-background-color: #fff;
+    --base-color           : var(--mono-shade2);
+    --base-font-family     : -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --base-font-size       : 16px;
+    --base-font-weight     : normal;
+    --base-letter-spacing  : ;
+    --base-line-height     : 1.7;
+
+    /* Emoji */
+    --emoji-size           : calc(var(--base-line-height) * 1em);
+
+    /* Horizontal Rule */
+    --hr-border            : 1px solid var(--mono-tint2);
+
+    /* Mark */
+    --mark-background      : #ffecb3;
+    --mark-color           : ;
+
+    /* Preformatted */
+    --pre-font-family      : var(--code-font-family);
+    --pre-font-size        : var(--code-font-size);
+    --pre-font-weight      : normal;
+    --pre-line-height      : ;
+
+    /* Selection */
+    --selection-color      : #b4d5fe;
+
+    /* Small */
+    --small-font-size      : var(--font-size-s);
+
+    /* Strong */
+    --strong-color         : var(--heading-color);
+    --strong-font-weight   : 600;
+
+    /* Sub/Sup */
+    --subsup-font-size     : var(--font-size-s);
+}
+
+/* Sidebar
+============================================================================= */
+:root {
+    --sidebar-background                          : var(--base-background-color);
+    --sidebar-border-color                        : ;
+    --sidebar-border-width                        : 0;
+    --sidebar-padding                             : 0 25px;
+    --sidebar-transition-duration                 : var(--duration-fast);
+    --sidebar-width                               : 17rem;
+
+    /* Name */
+    --sidebar-name-background                     : ;
+    --sidebar-name-color                          : ;
+    --sidebar-name-font-family                    : ;
+    --sidebar-name-font-size                      : var(--font-size-l);
+    --sidebar-name-font-weight                    : normal;
+    --sidebar-name-margin                         : 1.5rem 0 0;
+    --sidebar-name-padding                        : ;
+    --sidebar-name-text-align                     : center;
+
+    /* Nav Headings */
+    --sidebar-nav-strong-border-color             : var(--sidebar-border-color);
+    --sidebar-nav-strong-border-width             : ;
+    --sidebar-nav-strong-color                    : var(--heading-color);
+    --sidebar-nav-strong-font-size                : ;
+    --sidebar-nav-strong-font-weight              : var(--strong-font-weight);
+    --sidebar-nav-strong-margin                   : 1.5em 0 0.5em;
+    --sidebar-nav-strong-padding                  : 0.25em 0;
+    --sidebar-nav-strong-text-transform           : ;
+
+    /* Nav Container */
+    --sidebar-nav-background                      : ;
+    --sidebar-nav-indent                          : 1em;
+    --sidebar-nav-margin                          : 1.5rem 0 0;
+    --sidebar-nav-padding                         : ;
+
+    /* Nav Links */
+    --sidebar-nav-link-background-color           : ;
+    --sidebar-nav-link-background-color--active   : ;
+    --sidebar-nav-link-background-color--hover    : ;
+    --sidebar-nav-link-background-image           : ;
+    --sidebar-nav-link-background-image--active   : ;
+    --sidebar-nav-link-background-image--hover    : ;
+    --sidebar-nav-link-background-position        : ;
+    --sidebar-nav-link-background-position--active: ;
+    --sidebar-nav-link-background-position--hover : ;
+    --sidebar-nav-link-background-repeat          : ;
+    --sidebar-nav-link-background-size            : ;
+    --sidebar-nav-link-background-size--active    : ;
+    --sidebar-nav-link-background-size--hover     : ;
+    --sidebar-nav-link-border-color               : ;
+    --sidebar-nav-link-border-color--active       : ;
+    --sidebar-nav-link-border-color--hover        : ;
+    --sidebar-nav-link-border-radius              : ;
+    --sidebar-nav-link-border-style               : solid;
+    --sidebar-nav-link-border-style--active       : ;
+    --sidebar-nav-link-border-style--hover        : ;
+    --sidebar-nav-link-border-width               : 0;
+    --sidebar-nav-link-border-width--active       : ;
+    --sidebar-nav-link-border-width--hover        : ;
+    --sidebar-nav-link-color                      : var(--base-color);
+    --sidebar-nav-link-color--active              : ;
+    --sidebar-nav-link-color--hover               : ;
+    --sidebar-nav-link-font-weight                : normal;
+    --sidebar-nav-link-font-weight--active        : ;
+    --sidebar-nav-link-font-weight--hover         : ;
+    --sidebar-nav-link-margin                     : ;
+    --sidebar-nav-link-padding                    : 0.25em 0;
+    --sidebar-nav-link-text-decoration            : ;
+    --sidebar-nav-link-text-decoration--active    : underline;
+    --sidebar-nav-link-text-decoration--hover     : underline;
+    --sidebar-nav-link-text-decoration-color      : ;
+    --sidebar-nav-link-transition                 : ;
+
+    /* Nav Links - Pseudo Content */
+    --sidebar-nav-link-before-content             : ;
+    --sidebar-nav-link-before-content--active     : ;
+    --sidebar-nav-link-before-content-l1          : ;
+    --sidebar-nav-link-before-content-l1--active  : ;
+    --sidebar-nav-link-before-content-l2          : ;
+    --sidebar-nav-link-before-content-l2--active  : ;
+    --sidebar-nav-link-before-content-l3          : ;
+    --sidebar-nav-link-before-content-l3--active  : ;
+    --sidebar-nav-link-before-content-l4          : ;
+    --sidebar-nav-link-before-content-l4--active  : ;
+
+    /* Nav Links - Pseudo Style */
+    --sidebar-nav-link-before-color               : ;
+    --sidebar-nav-link-before-color--active       : ;
+    --sidebar-nav-link-before-color-l1            : ;
+    --sidebar-nav-link-before-color-l1--active    : ;
+    --sidebar-nav-link-before-color-l2            : ;
+    --sidebar-nav-link-before-color-l2--active    : ;
+    --sidebar-nav-link-before-color-l3            : ;
+    --sidebar-nav-link-before-color-l3--active    : ;
+    --sidebar-nav-link-before-color-l4            : ;
+    --sidebar-nav-link-before-color-l4--active    : ;
+    --sidebar-nav-link-before-margin              : 0 0.35em 0 0;
+    --sidebar-nav-link-before-margin-l1           : ;
+    --sidebar-nav-link-before-margin-l2           : ;
+    --sidebar-nav-link-before-margin-l3           : ;
+    --sidebar-nav-link-before-margin-l4           : ;
+
+    /* Nav Page Links */
+    --sidebar-nav-pagelink-background-image             : ;
+    --sidebar-nav-pagelink-background-image--active     : ;
+    --sidebar-nav-pagelink-background-image--collapse   : ;
+    --sidebar-nav-pagelink-background-image--loaded     : ;
+    --sidebar-nav-pagelink-background-position          : ;
+    --sidebar-nav-pagelink-background-position--active  : ;
+    --sidebar-nav-pagelink-background-position--collapse: ;
+    --sidebar-nav-pagelink-background-position--loaded  : ;
+    --sidebar-nav-pagelink-background-repeat            : no-repeat;
+    --sidebar-nav-pagelink-background-size              : ;
+    --sidebar-nav-pagelink-padding                      : ;
+    --sidebar-nav-pagelink-transition                   : var(--sidebar-nav-link-transition);
+
+    /* Toggle */
+    --sidebar-toggle-background                   : ;
+    --sidebar-toggle-border-color                 : ;
+    --sidebar-toggle-border-radius                : var(--border-radius-s);
+    --sidebar-toggle-border-style                 : solid;
+    --sidebar-toggle-border-width                 : 0;
+    --sidebar-toggle-height                       : 36px;
+    --sidebar-toggle-icon-color                   : var(--base-color);
+    --sidebar-toggle-icon-height                  : 10px;
+    --sidebar-toggle-icon-stroke-width            : 1px;
+    --sidebar-toggle-icon-width                   : 16px;
+    --sidebar-toggle-offset-left                  : 0;
+    --sidebar-toggle-offset-top                   : calc(35px - (var(--sidebar-toggle-height) / 2));
+    --sidebar-toggle-width                        : 44px;
+}
+
+/* Plugin: Copy Code
+============================================================================= */
+:root {
+    --copycode-background: #808080;
+    --copycode-color     : rgb(15, 15, 15);
+}
+
+/* Plugin: Search
+============================================================================= */
+:root {
+    --search-background                      : ;
+    --search-margin                          : 1.5rem 0 0;
+    --search-padding                         : ;
+
+    /* Clear Button */
+    --search-clear-icon-color1               : ;
+    --search-clear-icon-color2               : ;
+
+    /* Input */
+    --search-input-background-color          : ;
+    --search-input-background-color--focus   : ;
+    --search-input-background-image          : ;
+    --search-input-background-image--focus   : ;
+    --search-input-background-position       : ;
+    --search-input-background-position--focus: ;
+    --search-input-background-repeat         : no-repeat;
+    --search-input-background-size           : ;
+    --search-input-background-size--focus    : ;
+    --search-input-border-color              : var(--mono-tint1);
+    --search-input-border-radius             : ;
+    --search-input-border-width              : 1px;
+    --search-input-color                     : ;
+    --search-input-font-size                 : ;
+    --search-input-margin                    : ;
+    --search-input-padding                   : 0.5em;
+    --search-input-placeholder-color         : ;
+    --search-input-transition                : ;
+
+    /* Order */
+    --search-flex-order                      : 1;
+
+    /* Results */
+    --search-result-heading-color            : var(--heading-color);
+    --search-result-heading-font-size        : var(--base-font-size);
+    --search-result-heading-font-weight      : normal;
+    --search-result-heading-margin           : 0 0 0.25em;
+    --search-result-item-border-color        : var(--mono-tint2);
+    --search-result-item-border-style        : solid;
+    --search-result-item-border-width        : 0 0 1px 0;
+    --search-result-item-color               : ;
+    --search-result-item-font-size           : ;
+    --search-result-item-font-weight         : normal;
+    --search-result-item-margin              : ;
+    --search-result-item-padding             : 1em 0;
+    --search-result-keyword-background       : var(--mark-background);
+    --search-result-keyword-border-radius    : var(--border-radius-s);
+    --search-result-keyword-color            : var(--mark-color);
+    --search-result-keyword-font-weight      : normal;
+    --search-result-keyword-margin           : 0 0.1em;
+    --search-result-keyword-padding          : 0.2em 0;
+}
+
+/* Plugin: Zoom Image
+============================================================================= */
+:root {
+    --zoomimage-overlay-background: rgba(0, 0, 0, 0.875);
+}
+
+
+
+</style>

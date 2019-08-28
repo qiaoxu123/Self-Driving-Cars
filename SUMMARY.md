@@ -1,5 +1,4 @@
 * [Home](/README.md)
-
 * [Part1: Introduction to Self-Driving Cars](/Part1-Introduction_to_Self-Driving_Cars/README.md)
   * [Module 0：Welcome to the self-driving cars specialization](Part1-Introduction_to_Self-Driving_Cars/Module0-Welcome_to_the_self-driving_cars_specialization/module0-welcome-to-the-self-driving-cars-specialization.md)
   * [Module 1：The Requirements for Autonomy](Part1-Introduction_to_Self-Driving_Cars/Module1-The_Requirements_for_Autonomy/module1-the-requirements-for-autonomy.md)
@@ -9,15 +8,19 @@
   * [Module 5：Vehicle Longitudinal Control](Part1-Introduction_to_Self-Driving_Cars/Module5-Vehicle_Longitudinal_Control/module-5-vehicle-longitudinal-control.md)
   * [Module 6：Vehicle Lateral Control](Part1-Introduction_to_Self-Driving_Cars/Module6-Vehicle_Lateral_Control/module-6-vehicle-lateral-control.md)
   * [Module 7：Putting it all together](Part1-Introduction_to_Self-Driving_Cars/Module7-Putting_it_all_together/module-7-putting-it-all-together.md)
-  
 * [Part2：State Estimation and Localization for Self-Driving Cars](Part2-State_Estimation_and_Localization_for_Self-Driving_Cars/README.md)
   * [Module 1：Least Squares](Part2-State_Estimation_and_Localization_for_Self-Driving_Cars/Module1-Least_Squares/Module1-Least_Squares.md)
   * [Module 2 - State Estimation - Linear and Nonlinear Kalman Filters](Part2-State_Estimation_and_Localization_for_Self-Driving_Cars/Module2-State_Estimation-Linear_and_Nonlinear_Kalman_Filters/Module2-State_Estimation-Linear_and_Nonlinear_Kalman_Filters.md)
   * [Module 3 - GNSSINS Sensing for Pose Estimation](Part2-State_Estimation_and_Localization_for_Self-Driving_Cars/Module3-GNSS-INS_Sensing_for_Pose_Estimation/Module3-GNSS-INS_Sensing_for_Pose_Estimation.md)
   * [Module 4 - LIDAR Sensing](Part2-State_Estimation_and_Localization_for_Self-Driving_Cars/Module4-LIDAR_Sensing/Module4-LIDAR_Sensing.md)
   * [Module 5 - Putting It together - An Autonomous Vehicle State Estimator](Part2-State_Estimation_and_Localization_for_Self-Driving_Cars/Module5-Putting_It_together-An_Autonomous_Vehicle_State_Estimator/Module5-Putting_It_together-An_Autonomous_Vehicle_State_Estimator.md)
-  
 * [Part3：Visual Perception for Self-Driving Cars](Part3-Visual_Perception_for_Self-Driving_Cars/README.md)
+  * [Module 1: Basics of 3D Computer Vision](Part3-Visual_Perception_for_Self-Driving_Cars/Module1-Basics_of_3D_Computer_Vision/Module1-Basics_of_3D_Computer_Vision.md)
+  * [Module 2: Visual Features - Detection, Description and Matching](Part3-Visual_Perception_for_Self-Driving_Cars/Module2-Visual_Features-Detection_Description_and_Matching/Module2-Visual_Features-Detection_Description_and_Matching.md)
+  * [Module 3: Feedforward Neural Networks](Part3-Visual_Perception_for_Self-Driving_Cars/Module3-Feedforward_Neural_Networks/Module3-Feedforward_Neural_Networks.md)
+  * [Module 4: 2D Object Detection](Part3-Visual_Perception_for_Self-Driving_Cars/Module4-2D_Object_Detection/Module4-2D_Object_Detection.md)
+  * [Module 5: Semantic Segmentation](Part3-Visual_Perception_for_Self-Driving_Cars/Module5-Semantic_Segmentation/Module5-Semantic_Segmentation.md)
+  * [Module 6: Putting it together - Perception of dynamic objects in the drivable region](Part3-Visual_Perception_for_Self-Driving_Cars/Module6-Putting_it_together-Perception_of_dynamic_objects_in_the_drivable_region/Module6-Putting_it_together-Perception_of_dynamic_objects_in_the_drivable_region.md)
 
 - [Part4：Motion Planning for Self-Driving Cars](Part4-Motion_Planning_for_Self-Driving_Cars/README.md)
   - [Module 1 - The Planning Problem](Part4-Motion_Planning_for_Self-Driving_Cars/Module1-The_Planning_Problem/Module1-The_Planning_Problem.md)
