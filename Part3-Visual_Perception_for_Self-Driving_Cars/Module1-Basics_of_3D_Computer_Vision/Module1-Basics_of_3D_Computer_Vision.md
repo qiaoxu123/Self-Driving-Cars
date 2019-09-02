@@ -119,7 +119,7 @@ We will call this model the simplified camera model, and need to develop a model
 
 ![1566711477941](assets/1566711477941.png)
 
-As we learned from Course 2, we can define a translation vector and a rotation matrix to model any transformation between a world coordinate frame and another, and in this case, we'll use the world coordinate frame and the camera coordinate frame. We refer to the parameters of the camera pose as the extrinsic parameters, as they are external to the camera and specific to the location of the camera in the world coordinate frame. We define our image coordinate frame as the coordinate frame attached to our virtual image plane emanating from the optical center. The image pixel coordinate system however, is attached to the top left corner of the virtual image plane. So we'll need to adjust the pixel locations to the image coordinate frame. Next, we define the focal length is the distance between the camera and the image coordinate frames along the z-axis of the camera coordinate frame. 
+As we learned from Course 2, we can define a translation vector and a rotation matrix to model any transformation between a world coordinate frame and another, and in this case, we'll use the world coordinate frame and the camera coordinate frame. **We refer to the parameters of the camera pose as the extrinsic parameters, as they are external to the camera and specific to the location of the camera in the world coordinate frame.** We define our image coordinate frame as the coordinate frame attached to our virtual image plane emanating from the optical center. The image pixel coordinate system however, is attached to the top left corner of the virtual image plane. So we'll need to adjust the pixel locations to the image coordinate frame. Next, we define the focal length is the distance between the camera and the image coordinate frames along the z-axis of the camera coordinate frame. 
 
 ---
 
@@ -199,7 +199,7 @@ So far, we have learnt which camera parameters are needed for projective geometr
 
 ### 1. Computing the Projection
 
-Let's remember the projection equations we've learnt so far. The homogeneous coordinates of point O in 3D space can be transformed to the camera plane, with the camera projection matrix P, which includes both extrinsic and extrinsic parameters. 
+Let's remember the projection equations we've learnt so far. The homogeneous coordinates of point O in 3D space can be transformed to the camera plane, with the camera projection matrix P, which includes both extrinsic and intrinsic parameters. 
 
 ![1566739031283](assets/1566739031283.png)
 
