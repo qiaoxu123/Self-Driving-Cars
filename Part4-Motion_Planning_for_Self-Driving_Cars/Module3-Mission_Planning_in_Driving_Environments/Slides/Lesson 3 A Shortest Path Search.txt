@@ -1,0 +1,169 @@
+Welcome. In this lesson, we will build on Dijkstra's
+algorithm by introducing a new potentially faster approach that we can use for our
+mission planning problem. To do this, we'll leverage
+heuristics in our search, which will help us refine the search process to
+make it more efficient. By the end of this video, you should understand the role of heuristics in graph search and identify which heuristics are valid for our mission planning
+problem and which are not. You should also be
+able to leverage heuristics in
+our graph search problem, by using the A* search algorithm, and recognize how
+to apply A* search to variance of the
+mission planning problem we've discussed so far. So let's get started. If you recall from
+the last lesson we introduced Dijkstra's
+algorithm to help us tackle the
+mission planning problem for the case of
+a weighted graph edges, which was more realistic than our previous unweighted
+graph instance because it let us take into account variable distances across
+different road segments. However, Dijkstra's
+algorithm required us to search almost all of the edges
+present in the graph, even though only a
+few of them were actually useful for
+constructing the optimal path. Well, this wasn't a problem
+for our small example graph. It will cause issues
+when we scale our problem to
+more realistic proportions, such as a full road
+network for a city. To improve our
+efficiency in practice, we can instead rely on
+a search heuristic by using the A* algorithm to find our destination rather
+than Dijkstra's. What is a search heuristic? In this context, a search
+heuristic is an estimate of the remaining cost to reach the destination vertex from any given vertex in the graph. Of course, any heuristic
+we use won't be exact as that would require knowing the answer to
+our search problem already. Instead, we rely on
+the structure of the problem instance to develop a reasonable estimate
+that is fast to compute. In our case, the vertices in the graph correspond
+to points in space, with the edges corresponding to segments of a road which have a weight corresponding to the length of those
+road segments. Therefore a useful estimate
+on the cost or length between any two vertices is the straight line or Euclidean
+distance between them, as shown here by HOV, for a given vertex v
+and goal t. Therefore, for any vertex we
+encounter in our search, our estimate for
+the remaining cost to the goal vertex will just be the Euclidean distance between that vertex and the goal. Note that this estimate is always an underestimate of the true
+distance to reach the goal, since the shortest path between any two points is
+a straight line. This is an important
+requirement for A* search, and heuristics that satisfy this requirement are called
+admissible heuristics. As an example calculation, suppose we have a start
+vertex a and a goal vertex c. Vertex a
+corresponds to the 0.0, and vertex b corresponds to 2.0. Vertex c in this case
+corresponds to 2.2. Therefore, the Euclidean distance between a and c is 2.828, which is our heuristic estimate
+of the cost to the goal. Note that the edge cost between any two adjacent vertices is not equal to the distance
+between those vertices. This is because road segments are not straight line paths, and in general
+the road segment length will be influenced by
+the shape of the road. Because of the graphs simplicity, we can see that the actual cost of the path from a to c is 4.6, by summing up
+the ab and bc edge costs. As expected, our heuristic is an underestimate
+of the true cost. Let's use this new heuristic to better inform
+our graph search. Here, we have the pseudocode
+for the A* algorithm. It's largely the same as
+Dijkstra's algorithm, but it has a few key differences, which we've highlighted in blue. Let's look more closely
+at the specific changes. Recall that in
+Dijkstra's algorithm, we push our open vertices onto a min heap along with their accumulated
+cost from the origin. The main heap then sorts the open vertices by their
+associated accumulated cost. The min difference between
+Dijkstra's algorithm and A* is that instead of
+using the accumulated cost, we use the accumulated
+cost plus hv, the heuristic estimated
+remaining cost to the goal vertex as the value
+we push onto the min heap. The min heap then
+essentially sorts the open vertices by the estimated total
+cost to the goal. In this sense, A* biases the search towards
+vertices that are likely to be part of the optimal path according
+to our search heuristic. Since we are storing a heuristic based total cost
+and the min-heap, we also need to keep track of the true cost of
+each vertex as well, which we store in
+the cost structure. An interesting thing to note is that if we take
+our heuristic to be zero for all vertices which is still
+an admissible heuristic, we then end up with
+Dijkstra's algorithm. As before with
+Dijkstra's algorithm, we will add the origin
+to the min heap, then pop each vertex
+off of the heap and add all adjacent
+vertices to the heap, until we process the goal vertex. Let's apply the A* algorithm
+to our example graph. Here we have
+our road network graph from the previous lessons, except now we've added the actual position
+of each vertex. Note that the figure
+is not to scale and the vertices
+are nicely spaced to make the figure
+more legible instead of being depicted
+in Euclidean space. However, you can see that
+the edge length between any two adjacent vertices are at least as long as
+their Euclidean distance. As always, the first vertex we add to the min heap
+is the origin s. There is zero accumulated cost and the Euclidean
+distance between s and t, which is a lower bound on our shortest path
+distance is 4.472. So we add vertex s
+with cost 4.472. Next, we process the first node s and add the adjacent vertices a, b, and c to the min heap. Remember that we need to
+add the accumulated cost to the heuristic cost to the goal when adding each vertex
+to the min heap. Thus for vertex a, we have a cost of 5 plus 3 is 8. For vertex b, we have
+a cost of 7 plus 2 is nine, and for vertex c we
+have a cost of 2 plus the square root of
+9 plus 4 is 5.6. The order of the vertices
+in the min heap is now cab. We also add s as the predecessor
+to the vertices a, b, and c and then add
+s to the closed set. The next vertex to process is c, which only connects to vertex e. The cost of e works out to 11.4. So we now have
+a vertex order abe. We then assign e's predecessor to be c and add c to the closed set. Next, we pop a off of the min
+heap and we see that it has outgoing edges to vertex b
+and d. The cost to b eight, which is lower than the
+original estimated cost for b. So we update its cost
+in a min heap and change its predecessor
+from s to a. To show we've updated its cost, we've highlighted
+the edge in purple. We also add vertex d to
+the min heap with cost of seven. The new heap ordering
+is thus dbe. We then assign a to
+be the predecessor of d and add a to the closed set. The process continues with d, which has outgoing edges to e and t. The estimated cost
+of e is 15.4. Since this is higher than e's current cost in the min heap, we ignore this new path to e and as such we
+mark this edge and red. The estimated cost of t is seven. Since it is the goal node it has zero heuristic cost to goal. After doing this,
+the new min heap ordering is t b e. We set the predecessor of t to be d and add a to the closed set. Finally, we process the vertex t which is the goal
+vertex. So we are done. The final shortest path from s to t is shown on this graph here, and we are able to avoid
+processing both b and d, thanks to the A* approach. Unfortunately, this
+example graph is quite small in order to demonstrate how
+the algorithm works. However, as we scale the problem to
+much larger graph inputs, we will see that the heuristic used in the A* algorithm will cause it to explore far fewer vertices than
+the Dijkstra's algorithm. Asymptotically, A* will never
+do worse than Dijkstra's, and in practice A* will result in a much faster
+mission planning process. Now, in our examples, we've simplified the
+mission planning problems such that the edge weights or the distance along
+road segments in the map. However, if we were to include other factors such as
+traffic, speed limits, or weather into our
+mission planning problem, the road distance along
+the path would be too simplistic to capture
+the scope of the problem. To remedy this, we
+can instead take the estimated time to cross the road segment as
+our edge weights, and this takes all of the mentioned factors
+into consideration. However, this renders our Euclidean distance
+metric useless, as it no longer captures the true cost to the goal
+in terms of time. To remedy this, we can use a lower bound estimate of
+the time to the goal point as a Euclidean
+distance divided by the maximum speed allowed
+across all road segments. The car should not
+exceed the speed limit. So even in ideal traffic
+and weather conditions, as well as a straight
+line path to the goal, this is the absolute
+shortest amount of time the car can
+travel to that goal. This means it is a lower bound on the true cost to
+the goal at all times, and as such it is
+an admissible heuristic. For example, here we have set our maximum speed to be
+a 100 kilometers per hour, with the edge weights
+corresponding to the number of seconds it takes
+to traverse a path. After computing our heuristic
+value of a 101.8 seconds, we can see that it
+is much lower than the true path length from a to c, which is a 165.6 seconds. This is because in general, this heuristic is a
+poor lower bound as the segments will often take
+much longer to traverse, than the computed minimum. Poor lower bounds can degrade the ability
+of our heuristic to guide our search to the goal
+for more complex problems, as compared to
+problem instances that were strictly focused
+on minimizing distance. More advanced methods
+are available which pre-compute additional
+values and consider modified heuristic definitions
+that allow large networks with time-based travel estimates to be searched efficiently. We've included some links in
+the supplemental material, if you're interested
+in learning more. In this video, we
+introduced the concept of the Euclidean heuristic
+and showed that it was an admissible heuristic for
+our motion planning problem. We then used it in
+our implementation of A* search for
+a motion planning problem. We also discussed how to modify the mission planning problem
+we've discussed so far, to include travel times
+instead of road lengths, and also how to modify our search heuristic to be
+admissible in this situation. Congratulations. You've reached the end of this module on mission planning. In this module, you
+learned to define the mission planning problem as a shortest path search
+over a directed graph, and you applied Dijkstra's and A* algorithms to find
+the shortest path efficiently. In the next module, you'll learn about dynamic object interactions and how these relate to the second stage of our motion planning hierarchy, the behavioral planner.
+See you there.

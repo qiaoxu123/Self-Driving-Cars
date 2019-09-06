@@ -1,0 +1,815 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.766 --> 00:00:19.161
+Welcome to the fifth and final video
+of the behavior planning module.
+
+3
+00:00:19.161 --> 00:00:24.026
+In this video we will discuss
+the limitations of state machine based
+
+4
+00:00:24.026 --> 00:00:26.596
+approaches to behavior planning.
+
+5
+00:00:26.596 --> 00:00:31.353
+And we will then take a tour through some
+alternative behavior planning systems that
+
+6
+00:00:31.353 --> 00:00:33.770
+aim to address some of these limitations.
+
+7
+00:00:33.770 --> 00:00:38.393
+By the end of this video you should have
+a good overall picture of the main methods
+
+8
+00:00:38.393 --> 00:00:40.055
+used in behavior planning.
+
+9
+00:00:40.055 --> 00:00:44.063
+Let's begin by identifying the issues
+with our state machine model.
+
+10
+00:00:44.063 --> 00:00:48.839
+The first issue we identified throughout
+the development of this module is
+
+11
+00:00:48.839 --> 00:00:50.900
+the issue of rule-explosion.
+
+12
+00:00:50.900 --> 00:00:54.937
+This means that as we develop a more
+complete set of scenarios and
+
+13
+00:00:54.937 --> 00:00:59.366
+maneuvers to handle the number of
+rules required grows very quickly.
+
+14
+00:00:59.366 --> 00:01:03.892
+This limitation means that while it is
+possible to develop a finite state machine
+
+15
+00:01:03.892 --> 00:01:07.631
+behavior planner to handle a limited
+operational design domain.
+
+16
+00:01:07.631 --> 00:01:09.639
+Developing a full level four or
+
+17
+00:01:09.639 --> 00:01:14.361
+five capable vehicle is almost
+impossible with finite state machines.
+
+18
+00:01:14.361 --> 00:01:17.612
+Dealing with a noisy
+environment is the next issue.
+
+19
+00:01:17.612 --> 00:01:19.412
+While we saw in lesson two and
+
+20
+00:01:19.412 --> 00:01:24.376
+three how the addition of hyperparameters
+can be used to deal with some noise.
+
+21
+00:01:24.376 --> 00:01:28.213
+This type of noise handling is only
+able to deal with some every limited
+
+22
+00:01:28.213 --> 00:01:29.003
+situations.
+
+23
+00:01:29.003 --> 00:01:32.508
+To deal with all types of input
+uncertainty different methods will
+
+24
+00:01:32.508 --> 00:01:33.265
+be required.
+
+25
+00:01:33.265 --> 00:01:37.302
+On that note, the next issue I would like
+to point out is the actual tuning of
+
+26
+00:01:37.302 --> 00:01:38.596
+the hyperparameters.
+
+27
+00:01:38.596 --> 00:01:43.235
+As the behaviors required get more
+complex, the number of hyperparameters to
+
+28
+00:01:43.235 --> 00:01:48.309
+both discretize the environment and handle
+some of the low level noise grow rapidly.
+
+29
+00:01:48.309 --> 00:01:52.314
+All these hyperparameters have
+to be tuned very carefully and
+
+30
+00:01:52.314 --> 00:01:54.323
+this can be a lengthy process.
+
+31
+00:01:54.323 --> 00:01:59.865
+Finally, the last issue we'll discuss is
+handling of unencountered situations.
+
+32
+00:01:59.865 --> 00:02:04.563
+Due to the program nature of this
+approach it is very likely that there
+
+33
+00:02:04.563 --> 00:02:08.289
+will arise a situation in
+which the programmed logic of
+
+34
+00:02:08.289 --> 00:02:12.431
+the system will react in an incorrect or
+unintended manner.
+
+35
+00:02:12.431 --> 00:02:16.967
+State machine based approaches
+are classified as experts systems,
+
+36
+00:02:16.967 --> 00:02:21.199
+systems which have been designed and
+develop by human experts.
+
+37
+00:02:21.199 --> 00:02:25.677
+However, state machines are not
+the only such expert systems devised.
+
+38
+00:02:25.677 --> 00:02:29.546
+There are also approaches that
+rely on a database of rules which
+
+39
+00:02:29.546 --> 00:02:32.541
+are applied to the input
+data at every time step.
+
+40
+00:02:32.541 --> 00:02:36.589
+The rules are formed into a hierarchy
+where safety critical rules take
+
+41
+00:02:36.589 --> 00:02:41.471
+precedence, override comfort rules, or
+defensive driving rules, for example.
+
+42
+00:02:41.471 --> 00:02:45.921
+Each rule is engaged only when
+the appropriate conditions arise for
+
+43
+00:02:45.921 --> 00:02:49.290
+it to affect the selection
+of the output maneuver.
+
+44
+00:02:49.290 --> 00:02:53.493
+Such rule databases do not suffer from
+the problem of needing to duplicate
+
+45
+00:02:53.493 --> 00:02:57.308
+the rules that we encountered
+with hierarchical state machines.
+
+46
+00:02:57.308 --> 00:03:02.329
+As the rules can apply throughout the ODD
+or over significant portions of it.
+
+47
+00:03:02.329 --> 00:03:07.169
+However, rule based systems have to
+very carefully develop rules in such
+
+48
+00:03:07.169 --> 00:03:10.613
+a way that they do not
+negatively impact each other.
+
+49
+00:03:10.613 --> 00:03:14.858
+Or lead to unintended outcomes when
+multiple rules are activated at
+
+50
+00:03:14.858 --> 00:03:15.830
+the same time.
+
+51
+00:03:15.830 --> 00:03:20.897
+Due to the common reliance on expert users
+to design for all possible scenarios,
+
+52
+00:03:20.897 --> 00:03:25.610
+both types of expert systems suffer
+from the same issues described above.
+
+53
+00:03:25.610 --> 00:03:29.965
+One possible solution to some of
+the problems we've identified above
+
+54
+00:03:29.965 --> 00:03:34.337
+is to extend the human expert type plan or
+to incorporate Fuzzy logic.
+
+55
+00:03:34.337 --> 00:03:37.503
+Fuzzy logic is a system
+by which a set of crisp,
+
+56
+00:03:37.503 --> 00:03:42.963
+well-defined values are used to create
+a more continuous set of fuzzy states.
+
+57
+00:03:42.963 --> 00:03:46.275
+For a simple example of how
+a Fuzzy based system works,
+
+58
+00:03:46.275 --> 00:03:50.459
+let's take a look at the example
+of the vehicle following behavior.
+
+59
+00:03:50.459 --> 00:03:55.440
+While previously we set a parametrized
+distance which divided the space into
+
+60
+00:03:55.440 --> 00:03:58.593
+follow the vehicle or
+do not follow the vehicle.
+
+61
+00:03:58.593 --> 00:04:03.124
+With a Fuzzy system we're able to have
+a continuous space over which different
+
+62
+00:04:03.124 --> 00:04:04.438
+rules can be applied.
+
+63
+00:04:04.438 --> 00:04:05.383
+For example,
+
+64
+00:04:05.383 --> 00:04:10.353
+a Fuzzy system might react strongly to
+a lead vehicle when very close to it.
+
+65
+00:04:10.353 --> 00:04:13.115
+But be less concerned with
+the speed matching or
+
+66
+00:04:13.115 --> 00:04:16.645
+distance following requirements
+when it's further away.
+
+67
+00:04:16.645 --> 00:04:20.935
+While Fuzzy based rule systems are able
+to deal with the environmental noise of
+
+68
+00:04:20.935 --> 00:04:24.519
+a system to a greater degree than
+traditional discreet systems.
+
+69
+00:04:24.519 --> 00:04:30.079
+Both rule-explosion and hyperparameter
+tuning remain issues with Fuzzy systems.
+
+70
+00:04:30.079 --> 00:04:35.552
+In fact, Fuzzy systems can result in
+rule-explosion to an even greater degree,
+
+71
+00:04:35.552 --> 00:04:39.855
+as even more logic is required to
+handle the fuzzy set of inputs.
+
+72
+00:04:39.855 --> 00:04:43.838
+Accompanying the rule-explosion
+is a large challenge in
+
+73
+00:04:43.838 --> 00:04:46.120
+hyperparameter tuning as well.
+
+74
+00:04:46.120 --> 00:04:50.099
+The next exciting research approach
+I'd like to discuss is the use of
+
+75
+00:04:50.099 --> 00:04:52.992
+reinforcement learning for
+behavior planning.
+
+76
+00:04:52.992 --> 00:04:57.737
+Reinforcement learning is a form of
+machine learning in which an agent learns
+
+77
+00:04:57.737 --> 00:05:01.460
+how to interact with a given
+environment by taking action and
+
+78
+00:05:01.460 --> 00:05:03.509
+receiving a continuous reward.
+
+79
+00:05:03.509 --> 00:05:07.779
+The agent begins by engaging in
+play with a simulated environment.
+
+80
+00:05:07.779 --> 00:05:12.635
+Which means that at the start the agent
+will not be good at the particular task,
+
+81
+00:05:12.635 --> 00:05:16.094
+however, over time as the agent
+maximizes its reward,
+
+82
+00:05:16.094 --> 00:05:18.758
+they eventually learn to master the task.
+
+83
+00:05:18.758 --> 00:05:23.395
+By learning in a simulated environment,
+no real world repercussions occurred
+
+84
+00:05:23.395 --> 00:05:26.728
+during the many failures
+experienced during learning.
+
+85
+00:05:26.728 --> 00:05:32.167
+More specifically, we can say the agent is
+attempting to learn a policy, denoted by
+
+86
+00:05:32.167 --> 00:05:37.698
+p, which maps a given environment, denoted
+by s, to a given actions, denoted by a.
+
+87
+00:05:37.698 --> 00:05:42.309
+To connect the concept of reinforcement
+learning to behavior planning let's say
+
+88
+00:05:42.309 --> 00:05:46.867
+we're attempting to teach the autonomous
+vehicle how to follow a lead vehicle.
+
+89
+00:05:46.867 --> 00:05:51.080
+In this case our policy p will be
+attempting to do vehicle following.
+
+90
+00:05:51.080 --> 00:05:56.023
+Our actions may be explicitly defined
+as behaviors to execute or can define
+
+91
+00:05:56.023 --> 00:06:01.608
+behaviors implicitly through selection
+of desired accelerations and turn rates.
+
+92
+00:06:01.608 --> 00:06:05.896
+The environment can be represented by
+a continuous set of variables telling
+
+93
+00:06:05.896 --> 00:06:10.461
+us relevant information, such as distance
+to all objects and our mission path.
+
+94
+00:06:10.461 --> 00:06:15.015
+And, finally, the reward function could be
+based on an optimal following distance.
+
+95
+00:06:15.015 --> 00:06:18.483
+And give the highest reward
+at the preferred distance,
+
+96
+00:06:18.483 --> 00:06:22.706
+penalizing getting too close more
+heavily than being too far away.
+
+97
+00:06:22.706 --> 00:06:25.812
+Because of the extremely large
+variety of scenarios and
+
+98
+00:06:25.812 --> 00:06:28.653
+inputs that an autonomous
+vehicle can encounter,
+
+99
+00:06:28.653 --> 00:06:33.091
+direct reinforcement learning for
+behavior planning is unlikely to succeed.
+
+100
+00:06:33.091 --> 00:06:37.087
+Instead some further adaptations
+are usually applied.
+
+101
+00:06:37.087 --> 00:06:41.292
+One such adaptation is known as
+hierarchical reinforcement learning.
+
+102
+00:06:41.292 --> 00:06:45.904
+Where we divide the problem into low
+level policies in the maneuver space and
+
+103
+00:06:45.904 --> 00:06:48.150
+high level policies the scenarios.
+
+104
+00:06:48.150 --> 00:06:52.006
+This is similar to the hierarchical
+finite state machine.
+
+105
+00:06:52.006 --> 00:06:57.368
+Then each low level policy is learned
+independently and only once successfully
+
+106
+00:06:57.368 --> 00:07:01.859
+learned a high level policy can be
+learned to complete a scenario.
+
+107
+00:07:01.859 --> 00:07:06.652
+The second technique often applied is
+called model-based reinforcement learning.
+
+108
+00:07:06.652 --> 00:07:11.759
+In model-based reinforcement learning not
+only is the agent attempting to learn
+
+109
+00:07:11.759 --> 00:07:16.505
+a policy, p, but also a model of
+the current environment around the agent.
+
+110
+00:07:16.505 --> 00:07:20.385
+An example of how this approach
+might apply to behavior planning for
+
+111
+00:07:20.385 --> 00:07:25.025
+self driving cars would be to include a
+model of the movement of dynamic objects.
+
+112
+00:07:25.025 --> 00:07:29.892
+If the agent understands the movement
+patterns of the dynamic object it can
+
+113
+00:07:29.892 --> 00:07:33.532
+create more effective plans
+through the environment.
+
+114
+00:07:33.532 --> 00:07:36.711
+While reinforcement learning
+is a very exciting and
+
+115
+00:07:36.711 --> 00:07:41.420
+highly promising area of research it
+too is not without its own limitations.
+
+116
+00:07:41.420 --> 00:07:45.179
+Many simulation environments used
+to learn the policies required for
+
+117
+00:07:45.179 --> 00:07:47.607
+autonomous driving are overly simplified.
+
+118
+00:07:47.607 --> 00:07:51.899
+And due to their simplicity the policies
+learned may not be transferable
+
+119
+00:07:51.899 --> 00:07:53.668
+to real world environments.
+
+120
+00:07:53.668 --> 00:07:57.941
+Overly realistic simulators lead to
+the issue of severe computational
+
+121
+00:07:57.941 --> 00:07:58.946
+requirements.
+
+122
+00:07:58.946 --> 00:08:03.780
+Especially when running thousands
+of repetitions of widely varying
+
+123
+00:08:03.780 --> 00:08:06.538
+scenarios for self driving learning.
+
+124
+00:08:06.538 --> 00:08:09.185
+The second is an issue concerning safety.
+
+125
+00:08:09.185 --> 00:08:12.987
+While there are techniques within
+reinforcement learning that attempt to
+
+126
+00:08:12.987 --> 00:08:17.090
+ensure safety constraints along the
+trajectories created by the reinforcement
+
+127
+00:08:17.090 --> 00:08:17.641
+learner.
+
+128
+00:08:17.641 --> 00:08:23.221
+There is still no way to perform rigorous
+safety assessment of a learned system,
+
+129
+00:08:23.221 --> 00:08:28.568
+as they are mostly black boxes in terms
+of the way in which decisions are made.
+
+130
+00:08:28.568 --> 00:08:33.262
+Many other interesting ideas are also
+being explored right now in the research
+
+131
+00:08:33.262 --> 00:08:37.329
+community and many of them try to
+learn from human driving actions.
+
+132
+00:08:37.329 --> 00:08:41.299
+For example, in inverse
+reinforcement learning rather than
+
+133
+00:08:41.299 --> 00:08:44.580
+trying to obtain a policy
+given a reward function,
+
+134
+00:08:44.580 --> 00:08:48.183
+the approach is to use human
+driving data as the policy.
+
+135
+00:08:48.183 --> 00:08:51.929
+An attempt to learn the reward
+function used by humans.
+
+136
+00:08:51.929 --> 00:08:55.942
+Once the reward function is learned
+the algorithm can then execute driving
+
+137
+00:08:55.942 --> 00:08:58.113
+maneuvers similarly to a human driver.
+
+138
+00:08:59.890 --> 00:09:04.498
+Finally, end-to-end approaches take
+as an input raw sensor data and
+
+139
+00:09:04.498 --> 00:09:08.582
+attempt to output throttle,
+break, and steering commands.
+
+140
+00:09:08.582 --> 00:09:10.276
+By learning, once again,
+
+141
+00:09:10.276 --> 00:09:14.338
+from human driving commands in
+an imitation learning approach.
+
+142
+00:09:14.338 --> 00:09:18.764
+This approach was pioneered by
+researchers at Nvidia with their paper,
+
+143
+00:09:18.764 --> 00:09:21.530
+End to End Learning for Self-Driving Cars.
+
+144
+00:09:21.530 --> 00:09:25.636
+While this is not explicitly
+classified as behavior planning,
+
+145
+00:09:25.636 --> 00:09:29.818
+the end-to-end approach still
+implicitly performs the task of
+
+146
+00:09:29.818 --> 00:09:33.783
+behavior selection as part of
+its output selection process.
+
+147
+00:09:33.783 --> 00:09:37.896
+These brief explanations only
+scratched the surface of a huge and
+
+148
+00:09:37.896 --> 00:09:40.074
+rapidly evolving research area.
+
+149
+00:09:40.074 --> 00:09:42.914
+Behavior planning remains one
+of the hotbeds of activity in
+
+150
+00:09:42.914 --> 00:09:44.461
+autonomous driving research.
+
+151
+00:09:44.461 --> 00:09:49.625
+And one of the toughest bottlenecks in
+achieving real world level five autonomy.
+
+152
+00:09:49.625 --> 00:09:53.934
+We've included a reading list of some
+of the recent work in this area in
+
+153
+00:09:53.934 --> 00:09:58.183
+the supplemental materials for
+those interested in learning more.
+
+154
+00:09:58.183 --> 00:10:01.313
+Let's summarize what we've
+discussed in this video.
+
+155
+00:10:01.313 --> 00:10:05.805
+We presented some of the issues with
+finite state machine based planning.
+
+156
+00:10:05.805 --> 00:10:10.736
+And presented multiple advanced approaches
+to the problem of behavior planning
+
+157
+00:10:10.736 --> 00:10:15.464
+which seek to address the full complexity
+of the behavior planning problem.
+
+158
+00:10:15.464 --> 00:10:19.544
+And with that we have come to the end
+of our behavior planning module.
+
+159
+00:10:19.544 --> 00:10:23.521
+In this module we've defined
+the requirements needed to make a behavior
+
+160
+00:10:23.521 --> 00:10:26.269
+planning system capable
+of autonomous driving.
+
+161
+00:10:26.269 --> 00:10:31.259
+Then we walked through the creation of
+such a system for a specific scenario,
+
+162
+00:10:31.259 --> 00:10:32.961
+a four way intersection.
+
+163
+00:10:32.961 --> 00:10:36.242
+We then added dynamic
+vehicle interactions and
+
+164
+00:10:36.242 --> 00:10:39.531
+expanded to incorporate
+multiple scenarios.
+
+165
+00:10:39.531 --> 00:10:42.964
+We ended with a brief review
+of a few exciting methods
+
+166
+00:10:42.964 --> 00:10:46.876
+emerging from the behavior
+planning research community.
+
+167
+00:10:46.876 --> 00:10:52.359
+Join us for the next module where we will
+build a full local planning solution
+
+168
+00:10:52.359 --> 00:10:57.599
+using parameterized curves and
+nonlinear optimization, until then.
+
+169
+00:10:57.599 --> 00:11:06.691
+[MUSIC]

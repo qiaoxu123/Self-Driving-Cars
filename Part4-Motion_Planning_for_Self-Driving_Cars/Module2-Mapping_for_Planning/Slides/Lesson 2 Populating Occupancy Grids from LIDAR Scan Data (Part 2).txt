@@ -1,0 +1,132 @@
+Welcome everyone to
+the second part of our lesson on
+Populating Occupancy Grid. In this video, we will
+define the concept of an inverse measurement model
+and see how to build a simple inverse measurement
+model for a lidar sensor. We will also describe ray tracing which will significantly reduce computational
+requirements for the inverse measurement
+model. Let's dive in. Recall from the previous video
+that in order to perform the Bayesian update
+of our occupancy grid, we need to be able to evaluate
+the log-odds update rule. To do this we need to compute
+p of mi given yt which represents the probability of a cell mi in the occupancy
+grid being occupied, given a certain measurement
+yt is obtained by the lidar. However, so far the measurement
+models we have seen have taken the form the probability
+of yt given mi, which is in the mapping
+case represents the probability of getting
+a certain lidar measurement, given a cell in the
+occupancy grid is occupied. So for occupancy grid updates, we need to flip
+this measurement model around. That is, we have to construct an inverse measurement model that constructs p of mi given yt for every new
+measurement received. As mentioned in
+the first lesson of this module, for simplicity sake, we will only look at
+the lidar data as a 2D range data containing
+two sets of information. The bearing at
+which each beam was fired and the range
+that the beam traveled. This is easily extended to 3D with the addition
+of an elevation angle. The bearing of each beam
+is represented by a set of angles Phi evenly spaced within a range defined by the minimum and maximum
+viewing angles of the sensor. Typical rotating lidar
+are able to capture data in all directions
+around the vehicle, we'll assume the
+available bearings in this course will cover
+all 360 degrees. The range of each beam corresponds to the distance
+it has traveled before impacting an object
+represented by r1 to rJ. The range is measured between minimum and maximum ranges
+r min and r max, and we'll assume r min
+is zero for simplicity. Most lidar today will also
+return a no echo signal, if a particular beam
+does not return an echo, indicating the absence of any object within range
+in that direction. As we proceed in this video, we will make
+an assumption here that the entire lidar scan
+measurements from a single rotation of the sensor is measured at
+the same instant in time. This is not an accurate
+model for a vehicle moving at speed with
+a rotating lidar head, as we must actually correct for the motion
+of the vehicle, the correction can be
+done using the state estimates you developed
+in course two, and interpolating the motion between these state
+estimates as needed. So the inverse measurement model will take the following form. Suppose this is the vehicle with a lidar sensor collecting range measurements at
+different bearings in the following environment. We construct a temporary
+occupancy grid that encompasses the maximum range of the beams in all directions. The coordinate frame for
+this measurement grid uses the occupancy grid map frame
+and so we define a position x1 t and x2 t and an orientation x3 t of the sensor in
+the occupancy grid frame. In practice, this
+occupancy grid frame is set to the vehicle frame and the map is transformed at each step based on
+our state estimates. We're now ready to populate the temporary measurement grid with occupancy probabilities. Based on the current lidar data, we can define three distinct areas of
+the measurement grid. First, there is an area of no information which none of the lidar beams had
+been able to reach. The current lidar scan provides no new information about
+the environment in this area. Then there is an area with
+low probability of an object, as all the beams
+have passed through this area without
+encountering anything. Finally, there is an area with high probability
+of an object, in which the lidar has
+come into contact with an object and has returned
+a non maximum range value. To translate these areas
+onto the measurement grid, each grid square will
+be assigned a range in bearing relative to
+the vehicles current location. The relative range of
+each cell is simply the Euclidean distance
+from the sensor to the cell, defined as follows, where ri is the range
+to grid cell i and mxi and myi are the x and y coordinates of the center
+of the grid cell. Finally, x1 t and x2 t are the sensor location
+at the current time t. The relative bearing to each cell is computed using
+the tan inverse function. Here Phi identifies
+the bearing to the given cell in reference to the sensor's
+coordinate frame. For each cell, we associate the most
+relevant lidar beam by finding the measurement
+with the minimum error between its beam angle
+and the cell bearing. We then define two parameters
+Alpha and Beta, which define a sector
+around each beam in which cell occupancy should be determined based
+on the beam range. This essentially creates
+a region around each beam which will get assigned the measurement information
+of that particular beam. Alpha controls the range
+cells at the range of the beam which will be
+tagged as high probability. Beta controls the angle
+of the beam for which cells will be marked as
+either low or high probability. We are now ready to assign a probability that
+any cell is occupied given the lidar
+measurements received based on these three
+types of cells. The no information zone
+corresponds to all cells with a greater range, than the measured range
+or outside the angle Beta sized cone for the
+measurements associated with it. We assign a probability
+of an obstacle equal to the prior probability
+of a cell being occupied which is usually 0.5. The high information zone defines cells that fall within
+Alpha over two of the range measurement
+and within Beta over two of the angle of the
+measurement associated with it. We assign an occupied
+probability of greater than 0.5. to these cells. Finally, the low
+information zone is defined by cells that
+have a range less than the measured range minus
+Alpha over two and lie within the Beta sized
+cone about the measurement. We assign an occupied
+probability of less than 0.5 to these cells. For example, let's say
+a lidar scan returns a range to an object at
+the location marked by a red X. The affected area which
+will be tagged as high probability is given in red. Increasing the value of Alpha
+will increase the range of the affected region and
+increasing the value of Beta affects the angle
+of the affected region. We can now construct the full inverse
+measurement model to be used in our log-odds update. However, this simple
+inverse measurement model can be computationally expensive. It requires a full update of every cell in
+the measurement map, and relies on multiple
+floating-point operations to identify which measurements
+correspond to which cells. An alternative, is to use
+a ray tracing algorithm, such as the computer
+science classic, the Bresenham's line algorithm. Bresenham's line algorithm
+was originally designed in the early 1960's
+to efficiently solve the line
+plotting problem for displays and printing on the available hardware
+of the day. By ray tracing along
+the beams of the lidar scan, we reduce the number
+of cells that need to be processed and identify them more quickly relying on
+integer addition subtraction and bit shifting to move through the grid along the lidar beams. Interestingly, many beams go
+through the same cells near the car greatly increasing the confidence in
+measurements nearby. This concludes our discussion of the inverse measurement model for log odds occupancy grid mapping. Let's summarize. In this video, we constructed a simple inverse
+measurement model for lidar data needed in
+the log-odds update step. We also briefly covered a potential improvement by using ray tracing to
+speed computations. In our next video, we will look into the many steps
+needed to prepare a 3D lidar scan to be used for occupancy grid mapping.
+See you there.

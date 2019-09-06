@@ -1,0 +1,1463 @@
+WEBVTT
+
+1
+00:00:19.570 --> 00:00:22.200
+Hello everyone. Welcome to
+
+2
+00:00:22.200 --> 00:00:25.110
+the first module of our
+motion planning course.
+
+3
+00:00:25.110 --> 00:00:27.410
+In this module, you
+will learn about
+
+4
+00:00:27.410 --> 00:00:30.230
+the motion planning problem
+in autonomous driving.
+
+5
+00:00:30.230 --> 00:00:32.690
+The motion planning
+problem is the task
+
+6
+00:00:32.690 --> 00:00:34.790
+of navigating the ego vehicle to
+
+7
+00:00:34.790 --> 00:00:37.760
+its destination in
+a safe and comfortable manner
+
+8
+00:00:37.760 --> 00:00:40.025
+while following
+the rules of the road.
+
+9
+00:00:40.025 --> 00:00:43.415
+As discussed in the first course
+of this specialization,
+
+10
+00:00:43.415 --> 00:00:45.725
+this task can be decomposed
+
+11
+00:00:45.725 --> 00:00:48.605
+into a hierarchy of
+optimization problems.
+
+12
+00:00:48.605 --> 00:00:49.970
+Each of which will have
+
+13
+00:00:49.970 --> 00:00:52.085
+different constraints
+and objectives.
+
+14
+00:00:52.085 --> 00:00:53.840
+By the end of this module,
+
+15
+00:00:53.840 --> 00:00:55.430
+you should have
+an understanding of
+
+16
+00:00:55.430 --> 00:00:57.320
+the types of subproblems
+that need to
+
+17
+00:00:57.320 --> 00:00:59.060
+be solved when performing
+
+18
+00:00:59.060 --> 00:01:01.160
+motion planning for
+autonomous driving.
+
+19
+00:01:01.160 --> 00:01:02.540
+In this video, we will
+
+20
+00:01:02.540 --> 00:01:04.940
+discuss the autonomous
+driving mission.
+
+21
+00:01:04.940 --> 00:01:08.630
+Some of the most prevalent
+on-road driving scenarios,
+
+22
+00:01:08.630 --> 00:01:11.840
+the required behaviors
+to handle each scenario,
+
+23
+00:01:11.840 --> 00:01:14.270
+and some of the important
+edge cases that
+
+24
+00:01:14.270 --> 00:01:16.010
+highlight the challenges of
+
+25
+00:01:16.010 --> 00:01:18.605
+motion planning for
+autonomous driving.
+
+26
+00:01:18.605 --> 00:01:21.770
+Specifically by
+the end of this video,
+
+27
+00:01:21.770 --> 00:01:23.780
+you will understand
+what the goal of
+
+28
+00:01:23.780 --> 00:01:27.020
+autonomous driving motion
+planning missions is,
+
+29
+00:01:27.020 --> 00:01:31.430
+identify some important
+on-road driving scenarios,
+
+30
+00:01:31.430 --> 00:01:34.444
+and identify some useful
+driving behaviors
+
+31
+00:01:34.444 --> 00:01:36.400
+to handle these scenarios.
+
+32
+00:01:36.400 --> 00:01:39.875
+First, let's discuss
+the autonomous driving mission.
+
+33
+00:01:39.875 --> 00:01:42.275
+At a high level,
+the autonomous driving mission
+
+34
+00:01:42.275 --> 00:01:44.845
+is to get from
+point A to point B.
+
+35
+00:01:44.845 --> 00:01:47.330
+The autonomous
+driving mission views
+
+36
+00:01:47.330 --> 00:01:49.475
+this from a navigation
+perspective,
+
+37
+00:01:49.475 --> 00:01:51.110
+where we need to navigate from
+
+38
+00:01:51.110 --> 00:01:53.660
+one point on a map
+or current position,
+
+39
+00:01:53.660 --> 00:01:57.110
+to another point corresponding
+to our final destination.
+
+40
+00:01:57.110 --> 00:01:59.810
+In doing so, it should
+take the connection of
+
+41
+00:01:59.810 --> 00:02:00.920
+different streets and
+
+42
+00:02:00.920 --> 00:02:03.425
+their associated traffic
+into consideration.
+
+43
+00:02:03.425 --> 00:02:05.930
+In order to find
+the most efficient path in
+
+44
+00:02:05.930 --> 00:02:09.935
+the road network in terms
+of travel time or distance.
+
+45
+00:02:09.935 --> 00:02:12.740
+Planning for an autonomous
+driving mission
+
+46
+00:02:12.740 --> 00:02:14.150
+abstracts many of
+
+47
+00:02:14.150 --> 00:02:17.000
+the important lower-level
+variables away from
+
+48
+00:02:17.000 --> 00:02:18.410
+the problem in order to
+
+49
+00:02:18.410 --> 00:02:20.975
+simplify the mission
+planning process.
+
+50
+00:02:20.975 --> 00:02:23.420
+However,these lower
+level variables such
+
+51
+00:02:23.420 --> 00:02:25.650
+as roads structures, obstacles,
+
+52
+00:02:25.650 --> 00:02:27.195
+and other agents on the road,
+
+53
+00:02:27.195 --> 00:02:28.880
+are crucial to the autonomous
+
+54
+00:02:28.880 --> 00:02:30.785
+driving motion planning problem.
+
+55
+00:02:30.785 --> 00:02:32.510
+These lower level variables
+
+56
+00:02:32.510 --> 00:02:34.835
+defined different
+driving scenarios.
+
+57
+00:02:34.835 --> 00:02:36.350
+We have discussed some of
+
+58
+00:02:36.350 --> 00:02:38.795
+the driving scenarios
+already in Course 1.
+
+59
+00:02:38.795 --> 00:02:41.750
+So this will serve as
+a refresher and will help put
+
+60
+00:02:41.750 --> 00:02:45.340
+these scenarios into
+emotion planning context.
+
+61
+00:02:45.340 --> 00:02:48.440
+First, let's introduce
+some common scenarios
+
+62
+00:02:48.440 --> 00:02:50.180
+related to the road structure.
+
+63
+00:02:50.180 --> 00:02:53.060
+By road structure, we mean
+the lane boundaries and
+
+64
+00:02:53.060 --> 00:02:56.720
+the regulatory elements that
+are relevant to the driver.
+
+65
+00:02:56.720 --> 00:03:00.440
+The simplest scenario when
+driving is simply driving in
+
+66
+00:03:00.440 --> 00:03:03.875
+a lane and this is often
+called lane maintenance.
+
+67
+00:03:03.875 --> 00:03:05.360
+In the nominal case,
+
+68
+00:03:05.360 --> 00:03:06.800
+this is when the car follows
+
+69
+00:03:06.800 --> 00:03:08.755
+the central line of
+it's current lane.
+
+70
+00:03:08.755 --> 00:03:11.450
+In this scenario,
+our goal is to minimize
+
+71
+00:03:11.450 --> 00:03:14.780
+our deviation from the center
+line of the path as well
+
+72
+00:03:14.780 --> 00:03:17.480
+as reaching our reference
+speed which is often
+
+73
+00:03:17.480 --> 00:03:18.740
+the speed limit to
+
+74
+00:03:18.740 --> 00:03:22.115
+ensure efficient travel
+to our destination.
+
+75
+00:03:22.115 --> 00:03:25.190
+A more complex scenario
+would be when the car
+
+76
+00:03:25.190 --> 00:03:27.635
+has to perform a lane
+change maneuver.
+
+77
+00:03:27.635 --> 00:03:29.870
+Even when there are
+no dynamic obstacles
+
+78
+00:03:29.870 --> 00:03:31.230
+present in either lane,
+
+79
+00:03:31.230 --> 00:03:33.530
+we will need to
+optimize the shape of
+
+80
+00:03:33.530 --> 00:03:35.480
+the lane change trajectory within
+
+81
+00:03:35.480 --> 00:03:38.885
+the constraints of lateral and
+longitudinal acceleration.
+
+82
+00:03:38.885 --> 00:03:40.640
+The speed limit of the road,
+
+83
+00:03:40.640 --> 00:03:43.945
+and the time horizon for
+execution of the maneuver.
+
+84
+00:03:43.945 --> 00:03:46.010
+Clearly, all of these parameters
+
+85
+00:03:46.010 --> 00:03:47.855
+will affect the shape
+of the trajectory,
+
+86
+00:03:47.855 --> 00:03:50.765
+resulting in either slow
+passive lane changes,
+
+87
+00:03:50.765 --> 00:03:54.445
+or more aggressive less
+comfortable lane changes.
+
+88
+00:03:54.445 --> 00:03:56.785
+The third common scenario,
+
+89
+00:03:56.785 --> 00:04:00.050
+is when the car needs to
+perform a left or right turn.
+
+90
+00:04:00.050 --> 00:04:01.550
+This is often required when
+
+91
+00:04:01.550 --> 00:04:04.400
+the autonomous car has
+to handle intersections.
+
+92
+00:04:04.400 --> 00:04:06.260
+As with the lane change,
+
+93
+00:04:06.260 --> 00:04:08.375
+the shape and
+aggressiveness of the turn
+
+94
+00:04:08.375 --> 00:04:11.120
+will vary depending
+on the situation.
+
+95
+00:04:11.120 --> 00:04:13.550
+In addition, the feasibility
+
+96
+00:04:13.550 --> 00:04:15.200
+of actions and autonomous vehicle
+
+97
+00:04:15.200 --> 00:04:17.030
+can take is affected
+
+98
+00:04:17.030 --> 00:04:19.505
+by the state of
+the surrounding environment.
+
+99
+00:04:19.505 --> 00:04:23.240
+For example, the autonomous
+vehicle cannot perform
+
+100
+00:04:23.240 --> 00:04:25.025
+a left turn at a red light
+
+101
+00:04:25.025 --> 00:04:27.870
+even if the
+intersection is clear.
+
+102
+00:04:28.090 --> 00:04:30.110
+As a final example,
+
+103
+00:04:30.110 --> 00:04:31.330
+we have a U-turn.
+
+104
+00:04:31.330 --> 00:04:33.934
+Which is important for
+navigating certain scenarios
+
+105
+00:04:33.934 --> 00:04:36.860
+where the car needs to change
+direction efficiently.
+
+106
+00:04:36.860 --> 00:04:38.870
+As with a lane change and
+
+107
+00:04:38.870 --> 00:04:41.090
+both the right turn
+and left turns,
+
+108
+00:04:41.090 --> 00:04:42.800
+that you U-turn will
+have parameters that
+
+109
+00:04:42.800 --> 00:04:45.080
+affect the shape
+of the trajectory.
+
+110
+00:04:45.080 --> 00:04:47.615
+The U-turn is also
+highly dependent
+
+111
+00:04:47.615 --> 00:04:50.030
+on the state of
+the surrounding environment,
+
+112
+00:04:50.030 --> 00:04:52.790
+as it is not always legal
+to perform a U-turn at
+
+113
+00:04:52.790 --> 00:04:56.695
+an intersection depending on
+your home countries laws.
+
+114
+00:04:56.695 --> 00:04:59.140
+Now, road structure is not
+
+115
+00:04:59.140 --> 00:05:01.660
+the only factor in
+on-road scenarios.
+
+116
+00:05:01.660 --> 00:05:03.850
+Static and dynamic obstacles will
+
+117
+00:05:03.850 --> 00:05:06.160
+dramatically change
+both the structure of
+
+118
+00:05:06.160 --> 00:05:09.040
+the scenario as well
+as the difficulty in
+
+119
+00:05:09.040 --> 00:05:12.500
+determining the required
+behavior for a scenario.
+
+120
+00:05:12.500 --> 00:05:14.890
+In the language of
+autonomous driving,
+
+121
+00:05:14.890 --> 00:05:17.530
+dynamic obstacles are
+defined as moving
+
+122
+00:05:17.530 --> 00:05:20.800
+agents in the planning workspace
+of the ego vehicle.
+
+123
+00:05:20.800 --> 00:05:24.370
+In contrast, static obstacles
+or obstacles that are
+
+124
+00:05:24.370 --> 00:05:28.165
+not moving such as parked cars,
+medians, and curves.
+
+125
+00:05:28.165 --> 00:05:31.375
+Static obstacles
+restrict which locations
+
+126
+00:05:31.375 --> 00:05:33.355
+the autonomous car can occupy
+
+127
+00:05:33.355 --> 00:05:35.995
+as it plans paths
+to its destination.
+
+128
+00:05:35.995 --> 00:05:38.180
+This is because the car occupies
+
+129
+00:05:38.180 --> 00:05:40.310
+space as it travels
+along its path.
+
+130
+00:05:40.310 --> 00:05:42.280
+If this overlaps
+with an obstacle,
+
+131
+00:05:42.280 --> 00:05:45.600
+our plan will obviously
+results in a collision.
+
+132
+00:05:45.790 --> 00:05:48.890
+On the other hand,
+dynamic obstacles have
+
+133
+00:05:48.890 --> 00:05:50.180
+a larger impact on
+
+134
+00:05:50.180 --> 00:05:52.940
+our velocity profile
+and driving behavior.
+
+135
+00:05:52.940 --> 00:05:54.350
+A common example in
+
+136
+00:05:54.350 --> 00:05:56.300
+driving is when there
+is a lead vehicle
+
+137
+00:05:56.300 --> 00:05:57.830
+in front of our car while we
+
+138
+00:05:57.830 --> 00:05:59.810
+are performing lane maintenance.
+
+139
+00:05:59.810 --> 00:06:01.490
+Clearly, this vehicle will have
+
+140
+00:06:01.490 --> 00:06:03.440
+an impact on our decision-making.
+
+141
+00:06:03.440 --> 00:06:05.870
+Let's say this car is
+going 10 kilometers
+
+142
+00:06:05.870 --> 00:06:08.270
+per hour slower than
+our reference speed.
+
+143
+00:06:08.270 --> 00:06:10.520
+If we maintain
+our current reference speed,
+
+144
+00:06:10.520 --> 00:06:13.145
+we will eventually hit
+the leading vehicle.
+
+145
+00:06:13.145 --> 00:06:15.395
+Ideally, we would
+like to maintain
+
+146
+00:06:15.395 --> 00:06:18.850
+a time gap between ourselves
+and the lead vehicle which
+
+147
+00:06:18.850 --> 00:06:21.830
+is defined as the amount
+of time until we reach
+
+148
+00:06:21.830 --> 00:06:24.079
+the lead vehicles
+current position
+
+149
+00:06:24.079 --> 00:06:26.690
+while maintaining
+our current speed.
+
+150
+00:06:26.690 --> 00:06:29.615
+So now we have
+two competing interests.
+
+151
+00:06:29.615 --> 00:06:31.370
+We want to stay as close
+
+152
+00:06:31.370 --> 00:06:33.574
+to our reference
+speed as possible,
+
+153
+00:06:33.574 --> 00:06:35.915
+while maintaining
+a time gap between
+
+154
+00:06:35.915 --> 00:06:39.020
+our car and the lead
+vehicle for safety.
+
+155
+00:06:39.020 --> 00:06:41.855
+Dynamic obstacles
+will also affect
+
+156
+00:06:41.855 --> 00:06:44.315
+our turn and lane
+change scenarios.
+
+157
+00:06:44.315 --> 00:06:46.495
+Depending on their
+location and speed,
+
+158
+00:06:46.495 --> 00:06:49.850
+there may only be certain time
+windows of opportunity for
+
+159
+00:06:49.850 --> 00:06:53.675
+the ego vehicle to execute
+each of these maneuvers.
+
+160
+00:06:53.675 --> 00:06:56.990
+These windows will be estimates
+as they will be based on
+
+161
+00:06:56.990 --> 00:07:00.625
+predictions of all other agents
+in the environment.
+
+162
+00:07:00.625 --> 00:07:02.345
+An example of this,
+
+163
+00:07:02.345 --> 00:07:04.480
+is when we are waiting
+for an intersection to
+
+164
+00:07:04.480 --> 00:07:07.045
+be clear before
+performing a left turn.
+
+165
+00:07:07.045 --> 00:07:10.120
+The behaviors that are
+autonomous vehicle decides to
+
+166
+00:07:10.120 --> 00:07:12.160
+execute will depend heavily
+
+167
+00:07:12.160 --> 00:07:14.440
+on the behavior of
+oncoming traffic.
+
+168
+00:07:14.440 --> 00:07:16.840
+If there are
+nearby oncoming vehicles
+
+169
+00:07:16.840 --> 00:07:18.910
+that are moving
+quickly towards us,
+
+170
+00:07:18.910 --> 00:07:22.000
+then the only safe behavior
+would be to yield to them.
+
+171
+00:07:22.000 --> 00:07:24.340
+However, if there is
+a longer distance
+
+172
+00:07:24.340 --> 00:07:26.960
+between the autonomous vehicles
+and oncoming traffic,
+
+173
+00:07:26.960 --> 00:07:29.080
+the autonomous vehicle
+will have a window of
+
+174
+00:07:29.080 --> 00:07:31.675
+opportunity to perform its turn.
+
+175
+00:07:31.675 --> 00:07:35.200
+Now, not all dynamic obstacles
+are cars as there
+
+176
+00:07:35.200 --> 00:07:36.250
+are other types such as
+
+177
+00:07:36.250 --> 00:07:38.480
+cyclists, trucks,
+and pedestrians.
+
+178
+00:07:38.480 --> 00:07:40.795
+Each of them will have
+their own behaviors
+
+179
+00:07:40.795 --> 00:07:43.360
+and have their own rules
+to follow on the road.
+
+180
+00:07:43.360 --> 00:07:45.020
+As you've seen throughout
+
+181
+00:07:45.020 --> 00:07:46.970
+this specialization
+even though we've
+
+182
+00:07:46.970 --> 00:07:48.725
+only defined the most likely
+
+183
+00:07:48.725 --> 00:07:50.930
+core components of
+the driving task,
+
+184
+00:07:50.930 --> 00:07:53.600
+there's clearly
+a rich and diverse set
+
+185
+00:07:53.600 --> 00:07:56.755
+of potential scenarios
+that need to be handled.
+
+186
+00:07:56.755 --> 00:07:59.690
+Despite this complexity,
+the majority of
+
+187
+00:07:59.690 --> 00:08:01.880
+behaviors for
+these scenarios can be
+
+188
+00:08:01.880 --> 00:08:04.415
+thought of as
+a simple composition
+
+189
+00:08:04.415 --> 00:08:07.475
+of high-level actions
+or maneuvers.
+
+190
+00:08:07.475 --> 00:08:08.990
+An example set of
+
+191
+00:08:08.990 --> 00:08:11.965
+these high-level maneuvers
+would be speed tracking,
+
+192
+00:08:11.965 --> 00:08:15.300
+deceleration to stop,
+staying stopped,
+
+193
+00:08:15.300 --> 00:08:18.490
+yielding, and emergency stopping.
+
+194
+00:08:18.490 --> 00:08:20.390
+Let's dig into what each of
+
+195
+00:08:20.390 --> 00:08:22.840
+these high-level actions
+really mean.
+
+196
+00:08:22.840 --> 00:08:26.675
+Speed tracking is
+the nominal driving behavior.
+
+197
+00:08:26.675 --> 00:08:29.360
+We have a reference speed
+or speed limit and we
+
+198
+00:08:29.360 --> 00:08:32.795
+maintain that speed while
+moving forward in our lane.
+
+199
+00:08:32.795 --> 00:08:36.515
+Decelerating to stop is
+pretty self-explanatory.
+
+200
+00:08:36.515 --> 00:08:38.180
+If we have a stop sign ahead,
+
+201
+00:08:38.180 --> 00:08:39.830
+we need to smoothly slow down
+
+202
+00:08:39.830 --> 00:08:42.185
+to a stop to maintain comfort.
+
+203
+00:08:42.185 --> 00:08:44.330
+Staying stopped is required
+
+204
+00:08:44.330 --> 00:08:46.160
+for certain regulatory elements.
+
+205
+00:08:46.160 --> 00:08:47.540
+If we were at a red light,
+
+206
+00:08:47.540 --> 00:08:48.815
+then we need to remain stopped
+
+207
+00:08:48.815 --> 00:08:50.735
+until the light turns green.
+
+208
+00:08:50.735 --> 00:08:54.740
+Yielding is also required for
+some regulatory elements.
+
+209
+00:08:54.740 --> 00:08:57.230
+Most notably, if
+we're at a yield sign
+
+210
+00:08:57.230 --> 00:09:00.050
+and there's traffic that has
+higher precedence than us,
+
+211
+00:09:00.050 --> 00:09:01.580
+we need to slow down and
+
+212
+00:09:01.580 --> 00:09:04.210
+wait until it is clear
+for us to proceed.
+
+213
+00:09:04.210 --> 00:09:07.040
+Finally, emergency stops occur
+
+214
+00:09:07.040 --> 00:09:08.420
+when an issue is detected by
+
+215
+00:09:08.420 --> 00:09:10.460
+the autonomous car
+and the vehicle needs
+
+216
+00:09:10.460 --> 00:09:13.560
+to stop immediately
+and pull over.
+
+217
+00:09:13.570 --> 00:09:16.670
+These high-level
+behaviors can also be
+
+218
+00:09:16.670 --> 00:09:18.980
+augmented by
+navigational behaviors,
+
+219
+00:09:18.980 --> 00:09:21.875
+such as performing
+lane changes and turns.
+
+220
+00:09:21.875 --> 00:09:23.840
+By bringing all of this together,
+
+221
+00:09:23.840 --> 00:09:26.855
+we can now cover the most
+basic driving scenarios.
+
+222
+00:09:26.855 --> 00:09:29.840
+While this set of maneuvers
+has good coverage,
+
+223
+00:09:29.840 --> 00:09:32.030
+it is important to
+note that this list of
+
+224
+00:09:32.030 --> 00:09:34.610
+behaviors is in
+no way exhaustive and
+
+225
+00:09:34.610 --> 00:09:36.380
+that there are
+many ways to increase
+
+226
+00:09:36.380 --> 00:09:38.090
+behavioral complexity to handle
+
+227
+00:09:38.090 --> 00:09:40.705
+evermore interesting scenarios.
+
+228
+00:09:40.705 --> 00:09:43.630
+In terms of the set
+of driving scenarios,
+
+229
+00:09:43.630 --> 00:09:46.145
+we've really only begun
+to scratch the surface.
+
+230
+00:09:46.145 --> 00:09:49.220
+There are many unusual
+instances that make
+
+231
+00:09:49.220 --> 00:09:50.690
+the autonomous driving problem
+
+232
+00:09:50.690 --> 00:09:52.835
+and extremely challenging task.
+
+233
+00:09:52.835 --> 00:09:54.560
+For example, suppose that you
+
+234
+00:09:54.560 --> 00:09:56.050
+have a jaywalking pedestrian,
+
+235
+00:09:56.050 --> 00:09:59.540
+we would then have an agent
+violating their rules of
+
+236
+00:09:59.540 --> 00:10:01.475
+the road which makes
+their behavior
+
+237
+00:10:01.475 --> 00:10:04.295
+unpredictable from a motion
+planning perspective.
+
+238
+00:10:04.295 --> 00:10:05.930
+Another example, is when
+
+239
+00:10:05.930 --> 00:10:08.390
+a motorcyclist performs
+lane splitting,
+
+240
+00:10:08.390 --> 00:10:09.440
+which may or may not be
+
+241
+00:10:09.440 --> 00:10:11.330
+legal depending on
+your home country.
+
+242
+00:10:11.330 --> 00:10:14.720
+This behavior can be confusing
+for an autonomous car,
+
+243
+00:10:14.720 --> 00:10:16.940
+which often uses the
+lane boundaries to
+
+244
+00:10:16.940 --> 00:10:20.270
+inform the predictions of
+other agents on the road.
+
+245
+00:10:20.270 --> 00:10:22.160
+As you can see, solving
+
+246
+00:10:22.160 --> 00:10:24.805
+the motion planning
+problem is a complex task.
+
+247
+00:10:24.805 --> 00:10:27.650
+To solve for the optimal
+motion plan without
+
+248
+00:10:27.650 --> 00:10:30.950
+any forms of selective
+abstraction and simplification,
+
+249
+00:10:30.950 --> 00:10:33.155
+would simply be intractable.
+
+250
+00:10:33.155 --> 00:10:36.200
+To remedy this, we
+instead break the task
+
+251
+00:10:36.200 --> 00:10:39.680
+up into a hierarchy of
+optimization problems.
+
+252
+00:10:39.680 --> 00:10:43.880
+By doing this, we can tailor
+the inputs and outputs of
+
+253
+00:10:43.880 --> 00:10:46.700
+each optimization problem
+to the correct level of
+
+254
+00:10:46.700 --> 00:10:48.770
+abstraction which will allow us
+
+255
+00:10:48.770 --> 00:10:51.410
+to perform motion
+planning in real-time.
+
+256
+00:10:51.410 --> 00:10:54.830
+In this hierarchy, higher
+in the hierarchy means that
+
+257
+00:10:54.830 --> 00:10:56.270
+the optimization problem is
+
+258
+00:10:56.270 --> 00:10:58.865
+at a higher level of abstraction.
+
+259
+00:10:58.865 --> 00:11:02.750
+At the top of this hierarchy
+is mission planning,
+
+260
+00:11:02.750 --> 00:11:04.220
+which focuses on solving
+
+261
+00:11:04.220 --> 00:11:05.930
+the autonomous driving mission of
+
+262
+00:11:05.930 --> 00:11:07.790
+navigating to our destination at
+
+263
+00:11:07.790 --> 00:11:10.595
+the map level which
+we discussed earlier.
+
+264
+00:11:10.595 --> 00:11:13.420
+Next, we have the behavior
+planning problem.
+
+265
+00:11:13.420 --> 00:11:15.245
+Which decides which behaviors
+
+266
+00:11:15.245 --> 00:11:16.460
+the autonomous vehicles should
+
+267
+00:11:16.460 --> 00:11:19.775
+take depending on
+its current driving scenario.
+
+268
+00:11:19.775 --> 00:11:21.440
+Based on that maneuver,
+
+269
+00:11:21.440 --> 00:11:24.019
+we then use the local
+planner to calculate
+
+270
+00:11:24.019 --> 00:11:25.430
+a collision-free path and
+
+271
+00:11:25.430 --> 00:11:28.640
+velocity profile to
+the required goal state.
+
+272
+00:11:28.640 --> 00:11:31.940
+In our case, we will
+decouple this process into
+
+273
+00:11:31.940 --> 00:11:34.954
+path planning and velocity
+profile generation
+
+274
+00:11:34.954 --> 00:11:36.770
+to improve performance.
+
+275
+00:11:36.770 --> 00:11:40.400
+Finally, our computed motion
+plan will be given to
+
+276
+00:11:40.400 --> 00:11:42.020
+the controllers to track
+
+277
+00:11:42.020 --> 00:11:44.990
+which we've designed
+in the first course.
+
+278
+00:11:44.990 --> 00:11:47.660
+Each of these optimization
+problems will have
+
+279
+00:11:47.660 --> 00:11:51.080
+different objectives and
+constraints used to solve it.
+
+280
+00:11:51.080 --> 00:11:54.125
+Which we will be discussing
+in the coming lessons.
+
+281
+00:11:54.125 --> 00:11:55.730
+Now that we've gone through
+
+282
+00:11:55.730 --> 00:11:58.714
+our introduction to
+these motion planning problems,
+
+283
+00:11:58.714 --> 00:12:02.200
+let's summarize what we've
+discussed in this video.
+
+284
+00:12:02.200 --> 00:12:04.940
+We've identified
+the autonomous driving
+
+285
+00:12:04.940 --> 00:12:07.235
+motion planning mission
+as the problem
+
+286
+00:12:07.235 --> 00:12:09.110
+of navigating from
+the ego vehicles
+
+287
+00:12:09.110 --> 00:12:12.260
+current position to
+a required destination.
+
+288
+00:12:12.260 --> 00:12:13.940
+We've also looked at
+
+289
+00:12:13.940 --> 00:12:17.090
+some common on-road
+driving scenarios and how
+
+290
+00:12:17.090 --> 00:12:19.280
+the road structure as
+well as the obstacles
+
+291
+00:12:19.280 --> 00:12:22.340
+present dictate the nature
+of the scenario.
+
+292
+00:12:22.340 --> 00:12:25.580
+We then discussed some useful
+driving behaviors
+
+293
+00:12:25.580 --> 00:12:28.325
+to navigate the scenarios
+we've identified.
+
+294
+00:12:28.325 --> 00:12:31.130
+Finally, we've
+described a hierarchy
+
+295
+00:12:31.130 --> 00:12:33.550
+of motion planning
+optimization problems.
+
+296
+00:12:33.550 --> 00:12:35.360
+Which we will discuss in detail
+
+297
+00:12:35.360 --> 00:12:37.925
+throughout the remainder
+of this course.
+
+298
+00:12:37.925 --> 00:12:39.710
+Hopefully this lesson
+has given you
+
+299
+00:12:39.710 --> 00:12:42.560
+some insight into the different
+scenarios that you as
+
+300
+00:12:42.560 --> 00:12:44.810
+an autonomy engineer
+will encounter when
+
+301
+00:12:44.810 --> 00:12:48.245
+designing a motion planner
+for an autonomous vehicle.
+
+302
+00:12:48.245 --> 00:12:50.150
+The key takeaway here is
+
+303
+00:12:50.150 --> 00:12:51.950
+that while we've
+enumerated many of
+
+304
+00:12:51.950 --> 00:12:53.150
+the basic scenarios and
+
+305
+00:12:53.150 --> 00:12:55.625
+behaviors required for
+autonomous driving,
+
+306
+00:12:55.625 --> 00:12:58.850
+there are still many open
+questions about how to plan
+
+307
+00:12:58.850 --> 00:13:00.830
+safe and robust behaviors
+
+308
+00:13:00.830 --> 00:13:04.040
+across all potential
+driving scenarios.
+
+309
+00:13:04.040 --> 00:13:05.720
+In our next lesson,
+
+310
+00:13:05.720 --> 00:13:07.970
+we'll explore some common
+constraints that you will
+
+311
+00:13:07.970 --> 00:13:10.340
+encounter when solving
+the motion planning,
+
+312
+00:13:10.340 --> 00:13:15.480
+optimization subproblems in
+our hierarchy. See you then.

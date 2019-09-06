@@ -306,16 +306,139 @@ We then match these features using the brute force matcher we developed in the p
 
 We denote a feature pair from images one and two, as f1 sub i and f2 sub i. Where i ranges between zero and n, the total number of feature pairs returned by our matching algorithm. Each feature in the feature pair is represented by its pixel coordinates ui and vi. Note that every pixel in the image ones should coincide with its corresponding pixel in image two after application of the translation t sub q and t sub v. We can then use our feature pairs to model the translation as follows: the location of a feature in image one is translated to a corresponding location in image two through model parameters t sub u and t sub v. Here the translations on the u image axis t sub u, and the v image axis t sub v, are the same for all feature pairs. Since we assume a rigid body motion. 
 
-![1567339289938](assets/1567339289938.png)Now we can solve for t sub u and t sub v using least squares estimation. The solution to the least squares problem will be the values for t sub u and t sub v that minimize the sum of squared errors between all pairs of pixels. Now that we have our localization problem defined, let's return to the results of our feature matching. By observing the feature locations visually, it can be seen that the feature pair in the purple circles is actually an incorrect match. This happens even though we use the distance ratio method, and is a common occurrence in feature matching. We call such feature pairs outliers. Outliers can comprise a large portion of our feature set, and typically have an out-sized negative effect on our model solution, especially when using least squares estimation. 
+![1567339289938](assets/1567339289938.png)Now we can solve for t sub u and t sub v using least squares estimation. The solution to the least squares problem will be the values for t sub u and t sub v that minimize the sum of squared errors between all pairs of pixels. Now that we have our localization problem defined, let's return to the results of our feature matching. By observing the feature locations visually, it can be seen that the feature pair in the purple circles is actually an incorrect match. This happens even though we use the distance ratio method, and is a common occurrence in feature matching. We call such feature pairs outliers. 
+
+![1567600272536](assets/1567600272536.png)
+
+Outliers can comprise a large portion of our feature set, and typically have an out-sized negative effect on our model solution, especially when using least squares estimation. 
 
 ---
 
-### 2. RansaC: Iteration 1
+### 2. Random Sample Consensus(RANSAC)
 
-Let us see if we can identify these outliers and avoid using them in our least squares solution. Outliers can be handled using a model-based outlier rejection method called Random Sample Consensus, or RANSAC for short. RANSAC developed by Martin Fischler and Robert Bolles in 1981 is one of the most used model-based methods for outlier rejection in robotics. The RANSAC algorithm proceeds as follows: first, given a model for identifying a problem solution from a set of data points, find the smallest number M of data points or samples needed to compute the parameters of this model. In our case, the problem localization and the model parameters, are the t sub u and t sub v offsets of the least square solution. Second, randomly select M samples from your data. Third, compute the model parameters using only the M samples selected from your data set. Forth, use the computed parameters and count how many of the remaining data points agree with this computed solution. The accepted points are retained and referred to as inliers. Fifth, if the number of inliers C is satisfactory, or if the algorithm has iterated a pre-set maximum number of iterations, terminate and return the computed solution and the inlier set. Else, go back to step two and repeat. Finally, recompute and return the model parameters from the best inlier set. The one with the largest number of features. Now we can revisit our localization problem and try to accommodate for the outliers from our feature matcher. As a reminder, our model parameters t sub u and t sub v, shift each feature pair equally from the first image to the second. To estimate t sub u and t sub v, we need one pair of features. Now, let us go through the RANSAC algorithm for this problem. First, we randomly select one feature pair from the matched samples. Now, we need to estimate our model using the computed feature pair. Using the feature pair, we compute the displacement along the u image axis, t sub u, and the displacement along the v image axis, t sub v. We now need to check if our model is valid by computing the number of inliers. Here, we use a tolerance to determine the inliers, since it is highly unlikely that we satisfy the model with a 100 percent precision. Unfortunately, our first iteration chose a poor feature match to compute the model parameters. When using this model to compute how many features in image one translate to their matched location in image two, we notice that none of them do. Since our number of inliers is zero, we go back and choose another feature pair at random, and restart the RANSAC process. Once again, we compute t sub u and t sub v, using a new randomly sampled feature pair to get our new model parameters. Using the model, we compute how many features and image one translate to their match in image two. This time we can see that most of the features actually fit this model. In fact 11 out of 12 features are considered in inliers. Since most of our features are inliers, we're satisfied with this model, and we can stop the RANSAC algorithm. At this point you should now understand the proper use of image features for an autonomous vehicle applications. You've learned what outliers are within the scope of feature matching, and how to handle outliers through the RANSAC algorithm. Outlier removal is a key process in improving robustness when using feature matching, and greatly improves the quality of localization results. In the next video, we will use what we learned so far to estimate the position of our autonomous vehicle using camera image features. This will help us track our own vehicles motion through the environment. Which is a process known as Visual Odometry, and is essential to navigating smoothly and safely
+Let us see if we can identify these outliers and avoid using them in our least squares solution. Outliers can be handled using a model-based outlier rejection method called Random Sample Consensus, or RANSAC for short. RANSAC developed by Martin Fischler and Robert Bolles in 1981 is one of the most used model-based methods for outlier rejection in robotics. 
+
+![1567600966334](assets/1567600966334.png)
+
+The RANSAC algorithm proceeds as follows: first, given a model for identifying a problem solution from a set of data points, find the smallest number M of data points or samples needed to compute the parameters of this model. In our case, the problem localization and the model parameters, are the t sub u and t sub v offsets of the least square solution. Second, randomly select M samples from your data. Third, compute the model parameters using only the M samples selected from your data set. Forth, use the computed parameters and count how many of the remaining data points agree with this computed solution. The accepted points are retained and referred to as inliers. Fifth, if the number of inliers C is satisfactory, or if the algorithm has iterated a pre-set maximum number of iterations, terminate and return the computed solution and the inlier set. Else, go back to step two and repeat. Finally, recompute and return the model parameters from the best inlier set. The one with the largest number of features. Now we can revisit our localization problem and try to accommodate for the outliers from our feature matcher. 
+
+---
+
+### 3. Image Features: Localization
+
+As a reminder, our model parameters t sub u and t sub v, shift each feature pair equally from the first image to the second. To estimate t sub u and t sub v, we need one pair of features. Now, let us go through the RANSAC algorithm for this problem. 
+
+![1567601051181](assets/1567601051181.png)
+
+First, we randomly select one feature pair from the matched samples. 
+
+![1567601100933](assets/1567601100933.png)
+
+Now, we need to estimate our model using the computed feature pair. Using the feature pair, we compute the displacement along the u image axis, t sub u, and the displacement along the v image axis, t sub v. 
+
+![1567601128906](assets/1567601128906.png)
+
+We now need to check if our model is valid by computing the number of inliers. Here, we use a tolerance to determine the inliers, since it is highly unlikely that we satisfy the model with a 100 percent precision. Unfortunately, our first iteration chose a poor feature match to compute the model parameters. When using this model to compute how many features in image one translate to their matched location in image two, we notice that none of them do. Since our number of inliers is zero, we go back and choose another feature pair at random, and restart the RANSAC process. 
+
+![1567601166368](assets/1567601166368.png)
+
+Once again, we compute t sub u and t sub v, using a new randomly sampled feature pair to get our new model parameters. 
+
+![1567601187003](assets/1567601187003.png)
+
+Using the model, we compute how many features and image one translate to their match in image two. This time we can see that most of the features actually fit this model. In fact 11 out of 12 features are considered in inliers. Since most of our features are inliers, we're satisfied with this model, and we can stop the RANSAC algorithm. 
+
+![1567601225090](assets/1567601225090.png)
+
+At this point you should now understand the proper use of image features for an autonomous vehicle applications. You've learned what outliers are within the scope of feature matching, and how to handle outliers through the RANSAC algorithm. Outlier removal is a key process in improving robustness when using feature matching, and greatly improves the quality of localization results. 
+
+---
+
+### 4. Summary
+
+> - Outliers are wrong feature matching outputs, that can occur due to errors in any of the three stages of feature usage
+> - RANSAC can be used to efficiently arrive to a good model even when outliers are among the matched features
+
+In the next video, we will use what we learned so far to estimate the position of our autonomous vehicle using camera image features. This will help us track our own vehicles motion through the environment. Which is a process known as Visual Odometry, and is essential to navigating smoothly and safely
 
 ---
 
 ## Lesson 5: Visual Odometry
 
-So far in this module, you've learned how to detect, describe and match features, as well as how to handle outliers in our feature matching results. We've also explored an example of how to use features to localize an object in an image, which could be used to estimate the depth to the object from a pair of images. In this lesson, you will learn how to perform visual odometry, a fundamental task for vision-based state estimation in autonomous vehicles. Visual odometry, or VO for short, can be defined as the process of incrementally estimating the pose of the vehicle by examining the changes that motion induces on the images of its onboard cameras. It is similar to the concept of wheel odometry you learned in the second course, but with cameras instead of encoders. What do you think using visual odometry might offer over regular wheel odometry for autonomous cars? Visual odometry does not suffer from wheel slip while turning or an uneven terrain and tends to be able to produce more accurate trajectory estimates when compared to wheel odometry. This is because of the larger quantity of information available from an image. However, we usually cannot estimate the absolute scale from a single camera. What this means is that estimation of motion produced from one camera can be stretched or compressed in the 3D world without affecting the pixel feature locations by adjusting the relative motion estimate between the two images. As a result, we need at least one additional sensor, often a second camera or an inertial measurement unit, to be able to provide accurately scaled trajectories when using VO. Furthermore, cameras are sensitive to extreme illumination changes, making it difficult to perform VO at night and in the presence of headlights and streetlights. Finally, as seen with other odometry estimation mechanisms, pose estimates from VO will always drift over time as estimation errors accumulate. For this reason, we often quote VO performance as a percentage error per unit distance traveled. Let's define the visual odometry problem mathematically. Given two consecutive image frames, I_k minus one and I_k, we want to estimate a transformation matrix T_k defined by the translation T and a rotation R between the two frames. Concatenating the sequence of transformations estimated at each time step k from k naught to capital K will provide us with the full trajectory of the camera over the sequence of images. Since the camera is rigidly attached to the autonomous vehicle, this also represents an estimate of the vehicle's trajectory. Now we'll describe the general process of visual odometry. We are given two consecutive image frames, I_k and I_k minus one, and we want to estimate the transformation T_k between these two frames. First, we perform feature detection and description. We end up with a set of features f_k minus one in image k minus one and F_k in image of k. We then proceed to match the features between the two frames to find the ones occurring in both of our target frames. After that, we use the matched features to estimate the motion between the two camera frames represented by the transformation T_k. Motion estimation is the most important step in VO, and will be the main theme of this lesson. The way we perform the motion estimation step depends on what type of feature representation we have. In 2D-2D motion estimation, feature matches in both frames are described purely in image coordinates. This form of visual odometry is great for tracking objects in the image frame. This is extremely useful for visual tracking and image stabilization in videography, for example. In 3D-3D motion estimation, feature matches are described in the world 3D coordinate frame. This approach requires the ability to locate new image features in 3D space, and is therefore used with depth cameras, stereo cameras, and other multi-camera configurations that can provide depth information. These two cases are important and follow the same general visual odometry framework that we'll use for the rest of this lesson. Let's take a closer look at 3D-2D motion estimation, where the features from frame k minus one are specified in the 3D world coordinates while their matches in frame k are specified in image coordinates. Here's how 3D-2D motion estimation is performed. We are given the set of features in frame k minus one and estimates of their 3D world coordinates. Furthermore, through feature matching, we also have the 2D image coordinates of the same features in the new frame k. Note that since we cannot recover the scale for a monocular visual odometry directly, we include a scaling parameter S when forming the homogeneous feature vector from the image coordinates. We want to use this information to estimate the rotation matrix R and a translation vector t between the two camera frames. Does this figure remind you of something that we've learned about previously? If you're thinking of camera calibration, you're correct. In fact, we use the same projective geometry equations we used for calibration in visual odometry as well. A simplifying distinction to note between calibration and VO is that the camera intrinsic calibration matrix k is already known. So we don't have to solve for it again. Our problem now reduces to the estimation of the transformation components R and t from the system of equations constructed using all of our matched features. One way we can solve for the rotation and translation t is by using the Perspective-n-Point algorithm. Given feature locations in 3D, their corresponding projection in 2D, and the camera intrinsic calibration matrix k, PnP solves for the extrinsic transformations as follows. First, PnP uses the Direct Linear Transform to solve for an initial guess for R and t. The DLT method for estimating R and t requires a linear model and constructs a set of linear equations to solve using standard methods such as SVD. However, the equations we have are nonlinear in the parameters of R and t. In the next step, we'll refine the initial DLT solution with an iterative nonlinear optimization technique such as the Luvenburg Marquardt method. The PnP algorithm requires at least three features to solve for R and t. When only three features are used, four possible solutions results, and so a fourth feature point is employed to decide which solution is valid. Finally, RANSAC can be incorporated into PnP by assuming that the transformation generated by PnP on four points is our model. We then choose a subset of all feature matches to evaluate this model and check the percentage of inliers that result to confirm the validity of the point matches selected. The PnP method is an efficient approach to solving the visual odometry problem, but uses only a subset of the available matches to compute the solution. We can improve on PnP by applying the batch estimation techniques you studied in course two. By doing so, we can also incorporate additional measurements from other onboard sensors and incorporate vision into the state estimation pipeline. With vision included, we can better handle GPS-denied environments and improve both the accuracy and reliability of our pose estimates. There are many more interesting details to consider when implementing VO algorithms. Fortunately, the PnP method has a robust implementation available in OpenCV. In fact, OpenCV even contains a version of PnP with RANSAC incorporated for outlier rejection. You can follow the link in the supplementary reading for a description on how to use PnP in OpenCV. In this lesson, you learned why visual odometry is an attractive solution to estimate the trajectory of a self-driving car and how to perform visual odometry for 3D-2D correspondences. Next week, we'll delve into a fundamental approach to extracting information from images for self-driving car perception, deep neural networks. By this point, you've now finished the second week of visual perception for self-driving cars. Don't worry if you did not acquire a full grasp of all the material explained in this week. In this week's assignment, you'll be gaining hands-on experience on all of these topics. You'll use feature detection, matching, and the PnP algorithm to build your own autonomous vehicle visual odometry system in Python. See you in the next module.
+### Learnging Objectives
+
+> - Learn why visual odometry is useful for self-driving cars
+> - Learn how to perform visual odometry using image features in consecutive frames, along with their 3D position in the world coordinate frame
+
+So far in this module, you've learned how to detect, describe and match features, as well as how to handle outliers in our feature matching results. We've also explored an example of how to use features to localize an object in an image, which could be used to estimate the depth to the object from a pair of images. In this lesson, you will learn how to perform visual odometry, a fundamental task for vision-based state estimation in autonomous vehicles. 
+
+---
+
+### 1. Visual Odometry
+
+Visual odometry, or VO for short, can be defined as the process of incrementally estimating the pose of the vehicle by examining the changes that motion induces on the images of its onboard cameras. It is similar to the concept of wheel odometry you learned in the second course, but with cameras instead of encoders. What do you think using visual odometry might offer over regular wheel odometry for autonomous cars? Visual odometry does not suffer from wheel slip while turning or an uneven terrain and tends to be able to produce more accurate trajectory estimates when compared to wheel odometry. This is because of the larger quantity of information available from an image. However, we usually cannot estimate the absolute scale from a single camera. What this means is that estimation of motion produced from one camera can be stretched or compressed in the 3D world without affecting the pixel feature locations by adjusting the relative motion estimate between the two images. 
+
+![1567601740793](assets/1567601740793.png)
+
+As a result, we need at least one additional sensor, often a second camera or an inertial measurement unit, to be able to provide accurately scaled trajectories when using VO. Furthermore, cameras are sensitive to extreme illumination changes, making it difficult to perform VO at night and in the presence of headlights and streetlights. Finally, as seen with other odometry estimation mechanisms, pose estimates from VO will always drift over time as estimation errors accumulate. For this reason, we often quote VO performance as a percentage error per unit distance traveled. 
+
+---
+
+### 2. Problem Formulation
+
+Let's define the visual odometry problem mathematically. Given two consecutive image frames, I_k minus one and I_k, we want to estimate a transformation matrix T_k defined by the translation T and a rotation R between the two frames. Concatenating the sequence of transformations estimated at each time step k from k naught to capital K will provide us with the full trajectory of the camera over the sequence of images. Since the camera is rigidly attached to the autonomous vehicle, this also represents an estimate of the vehicle's trajectory. 
+
+![1567601806597](assets/1567601806597.png)
+
+---
+
+### 3. Visual Odometry
+
+Now we'll describe the general process of visual odometry. We are given two consecutive image frames, I_k and I_k minus one, and we want to estimate the transformation T_k between these two frames. First, we perform feature detection and description. We end up with a set of features f_k minus one in image k minus one and F_k in image of k. We then proceed to match the features between the two frames to find the ones occurring in both of our target frames. After that, we use the matched features to estimate the motion between the two camera frames represented by the transformation T_k. 
+
+![1567601895587](assets/1567601895587.png)
+
+---
+
+### 4. Motion Estimation
+
+Motion estimation is the most important step in VO, and will be the main theme of this lesson. The way we perform the motion estimation step depends on what type of feature representation we have. In 2D-2D motion estimation, feature matches in both frames are described purely in image coordinates. This form of visual odometry is great for tracking objects in the image frame. This is extremely useful for visual tracking and image stabilization in videography, for example. In 3D-3D motion estimation, feature matches are described in the world 3D coordinate frame. This approach requires the ability to locate new image features in 3D space, and is therefore used with depth cameras, stereo cameras, and other multi-camera configurations that can provide depth information. These two cases are important and follow the same general visual odometry framework that we'll use for the rest of this lesson. 
+
+![1567602003666](assets/1567602003666.png)
+
+Let's take a closer look at 3D-2D motion estimation, where the features from frame k minus one are specified in the 3D world coordinates while their matches in frame k are specified in image coordinates. 
+
+---
+
+### 5. 3D-2D motion estimation
+
+Here's how 3D-2D motion estimation is performed. We are given the set of features in frame k minus one and estimates of their 3D world coordinates. Furthermore, through feature matching, we also have the 2D image coordinates of the same features in the new frame k. Note that since we cannot recover the scale for a monocular visual odometry directly, we include a scaling parameter S when forming the homogeneous feature vector from the image coordinates. 
+
+![1567602135876](assets/1567602135876.png)
+
+We want to use this information to estimate the rotation matrix R and a translation vector t between the two camera frames. Does this figure remind you of something that we've learned about previously? If you're thinking of camera calibration, you're correct. In fact, we use the same projective geometry equations we used for calibration in visual odometry as well. A simplifying distinction to note between calibration and VO is that the camera intrinsic calibration matrix k is already known. So we don't have to solve for it again. Our problem now reduces to the estimation of the transformation components R and t from the system of equations constructed using all of our matched features. 
+
+---
+
+### 6. Perspective N Point(PNP)
+
+One way we can solve for the rotation and translation t is by using the **Perspective-n-Point algorithm**. Given feature locations in 3D, their corresponding projection in 2D, and the camera intrinsic calibration matrix k, PnP solves for the extrinsic transformations as follows. First, PnP uses the Direct Linear Transform to solve for an initial guess for R and t. The DLT method for estimating R and t requires a linear model and constructs a set of linear equations to solve using standard methods such as SVD. However, the equations we have are nonlinear in the parameters of R and t. 
+
+![1567602265741](assets/1567602265741.png)
+
+In the next step, we'll refine the initial DLT solution with an iterative nonlinear optimization technique such as the Luvenburg Marquardt method. The PnP algorithm requires at least three features to solve for R and t. When only three features are used, four possible solutions results, and so a fourth feature point is employed to decide which solution is valid. Finally, RANSAC can be incorporated into PnP by assuming that the transformation generated by PnP on four points is our model. We then choose a subset of all feature matches to evaluate this model and check the percentage of inliers that result to confirm the validity of the point matches selected. 
+
+The PnP method is an efficient approach to solving the visual odometry problem, but uses only a subset of the available matches to compute the solution. We can improve on PnP by applying the batch estimation techniques you studied in course two. By doing so, we can also incorporate additional measurements from other onboard sensors and incorporate vision into the state estimation pipeline. With vision included, we can better handle GPS-denied environments and improve both the accuracy and reliability of our pose estimates. 
+
+![1567602294016](assets/1567602294016.png)
+
+There are many more interesting details to consider when implementing VO algorithms. Fortunately, the PnP method has a robust implementation available in OpenCV. In fact, OpenCV even contains a version of PnP with RANSAC incorporated for outlier rejection. You can follow the link in the supplementary reading for a description on how to use PnP in OpenCV. In this lesson, you learned why visual odometry is an attractive solution to estimate the trajectory of a self-driving car and how to perform visual odometry for 3D-2D correspondences. 
+
+---
+
+### 7. Summary
+
+> - Visual odometry can be used to provide accurate trajectory estimate for a self-driving car without suffering from slipping effects due to adverse weather conditions
+> - Visual odometry can be performed using 2D-3D feature correspondences and the PnP algorithm
+
+Next week, we'll delve into a fundamental approach to extracting information from images for self-driving car perception, deep neural networks. By this point, you've now finished the second week of visual perception for self-driving cars. Don't worry if you did not acquire a full grasp of all the material explained in this week. In this week's assignment, you'll be gaining hands-on experience on all of these topics. You'll use feature detection, matching, and the PnP algorithm to build your own autonomous vehicle visual odometry system in Python. See you in the next module.

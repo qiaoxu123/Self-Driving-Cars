@@ -1,0 +1,943 @@
+WEBVTT
+
+1
+00:00:14.150 --> 00:00:16.590
+Hello everyone. Welcome to
+
+2
+00:00:16.590 --> 00:00:18.570
+the second lesson of this module.
+
+3
+00:00:18.570 --> 00:00:21.870
+In this video, we will
+identify the issues with
+
+4
+00:00:21.870 --> 00:00:23.685
+the Bayesian
+Probability Update step
+
+5
+00:00:23.685 --> 00:00:25.905
+which we saw in
+the previous lesson.
+
+6
+00:00:25.905 --> 00:00:28.620
+We will then present
+a solution to the issues
+
+7
+00:00:28.620 --> 00:00:32.025
+highlighted using a log
+odds representation.
+
+8
+00:00:32.025 --> 00:00:33.810
+Finally, in this video,
+
+9
+00:00:33.810 --> 00:00:35.820
+we will see the derivation of
+
+10
+00:00:35.820 --> 00:00:37.905
+the Bayesian log odds update step
+
+11
+00:00:37.905 --> 00:00:41.290
+required to update
+the belief map.
+
+12
+00:00:41.480 --> 00:00:44.340
+As we have seen in
+the previous video,
+
+13
+00:00:44.340 --> 00:00:45.890
+we can apply Bayes' theorem to
+
+14
+00:00:45.890 --> 00:00:48.230
+combine the previous
+belief map with
+
+15
+00:00:48.230 --> 00:00:50.825
+the current measurement
+information to create
+
+16
+00:00:50.825 --> 00:00:53.960
+a highly accurate occupancy grid
+at each time step.
+
+17
+00:00:53.960 --> 00:00:57.140
+This is achieved by
+the following function in
+
+18
+00:00:57.140 --> 00:01:00.680
+which n represents a
+normalizing constant,
+
+19
+00:01:00.680 --> 00:01:06.110
+p of yt given mi is the
+current measurement received,
+
+20
+00:01:06.110 --> 00:01:08.405
+and the belief at time t minus 1
+
+21
+00:01:08.405 --> 00:01:11.270
+over mi is the
+previous belief map.
+
+22
+00:01:11.270 --> 00:01:13.520
+There is, however, a problem with
+
+23
+00:01:13.520 --> 00:01:15.800
+using this simple
+Bayesian update.
+
+24
+00:01:15.800 --> 00:01:17.630
+To demonstrate the issue,
+
+25
+00:01:17.630 --> 00:01:20.090
+we will look at an example
+of an update to
+
+26
+00:01:20.090 --> 00:01:21.470
+an unoccupied cell of
+
+27
+00:01:21.470 --> 00:01:25.190
+the occupancy grid with
+a new unoccupied measurement.
+
+28
+00:01:25.190 --> 00:01:27.350
+Let's suppose we
+have a cell which
+
+29
+00:01:27.350 --> 00:01:29.765
+previously had a low belief
+of occupation,
+
+30
+00:01:29.765 --> 00:01:32.615
+6.38 times 10 to the minus 4,
+
+31
+00:01:32.615 --> 00:01:34.565
+and the new
+measurement results in
+
+32
+00:01:34.565 --> 00:01:36.530
+low probability as well,
+
+33
+00:01:36.530 --> 00:01:39.170
+1.2 times 10 to the minus 5.
+
+34
+00:01:39.170 --> 00:01:42.680
+This means that the resulting
+belief would be very low,
+
+35
+00:01:42.680 --> 00:01:45.410
+or 8.0 times 10 to the minus 7.
+
+36
+00:01:45.410 --> 00:01:46.970
+As you can see, all of
+
+37
+00:01:46.970 --> 00:01:49.495
+these beliefs are
+quite close to zero.
+
+38
+00:01:49.495 --> 00:01:51.800
+Multiplication of
+floating-point numbers
+
+39
+00:01:51.800 --> 00:01:53.150
+on a computer, however,
+
+40
+00:01:53.150 --> 00:01:55.250
+can lead to significant
+rounding error
+
+41
+00:01:55.250 --> 00:01:57.230
+when multiplying small numbers,
+
+42
+00:01:57.230 --> 00:01:58.625
+which in turn can lead to
+
+43
+00:01:58.625 --> 00:02:01.720
+instability in the estimate
+of the probabilities.
+
+44
+00:02:01.720 --> 00:02:05.060
+Further, the multiplication
+of probabilities turns
+
+45
+00:02:05.060 --> 00:02:06.710
+out to be an inefficient way
+
+46
+00:02:06.710 --> 00:02:08.540
+to perform the belief update.
+
+47
+00:02:08.540 --> 00:02:11.435
+So our basic application
+of Bayes' rules to
+
+48
+00:02:11.435 --> 00:02:12.470
+update beliefs over
+
+49
+00:02:12.470 --> 00:02:15.310
+the occupancy cells
+is not looking good.
+
+50
+00:02:15.310 --> 00:02:17.660
+There is, however, a solution.
+
+51
+00:02:17.660 --> 00:02:19.730
+Instead of storing the belief map
+
+52
+00:02:19.730 --> 00:02:21.965
+with the values ranging from 0-1,
+
+53
+00:02:21.965 --> 00:02:23.840
+we can convert our beliefs into
+
+54
+00:02:23.840 --> 00:02:27.260
+log odds probabilities
+using the logit function.
+
+55
+00:02:27.260 --> 00:02:31.010
+We first saw this logit function
+in course three.
+
+56
+00:02:31.010 --> 00:02:35.555
+This leads to cell values
+ranging from negative infinity
+
+57
+00:02:35.555 --> 00:02:38.000
+to positive infinity avoiding
+
+58
+00:02:38.000 --> 00:02:40.580
+the issue with numbers
+close to zero.
+
+59
+00:02:40.580 --> 00:02:43.790
+The logit function takes
+the natural logarithm of
+
+60
+00:02:43.790 --> 00:02:46.970
+the ratio of the
+probability p and 1 minus
+
+61
+00:02:46.970 --> 00:02:49.700
+p. So it takes
+probability values from
+
+62
+00:02:49.700 --> 00:02:53.645
+0-1 and maps them to
+the entire real axis.
+
+63
+00:02:53.645 --> 00:02:56.480
+It is also possible
+to transition from
+
+64
+00:02:56.480 --> 00:02:59.195
+the log odds domain
+back to probabilities.
+
+65
+00:02:59.195 --> 00:03:01.970
+This is done by
+taking the ratio of e
+
+66
+00:03:01.970 --> 00:03:04.970
+raised to the logit
+of p divided by
+
+67
+00:03:04.970 --> 00:03:08.090
+1 plus e to the logit of p. We
+
+68
+00:03:08.090 --> 00:03:10.250
+now have an alternative
+representation
+
+69
+00:03:10.250 --> 00:03:11.885
+for our cell probabilities.
+
+70
+00:03:11.885 --> 00:03:13.100
+So let's see how this
+
+71
+00:03:13.100 --> 00:03:15.395
+affects our Bayesian
+update equation.
+
+72
+00:03:15.395 --> 00:03:18.500
+We will start this derivation
+by the application of
+
+73
+00:03:18.500 --> 00:03:22.195
+Bayes' rule to p of
+mi given y1 to t,
+
+74
+00:03:22.195 --> 00:03:25.310
+where mi is the current
+occupancy grid map square at
+
+75
+00:03:25.310 --> 00:03:29.210
+location i and y1 to t are
+the sensor measurements of
+
+76
+00:03:29.210 --> 00:03:33.270
+that cell from time one
+to time t. Writing out
+
+77
+00:03:33.270 --> 00:03:35.480
+the full Bayesian update
+for incorporating
+
+78
+00:03:35.480 --> 00:03:38.120
+the latest measurements
+into our occupancy belief,
+
+79
+00:03:38.120 --> 00:03:39.950
+we get the following equation.
+
+80
+00:03:39.950 --> 00:03:41.810
+The first term in
+the numerator is
+
+81
+00:03:41.810 --> 00:03:43.640
+the probability of
+getting measurement
+
+82
+00:03:43.640 --> 00:03:47.930
+yt given the cell state at
+all previous measurements.
+
+83
+00:03:47.930 --> 00:03:49.850
+The second term in the numerator
+
+84
+00:03:49.850 --> 00:03:51.320
+is the probability a cell
+
+85
+00:03:51.320 --> 00:03:55.550
+is occupied given all
+measurements to time t minus 1,
+
+86
+00:03:55.550 --> 00:03:56.870
+and the nominator is
+
+87
+00:03:56.870 --> 00:03:58.790
+the probability of
+getting the measurements
+
+88
+00:03:58.790 --> 00:04:03.605
+yt given all previous measurements
+up to time t minus 1.
+
+89
+00:04:03.605 --> 00:04:06.920
+It should be noted that
+the measurement yt is
+
+90
+00:04:06.920 --> 00:04:08.360
+separated from the rest of
+
+91
+00:04:08.360 --> 00:04:11.225
+the measurements of
+y1 to t minus 1.
+
+92
+00:04:11.225 --> 00:04:13.115
+This is done as we would like to
+
+93
+00:04:13.115 --> 00:04:14.885
+update the occupancy grid with
+
+94
+00:04:14.885 --> 00:04:17.840
+only the most recent sensor
+measurement rather than
+
+95
+00:04:17.840 --> 00:04:19.220
+storing all measurements and
+
+96
+00:04:19.220 --> 00:04:21.395
+applying them again every time.
+
+97
+00:04:21.395 --> 00:04:25.070
+Next, we will apply the Markov
+assumption which ensures
+
+98
+00:04:25.070 --> 00:04:27.200
+the current measurement
+is independent of
+
+99
+00:04:27.200 --> 00:04:31.190
+previous measurements if
+the map state mi is known.
+
+100
+00:04:31.190 --> 00:04:35.735
+The next step is to expand
+the measurement model p of y
+
+101
+00:04:35.735 --> 00:04:40.675
+given mi by the application
+of Bayes' rule once again.
+
+102
+00:04:40.675 --> 00:04:43.400
+This results in
+the probability of map cell
+
+103
+00:04:43.400 --> 00:04:46.340
+mi being the current
+measurement multiplied by
+
+104
+00:04:46.340 --> 00:04:49.340
+the probability of getting
+that measurement divided
+
+105
+00:04:49.340 --> 00:04:53.025
+by the probability of
+grid cell mi is occupied.
+
+106
+00:04:53.025 --> 00:04:56.630
+We now substitute the
+expanded measurement model in
+
+107
+00:04:56.630 --> 00:04:58.340
+blue into the main Bayesian
+
+108
+00:04:58.340 --> 00:05:00.440
+inference equation shown here.
+
+109
+00:05:00.440 --> 00:05:02.690
+This leaves us with
+three terms in
+
+110
+00:05:02.690 --> 00:05:05.680
+the numerator and two
+terms in the denominator.
+
+111
+00:05:05.680 --> 00:05:08.480
+We will now pass
+this expanded form through
+
+112
+00:05:08.480 --> 00:05:10.280
+the logit function and then start
+
+113
+00:05:10.280 --> 00:05:12.545
+simplifying the
+resulting expression.
+
+114
+00:05:12.545 --> 00:05:14.870
+Let's rearrange the term 1 minus
+
+115
+00:05:14.870 --> 00:05:17.870
+p before we write out
+the resulting expression.
+
+116
+00:05:17.870 --> 00:05:21.230
+The denominator portion
+of the log odds ratio
+
+117
+00:05:21.230 --> 00:05:24.380
+1 minus pmi given y1 to
+
+118
+00:05:24.380 --> 00:05:27.170
+t can be constructed by negating
+
+119
+00:05:27.170 --> 00:05:29.165
+the expression for
+the probability
+
+120
+00:05:29.165 --> 00:05:30.815
+of a cell being occupied,
+
+121
+00:05:30.815 --> 00:05:32.090
+which is of course,
+
+122
+00:05:32.090 --> 00:05:35.165
+the probability that a grid
+cell is not occupied.
+
+123
+00:05:35.165 --> 00:05:38.180
+Next, we form the log odds ratio
+
+124
+00:05:38.180 --> 00:05:39.800
+which is simply the log of
+
+125
+00:05:39.800 --> 00:05:41.885
+the ratio of the
+probability a cell is
+
+126
+00:05:41.885 --> 00:05:44.735
+occupied to the
+probability it is not.
+
+127
+00:05:44.735 --> 00:05:46.670
+There are many like terms in
+
+128
+00:05:46.670 --> 00:05:50.770
+this expression which we can
+now cancel out as follows.
+
+129
+00:05:50.770 --> 00:05:54.500
+We arrive at the following
+simplified expression for
+
+130
+00:05:54.500 --> 00:05:56.180
+the odds ratio with
+
+131
+00:05:56.180 --> 00:06:00.125
+only three terms each in
+the numerator and denominator.
+
+132
+00:06:00.125 --> 00:06:02.630
+We rewrite the expression in
+
+133
+00:06:02.630 --> 00:06:05.165
+the original 1 minus p notation.
+
+134
+00:06:05.165 --> 00:06:06.890
+As you may have noticed,
+
+135
+00:06:06.890 --> 00:06:10.055
+this equation is better
+viewed as three ratios.
+
+136
+00:06:10.055 --> 00:06:11.840
+The ratio of the probabilities
+
+137
+00:06:11.840 --> 00:06:14.225
+to 1 minus the same probability.
+
+138
+00:06:14.225 --> 00:06:16.760
+The first ratio is
+the probability of
+
+139
+00:06:16.760 --> 00:06:19.850
+a cell being occupied
+given a measurement y.
+
+140
+00:06:19.850 --> 00:06:23.680
+The second is the probability
+a cell is not occupied,
+
+141
+00:06:23.680 --> 00:06:26.360
+and the third is
+the prior belief that a cell is
+
+142
+00:06:26.360 --> 00:06:30.440
+occupied given all measurements
+up to time t minus 1.
+
+143
+00:06:30.440 --> 00:06:33.740
+Finally, we apply
+the log to our series of
+
+144
+00:06:33.740 --> 00:06:35.660
+probability ratios to arrive
+
+145
+00:06:35.660 --> 00:06:38.000
+at the addition of
+three logit functions.
+
+146
+00:06:38.000 --> 00:06:40.220
+This is our final update equation
+
+147
+00:06:40.220 --> 00:06:41.750
+and has the nice property
+
+148
+00:06:41.750 --> 00:06:43.960
+of simply requiring addition
+
+149
+00:06:43.960 --> 00:06:46.025
+when a new measurement
+is required.
+
+150
+00:06:46.025 --> 00:06:48.110
+The three terms can be written in
+
+151
+00:06:48.110 --> 00:06:50.850
+a convenient shorthand
+where lt minus
+
+152
+00:06:50.850 --> 00:06:53.075
+1i is the logit of the belief
+
+153
+00:06:53.075 --> 00:06:56.405
+that cell i is occupied
+at time t minus 1.
+
+154
+00:06:56.405 --> 00:07:01.310
+Similarly, l0i at time
+zero and lti at time
+
+155
+00:07:01.310 --> 00:07:04.460
+t. We now arrive at
+
+156
+00:07:04.460 --> 00:07:06.590
+the convenient log odds
+update rule for
+
+157
+00:07:06.590 --> 00:07:09.395
+Bayesian inference on
+occupancy grid maps.
+
+158
+00:07:09.395 --> 00:07:12.050
+It is made up of
+the three terms that are
+
+159
+00:07:12.050 --> 00:07:13.640
+combined at each time step
+
+160
+00:07:13.640 --> 00:07:15.905
+based on the latest
+measurement data.
+
+161
+00:07:15.905 --> 00:07:20.060
+The first term the logit
+of the probability of mi
+
+162
+00:07:20.060 --> 00:07:22.340
+given yt is the logit
+
+163
+00:07:22.340 --> 00:07:24.725
+formed using new
+measurement information.
+
+164
+00:07:24.725 --> 00:07:27.735
+The probability
+distribution p of mi
+
+165
+00:07:27.735 --> 00:07:32.015
+given yt is known as
+the inverse measurement model.
+
+166
+00:07:32.015 --> 00:07:34.100
+We'll study how to do this in
+
+167
+00:07:34.100 --> 00:07:36.850
+the next video for LIDAR data.
+
+168
+00:07:36.850 --> 00:07:39.260
+Lt minus 1i is
+
+169
+00:07:39.260 --> 00:07:42.815
+the previous belief at
+time t minus 1 for cell i,
+
+170
+00:07:42.815 --> 00:07:45.440
+and l0i is the initial belief
+
+171
+00:07:45.440 --> 00:07:47.585
+at time zero for the same cell.
+
+172
+00:07:47.585 --> 00:07:49.519
+The initial belief represents
+
+173
+00:07:49.519 --> 00:07:52.400
+the baseline belief that
+a grid cell is occupied,
+
+174
+00:07:52.400 --> 00:07:55.550
+which is usually set to
+50 percent uniformly as we
+
+175
+00:07:55.550 --> 00:07:57.500
+don't expect to have
+prior information
+
+176
+00:07:57.500 --> 00:07:59.195
+that improves on this value.
+
+177
+00:07:59.195 --> 00:08:02.300
+It shows up in this equation
+at every time step,
+
+178
+00:08:02.300 --> 00:08:04.400
+which is a bit surprising but is
+
+179
+00:08:04.400 --> 00:08:06.560
+simply a result of
+the derivation that we
+
+180
+00:08:06.560 --> 00:08:09.590
+studied in this video and
+adjusts the addition of
+
+181
+00:08:09.590 --> 00:08:11.630
+the first two terms to ensure
+
+182
+00:08:11.630 --> 00:08:15.740
+the updated belief is consistent
+with the log odds form.
+
+183
+00:08:15.740 --> 00:08:18.050
+The Bayesian log odds has
+
+184
+00:08:18.050 --> 00:08:19.790
+two strong advantages over
+
+185
+00:08:19.790 --> 00:08:21.920
+directly updating probabilities.
+
+186
+00:08:21.920 --> 00:08:25.250
+The update is numerically
+stable due to the logit mapping
+
+187
+00:08:25.250 --> 00:08:28.855
+of 01 probabilities to
+the entire real axis,
+
+188
+00:08:28.855 --> 00:08:31.070
+and computationally, it is also
+
+189
+00:08:31.070 --> 00:08:32.990
+significantly more efficient as
+
+190
+00:08:32.990 --> 00:08:35.045
+it relies exclusively on addition
+
+191
+00:08:35.045 --> 00:08:38.070
+to complete all updates
+of the occupancy grid.
+
+192
+00:08:38.070 --> 00:08:41.435
+Let's summarize what we
+learned in this video.
+
+193
+00:08:41.435 --> 00:08:45.650
+We first identified some issues
+with storing and updating
+
+194
+00:08:45.650 --> 00:08:47.180
+the occupancy grid with
+
+195
+00:08:47.180 --> 00:08:50.395
+a straightforward Bayesian
+probability update.
+
+196
+00:08:50.395 --> 00:08:53.960
+We then saw how this issue
+could be solved by
+
+197
+00:08:53.960 --> 00:08:56.075
+employing the log
+odds representation
+
+198
+00:08:56.075 --> 00:08:57.950
+of the probability space.
+
+199
+00:08:57.950 --> 00:08:59.900
+Finally, we saw how
+
+200
+00:08:59.900 --> 00:09:03.640
+the Bayesian log odds update
+is derived from Bayes' rule.
+
+201
+00:09:03.640 --> 00:09:06.260
+In the next video, we
+will learn how to take
+
+202
+00:09:06.260 --> 00:09:08.450
+the Bayesian log odds
+update and build
+
+203
+00:09:08.450 --> 00:09:11.210
+the required inverse
+measurement model to update
+
+204
+00:09:11.210 --> 00:09:12.800
+the occupancy grid using
+
+205
+00:09:12.800 --> 00:09:16.640
+filtered 2D LIDAR data.
+See you there.

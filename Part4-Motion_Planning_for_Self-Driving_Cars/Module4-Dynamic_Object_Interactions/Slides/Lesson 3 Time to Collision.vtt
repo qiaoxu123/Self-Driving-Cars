@@ -1,0 +1,1395 @@
+WEBVTT
+
+1
+00:00:14.060 --> 00:00:17.700
+Welcome to the third and
+final lesson this week.
+
+2
+00:00:17.700 --> 00:00:20.130
+In this video, we will be
+looking at the concept of
+
+3
+00:00:20.130 --> 00:00:23.130
+time to collision between
+two dynamic objects.
+
+4
+00:00:23.130 --> 00:00:25.155
+In this video we will
+
+5
+00:00:25.155 --> 00:00:27.690
+present two alternatives
+for calculating
+
+6
+00:00:27.690 --> 00:00:30.449
+the time to collision:
+simulation-based approaches
+
+7
+00:00:30.449 --> 00:00:32.400
+and estimation-based approaches.
+
+8
+00:00:32.400 --> 00:00:34.890
+Compare the strengths
+and weaknesses of
+
+9
+00:00:34.890 --> 00:00:36.660
+both approaches and highlight
+
+10
+00:00:36.660 --> 00:00:39.075
+where each is most readily used,
+
+11
+00:00:39.075 --> 00:00:42.650
+and explore the simulation-based
+approach in more detail
+
+12
+00:00:42.650 --> 00:00:43.790
+and calculate the time
+
+13
+00:00:43.790 --> 00:00:46.355
+to collision between
+any two vehicles.
+
+14
+00:00:46.355 --> 00:00:50.600
+Let's dive in. The time
+to collision provides
+
+15
+00:00:50.600 --> 00:00:51.860
+a valuable measure of
+
+16
+00:00:51.860 --> 00:00:54.865
+behavioral safety in
+a self-driving vehicle,
+
+17
+00:00:54.865 --> 00:00:58.340
+and is heavily used in
+assessing potential maneuvers,
+
+18
+00:00:58.340 --> 00:01:00.890
+based on the current
+driving environment.
+
+19
+00:01:00.890 --> 00:01:03.920
+By knowing if collisions
+are imminent and
+
+20
+00:01:03.920 --> 00:01:06.770
+when they might occur
+and with which object,
+
+21
+00:01:06.770 --> 00:01:08.510
+a self-driving system can better
+
+22
+00:01:08.510 --> 00:01:10.960
+plan safe maneuvers
+through the environment,
+
+23
+00:01:10.960 --> 00:01:15.080
+or prepare for emergency
+evasive actions if needed.
+
+24
+00:01:15.080 --> 00:01:16.910
+To evaluate the time
+
+25
+00:01:16.910 --> 00:01:19.280
+to collision between
+dynamic objects,
+
+26
+00:01:19.280 --> 00:01:21.260
+we use their predicted paths to
+
+27
+00:01:21.260 --> 00:01:23.795
+identify possible
+collision points.
+
+28
+00:01:23.795 --> 00:01:25.790
+If a collision point exists,
+
+29
+00:01:25.790 --> 00:01:27.830
+the time to collision
+is a measure of
+
+30
+00:01:27.830 --> 00:01:30.545
+the amount of time until
+that collision occurs.
+
+31
+00:01:30.545 --> 00:01:32.960
+Computing the time
+to collision can therefore
+
+32
+00:01:32.960 --> 00:01:35.300
+be accomplished in two steps.
+
+33
+00:01:35.300 --> 00:01:38.720
+First, we identify and
+compute the location of
+
+34
+00:01:38.720 --> 00:01:40.130
+a collision point along
+
+35
+00:01:40.130 --> 00:01:43.085
+the predicted paths between
+the dynamic objects,
+
+36
+00:01:43.085 --> 00:01:46.610
+and second, if such
+a collision point exists,
+
+37
+00:01:46.610 --> 00:01:49.280
+we then compute the amount of
+time that it will take for
+
+38
+00:01:49.280 --> 00:01:53.185
+the dynamic objects to arrive
+at that collision point.
+
+39
+00:01:53.185 --> 00:01:56.300
+The challenge with computing
+the time to collision,
+
+40
+00:01:56.300 --> 00:01:57.950
+is that it relies very much
+
+41
+00:01:57.950 --> 00:01:59.810
+on an accurate understanding of
+
+42
+00:01:59.810 --> 00:02:01.504
+the space that will be occupied
+
+43
+00:02:01.504 --> 00:02:03.530
+by the objects in the future,
+
+44
+00:02:03.530 --> 00:02:06.070
+to achieve accurate estimates.
+
+45
+00:02:06.070 --> 00:02:08.660
+Clearly, accurate predictions of
+
+46
+00:02:08.660 --> 00:02:10.100
+the objects trajectories are
+
+47
+00:02:10.100 --> 00:02:12.395
+critical to identifying
+collision points
+
+48
+00:02:12.395 --> 00:02:14.000
+in their time of occurrence.
+
+49
+00:02:14.000 --> 00:02:17.300
+Precise prediction of
+object trajectories is as we
+
+50
+00:02:17.300 --> 00:02:20.860
+saw in the previous two lessons,
+a difficult problem.
+
+51
+00:02:20.860 --> 00:02:22.850
+Furthermore, we also need
+
+52
+00:02:22.850 --> 00:02:24.380
+accurate geometries for
+
+53
+00:02:24.380 --> 00:02:26.810
+all dynamic objects
+in the environment.
+
+54
+00:02:26.810 --> 00:02:28.460
+This is required as when
+
+55
+00:02:28.460 --> 00:02:30.410
+the time to collision
+is computed,
+
+56
+00:02:30.410 --> 00:02:32.270
+the geometries of
+both the vehicles are
+
+57
+00:02:32.270 --> 00:02:35.965
+considered to calculate
+the exact collision point.
+
+58
+00:02:35.965 --> 00:02:39.020
+As objects in the
+environment are only seen
+
+59
+00:02:39.020 --> 00:02:41.450
+from the current
+and previous viewpoints,
+
+60
+00:02:41.450 --> 00:02:43.160
+it can be challenging
+to accurately
+
+61
+00:02:43.160 --> 00:02:45.635
+define their geometry
+while driving.
+
+62
+00:02:45.635 --> 00:02:48.224
+Due to errors in
+both requirements,
+
+63
+00:02:48.224 --> 00:02:49.580
+the time to collision should
+
+64
+00:02:49.580 --> 00:02:51.800
+always be treated as
+an approximation,
+
+65
+00:02:51.800 --> 00:02:54.230
+updated regularly,
+and treated with
+
+66
+00:02:54.230 --> 00:02:58.160
+some safety buffer when making
+decisions about driving.
+
+67
+00:02:58.160 --> 00:03:00.890
+There are two main
+approaches to calculating
+
+68
+00:03:00.890 --> 00:03:03.500
+the time to collision
+between two objects.
+
+69
+00:03:03.500 --> 00:03:05.570
+The simulation-based approach,
+
+70
+00:03:05.570 --> 00:03:07.820
+and the estimation-based
+approach.
+
+71
+00:03:07.820 --> 00:03:11.345
+Simulation-based approaches
+simulate the movement of
+
+72
+00:03:11.345 --> 00:03:13.160
+every vehicle in this scene over
+
+73
+00:03:13.160 --> 00:03:15.470
+a finite horizon into the future.
+
+74
+00:03:15.470 --> 00:03:19.520
+At each simulation time
+step, new position, heading,
+
+75
+00:03:19.520 --> 00:03:21.575
+and occupancy extent predictions
+
+76
+00:03:21.575 --> 00:03:24.770
+are calculated for
+every dynamic object.
+
+77
+00:03:24.770 --> 00:03:26.870
+This is done by propagating
+
+78
+00:03:26.870 --> 00:03:28.985
+forward the predicted trajectory,
+
+79
+00:03:28.985 --> 00:03:31.720
+as discussed in
+the previous module.
+
+80
+00:03:31.720 --> 00:03:35.060
+Once the position of
+all dynamic objects is
+
+81
+00:03:35.060 --> 00:03:37.940
+known for a given time
+in the simulated future,
+
+82
+00:03:37.940 --> 00:03:40.295
+a check is conducted
+to determine if
+
+83
+00:03:40.295 --> 00:03:42.620
+any two or more dynamic objects
+
+84
+00:03:42.620 --> 00:03:44.270
+have collided with each other.
+
+85
+00:03:44.270 --> 00:03:46.415
+If they have collided,
+the location
+
+86
+00:03:46.415 --> 00:03:48.740
+and time to the collision
+is then noted.
+
+87
+00:03:48.740 --> 00:03:50.750
+Note that this is
+a different type of
+
+88
+00:03:50.750 --> 00:03:53.180
+collision checking than
+in the static case,
+
+89
+00:03:53.180 --> 00:03:55.400
+where swaths of
+the entire path were
+
+90
+00:03:55.400 --> 00:03:59.240
+constructed and compared to
+static object locations.
+
+91
+00:03:59.240 --> 00:04:01.250
+Because these
+collision checks are
+
+92
+00:04:01.250 --> 00:04:03.514
+performed between moving objects,
+
+93
+00:04:03.514 --> 00:04:05.600
+we only need to check
+collisions between
+
+94
+00:04:05.600 --> 00:04:08.615
+the geometries of
+each object at each instant,
+
+95
+00:04:08.615 --> 00:04:10.310
+as the objects will occupy
+
+96
+00:04:10.310 --> 00:04:13.255
+new locations at
+the next time step.
+
+97
+00:04:13.255 --> 00:04:16.070
+Estimation-based
+approaches function
+
+98
+00:04:16.070 --> 00:04:17.885
+by computing the evolution
+
+99
+00:04:17.885 --> 00:04:19.865
+of the geometry of each vehicle
+
+100
+00:04:19.865 --> 00:04:22.025
+as it moves through
+its predicted path.
+
+101
+00:04:22.025 --> 00:04:24.635
+The results is a swath
+for each vehicle
+
+102
+00:04:24.635 --> 00:04:27.755
+that can then be compared
+for potential collisions.
+
+103
+00:04:27.755 --> 00:04:29.990
+Once the swath has been computed,
+
+104
+00:04:29.990 --> 00:04:31.910
+their intersection
+can be explored for
+
+105
+00:04:31.910 --> 00:04:34.235
+potential collision points
+by computing,
+
+106
+00:04:34.235 --> 00:04:36.440
+if any two or more
+dynamic objects
+
+107
+00:04:36.440 --> 00:04:39.305
+will occupy the same space
+at the same time.
+
+108
+00:04:39.305 --> 00:04:42.775
+If this is true, potential
+collision points are tagged,
+
+109
+00:04:42.775 --> 00:04:45.890
+and an estimation of when
+each vehicle will arrive
+
+110
+00:04:45.890 --> 00:04:47.210
+at each collision point is
+
+111
+00:04:47.210 --> 00:04:49.700
+used to estimate
+the time to collision.
+
+112
+00:04:49.700 --> 00:04:51.980
+This method traditionally makes
+
+113
+00:04:51.980 --> 00:04:53.600
+many simplifying assumptions
+
+114
+00:04:53.600 --> 00:04:55.835
+to accelerate the calculations.
+
+115
+00:04:55.835 --> 00:04:58.370
+These assumptions
+include: identifying
+
+116
+00:04:58.370 --> 00:05:00.305
+collision point locations based
+
+117
+00:05:00.305 --> 00:05:02.975
+on object path
+intersection points,
+
+118
+00:05:02.975 --> 00:05:06.080
+estimating object space
+occupancy based on
+
+119
+00:05:06.080 --> 00:05:09.350
+simple geometric primitives
+like bounding boxes,
+
+120
+00:05:09.350 --> 00:05:11.300
+and estimating the time to reach
+
+121
+00:05:11.300 --> 00:05:15.005
+a collision point based on
+a constant velocity profile.
+
+122
+00:05:15.005 --> 00:05:17.120
+Each approach has strengths and
+
+123
+00:05:17.120 --> 00:05:18.980
+weaknesses relative to the other.
+
+124
+00:05:18.980 --> 00:05:21.350
+Estimation-based
+approaches rely on
+
+125
+00:05:21.350 --> 00:05:24.230
+simplifying assumptions which
+make the computation of
+
+126
+00:05:24.230 --> 00:05:27.229
+time to collision less
+computationally expensive
+
+127
+00:05:27.229 --> 00:05:29.450
+both in terms of
+memory requirements,
+
+128
+00:05:29.450 --> 00:05:31.280
+and processing efforts.
+
+129
+00:05:31.280 --> 00:05:33.230
+Simulation approaches tend to
+
+130
+00:05:33.230 --> 00:05:34.970
+be more computationally
+expensive,
+
+131
+00:05:34.970 --> 00:05:37.790
+as they involve
+step-by-step evaluations,
+
+132
+00:05:37.790 --> 00:05:41.185
+and object geometry
+intersection computations.
+
+133
+00:05:41.185 --> 00:05:44.280
+Due to their simplifying
+assumptions however,
+
+134
+00:05:44.280 --> 00:05:47.120
+estimation-based approaches
+usually create
+
+135
+00:05:47.120 --> 00:05:48.710
+a less accurate estimate of
+
+136
+00:05:48.710 --> 00:05:51.560
+the collision point and
+the time to collision.
+
+137
+00:05:51.560 --> 00:05:53.930
+Simulation approaches
+on the other hand do
+
+138
+00:05:53.930 --> 00:05:56.395
+not need to rely on
+these approximations,
+
+139
+00:05:56.395 --> 00:05:58.305
+and with small step sizes,
+
+140
+00:05:58.305 --> 00:06:00.545
+can perform high
+fidelity evaluation
+
+141
+00:06:00.545 --> 00:06:02.075
+of the time to collision.
+
+142
+00:06:02.075 --> 00:06:04.265
+These relative differences make
+
+143
+00:06:04.265 --> 00:06:07.295
+each algorithm suited to
+different applications.
+
+144
+00:06:07.295 --> 00:06:09.485
+For real-time
+applications such as
+
+145
+00:06:09.485 --> 00:06:11.900
+onboard time to
+collision computation,
+
+146
+00:06:11.900 --> 00:06:14.540
+estimation-based approaches
+are preferred.
+
+147
+00:06:14.540 --> 00:06:17.900
+Whereas offline, where
+accuracy is vital
+
+148
+00:06:17.900 --> 00:06:21.590
+such as dataset creation and
+simulation-based testing,
+
+149
+00:06:21.590 --> 00:06:24.440
+simulation-based approaches
+are preferred.
+
+150
+00:06:24.440 --> 00:06:27.560
+Let's look at a simple
+simulation-based approach
+
+151
+00:06:27.560 --> 00:06:29.720
+to calculating
+both the collision points,
+
+152
+00:06:29.720 --> 00:06:32.840
+and the time to each collision
+point in more detail.
+
+153
+00:06:32.840 --> 00:06:35.210
+Estimation-based
+approaches are outside
+
+154
+00:06:35.210 --> 00:06:36.560
+the scope of this video,
+
+155
+00:06:36.560 --> 00:06:39.360
+but we've included
+an extensive set of links to
+
+156
+00:06:39.360 --> 00:06:42.830
+estimation-based methods in
+the supplemental materials.
+
+157
+00:06:42.830 --> 00:06:45.800
+The algorithm for
+the simulation-based approach
+
+158
+00:06:45.800 --> 00:06:49.400
+takes as input a list
+of dynamic objects D,
+
+159
+00:06:49.400 --> 00:06:50.840
+with their predicted paths
+
+160
+00:06:50.840 --> 00:06:53.935
+including the planned path
+for the ego vehicle.
+
+161
+00:06:53.935 --> 00:06:58.520
+The time between simulation
+prediction steps DT if sim,
+
+162
+00:06:58.520 --> 00:07:00.530
+and any parameters
+needed to define
+
+163
+00:07:00.530 --> 00:07:02.750
+the collision checking
+approach to be used.
+
+164
+00:07:02.750 --> 00:07:04.505
+Be it polygon intersection
+
+165
+00:07:04.505 --> 00:07:06.470
+requiring the object footprints,
+
+166
+00:07:06.470 --> 00:07:09.350
+or circle checking requiring
+the number of circles,
+
+167
+00:07:09.350 --> 00:07:12.545
+and their spacing relative
+to the object position.
+
+168
+00:07:12.545 --> 00:07:14.510
+The output that
+this algorithm will
+
+169
+00:07:14.510 --> 00:07:16.325
+provide is the collision point
+
+170
+00:07:16.325 --> 00:07:17.630
+and the time to collision for
+
+171
+00:07:17.630 --> 00:07:19.940
+every pair of objects
+that have one.
+
+172
+00:07:19.940 --> 00:07:22.640
+Note that the simulation
+time steps can be
+
+173
+00:07:22.640 --> 00:07:25.640
+a different size than
+the predicted path time steps,
+
+174
+00:07:25.640 --> 00:07:28.985
+to improve collision checking
+approximation accuracy.
+
+175
+00:07:28.985 --> 00:07:32.000
+The algorithm loops through
+each time step from
+
+176
+00:07:32.000 --> 00:07:35.060
+the current time to the end
+of the simulation horizon,
+
+177
+00:07:35.060 --> 00:07:37.250
+which can't exceed
+the maximum length
+
+178
+00:07:37.250 --> 00:07:39.500
+of the predicted
+and planned paths.
+
+179
+00:07:39.500 --> 00:07:41.060
+At each time step,
+
+180
+00:07:41.060 --> 00:07:43.130
+we propagate forward
+the positions
+
+181
+00:07:43.130 --> 00:07:45.020
+of all dynamic objects along
+
+182
+00:07:45.020 --> 00:07:46.880
+their path by one step using
+
+183
+00:07:46.880 --> 00:07:49.360
+the dynamic object
+motion predictions.
+
+184
+00:07:49.360 --> 00:07:52.080
+The object states,
+position, heading,
+
+185
+00:07:52.080 --> 00:07:54.095
+and velocity of all objects
+
+186
+00:07:54.095 --> 00:07:55.910
+are established
+through this update,
+
+187
+00:07:55.910 --> 00:07:57.920
+one time step at a time.
+
+188
+00:07:57.920 --> 00:08:00.230
+Then for every pair of objects,
+
+189
+00:08:00.230 --> 00:08:02.720
+we perform pairwise
+collision checking.
+
+190
+00:08:02.720 --> 00:08:04.940
+If a collision point is found,
+
+191
+00:08:04.940 --> 00:08:07.370
+then the current
+simulated time is added to
+
+192
+00:08:07.370 --> 00:08:11.135
+this collision point to
+estimate the time to collision.
+
+193
+00:08:11.135 --> 00:08:13.250
+Let's refine each stage of
+
+194
+00:08:13.250 --> 00:08:15.560
+the simulation approach
+a little further.
+
+195
+00:08:15.560 --> 00:08:18.380
+For state prediction, we
+must take into account
+
+196
+00:08:18.380 --> 00:08:21.645
+the possibility that the
+predicted path state time steps,
+
+197
+00:08:21.645 --> 00:08:24.395
+do not align with
+the simulation time steps.
+
+198
+00:08:24.395 --> 00:08:26.540
+Thus to get the best estimate of
+
+199
+00:08:26.540 --> 00:08:28.820
+a given dynamic object
+vehicle state at
+
+200
+00:08:28.820 --> 00:08:31.550
+a point in time required
+by the simulation,
+
+201
+00:08:31.550 --> 00:08:33.410
+we find the closest state
+
+202
+00:08:33.410 --> 00:08:35.840
+preceding the current
+simulated time,
+
+203
+00:08:35.840 --> 00:08:39.020
+either by looping through
+each object's predicted path,
+
+204
+00:08:39.020 --> 00:08:40.670
+or by tracking
+the current predicted
+
+205
+00:08:40.670 --> 00:08:44.450
+path reference states
+throughout the simulation loop.
+
+206
+00:08:44.450 --> 00:08:47.270
+We then apply
+the predicted inputs for
+
+207
+00:08:47.270 --> 00:08:48.950
+the remaining interval of time to
+
+208
+00:08:48.950 --> 00:08:51.590
+arrive at a prediction
+of the object location,
+
+209
+00:08:51.590 --> 00:08:53.785
+at the current simulation time.
+
+210
+00:08:53.785 --> 00:08:56.005
+For pairwise collision checking,
+
+211
+00:08:56.005 --> 00:08:59.675
+we can proceed either
+exactly or approximately.
+
+212
+00:08:59.675 --> 00:09:02.300
+In either case, because
+we're now comparing
+
+213
+00:09:02.300 --> 00:09:04.800
+pairs of dynamic objects
+with each other,
+
+214
+00:09:04.800 --> 00:09:08.240
+we present both objects
+similarly and must modify
+
+215
+00:09:08.240 --> 00:09:09.890
+our collision check to not
+
+216
+00:09:09.890 --> 00:09:12.290
+rely on occupancy
+grid information,
+
+217
+00:09:12.290 --> 00:09:14.750
+as we did in the static case.
+
+218
+00:09:14.750 --> 00:09:16.970
+For the exact approach,
+
+219
+00:09:16.970 --> 00:09:19.295
+a polygonal intersection
+is performed
+
+220
+00:09:19.295 --> 00:09:22.015
+and any overlap
+implies a collision.
+
+221
+00:09:22.015 --> 00:09:23.850
+For the circle approximation,
+
+222
+00:09:23.850 --> 00:09:25.900
+each circle pair is compared,
+
+223
+00:09:25.900 --> 00:09:28.325
+which leads to
+nine distance checks for
+
+224
+00:09:28.325 --> 00:09:30.410
+three circle approximation and
+
+225
+00:09:30.410 --> 00:09:33.785
+16 distance checks for
+a four-circle approximation.
+
+226
+00:09:33.785 --> 00:09:35.420
+Note that as the number of
+
+227
+00:09:35.420 --> 00:09:37.640
+dynamic objects increases
+in the scene,
+
+228
+00:09:37.640 --> 00:09:40.640
+the number of collision checks
+scales quadratically,
+
+229
+00:09:40.640 --> 00:09:44.975
+if exhaustively evaluating
+all possible collisions.
+
+230
+00:09:44.975 --> 00:09:47.810
+It is of course also
+possible to only
+
+231
+00:09:47.810 --> 00:09:50.300
+compare the ego
+vehicle to others,
+
+232
+00:09:50.300 --> 00:09:52.695
+to keep computational
+complexity linear,
+
+233
+00:09:52.695 --> 00:09:56.630
+or eliminate large portions
+of the pairwise comparisons,
+
+234
+00:09:56.630 --> 00:09:59.330
+based on a single
+point-to-point distance check
+
+235
+00:09:59.330 --> 00:10:00.995
+between the centroids.
+
+236
+00:10:00.995 --> 00:10:03.530
+If two objects are not
+within a distance of
+
+237
+00:10:03.530 --> 00:10:06.620
+two times their combined
+longest axis dimension,
+
+238
+00:10:06.620 --> 00:10:08.675
+no further checking is required.
+
+239
+00:10:08.675 --> 00:10:10.730
+Once a collision is detected,
+
+240
+00:10:10.730 --> 00:10:12.440
+a calculation can be performed
+
+241
+00:10:12.440 --> 00:10:14.435
+to establish the collision point.
+
+242
+00:10:14.435 --> 00:10:17.240
+If we assume small increments
+for the simulation,
+
+243
+00:10:17.240 --> 00:10:19.730
+this first collision point
+is a single point that
+
+244
+00:10:19.730 --> 00:10:21.830
+satisfies both equations of
+
+245
+00:10:21.830 --> 00:10:24.155
+the circles around each object.
+
+246
+00:10:24.155 --> 00:10:26.870
+Rearranging leads to
+the following pair of
+
+247
+00:10:26.870 --> 00:10:29.510
+equations for x
+and y coordinates.
+
+248
+00:10:29.510 --> 00:10:32.180
+The x-coordinate of
+the collision point is equal
+
+249
+00:10:32.180 --> 00:10:35.120
+to the x-coordinate of
+the center of circle I,
+
+250
+00:10:35.120 --> 00:10:37.885
+multiplied by
+the radius of circle j,
+
+251
+00:10:37.885 --> 00:10:39.830
+plus the x-coordinate of circle j
+
+252
+00:10:39.830 --> 00:10:41.810
+multiplied by
+the radius of circle I.
+
+253
+00:10:41.810 --> 00:10:44.900
+All divided by the sum
+of the two radii.
+
+254
+00:10:44.900 --> 00:10:48.500
+The same equation is then
+used for the y-coordinate;
+
+255
+00:10:48.500 --> 00:10:50.270
+however, using
+the y-coordinate of
+
+256
+00:10:50.270 --> 00:10:52.825
+both circles rather
+than the x-coordinate.
+
+257
+00:10:52.825 --> 00:10:55.340
+It is also possible to identify
+
+258
+00:10:55.340 --> 00:10:58.220
+both intersection points
+when the circles overlap,
+
+259
+00:10:58.220 --> 00:11:00.080
+and the equations are available
+
+260
+00:11:00.080 --> 00:11:02.620
+in the supplementary materials.
+
+261
+00:11:02.620 --> 00:11:04.555
+As is often the case,
+
+262
+00:11:04.555 --> 00:11:06.260
+there exists a trade-off between
+
+263
+00:11:06.260 --> 00:11:09.620
+the accuracy of the time
+to collision estimate,
+
+264
+00:11:09.620 --> 00:11:11.870
+and the overall computation time.
+
+265
+00:11:11.870 --> 00:11:14.915
+As we increase the fidelity
+of the collision check,
+
+266
+00:11:14.915 --> 00:11:18.290
+we also increase the number
+of computations required.
+
+267
+00:11:18.290 --> 00:11:21.500
+Likewise as can be
+seen in this example,
+
+268
+00:11:21.500 --> 00:11:24.590
+if we reduce the number of
+circles considered to one,
+
+269
+00:11:24.590 --> 00:11:27.050
+the number of
+computations goes down,
+
+270
+00:11:27.050 --> 00:11:28.340
+but the accuracy of
+
+271
+00:11:28.340 --> 00:11:31.980
+the exact collision points
+suffers significantly.
+
+272
+00:11:32.030 --> 00:11:34.640
+You should now have
+a strong handle
+
+273
+00:11:34.640 --> 00:11:36.590
+on the time to collision
+computation,
+
+274
+00:11:36.590 --> 00:11:38.870
+and the implications
+of approximations in
+
+275
+00:11:38.870 --> 00:11:41.750
+terms of accuracy of
+the predicted solution.
+
+276
+00:11:41.750 --> 00:11:44.180
+To summarize in this video,
+
+277
+00:11:44.180 --> 00:11:45.860
+we defined the time to collision
+
+278
+00:11:45.860 --> 00:11:48.080
+for pairs of dynamic objects.
+
+279
+00:11:48.080 --> 00:11:50.660
+We discussed the strengths
+and weaknesses of
+
+280
+00:11:50.660 --> 00:11:53.450
+two types of time
+to collision algorithms,
+
+281
+00:11:53.450 --> 00:11:56.755
+simulation-based and
+estimation based.
+
+282
+00:11:56.755 --> 00:11:59.510
+We presented the
+simulation-based approach to
+
+283
+00:11:59.510 --> 00:12:02.975
+time to collision prediction,
+in more detail.
+
+284
+00:12:02.975 --> 00:12:04.955
+Congratulations.
+
+285
+00:12:04.955 --> 00:12:05.720
+You've made it through
+
+286
+00:12:05.720 --> 00:12:08.360
+the dynamic object
+interactions module.
+
+287
+00:12:08.360 --> 00:12:10.400
+In this module,
+you learned how to
+
+288
+00:12:10.400 --> 00:12:12.470
+predict a dynamic objects motion,
+
+289
+00:12:12.470 --> 00:12:15.035
+using the constant
+velocity model,
+
+290
+00:12:15.035 --> 00:12:17.390
+you refined your
+motion predictions to
+
+291
+00:12:17.390 --> 00:12:20.300
+incorporate HD road
+map information,
+
+292
+00:12:20.300 --> 00:12:23.465
+and you apply your motion
+predictions to the task
+
+293
+00:12:23.465 --> 00:12:24.860
+of estimating the time
+
+294
+00:12:24.860 --> 00:12:27.140
+to collision between
+dynamic objects.
+
+295
+00:12:27.140 --> 00:12:28.895
+We'll see you in the next module,
+
+296
+00:12:28.895 --> 00:12:30.910
+where we will study
+the behavior planner,
+
+297
+00:12:30.910 --> 00:12:32.540
+the key decision-maker for
+
+298
+00:12:32.540 --> 00:12:35.150
+selecting appropriate
+maneuvers to execute,
+
+299
+00:12:35.150 --> 00:12:39.420
+for every driving scenario
+encountered. See you there.

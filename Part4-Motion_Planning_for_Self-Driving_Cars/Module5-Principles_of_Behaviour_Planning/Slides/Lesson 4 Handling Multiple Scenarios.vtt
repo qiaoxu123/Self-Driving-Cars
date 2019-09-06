@@ -1,0 +1,820 @@
+WEBVTT
+
+1
+00:00:14.120 --> 00:00:16.530
+Welcome to the fourth video
+
+2
+00:00:16.530 --> 00:00:18.090
+in the behavior planning module.
+
+3
+00:00:18.090 --> 00:00:19.920
+In the last video, we introduced
+
+4
+00:00:19.920 --> 00:00:21.240
+dynamic objects into
+
+5
+00:00:21.240 --> 00:00:23.520
+our finite state machine
+behavior planner.
+
+6
+00:00:23.520 --> 00:00:25.395
+In this video, we will develop
+
+7
+00:00:25.395 --> 00:00:27.630
+a larger behavior planner
+which is able to
+
+8
+00:00:27.630 --> 00:00:29.460
+manage the decision process
+
+9
+00:00:29.460 --> 00:00:32.190
+for multiple scenarios
+simultaneously.
+
+10
+00:00:32.190 --> 00:00:34.110
+We will do this by introducing
+
+11
+00:00:34.110 --> 00:00:37.185
+the notion of a hierarchical
+finite state machine.
+
+12
+00:00:37.185 --> 00:00:40.670
+We will also develop a method
+to switch between each of
+
+13
+00:00:40.670 --> 00:00:44.410
+the driving scenarios as
+they occur. Let's begin.
+
+14
+00:00:44.410 --> 00:00:46.480
+So far in this module,
+
+15
+00:00:46.480 --> 00:00:48.140
+we have developed a finite state
+
+16
+00:00:48.140 --> 00:00:50.210
+machine behavior planner
+that can handle
+
+17
+00:00:50.210 --> 00:00:51.740
+a single four-way stop
+
+18
+00:00:51.740 --> 00:00:54.690
+intersection scenario
+with dynamic objects.
+
+19
+00:00:54.690 --> 00:00:56.540
+However, in driving, there are
+
+20
+00:00:56.540 --> 00:00:59.105
+many such scenarios which
+will be encountered.
+
+21
+00:00:59.105 --> 00:01:01.850
+For example, there are
+three-way stop intersections,
+
+22
+00:01:01.850 --> 00:01:03.530
+traffic light controlled
+intersections,
+
+23
+00:01:03.530 --> 00:01:05.870
+and straight road scenarios,
+just to name a few.
+
+24
+00:01:05.870 --> 00:01:07.850
+While many of these
+scenarios share
+
+25
+00:01:07.850 --> 00:01:09.680
+some similarities largely due
+
+26
+00:01:09.680 --> 00:01:11.570
+to the logic required
+to handle them,
+
+27
+00:01:11.570 --> 00:01:13.910
+each of the scenarios
+can be considered to
+
+28
+00:01:13.910 --> 00:01:17.005
+require fundamentally
+different driving behaviors.
+
+29
+00:01:17.005 --> 00:01:18.710
+One method of handling
+
+30
+00:01:18.710 --> 00:01:21.980
+these multiple scenarios is
+by adding additional states,
+
+31
+00:01:21.980 --> 00:01:23.780
+transitions and conditions to
+
+32
+00:01:23.780 --> 00:01:25.640
+a single state machine in
+
+33
+00:01:25.640 --> 00:01:27.920
+an ever-expanding network
+of behaviors.
+
+34
+00:01:27.920 --> 00:01:31.310
+However, there are several
+problems with this approach.
+
+35
+00:01:31.310 --> 00:01:34.070
+The first problem is that
+we would need to develop
+
+36
+00:01:34.070 --> 00:01:37.280
+additional logic to differentiate
+the current scenario,
+
+37
+00:01:37.280 --> 00:01:38.690
+as well as the rules needed to
+
+38
+00:01:38.690 --> 00:01:40.940
+handle each scenario
+individually.
+
+39
+00:01:40.940 --> 00:01:45.320
+This quickly runs into a problem
+known as rule explosion,
+
+40
+00:01:45.320 --> 00:01:47.990
+in which the number of
+rules required to add
+
+41
+00:01:47.990 --> 00:01:51.650
+additional scenarios
+becomes unimaginably large.
+
+42
+00:01:51.650 --> 00:01:53.270
+The second problem with
+
+43
+00:01:53.270 --> 00:01:55.970
+a single state machine is
+that due to the number of
+
+44
+00:01:55.970 --> 00:01:58.010
+extra rules and
+transitions that need to
+
+45
+00:01:58.010 --> 00:02:00.425
+be evaluated at each step,
+
+46
+00:02:00.425 --> 00:02:02.300
+the computational time required
+
+47
+00:02:02.300 --> 00:02:05.200
+significantly
+increases, and lastly,
+
+48
+00:02:05.200 --> 00:02:07.730
+such a system is
+complicated to create and
+
+49
+00:02:07.730 --> 00:02:10.070
+maintain as a number of cases
+
+50
+00:02:10.070 --> 00:02:12.770
+which one must worry
+about increases quickly.
+
+51
+00:02:12.770 --> 00:02:15.950
+Essentially, as the
+complexity increases,
+
+52
+00:02:15.950 --> 00:02:18.395
+we lose all the
+advantages of using
+
+53
+00:02:18.395 --> 00:02:20.030
+a finite state machine that
+
+54
+00:02:20.030 --> 00:02:22.010
+were highlighted
+back in lesson one.
+
+55
+00:02:22.010 --> 00:02:25.210
+There is however, another
+approach we can use.
+
+56
+00:02:25.210 --> 00:02:27.919
+We can represent
+each high level scenario
+
+57
+00:02:27.919 --> 00:02:29.420
+as a single state.
+
+58
+00:02:29.420 --> 00:02:30.950
+This would allow us to create
+
+59
+00:02:30.950 --> 00:02:32.690
+much simpler transitions in
+
+60
+00:02:32.690 --> 00:02:35.185
+between the high level
+scenario states.
+
+61
+00:02:35.185 --> 00:02:38.255
+In this example, we can see
+that the states represent
+
+62
+00:02:38.255 --> 00:02:40.160
+a straight road scenario and
+
+63
+00:02:40.160 --> 00:02:41.840
+the four-way
+intersection scenario
+
+64
+00:02:41.840 --> 00:02:43.355
+we worked with previously.
+
+65
+00:02:43.355 --> 00:02:46.070
+With each one of these high
+level scenario states,
+
+66
+00:02:46.070 --> 00:02:48.710
+we will store
+a low-level state machine
+
+67
+00:02:48.710 --> 00:02:52.445
+with which we can handle
+the scenario independently.
+
+68
+00:02:52.445 --> 00:02:55.449
+For example, for
+the intersection scenario,
+
+69
+00:02:55.449 --> 00:02:57.500
+the low-level state machine
+will be the one
+
+70
+00:02:57.500 --> 00:03:00.125
+constructed over
+the last two lessons.
+
+71
+00:03:00.125 --> 00:03:02.480
+This method of representation is
+
+72
+00:03:02.480 --> 00:03:04.610
+known as a hierarchical
+state machine,
+
+73
+00:03:04.610 --> 00:03:08.275
+with the super-states
+representing each scenario,
+
+74
+00:03:08.275 --> 00:03:09.920
+and the sub-states representing
+
+75
+00:03:09.920 --> 00:03:12.950
+the maneuvers to be
+handled in each scenario.
+
+76
+00:03:12.950 --> 00:03:14.930
+The transitions between
+
+77
+00:03:14.930 --> 00:03:17.210
+the high level
+scenario state machine
+
+78
+00:03:17.210 --> 00:03:18.920
+would be a rule that defines
+
+79
+00:03:18.920 --> 00:03:20.720
+when a new scenario
+has been entered,
+
+80
+00:03:20.720 --> 00:03:24.305
+based on the HD roadmap and
+dynamic vehicle information.
+
+81
+00:03:24.305 --> 00:03:27.755
+Let's say we have this simple
+hierarchical state machine
+
+82
+00:03:27.755 --> 00:03:29.345
+with two scenarios,
+
+83
+00:03:29.345 --> 00:03:32.135
+one for straight road with
+a pedestrian crossing,
+
+84
+00:03:32.135 --> 00:03:34.940
+and another for a stop
+sign-based intersection.
+
+85
+00:03:34.940 --> 00:03:36.740
+To move from the straight road
+
+86
+00:03:36.740 --> 00:03:38.485
+to the stop sign intersection,
+
+87
+00:03:38.485 --> 00:03:40.160
+the autonomous vehicle has to be
+
+88
+00:03:40.160 --> 00:03:42.965
+close to an encounter
+with this intersection.
+
+89
+00:03:42.965 --> 00:03:45.410
+This is done with
+a distance check to
+
+90
+00:03:45.410 --> 00:03:48.785
+the next intersection
+along the mission plan.
+
+91
+00:03:48.785 --> 00:03:51.260
+All the movements
+which we have talked
+
+92
+00:03:51.260 --> 00:03:53.590
+about here is at
+the super-state level.
+
+93
+00:03:53.590 --> 00:03:55.820
+The next question we
+have to answer is,
+
+94
+00:03:55.820 --> 00:03:57.980
+how do we switch
+between scenarios
+
+95
+00:03:57.980 --> 00:04:01.100
+when processing
+the sub-state maneuvers?
+
+96
+00:04:01.100 --> 00:04:04.400
+One method is to
+introduce transitions to
+
+97
+00:04:04.400 --> 00:04:06.965
+key maneuver sub-states out
+
+98
+00:04:06.965 --> 00:04:09.605
+of the current scenario
+super-state.
+
+99
+00:04:09.605 --> 00:04:11.270
+Let us continue to use
+
+100
+00:04:11.270 --> 00:04:13.430
+the intersection
+scenario as an example.
+
+101
+00:04:13.430 --> 00:04:15.920
+First, let's
+establish which state
+
+102
+00:04:15.920 --> 00:04:19.115
+will be the key exit state
+out of the scenario.
+
+103
+00:04:19.115 --> 00:04:21.290
+The only way we're able to exit
+
+104
+00:04:21.290 --> 00:04:23.420
+an intersection is while in
+
+105
+00:04:23.420 --> 00:04:25.010
+the track speed or follow
+
+106
+00:04:25.010 --> 00:04:28.310
+leader states after having
+passed the intersection.
+
+107
+00:04:28.310 --> 00:04:31.465
+So let's put the exit
+transitions there.
+
+108
+00:04:31.465 --> 00:04:34.210
+The condition on
+the transitions would be to
+
+109
+00:04:34.210 --> 00:04:37.495
+confirm that this scenario
+has indeed been completed.
+
+110
+00:04:37.495 --> 00:04:39.220
+In this example, we can use
+
+111
+00:04:39.220 --> 00:04:42.190
+the distance to the next
+stop sign intersection.
+
+112
+00:04:42.190 --> 00:04:44.590
+If this is larger than
+a given threshold,
+
+113
+00:04:44.590 --> 00:04:47.600
+we can exit the
+intersection scenario.
+
+114
+00:04:47.600 --> 00:04:49.595
+With this method of transition,
+
+115
+00:04:49.595 --> 00:04:51.220
+we were able to also maintain
+
+116
+00:04:51.220 --> 00:04:53.710
+maneuvers between
+scenario switches.
+
+117
+00:04:53.710 --> 00:04:56.560
+In this case, track speed
+in the intersection
+
+118
+00:04:56.560 --> 00:04:58.450
+super-state will connect to
+
+119
+00:04:58.450 --> 00:05:01.730
+the track speed of
+the next scenario that we enter.
+
+120
+00:05:01.730 --> 00:05:04.780
+Adding an additional
+multi-lane scenario to
+
+121
+00:05:04.780 --> 00:05:07.330
+this hierarchical state
+machine is done by
+
+122
+00:05:07.330 --> 00:05:10.090
+creating a new super-state
+scenario node,
+
+123
+00:05:10.090 --> 00:05:11.920
+with a sub-state state machine
+
+124
+00:05:11.920 --> 00:05:14.470
+capable of handling
+that scenario.
+
+125
+00:05:14.470 --> 00:05:16.730
+This type of
+finite state machine has
+
+126
+00:05:16.730 --> 00:05:19.055
+some inherent strengths
+and weaknesses.
+
+127
+00:05:19.055 --> 00:05:20.900
+The strengths of
+this approach are
+
+128
+00:05:20.900 --> 00:05:22.970
+due to it's subdivided nature.
+
+129
+00:05:22.970 --> 00:05:25.160
+By creating individual
+state machines
+
+130
+00:05:25.160 --> 00:05:26.930
+within each super-state,
+
+131
+00:05:26.930 --> 00:05:28.670
+this method is able to limit
+
+132
+00:05:28.670 --> 00:05:30.620
+the computational time
+required at
+
+133
+00:05:30.620 --> 00:05:34.535
+any one time step by
+restructuring our sub-space.
+
+134
+00:05:34.535 --> 00:05:37.790
+This subdivided nature also
+makes both testing and
+
+135
+00:05:37.790 --> 00:05:39.830
+programming of
+a hierarchical state machine
+
+136
+00:05:39.830 --> 00:05:41.675
+significantly easier.
+
+137
+00:05:41.675 --> 00:05:44.150
+However, the hierarchical
+state machine
+
+138
+00:05:44.150 --> 00:05:45.895
+is not without its problems,
+
+139
+00:05:45.895 --> 00:05:48.150
+while limiting the number
+of rules required,
+
+140
+00:05:48.150 --> 00:05:49.970
+this approach is still unable to
+
+141
+00:05:49.970 --> 00:05:52.415
+handle rule explosion completely.
+
+142
+00:05:52.415 --> 00:05:55.445
+One reason for the large number
+of rules is that
+
+143
+00:05:55.445 --> 00:05:58.615
+all scenarios have fully
+separated state machines,
+
+144
+00:05:58.615 --> 00:06:00.290
+and thus many of the rules are
+
+145
+00:06:00.290 --> 00:06:01.880
+duplicates of one another in
+
+146
+00:06:01.880 --> 00:06:05.545
+order to handle similar behaviors
+in different scenarios.
+
+147
+00:06:05.545 --> 00:06:07.895
+Ultimately, the
+hierarchical approach
+
+148
+00:06:07.895 --> 00:06:09.890
+allows the system
+designer to handle
+
+149
+00:06:09.890 --> 00:06:12.020
+a greater amount
+of complexity than
+
+150
+00:06:12.020 --> 00:06:14.855
+a flat single layered
+finite state machine.
+
+151
+00:06:14.855 --> 00:06:17.810
+The idea can be extended
+to multiple layers as
+
+152
+00:06:17.810 --> 00:06:20.645
+long as key states can be
+defined at each level.
+
+153
+00:06:20.645 --> 00:06:22.670
+In reality, the perspective
+
+154
+00:06:22.670 --> 00:06:24.950
+enforced by
+finite state machines,
+
+155
+00:06:24.950 --> 00:06:27.920
+that a single behavior is
+active at any given time,
+
+156
+00:06:27.920 --> 00:06:29.795
+and that all transitions to
+
+157
+00:06:29.795 --> 00:06:32.300
+other behaviors can be
+explicitly defined,
+
+158
+00:06:32.300 --> 00:06:34.430
+has a limit on how large a set
+
+159
+00:06:34.430 --> 00:06:36.140
+of scenarios it can handle.
+
+160
+00:06:36.140 --> 00:06:38.720
+Nonetheless, it
+provides a useful tool
+
+161
+00:06:38.720 --> 00:06:41.735
+for typical behavior planning
+in a self-driving car.
+
+162
+00:06:41.735 --> 00:06:44.975
+Let's summarize what we've
+discussed in this video.
+
+163
+00:06:44.975 --> 00:06:46.700
+We first introduced
+
+164
+00:06:46.700 --> 00:06:48.560
+the hierarchical
+finite state machine,
+
+165
+00:06:48.560 --> 00:06:49.760
+which is able to handle
+
+166
+00:06:49.760 --> 00:06:52.670
+multiple scenarios
+simultaneously.
+
+167
+00:06:52.670 --> 00:06:55.910
+We also discussed how
+to transition between
+
+168
+00:06:55.910 --> 00:06:57.905
+the different driving scenarios
+
+169
+00:06:57.905 --> 00:07:00.640
+at the super and
+sub-state levels,
+
+170
+00:07:00.640 --> 00:07:03.950
+and we discussed
+the capabilities and limits of
+
+171
+00:07:03.950 --> 00:07:05.060
+behavior planning with
+
+172
+00:07:05.060 --> 00:07:07.280
+hierarchical finite
+state machines.
+
+173
+00:07:07.280 --> 00:07:09.740
+Join us in our next video
+where we will discuss
+
+174
+00:07:09.740 --> 00:07:12.500
+a range of advanced
+research approaches that
+
+175
+00:07:12.500 --> 00:07:14.960
+are able to solve some of
+the issues we've faced so
+
+176
+00:07:14.960 --> 00:07:18.540
+far with behavior planning.
+See you there.

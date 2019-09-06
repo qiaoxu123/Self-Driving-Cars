@@ -1,0 +1,1277 @@
+WEBVTT
+
+1
+00:00:19.460 --> 00:00:22.020
+Hi everyone, and welcome to
+
+2
+00:00:22.020 --> 00:00:24.705
+Module Four of
+our Motion Planning course.
+
+3
+00:00:24.705 --> 00:00:26.550
+This week, we will
+discuss methods
+
+4
+00:00:26.550 --> 00:00:28.590
+used within the motion planner,
+
+5
+00:00:28.590 --> 00:00:30.330
+to handle interactions between
+
+6
+00:00:30.330 --> 00:00:32.850
+dynamic objects and
+the ego vehicle.
+
+7
+00:00:32.850 --> 00:00:34.880
+We will start this week,
+by looking at
+
+8
+00:00:34.880 --> 00:00:37.250
+the prediction of
+dynamic object motion.
+
+9
+00:00:37.250 --> 00:00:39.890
+We will then go on to
+understanding how we are
+
+10
+00:00:39.890 --> 00:00:42.590
+able to use the dynamic
+object predictions,
+
+11
+00:00:42.590 --> 00:00:44.780
+in order to calculate
+the time to collision
+
+12
+00:00:44.780 --> 00:00:48.140
+between the ego vehicle
+and other dynamic objects.
+
+13
+00:00:48.140 --> 00:00:50.360
+In this lesson, we will define
+
+14
+00:00:50.360 --> 00:00:52.759
+motion prediction
+for dynamic objects
+
+15
+00:00:52.759 --> 00:00:54.620
+and identify the importance of
+
+16
+00:00:54.620 --> 00:00:58.000
+such predictions in the greater
+path planning problem.
+
+17
+00:00:58.000 --> 00:01:01.190
+We'll describe the requirements
+to accurately and
+
+18
+00:01:01.190 --> 00:01:04.340
+safely predict the motion
+of dynamic objects,
+
+19
+00:01:04.340 --> 00:01:07.735
+and explore the challenges
+inherent in motion prediction.
+
+20
+00:01:07.735 --> 00:01:10.670
+Finally, we'll perform
+our first predictions with
+
+21
+00:01:10.670 --> 00:01:12.935
+the constant velocity
+prediction model.
+
+22
+00:01:12.935 --> 00:01:14.645
+Let's get started.
+
+23
+00:01:14.645 --> 00:01:16.910
+Motion prediction attempts to
+
+24
+00:01:16.910 --> 00:01:19.190
+estimate the future
+positions, headings,
+
+25
+00:01:19.190 --> 00:01:22.010
+and velocities of
+all dynamic objects
+
+26
+00:01:22.010 --> 00:01:24.920
+in the environment over
+some finite horizon.
+
+27
+00:01:24.920 --> 00:01:26.870
+This is crucially important
+
+28
+00:01:26.870 --> 00:01:28.580
+for the motion planning problem,
+
+29
+00:01:28.580 --> 00:01:29.960
+as it allows us to plan
+
+30
+00:01:29.960 --> 00:01:33.020
+future actions and maneuvers
+for the autonomous vehicle,
+
+31
+00:01:33.020 --> 00:01:35.855
+based on the expected motions
+of other objects.
+
+32
+00:01:35.855 --> 00:01:38.930
+The predicted paths also
+allow us to make sure that
+
+33
+00:01:38.930 --> 00:01:41.840
+the path which the ego vehicle
+plans to execute,
+
+34
+00:01:41.840 --> 00:01:42.860
+will not collide with
+
+35
+00:01:42.860 --> 00:01:45.425
+any future objects
+at a future time.
+
+36
+00:01:45.425 --> 00:01:47.180
+In order to be able to predict
+
+37
+00:01:47.180 --> 00:01:48.860
+the motion of moving objects,
+
+38
+00:01:48.860 --> 00:01:50.150
+we must have access to
+
+39
+00:01:50.150 --> 00:01:52.805
+some information about
+the environment around us.
+
+40
+00:01:52.805 --> 00:01:55.865
+Especially as it relates
+to dynamic objects.
+
+41
+00:01:55.865 --> 00:01:57.620
+For all dynamic objects,
+
+42
+00:01:57.620 --> 00:02:00.215
+we must first know
+the class of the object.
+
+43
+00:02:00.215 --> 00:02:01.880
+This information is vitally
+
+44
+00:02:01.880 --> 00:02:04.190
+important as most
+prediction models have
+
+45
+00:02:04.190 --> 00:02:06.140
+different algorithmic
+approaches to
+
+46
+00:02:06.140 --> 00:02:08.630
+vehicles as opposed
+to pedestrians.
+
+47
+00:02:08.630 --> 00:02:10.640
+Next, we need to have information
+
+48
+00:02:10.640 --> 00:02:13.255
+regarding the dynamic
+objects current state,
+
+49
+00:02:13.255 --> 00:02:15.945
+its position, and velocity
+in the environment.
+
+50
+00:02:15.945 --> 00:02:18.530
+Represented here by
+a red vector with
+
+51
+00:02:18.530 --> 00:02:21.590
+the vector origin equal
+to the vehicle position,
+
+52
+00:02:21.590 --> 00:02:24.200
+the vector magnitude
+equal to its speed,
+
+53
+00:02:24.200 --> 00:02:25.880
+and the vector's
+direction equal to
+
+54
+00:02:25.880 --> 00:02:28.340
+its current heading or
+direction of travel.
+
+55
+00:02:28.340 --> 00:02:30.910
+Without this minimal information,
+
+56
+00:02:30.910 --> 00:02:32.900
+no predictions can be made about
+
+57
+00:02:32.900 --> 00:02:35.495
+the dynamic objects
+future states.
+
+58
+00:02:35.495 --> 00:02:38.560
+Finally, there are
+many other pieces of information
+
+59
+00:02:38.560 --> 00:02:41.290
+which although not required
+to make a prediction,
+
+60
+00:02:41.290 --> 00:02:44.485
+can greatly improve the accuracy
+of the predictions.
+
+61
+00:02:44.485 --> 00:02:47.560
+While this list that we'll
+present is not exhaustive,
+
+62
+00:02:47.560 --> 00:02:49.870
+it does demonstrate some
+of the major sources of
+
+63
+00:02:49.870 --> 00:02:53.110
+additional information
+to improve predictions.
+
+64
+00:02:53.110 --> 00:02:55.000
+First is the history of
+
+65
+00:02:55.000 --> 00:02:56.500
+the dynamic vehicle state or
+
+66
+00:02:56.500 --> 00:02:59.290
+the vehicle track as it moves
+through the environment.
+
+67
+00:02:59.290 --> 00:03:01.390
+This can be extremely useful.
+
+68
+00:03:01.390 --> 00:03:03.070
+You've learned how to generate
+
+69
+00:03:03.070 --> 00:03:06.245
+vehicle tracks from object
+detections in course three.
+
+70
+00:03:06.245 --> 00:03:08.965
+We can use this information
+to get a better idea
+
+71
+00:03:08.965 --> 00:03:12.265
+of how the object is maneuvering
+through the environment.
+
+72
+00:03:12.265 --> 00:03:14.770
+As we can see in our example,
+
+73
+00:03:14.770 --> 00:03:16.750
+we can see the vehicle
+state history
+
+74
+00:03:16.750 --> 00:03:18.520
+shown as black arrow,
+
+75
+00:03:18.520 --> 00:03:20.200
+with the position heading and
+
+76
+00:03:20.200 --> 00:03:22.525
+speed represented as before.
+
+77
+00:03:22.525 --> 00:03:25.150
+A high definition
+roadmap can also be
+
+78
+00:03:25.150 --> 00:03:27.760
+used as an additional
+information source,
+
+79
+00:03:27.760 --> 00:03:30.940
+to determine future behavior
+of dynamic objects.
+
+80
+00:03:30.940 --> 00:03:33.730
+As will be discussed
+further in this module,
+
+81
+00:03:33.730 --> 00:03:35.260
+vehicles tend to follow
+
+82
+00:03:35.260 --> 00:03:37.510
+their respective lanes while
+driving down the road.
+
+83
+00:03:37.510 --> 00:03:39.850
+This can provide strong cues
+
+84
+00:03:39.850 --> 00:03:42.280
+to improve prediction accuracy.
+
+85
+00:03:42.280 --> 00:03:44.650
+An image of the dynamic object
+
+86
+00:03:44.650 --> 00:03:46.270
+in its current state can also
+
+87
+00:03:46.270 --> 00:03:47.380
+be a useful source of
+
+88
+00:03:47.380 --> 00:03:50.050
+information that can
+improve predictions.
+
+89
+00:03:50.050 --> 00:03:53.425
+This is true for both vehicles
+and pedestrians.
+
+90
+00:03:53.425 --> 00:03:56.230
+For vehicles, the image
+can provide information
+
+91
+00:03:56.230 --> 00:03:58.105
+concerning the current
+indicator light
+
+92
+00:03:58.105 --> 00:04:00.505
+or brake lights
+states, for example.
+
+93
+00:04:00.505 --> 00:04:03.170
+Similarly, images
+of pedestrians can
+
+94
+00:04:03.170 --> 00:04:06.025
+serve to show the current
+orientation of the person,
+
+95
+00:04:06.025 --> 00:04:08.720
+which can help predict
+a future direction of travel,
+
+96
+00:04:08.720 --> 00:04:11.585
+even if the pedestrian
+is currently stationary.
+
+97
+00:04:11.585 --> 00:04:13.850
+Although the complexities of
+
+98
+00:04:13.850 --> 00:04:16.730
+the task of motion
+prediction are quite large,
+
+99
+00:04:16.730 --> 00:04:18.470
+there are several
+assumptions we can
+
+100
+00:04:18.470 --> 00:04:20.960
+use to simplify the problem.
+
+101
+00:04:20.960 --> 00:04:24.020
+We will start by looking
+at simplifications for
+
+102
+00:04:24.020 --> 00:04:26.945
+vehicles and then move
+on to pedestrians.
+
+103
+00:04:26.945 --> 00:04:29.660
+These are the two main
+categories we'll discuss,
+
+104
+00:04:29.660 --> 00:04:32.150
+but you can imagine
+similar approaches needed for
+
+105
+00:04:32.150 --> 00:04:34.640
+cyclists and animals
+such as dear,
+
+106
+00:04:34.640 --> 00:04:36.860
+rodents, or even kangaroos.
+
+107
+00:04:36.860 --> 00:04:39.830
+The first class of
+assumptions we rely on,
+
+108
+00:04:39.830 --> 00:04:42.080
+is that vehicles
+must follow a set of
+
+109
+00:04:42.080 --> 00:04:44.800
+physical constraints
+governing their movement.
+
+110
+00:04:44.800 --> 00:04:46.790
+As we saw in course
+one when we were
+
+111
+00:04:46.790 --> 00:04:50.025
+discussing Vehicle
+Kinematics and Dynamics.
+
+112
+00:04:50.025 --> 00:04:53.375
+These very same vehicle dynamics
+can be applied to
+
+113
+00:04:53.375 --> 00:04:55.130
+other vehicles in the environment
+
+114
+00:04:55.130 --> 00:04:57.125
+to predict their motion.
+
+115
+00:04:57.125 --> 00:04:59.030
+We refer to this type of
+
+116
+00:04:59.030 --> 00:05:01.595
+prediction as a
+physics-based prediction.
+
+117
+00:05:01.595 --> 00:05:04.640
+The second class of assumptions
+that can be used are
+
+118
+00:05:04.640 --> 00:05:07.460
+that almost all motions
+by a vehicle on the road,
+
+119
+00:05:07.460 --> 00:05:09.200
+are made up of a finite set of
+
+120
+00:05:09.200 --> 00:05:12.530
+maneuvers in a restricted domain
+in the environment.
+
+121
+00:05:12.530 --> 00:05:15.290
+In this case, we assume
+that vehicles which are on
+
+122
+00:05:15.290 --> 00:05:16.640
+the road will stay on the road
+
+123
+00:05:16.640 --> 00:05:18.590
+and follow the driving rules.
+
+124
+00:05:18.590 --> 00:05:20.570
+For example, they
+will most likely
+
+125
+00:05:20.570 --> 00:05:22.520
+stay in their lane
+unless indicating
+
+126
+00:05:22.520 --> 00:05:24.050
+otherwise and stop at
+
+127
+00:05:24.050 --> 00:05:26.525
+regulatory elements
+requiring stops.
+
+128
+00:05:26.525 --> 00:05:28.280
+They are unlikely to drive over
+
+129
+00:05:28.280 --> 00:05:31.070
+sidewalks or lawns or
+through obstacles.
+
+130
+00:05:31.070 --> 00:05:34.930
+We refer to this type of
+assumption as maneuver-based.
+
+131
+00:05:34.930 --> 00:05:37.130
+Finally, the third class makes
+
+132
+00:05:37.130 --> 00:05:39.935
+the same assumptions as
+the maneuver-based assumptions.
+
+133
+00:05:39.935 --> 00:05:41.660
+However, instead of only
+
+134
+00:05:41.660 --> 00:05:44.180
+evaluating each vehicle
+independently,
+
+135
+00:05:44.180 --> 00:05:47.000
+we can also incorporate
+the assumption that
+
+136
+00:05:47.000 --> 00:05:48.440
+the dynamic objects will
+
+137
+00:05:48.440 --> 00:05:51.050
+react and interact
+with each other.
+
+138
+00:05:51.050 --> 00:05:53.689
+An example of this type
+of prediction,
+
+139
+00:05:53.689 --> 00:05:57.055
+is during a merge by a vehicle
+into an adjacent lane.
+
+140
+00:05:57.055 --> 00:05:58.490
+Often, the vehicle in
+
+141
+00:05:58.490 --> 00:06:01.100
+the destination lane
+will slow down to make
+
+142
+00:06:01.100 --> 00:06:03.080
+more room for
+the incoming vehicle to
+
+143
+00:06:03.080 --> 00:06:05.615
+maintain a safe
+following distance.
+
+144
+00:06:05.615 --> 00:06:07.730
+These types of
+assumptions are referred
+
+145
+00:06:07.730 --> 00:06:10.855
+to as interaction-aware
+assumptions.
+
+146
+00:06:10.855 --> 00:06:13.940
+For pedestrians,
+the same three categories can be
+
+147
+00:06:13.940 --> 00:06:16.700
+used to summarize
+the assumptions we can make.
+
+148
+00:06:16.700 --> 00:06:19.250
+In terms of physics-based
+assumptions,
+
+149
+00:06:19.250 --> 00:06:22.100
+pedestrians tend to
+have a low top speed
+
+150
+00:06:22.100 --> 00:06:23.810
+but can change their direction of
+
+151
+00:06:23.810 --> 00:06:25.745
+motion and speed very quickly.
+
+152
+00:06:25.745 --> 00:06:28.550
+This makes pedestrians quite
+challenging to predict
+
+153
+00:06:28.550 --> 00:06:31.745
+reliably using purely
+physics-based assumptions,
+
+154
+00:06:31.745 --> 00:06:34.310
+but the range of
+positions a pedestrian
+
+155
+00:06:34.310 --> 00:06:37.800
+can reach in a short
+time frame is limited.
+
+156
+00:06:38.110 --> 00:06:40.955
+For maneuver based assumptions,
+
+157
+00:06:40.955 --> 00:06:44.495
+pedestrians tend not to interact
+directly with vehicles.
+
+158
+00:06:44.495 --> 00:06:46.715
+As they primarily
+use sidewalks or
+
+159
+00:06:46.715 --> 00:06:50.030
+other pedestrian exclusive
+zones when traveling.
+
+160
+00:06:50.030 --> 00:06:52.460
+When entering
+the drivable areas of
+
+161
+00:06:52.460 --> 00:06:54.110
+the environment such
+that they might
+
+162
+00:06:54.110 --> 00:06:55.940
+come into contact with vehicles,
+
+163
+00:06:55.940 --> 00:06:58.760
+they primarily use
+pedestrian crossings.
+
+164
+00:06:58.760 --> 00:07:01.490
+Although restricting
+pedestrian motion to
+
+165
+00:07:01.490 --> 00:07:04.099
+these regions is
+a reasonable assumption,
+
+166
+00:07:04.099 --> 00:07:06.095
+it is not a hard constraint
+
+167
+00:07:06.095 --> 00:07:08.600
+and the unpredictability
+of pedestrians
+
+168
+00:07:08.600 --> 00:07:11.900
+requires maintaining
+multiple possible hypotheses
+
+169
+00:07:11.900 --> 00:07:14.260
+about their future actions.
+
+170
+00:07:14.260 --> 00:07:17.855
+Finally, pedestrians ultimately
+have the right of way
+
+171
+00:07:17.855 --> 00:07:19.670
+and it is the
+self-driving cars duty
+
+172
+00:07:19.670 --> 00:07:21.080
+to stop when necessary.
+
+173
+00:07:21.080 --> 00:07:23.090
+Inattentive
+pedestrians may wander
+
+174
+00:07:23.090 --> 00:07:24.859
+into a roadway without warning,
+
+175
+00:07:24.859 --> 00:07:26.300
+but will often stop when
+
+176
+00:07:26.300 --> 00:07:28.385
+threatened by
+an oncoming vehicle.
+
+177
+00:07:28.385 --> 00:07:31.670
+These types of interactive
+assumptions can also be
+
+178
+00:07:31.670 --> 00:07:35.195
+incorporated into motion
+prediction for pedestrians.
+
+179
+00:07:35.195 --> 00:07:37.414
+Now that we have
+a better understanding
+
+180
+00:07:37.414 --> 00:07:38.660
+of motion prediction,
+
+181
+00:07:38.660 --> 00:07:39.680
+let's have a look at
+
+182
+00:07:39.680 --> 00:07:42.710
+a simple computationally
+efficient algorithm,
+
+183
+00:07:42.710 --> 00:07:44.150
+that can be equally applied to
+
+184
+00:07:44.150 --> 00:07:46.430
+both pedestrians and vehicles.
+
+185
+00:07:46.430 --> 00:07:49.760
+This algorithm makes
+only one extreme assumption
+
+186
+00:07:49.760 --> 00:07:52.010
+regarding the motion
+of the dynamic object.
+
+187
+00:07:52.010 --> 00:07:54.020
+All dynamic objects will maintain
+
+188
+00:07:54.020 --> 00:07:55.790
+their current velocity both in
+
+189
+00:07:55.790 --> 00:07:58.295
+terms of magnitude
+as well as heading.
+
+190
+00:07:58.295 --> 00:08:00.650
+Understanding this,
+let's now look at
+
+191
+00:08:00.650 --> 00:08:02.600
+the algorithmic implementation of
+
+192
+00:08:02.600 --> 00:08:05.615
+this simple constant
+velocity model.
+
+193
+00:08:05.615 --> 00:08:09.680
+The algorithm takes
+three basic inputs t,
+
+194
+00:08:09.680 --> 00:08:12.260
+the prediction horizon or
+the amount of time to predict
+
+195
+00:08:12.260 --> 00:08:15.200
+the object's location
+into the future, dt,
+
+196
+00:08:15.200 --> 00:08:18.480
+the update rate or path
+simulation frequency,
+
+197
+00:08:18.480 --> 00:08:21.830
+that is the amount of time
+between state predictions,
+
+198
+00:08:21.830 --> 00:08:25.550
+and x object, the
+current object's state
+
+199
+00:08:25.550 --> 00:08:27.320
+which includes the position and
+
+200
+00:08:27.320 --> 00:08:29.990
+velocity of the dynamic object.
+
+201
+00:08:29.990 --> 00:08:33.680
+This algorithm iterates
+from the current time zero
+
+202
+00:08:33.680 --> 00:08:36.920
+until the end of the horizon t
+in increments of dt.
+
+203
+00:08:36.920 --> 00:08:39.500
+As we saw in the trajectory
+rollout algorithm
+
+204
+00:08:39.500 --> 00:08:40.925
+in the previous videos,
+
+205
+00:08:40.925 --> 00:08:45.050
+updating the path with
+constant velocity model.
+
+206
+00:08:45.510 --> 00:08:48.200
+The output of this algorithm is
+
+207
+00:08:48.200 --> 00:08:50.390
+a list of predicted
+objects states,
+
+208
+00:08:50.390 --> 00:08:52.400
+positions, and velocities for
+
+209
+00:08:52.400 --> 00:08:54.985
+every time step in
+the prediction horizon.
+
+210
+00:08:54.985 --> 00:08:57.480
+To see how well
+these predictions perform,
+
+211
+00:08:57.480 --> 00:08:59.435
+let's look at a quick example.
+
+212
+00:08:59.435 --> 00:09:01.850
+We'll use a three
+second horizon with
+
+213
+00:09:01.850 --> 00:09:03.830
+a one second update step and
+
+214
+00:09:03.830 --> 00:09:05.105
+the current vehicles state as
+
+215
+00:09:05.105 --> 00:09:07.930
+indicated by the red arrow
+in this figure.
+
+216
+00:09:07.930 --> 00:09:10.730
+As expected, the
+predicted locations of
+
+217
+00:09:10.730 --> 00:09:12.950
+the vehicle move in
+a constant direction with
+
+218
+00:09:12.950 --> 00:09:14.900
+a fixed step size which
+
+219
+00:09:14.900 --> 00:09:17.885
+corresponds very nicely with
+this straight line segment,
+
+220
+00:09:17.885 --> 00:09:19.720
+with a constant speed limit.
+
+221
+00:09:19.720 --> 00:09:21.590
+Simply put, this is because
+
+222
+00:09:21.590 --> 00:09:23.315
+the constant velocity assumption
+
+223
+00:09:23.315 --> 00:09:25.940
+is valid for
+this segment of roadway.
+
+224
+00:09:25.940 --> 00:09:28.330
+Where the constant
+velocity estimate fails,
+
+225
+00:09:28.330 --> 00:09:30.920
+however, is everywhere else.
+
+226
+00:09:30.920 --> 00:09:33.170
+While this algorithm
+weakly falls into
+
+227
+00:09:33.170 --> 00:09:35.510
+the category of
+physics-based assumptions,
+
+228
+00:09:35.510 --> 00:09:36.680
+it fails to capture
+
+229
+00:09:36.680 --> 00:09:39.410
+the full complexity of
+vehicle dynamics models,
+
+230
+00:09:39.410 --> 00:09:42.170
+or even the ability of
+a vehicle to accelerate or
+
+231
+00:09:42.170 --> 00:09:45.905
+decelerate or apply a steering
+command other than zero.
+
+232
+00:09:45.905 --> 00:09:49.730
+Another large flaw of the
+constant velocity assumption,
+
+233
+00:09:49.730 --> 00:09:51.920
+is that it fails to
+account for vehicles
+
+234
+00:09:51.920 --> 00:09:55.025
+tendency to follow changes
+in the road shape.
+
+235
+00:09:55.025 --> 00:09:58.160
+At every point in
+this curved roadway example,
+
+236
+00:09:58.160 --> 00:10:00.110
+the constant velocity
+model predicts
+
+237
+00:10:00.110 --> 00:10:03.065
+the path will continue
+into the oncoming lane.
+
+238
+00:10:03.065 --> 00:10:04.640
+These predictions are wholly
+
+239
+00:10:04.640 --> 00:10:06.715
+unsuited to behavior planning.
+
+240
+00:10:06.715 --> 00:10:10.100
+Similarly, the constant
+velocity prediction fails to
+
+241
+00:10:10.100 --> 00:10:13.325
+account for road signs to
+make velocity adjustments.
+
+242
+00:10:13.325 --> 00:10:15.590
+Vehicles approaching
+stop signs tend to slow
+
+243
+00:10:15.590 --> 00:10:19.210
+down and vehicles leaving
+a stop line tend to accelerate.
+
+244
+00:10:19.210 --> 00:10:21.290
+The assumption which
+this algorithm
+
+245
+00:10:21.290 --> 00:10:23.120
+makes is quite strong and does
+
+246
+00:10:23.120 --> 00:10:25.010
+not apply for most cases
+
+247
+00:10:25.010 --> 00:10:27.155
+that dynamic objects
+may be observed in.
+
+248
+00:10:27.155 --> 00:10:29.960
+The key challenge to motion
+prediction is really
+
+249
+00:10:29.960 --> 00:10:32.600
+to select the most likely inputs,
+
+250
+00:10:32.600 --> 00:10:34.470
+to a vehicle or pedestrian model
+
+251
+00:10:34.470 --> 00:10:37.235
+given what information
+is available.
+
+252
+00:10:37.235 --> 00:10:40.250
+Nonetheless, the constant
+velocity model is
+
+253
+00:10:40.250 --> 00:10:42.470
+an excellent starting
+point and helps
+
+254
+00:10:42.470 --> 00:10:45.470
+define the concept of
+motion prediction clearly.
+
+255
+00:10:45.470 --> 00:10:47.210
+It relies on a minimum of
+
+256
+00:10:47.210 --> 00:10:49.220
+information about
+the dynamic object,
+
+257
+00:10:49.220 --> 00:10:51.890
+to form its predictions
+and can be used
+
+258
+00:10:51.890 --> 00:10:55.130
+wherever additional cues
+are completely unavailable.
+
+259
+00:10:55.130 --> 00:10:58.070
+Let's summarize. In this lesson,
+
+260
+00:10:58.070 --> 00:11:00.500
+we learned about the task
+of motion prediction for
+
+261
+00:11:00.500 --> 00:11:04.265
+dynamic objects and its
+importance to autonomous driving.
+
+262
+00:11:04.265 --> 00:11:06.425
+We then defined minimal and
+
+263
+00:11:06.425 --> 00:11:09.185
+optional information
+requirements to create
+
+264
+00:11:09.185 --> 00:11:11.705
+effective motion
+prediction algorithms
+
+265
+00:11:11.705 --> 00:11:14.510
+for both vehicles
+and pedestrians.
+
+266
+00:11:14.510 --> 00:11:16.190
+We then looked at a simple
+
+267
+00:11:16.190 --> 00:11:18.290
+constant velocity algorithm
+for predicting
+
+268
+00:11:18.290 --> 00:11:20.450
+the future location
+of objects and
+
+269
+00:11:20.450 --> 00:11:23.120
+identified many of
+its limitations.
+
+270
+00:11:23.120 --> 00:11:25.010
+In the next video,
+we will look at
+
+271
+00:11:25.010 --> 00:11:27.410
+the methods to enhance
+our motion predictions,
+
+272
+00:11:27.410 --> 00:11:28.490
+through the use of
+
+273
+00:11:28.490 --> 00:11:32.010
+high-definition roadmaps.
+We'll see you then.

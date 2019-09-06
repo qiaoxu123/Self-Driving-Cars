@@ -1,0 +1,937 @@
+WEBVTT
+
+1
+00:00:14.120 --> 00:00:16.500
+Hello everyone. Welcome to
+
+2
+00:00:16.500 --> 00:00:19.995
+the third video in the
+Environmental Mapping Module.
+
+3
+00:00:19.995 --> 00:00:22.260
+In this video, we will cover
+
+4
+00:00:22.260 --> 00:00:25.755
+the autonomous vehicle-specific
+requirements to convert
+
+5
+00:00:25.755 --> 00:00:27.380
+a Lidar scan into
+
+6
+00:00:27.380 --> 00:00:29.240
+a filtered representation that
+
+7
+00:00:29.240 --> 00:00:31.925
+can be used to create
+an occupancy grid.
+
+8
+00:00:31.925 --> 00:00:33.680
+We will first look at
+
+9
+00:00:33.680 --> 00:00:35.660
+several filtering methods which
+
+10
+00:00:35.660 --> 00:00:38.615
+must be applied to the 3D Scan.
+
+11
+00:00:38.615 --> 00:00:41.910
+Then we will see how
+a 3D Lidar scan is
+
+12
+00:00:41.910 --> 00:00:43.850
+projected down to the 2D Space
+
+13
+00:00:43.850 --> 00:00:46.130
+and converted into a belief map.
+
+14
+00:00:46.130 --> 00:00:48.950
+Finally, we will
+discuss the tuning of
+
+15
+00:00:48.950 --> 00:00:50.660
+several parameters required to
+
+16
+00:00:50.660 --> 00:00:52.610
+make accurate occupancy grids.
+
+17
+00:00:52.610 --> 00:00:54.500
+So let's get started.
+
+18
+00:00:54.500 --> 00:00:57.740
+Here we have a typical
+Lidar scan acquired by
+
+19
+00:00:57.740 --> 00:01:01.640
+the autonomous vehicle as it
+drives along of local road.
+
+20
+00:01:01.640 --> 00:01:04.880
+We will highlight several
+filters that must be applied to
+
+21
+00:01:04.880 --> 00:01:06.560
+the Lidar scan before it can be
+
+22
+00:01:06.560 --> 00:01:08.915
+used to populate
+an occupancy grid.
+
+23
+00:01:08.915 --> 00:01:10.805
+First, in order to make
+
+24
+00:01:10.805 --> 00:01:13.460
+update operations
+run in real-time,
+
+25
+00:01:13.460 --> 00:01:15.980
+it is usually desirable
+to downsample
+
+26
+00:01:15.980 --> 00:01:19.610
+the number of points of a Lidar
+scan to a smaller amount.
+
+27
+00:01:19.610 --> 00:01:23.195
+Second, to remove objects
+that don't affect driving,
+
+28
+00:01:23.195 --> 00:01:25.370
+we filter out all Lidar points
+
+29
+00:01:25.370 --> 00:01:27.580
+which are above
+the autonomous car.
+
+30
+00:01:27.580 --> 00:01:29.870
+Third, we do not want to
+
+31
+00:01:29.870 --> 00:01:32.195
+label the drivable
+surfaces occupied.
+
+32
+00:01:32.195 --> 00:01:34.490
+So we remove all
+Lidar points which have
+
+33
+00:01:34.490 --> 00:01:37.355
+hit the drivable surface
+or ground plane.
+
+34
+00:01:37.355 --> 00:01:39.650
+This drivable surface comes from
+
+35
+00:01:39.650 --> 00:01:42.700
+the perception modules which
+you studied in course three.
+
+36
+00:01:42.700 --> 00:01:45.980
+Finally, we remove
+all dynamic or moving
+
+37
+00:01:45.980 --> 00:01:49.460
+objects such as cars or
+pedestrians that are in motion,
+
+38
+00:01:49.460 --> 00:01:51.815
+again relying on
+the Perception stack
+
+39
+00:01:51.815 --> 00:01:54.310
+to identify their locations.
+
+40
+00:01:54.310 --> 00:01:56.720
+Downsampling is the process of
+
+41
+00:01:56.720 --> 00:01:58.970
+reducing the number
+of Lidar points to be
+
+42
+00:01:58.970 --> 00:02:01.010
+considered by removing or
+
+43
+00:02:01.010 --> 00:02:03.400
+ignoring redundant Lidar points.
+
+44
+00:02:03.400 --> 00:02:06.470
+Common Lidar used in
+autonomous driving can
+
+45
+00:02:06.470 --> 00:02:09.320
+produce up to 1.2
+million points every
+
+46
+00:02:09.320 --> 00:02:13.085
+second which provide
+very rich geometric descriptions
+
+47
+00:02:13.085 --> 00:02:15.380
+of all the objects
+around the vehicle.
+
+48
+00:02:15.380 --> 00:02:17.630
+Many of the generated points are
+
+49
+00:02:17.630 --> 00:02:19.790
+actually redundant however due to
+
+50
+00:02:19.790 --> 00:02:21.770
+the fact that there
+are many points that
+
+51
+00:02:21.770 --> 00:02:24.980
+surround them capturing
+the same object information.
+
+52
+00:02:24.980 --> 00:02:26.780
+In this example, we see
+
+53
+00:02:26.780 --> 00:02:29.820
+a road sign that is densely
+covered in Lidar points
+
+54
+00:02:29.820 --> 00:02:32.915
+where a small fraction of
+the points would suffice to
+
+55
+00:02:32.915 --> 00:02:34.520
+indicate the location of
+
+56
+00:02:34.520 --> 00:02:37.055
+the obstacle for
+Occupancy Grid Mapping.
+
+57
+00:02:37.055 --> 00:02:39.740
+Most importantly, it
+is computationally
+
+58
+00:02:39.740 --> 00:02:42.620
+impractical to deal with
+the 1.2 million points.
+
+59
+00:02:42.620 --> 00:02:45.440
+The second, that some points
+must be removed to
+
+60
+00:02:45.440 --> 00:02:49.325
+improve computations for
+all future operations.
+
+61
+00:02:49.325 --> 00:02:53.060
+Downsampling can be performed
+in a variety of ways.
+
+62
+00:02:53.060 --> 00:02:54.950
+The simplest of which is to use
+
+63
+00:02:54.950 --> 00:02:57.050
+a systematic filter that keeps
+
+64
+00:02:57.050 --> 00:02:59.960
+every nth point along
+the Lidar scan ring.
+
+65
+00:02:59.960 --> 00:03:02.015
+It is also possible to apply
+
+66
+00:03:02.015 --> 00:03:03.890
+image downsampling techniques in
+
+67
+00:03:03.890 --> 00:03:05.930
+the range image and to search
+
+68
+00:03:05.930 --> 00:03:08.570
+spatially in a 3D grid replacing
+
+69
+00:03:08.570 --> 00:03:09.950
+collections of points with
+
+70
+00:03:09.950 --> 00:03:12.125
+a single occupancy measurement.
+
+71
+00:03:12.125 --> 00:03:14.330
+In each case, these methods are
+
+72
+00:03:14.330 --> 00:03:16.220
+readily available in open source
+
+73
+00:03:16.220 --> 00:03:17.990
+Point Cloud Libraries such as
+
+74
+00:03:17.990 --> 00:03:22.330
+PCL or computer vision
+libraries such as OpenCV.
+
+75
+00:03:22.330 --> 00:03:25.490
+Our second filter is
+a trivial one which
+
+76
+00:03:25.490 --> 00:03:28.055
+simply removes points
+above the vehicle height.
+
+77
+00:03:28.055 --> 00:03:31.010
+In this case, above 2.4 meters.
+
+78
+00:03:31.010 --> 00:03:34.910
+This filter usually presumes
+a flat ground plane however,
+
+79
+00:03:34.910 --> 00:03:36.620
+and so you should be
+aware that this is
+
+80
+00:03:36.620 --> 00:03:39.125
+a dangerous assumption
+to apply blindly.
+
+81
+00:03:39.125 --> 00:03:40.745
+That value of eliminating
+
+82
+00:03:40.745 --> 00:03:43.040
+overhanging trees,
+wires, bridges,
+
+83
+00:03:43.040 --> 00:03:44.855
+and signs is significant however
+
+84
+00:03:44.855 --> 00:03:47.735
+so it is worth including
+in this discussion.
+
+85
+00:03:47.735 --> 00:03:50.960
+The next filter involves
+removing points that
+
+86
+00:03:50.960 --> 00:03:53.885
+are deemed to fall on
+the drivable surface.
+
+87
+00:03:53.885 --> 00:03:56.240
+Due to the nature
+of the Lidar scan,
+
+88
+00:03:56.240 --> 00:03:59.285
+many of the concentric circles
+seen in this image
+
+89
+00:03:59.285 --> 00:04:02.795
+are due to the Lidar scan
+hitting the drivable surface.
+
+90
+00:04:02.795 --> 00:04:05.225
+These points should
+not be confused with
+
+91
+00:04:05.225 --> 00:04:08.185
+occupied cells in
+the Occupancy Grid Map.
+
+92
+00:04:08.185 --> 00:04:09.860
+However, this proves to be
+
+93
+00:04:09.860 --> 00:04:13.340
+a challenging task as
+several complications arise.
+
+94
+00:04:13.340 --> 00:04:15.650
+First off, all roads have
+
+95
+00:04:15.650 --> 00:04:18.200
+different road
+geometries including
+
+96
+00:04:18.200 --> 00:04:20.445
+variable concavity for drainage,
+
+97
+00:04:20.445 --> 00:04:24.500
+different slopes and bank
+angles, curvatures, et cetera.
+
+98
+00:04:24.500 --> 00:04:27.745
+This change is also very
+difficult to predict.
+
+99
+00:04:27.745 --> 00:04:30.110
+However, if the
+ground plane is not
+
+100
+00:04:30.110 --> 00:04:33.530
+removed the occupancy grid
+might have artifacts which can
+
+101
+00:04:33.530 --> 00:04:36.290
+result in deadlock in
+which the car cannot
+
+102
+00:04:36.290 --> 00:04:40.285
+continue driving as it believes
+the roadway is blocked.
+
+103
+00:04:40.285 --> 00:04:42.390
+The second problem is that
+
+104
+00:04:42.390 --> 00:04:43.940
+curbs have different heights at
+
+105
+00:04:43.940 --> 00:04:46.370
+different locations and
+road boundaries are
+
+106
+00:04:46.370 --> 00:04:49.370
+not always clearly
+defined in Lidar data.
+
+107
+00:04:49.370 --> 00:04:52.520
+These variations can lead
+to parts of the curbs or
+
+108
+00:04:52.520 --> 00:04:54.800
+non-drivable areas being removed
+
+109
+00:04:54.800 --> 00:04:56.405
+as parts of the ground plane.
+
+110
+00:04:56.405 --> 00:04:59.540
+Finally, the need to
+detect small objects on
+
+111
+00:04:59.540 --> 00:05:03.020
+the road such as a soccer ball
+or a turtle means
+
+112
+00:05:03.020 --> 00:05:06.690
+that simple geometric methods
+working on point clouds
+
+113
+00:05:06.690 --> 00:05:08.405
+have a hard time resolving
+
+114
+00:05:08.405 --> 00:05:10.730
+the true state of
+the roadway ahead.
+
+115
+00:05:10.730 --> 00:05:13.130
+The best approach to
+dealing with this sort of
+
+116
+00:05:13.130 --> 00:05:16.039
+issue is to take
+advantage of vision,
+
+117
+00:05:16.039 --> 00:05:17.630
+and deep neural networks through
+
+118
+00:05:17.630 --> 00:05:21.305
+semantic segmentation as you
+studied in course three.
+
+119
+00:05:21.305 --> 00:05:24.080
+This can be seen in
+the segmented image in
+
+120
+00:05:24.080 --> 00:05:27.485
+which the ground plane
+is shown in dark purple.
+
+121
+00:05:27.485 --> 00:05:30.440
+The task then
+becomes a mapping of
+
+122
+00:05:30.440 --> 00:05:33.470
+the drivable surface detected
+in the vision data to
+
+123
+00:05:33.470 --> 00:05:36.620
+the Lidar Point Cloud
+masking out all those points
+
+124
+00:05:36.620 --> 00:05:38.855
+that fall within
+the projected boundaries
+
+125
+00:05:38.855 --> 00:05:40.820
+of the drivable surface.
+
+126
+00:05:40.820 --> 00:05:44.495
+The final filter that is
+required is the removal of
+
+127
+00:05:44.495 --> 00:05:48.815
+all dynamic objects such as
+moving cars or pedestrians.
+
+128
+00:05:48.815 --> 00:05:52.010
+This can be done once
+again with the reliance on
+
+129
+00:05:52.010 --> 00:05:54.200
+the perception stack
+which must detect
+
+130
+00:05:54.200 --> 00:05:56.885
+and track all dynamic
+objects in the scene.
+
+131
+00:05:56.885 --> 00:05:58.520
+The 3D bounding box of
+
+132
+00:05:58.520 --> 00:06:00.740
+the detected dynamic
+object is used
+
+133
+00:06:00.740 --> 00:06:03.425
+to remove all the points
+in the affected area.
+
+134
+00:06:03.425 --> 00:06:05.990
+A small threshold
+is also added to
+
+135
+00:06:05.990 --> 00:06:08.600
+the size of the bounding box
+used to account for
+
+136
+00:06:08.600 --> 00:06:10.250
+any small mistakes in
+
+137
+00:06:10.250 --> 00:06:13.475
+the perception algorithm
+object location estimate
+
+138
+00:06:13.475 --> 00:06:16.930
+increasing robustness of
+the point remove filter.
+
+139
+00:06:16.930 --> 00:06:18.970
+However, a lot of the time,
+
+140
+00:06:18.970 --> 00:06:21.920
+this is unsatisfactory
+for two reasons.
+
+141
+00:06:21.920 --> 00:06:24.500
+First, not all instances of
+
+142
+00:06:24.500 --> 00:06:25.970
+dynamic object classes that are
+
+143
+00:06:25.970 --> 00:06:27.890
+detected are actually moving.
+
+144
+00:06:27.890 --> 00:06:29.900
+Some vehicles may be parked at
+
+145
+00:06:29.900 --> 00:06:31.760
+the side of the road
+and thus can be
+
+146
+00:06:31.760 --> 00:06:32.900
+considered as part of
+
+147
+00:06:32.900 --> 00:06:35.780
+the occupancy grid as
+they are indeed static.
+
+148
+00:06:35.780 --> 00:06:37.280
+To handle this issue,
+
+149
+00:06:37.280 --> 00:06:41.435
+perception needs to use dynamic
+object tracks to identify
+
+150
+00:06:41.435 --> 00:06:43.010
+those objects that are currently
+
+151
+00:06:43.010 --> 00:06:46.840
+static so the occupancy mapper
+can avoid removing them.
+
+152
+00:06:46.840 --> 00:06:49.490
+Second, due to the computing time
+
+153
+00:06:49.490 --> 00:06:52.160
+required by the
+Perception Stack usually,
+
+154
+00:06:52.160 --> 00:06:55.325
+the dynamic object is only
+detected after some delay.
+
+155
+00:06:55.325 --> 00:06:57.380
+This results in the update to
+
+156
+00:06:57.380 --> 00:07:01.055
+the occupancy grid using
+out-of-date object positions
+
+157
+00:07:01.055 --> 00:07:03.740
+which leads to
+the bounding boxes missing
+
+158
+00:07:03.740 --> 00:07:07.790
+large portions of the Lidar
+points on a dynamic vehicle.
+
+159
+00:07:07.790 --> 00:07:10.640
+Instead, we can rely
+on predictions of
+
+160
+00:07:10.640 --> 00:07:13.810
+the moving objects motion
+based on their object tracks.
+
+161
+00:07:13.810 --> 00:07:16.205
+The bounding box
+is shifted forward
+
+162
+00:07:16.205 --> 00:07:18.710
+along the predicted
+path leading to
+
+163
+00:07:18.710 --> 00:07:20.570
+a greater amount of the points of
+
+164
+00:07:20.570 --> 00:07:21.980
+the dynamic object being
+
+165
+00:07:21.980 --> 00:07:24.895
+removed from the most
+recent Lidar scan.
+
+166
+00:07:24.895 --> 00:07:26.835
+After all this filtering,
+
+167
+00:07:26.835 --> 00:07:28.910
+the Lidar data is
+finally ready to be
+
+168
+00:07:28.910 --> 00:07:31.550
+projected from 3D down to 2D.
+
+169
+00:07:31.550 --> 00:07:34.340
+Let's now look at
+a simple yet effective technique
+
+170
+00:07:34.340 --> 00:07:36.055
+for this final step.
+
+171
+00:07:36.055 --> 00:07:39.500
+First, the Z value which
+stores the height of
+
+172
+00:07:39.500 --> 00:07:40.760
+the Lidar point is set to
+
+173
+00:07:40.760 --> 00:07:44.270
+zero which collapses
+the Lidar grid to a plane.
+
+174
+00:07:44.270 --> 00:07:46.970
+The 2D scan plane is divided
+
+175
+00:07:46.970 --> 00:07:49.970
+into the same grid pattern
+as the occupancy grid.
+
+176
+00:07:49.970 --> 00:07:52.475
+For each cell of
+the occupancy grid,
+
+177
+00:07:52.475 --> 00:07:55.985
+all the Lidar points that
+fall within it are counted.
+
+178
+00:07:55.985 --> 00:07:58.280
+This value will then be used as
+
+179
+00:07:58.280 --> 00:08:01.195
+the measure of
+the occupancy belief.
+
+180
+00:08:01.195 --> 00:08:03.550
+The more points in a cell,
+
+181
+00:08:03.550 --> 00:08:05.885
+the greater the chance that
+there is a measurement
+
+182
+00:08:05.885 --> 00:08:09.455
+of a static object in that cell
+of the occupancy grid.
+
+183
+00:08:09.455 --> 00:08:11.810
+You have made it to the end of
+
+184
+00:08:11.810 --> 00:08:14.485
+the final video discussing
+the occupancy grid.
+
+185
+00:08:14.485 --> 00:08:16.205
+In this video, we saw
+
+186
+00:08:16.205 --> 00:08:18.560
+the filtering
+techniques required to
+
+187
+00:08:18.560 --> 00:08:20.120
+make a Lidar point clouds
+
+188
+00:08:20.120 --> 00:08:23.150
+suitable for use as
+an occupancy grid.
+
+189
+00:08:23.150 --> 00:08:26.210
+These include downsampling,
+
+190
+00:08:26.210 --> 00:08:29.065
+removing Lidar points
+above the car,
+
+191
+00:08:29.065 --> 00:08:31.760
+ground plane removal and finally,
+
+192
+00:08:31.760 --> 00:08:34.075
+removal of dynamic objects.
+
+193
+00:08:34.075 --> 00:08:36.710
+Then, we saw a simple
+yet effective method
+
+194
+00:08:36.710 --> 00:08:39.050
+to transform
+3D Lidar data down to
+
+195
+00:08:39.050 --> 00:08:41.840
+2D belief maps which
+as explained in
+
+196
+00:08:41.840 --> 00:08:45.275
+lesson one can be used to
+create an occupancy grid.
+
+197
+00:08:45.275 --> 00:08:48.050
+Finally, we saw
+all the different areas that
+
+198
+00:08:48.050 --> 00:08:49.820
+an occupancy grid must be tuned
+
+199
+00:08:49.820 --> 00:08:52.265
+in and adjusted carefully.
+
+200
+00:08:52.265 --> 00:08:53.840
+In the next video, we
+
+201
+00:08:53.840 --> 00:08:55.999
+will discuss
+high-definition roadmaps,
+
+202
+00:08:55.999 --> 00:08:58.700
+specifically focusing on
+the Lind lane map and
+
+203
+00:08:58.700 --> 00:09:02.460
+its uses for motion planning.
+See you next time.

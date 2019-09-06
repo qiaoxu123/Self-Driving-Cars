@@ -1,0 +1,1228 @@
+WEBVTT
+
+1
+00:00:14.180 --> 00:00:18.435
+Welcome everyone to
+the final lesson of module two.
+
+2
+00:00:18.435 --> 00:00:20.700
+We will finish
+this week on mapping by
+
+3
+00:00:20.700 --> 00:00:22.965
+looking at another
+essential map type,
+
+4
+00:00:22.965 --> 00:00:25.020
+the High Definition Road Map.
+
+5
+00:00:25.020 --> 00:00:28.935
+In this video, we will define
+a High-Definition Road Map.
+
+6
+00:00:28.935 --> 00:00:31.830
+We will then see how
+this map can effectively be
+
+7
+00:00:31.830 --> 00:00:35.340
+stored by looking at a datatype
+called the lanelet Map.
+
+8
+00:00:35.340 --> 00:00:37.460
+We will then take a look at
+
+9
+00:00:37.460 --> 00:00:40.040
+two main elements
+of the lanelet map;
+
+10
+00:00:40.040 --> 00:00:43.010
+the lanelets and
+the intersection elements,
+
+11
+00:00:43.010 --> 00:00:45.260
+and discuss how
+they are connected.
+
+12
+00:00:45.260 --> 00:00:47.360
+Each of the elements
+will then be broken
+
+13
+00:00:47.360 --> 00:00:49.100
+down into its components,
+
+14
+00:00:49.100 --> 00:00:51.020
+so we can explore the full extent
+
+15
+00:00:51.020 --> 00:00:53.030
+of this mapping data structure.
+
+16
+00:00:53.030 --> 00:00:55.520
+Next, we look at
+the different operations that
+
+17
+00:00:55.520 --> 00:00:58.010
+can be performed on
+lanelet elements.
+
+18
+00:00:58.010 --> 00:01:00.905
+Finally, we will explore
+different methods
+
+19
+00:01:00.905 --> 00:01:04.205
+of recording and
+creating lanelet maps.
+
+20
+00:01:04.205 --> 00:01:07.340
+A High-Definition Road Map
+is similar to
+
+21
+00:01:07.340 --> 00:01:10.810
+traditional paper-based maps
+or online maps.
+
+22
+00:01:10.810 --> 00:01:13.340
+However, the information
+contained within
+
+23
+00:01:13.340 --> 00:01:14.540
+the High Definition map or
+
+24
+00:01:14.540 --> 00:01:17.690
+HD map is significantly
+more detailed.
+
+25
+00:01:17.690 --> 00:01:19.670
+While a traditional map stores
+
+26
+00:01:19.670 --> 00:01:21.860
+the approximate
+locations of roads,
+
+27
+00:01:21.860 --> 00:01:23.810
+the High Definition
+Road Maps stores
+
+28
+00:01:23.810 --> 00:01:26.315
+the precise road
+locations including
+
+29
+00:01:26.315 --> 00:01:29.465
+all lanes down to
+a few centimeters accuracy.
+
+30
+00:01:29.465 --> 00:01:30.905
+Along with this,
+
+31
+00:01:30.905 --> 00:01:32.990
+the High Definition
+Road Maps stores all of
+
+32
+00:01:32.990 --> 00:01:34.970
+the locations of road signs and
+
+33
+00:01:34.970 --> 00:01:37.930
+signals which might effect
+the autonomous vehicle.
+
+34
+00:01:37.930 --> 00:01:39.515
+Due to the detailed and
+
+35
+00:01:39.515 --> 00:01:41.630
+interconnected nature
+of the data,
+
+36
+00:01:41.630 --> 00:01:43.700
+an effective method
+is required to
+
+37
+00:01:43.700 --> 00:01:46.655
+store all information
+contained within the map.
+
+38
+00:01:46.655 --> 00:01:49.250
+The lanelet concept
+was proposed in
+
+39
+00:01:49.250 --> 00:01:51.680
+a 2014 publication entitled,
+
+40
+00:01:51.680 --> 00:01:54.020
+Lanelets: Efficient
+Map Representation
+
+41
+00:01:54.020 --> 00:01:56.450
+for Autonomous Driving
+by Philip Bender,
+
+42
+00:01:56.450 --> 00:01:58.720
+Julius Ziegler, and
+Christoph Stiller.
+
+43
+00:01:58.720 --> 00:02:00.650
+Due to this method's
+effectiveness
+
+44
+00:02:00.650 --> 00:02:02.450
+in storage and communication
+
+45
+00:02:02.450 --> 00:02:05.840
+of the complex set of information
+needed for HD mapping,
+
+46
+00:02:05.840 --> 00:02:07.850
+it is widely used.
+
+47
+00:02:07.850 --> 00:02:11.470
+We'll look at this framework
+for the rest of the course,
+
+48
+00:02:11.470 --> 00:02:13.400
+and they will play a key role in
+
+49
+00:02:13.400 --> 00:02:16.100
+our behavior planning
+methods in particular.
+
+50
+00:02:16.100 --> 00:02:19.039
+The lanelet map has
+two main components,
+
+51
+00:02:19.039 --> 00:02:21.875
+which we will discuss in
+greater detail in this lesson.
+
+52
+00:02:21.875 --> 00:02:23.540
+A lanelet element which
+
+53
+00:02:23.540 --> 00:02:25.790
+stores all information
+connected to
+
+54
+00:02:25.790 --> 00:02:27.680
+a small longitudinal segment of
+
+55
+00:02:27.680 --> 00:02:30.580
+a lane on a road
+which it represents.
+
+56
+00:02:30.580 --> 00:02:33.275
+An intersection element
+which stores
+
+57
+00:02:33.275 --> 00:02:35.420
+all lanelet elements
+which are part of
+
+58
+00:02:35.420 --> 00:02:36.920
+a single intersection for
+
+59
+00:02:36.920 --> 00:02:40.420
+simple retrieval during
+motion planning tasks.
+
+60
+00:02:40.420 --> 00:02:43.280
+This will be followed
+by an explanation of
+
+61
+00:02:43.280 --> 00:02:44.735
+the connectivity between
+
+62
+00:02:44.735 --> 00:02:47.345
+all the different
+lanelet elements.
+
+63
+00:02:47.345 --> 00:02:50.930
+A lanelet elements has
+several sets of information that
+
+64
+00:02:50.930 --> 00:02:54.305
+stores about the segment of
+road that it represents.
+
+65
+00:02:54.305 --> 00:02:56.440
+First, a lanelet stores
+
+66
+00:02:56.440 --> 00:02:59.735
+the left and right boundaries
+of the given lane.
+
+67
+00:02:59.735 --> 00:03:01.925
+Second, a lanelet stores
+
+68
+00:03:01.925 --> 00:03:04.130
+any regulatory elements
+that might be
+
+69
+00:03:04.130 --> 00:03:06.725
+present at the end of
+the lanelet element,
+
+70
+00:03:06.725 --> 00:03:10.775
+such as a stop sign line
+or a static sign line.
+
+71
+00:03:10.775 --> 00:03:13.460
+Note that we only
+store a line for
+
+72
+00:03:13.460 --> 00:03:15.950
+any regulatory element as
+this is the point that
+
+73
+00:03:15.950 --> 00:03:18.080
+the autonomous vehicle treats as
+
+74
+00:03:18.080 --> 00:03:21.535
+the active location for
+that regulatory element.
+
+75
+00:03:21.535 --> 00:03:23.655
+Third, a lanelet stores
+
+76
+00:03:23.655 --> 00:03:26.070
+all regulatory attributes that
+
+77
+00:03:26.070 --> 00:03:28.275
+might affect that
+segment of the road,
+
+78
+00:03:28.275 --> 00:03:30.190
+such as the speed limit.
+
+79
+00:03:30.190 --> 00:03:33.485
+Fourth, a lanelet
+stores the connectivity
+
+80
+00:03:33.485 --> 00:03:36.605
+of itself to other lanelet
+elements around it.
+
+81
+00:03:36.605 --> 00:03:40.325
+This allows for easy traversal
+and calculations
+
+82
+00:03:40.325 --> 00:03:41.930
+through the graph created by
+
+83
+00:03:41.930 --> 00:03:44.600
+the set of lanelets in an HD map.
+
+84
+00:03:44.600 --> 00:03:48.095
+Each lanelet ends as
+a regulatory element
+
+85
+00:03:48.095 --> 00:03:51.425
+or a change to a regulatory
+attribute is encountered.
+
+86
+00:03:51.425 --> 00:03:54.200
+This means that a
+lanelet element can be as short
+
+87
+00:03:54.200 --> 00:03:57.095
+as only a few meters in
+the case of a lanelet,
+
+88
+00:03:57.095 --> 00:03:58.894
+which is part of an intersection,
+
+89
+00:03:58.894 --> 00:04:00.410
+or can be hundreds of meters
+
+90
+00:04:00.410 --> 00:04:02.830
+long for a highway road segment.
+
+91
+00:04:02.830 --> 00:04:04.760
+Boundaries of the lanelet are
+
+92
+00:04:04.760 --> 00:04:07.625
+represented as the edges
+of the lanelet.
+
+93
+00:04:07.625 --> 00:04:10.970
+These boundaries capture
+either marked lane boundaries
+
+94
+00:04:10.970 --> 00:04:13.325
+or curves which inhibit driving.
+
+95
+00:04:13.325 --> 00:04:15.860
+Lane boundaries are
+stored as a set of
+
+96
+00:04:15.860 --> 00:04:19.475
+points creating
+a continuous polygonal line.
+
+97
+00:04:19.475 --> 00:04:21.710
+Each point stores its x,
+
+98
+00:04:21.710 --> 00:04:24.095
+y, and z GPS coordinates.
+
+99
+00:04:24.095 --> 00:04:26.180
+The distance between points can
+
+100
+00:04:26.180 --> 00:04:28.400
+be as fine as a few centimeters,
+
+101
+00:04:28.400 --> 00:04:30.095
+or as course as a few meters
+
+102
+00:04:30.095 --> 00:04:33.715
+depending on the smoothness
+of the polyline in question.
+
+103
+00:04:33.715 --> 00:04:36.225
+Using this polygonal
+line structure,
+
+104
+00:04:36.225 --> 00:04:38.599
+many useful operations
+can be performed
+
+105
+00:04:38.599 --> 00:04:41.795
+to gather data for the task
+of motion planning.
+
+106
+00:04:41.795 --> 00:04:44.480
+The ordering of
+the points defines
+
+107
+00:04:44.480 --> 00:04:47.720
+the direction of travel and
+heading for the lanelet.
+
+108
+00:04:47.720 --> 00:04:50.240
+The road curvature of any part of
+
+109
+00:04:50.240 --> 00:04:53.300
+the lanelet can be precomputed
+from that lanelet as well.
+
+110
+00:04:53.300 --> 00:04:55.910
+A center line between
+
+111
+00:04:55.910 --> 00:04:58.310
+the two boundaries
+can be interpolated,
+
+112
+00:04:58.310 --> 00:05:00.470
+which can be used as
+the desired path of
+
+113
+00:05:00.470 --> 00:05:03.875
+travel for the autonomous
+vehicle in that lane.
+
+114
+00:05:03.875 --> 00:05:05.900
+There are two types of
+
+115
+00:05:05.900 --> 00:05:08.675
+lanelet regulations:
+Regulation Elements,
+
+116
+00:05:08.675 --> 00:05:10.760
+which come at the end
+of the lanelet,
+
+117
+00:05:10.760 --> 00:05:12.680
+and regulation attributes, which
+
+118
+00:05:12.680 --> 00:05:15.225
+affect the entirety
+of the lanelet.
+
+119
+00:05:15.225 --> 00:05:18.440
+Regulatory elements are
+represented as lines
+
+120
+00:05:18.440 --> 00:05:21.590
+which are defined by a set
+of co-linear points.
+
+121
+00:05:21.590 --> 00:05:24.515
+Regulation elements
+usually require
+
+122
+00:05:24.515 --> 00:05:27.110
+an action or decision to be made,
+
+123
+00:05:27.110 --> 00:05:29.090
+such as in the case
+of a traffic light,
+
+124
+00:05:29.090 --> 00:05:31.130
+or the decision to
+proceed must be
+
+125
+00:05:31.130 --> 00:05:34.145
+based on the current state
+of that traffic light.
+
+126
+00:05:34.145 --> 00:05:37.070
+Regulatory attributes persist for
+
+127
+00:05:37.070 --> 00:05:39.125
+the entirety of the lanelet.
+
+128
+00:05:39.125 --> 00:05:41.530
+Examples include speed limits,
+
+129
+00:05:41.530 --> 00:05:43.505
+or whether this lanelet crosses
+
+130
+00:05:43.505 --> 00:05:46.975
+another lanelet as in
+an intersection or merge.
+
+131
+00:05:46.975 --> 00:05:50.370
+Each lanelet has
+four possible connections:
+
+132
+00:05:50.370 --> 00:05:52.320
+Lanelets directly to the left,
+
+133
+00:05:52.320 --> 00:05:55.940
+lanelets directly to
+the right, lanelet preceding it,
+
+134
+00:05:55.940 --> 00:05:57.825
+and lanelet following it.
+
+135
+00:05:57.825 --> 00:06:00.050
+The entire lanelet structure is
+
+136
+00:06:00.050 --> 00:06:02.270
+connected in a directed graph,
+
+137
+00:06:02.270 --> 00:06:05.615
+which is the base structure
+of the HD map.
+
+138
+00:06:05.615 --> 00:06:07.850
+It should be noted there could be
+
+139
+00:06:07.850 --> 00:06:11.135
+more than one lanelet
+preceding the current lanelet,
+
+140
+00:06:11.135 --> 00:06:12.710
+or more than one following
+
+141
+00:06:12.710 --> 00:06:15.435
+lanelet as in the case
+of an intersection.
+
+142
+00:06:15.435 --> 00:06:17.545
+To better understand
+this concept,
+
+143
+00:06:17.545 --> 00:06:20.120
+let's take a look at
+a simple example using
+
+144
+00:06:20.120 --> 00:06:21.350
+this particular set of
+
+145
+00:06:21.350 --> 00:06:23.945
+lanelets for a
+three-way intersection.
+
+146
+00:06:23.945 --> 00:06:27.140
+As you can see, some
+of the lanelets are
+
+147
+00:06:27.140 --> 00:06:30.125
+numbered and represented
+as nodes on the graph,
+
+148
+00:06:30.125 --> 00:06:32.525
+which therefore
+represent only a portion
+
+149
+00:06:32.525 --> 00:06:35.225
+of the complete lanelet graph
+with this intersection.
+
+150
+00:06:35.225 --> 00:06:37.400
+The nodes or vertices are
+
+151
+00:06:37.400 --> 00:06:40.045
+labeled one through five
+on the lane that figure,
+
+152
+00:06:40.045 --> 00:06:43.345
+and form the vertices
+of the lanelet graph.
+
+153
+00:06:43.345 --> 00:06:45.470
+All edges of this graph are
+
+154
+00:06:45.470 --> 00:06:47.630
+directed and are
+labeled to denote
+
+155
+00:06:47.630 --> 00:06:48.830
+the relationship between
+
+156
+00:06:48.830 --> 00:06:51.710
+the two vertices
+the edge connects.
+
+157
+00:06:51.710 --> 00:06:53.629
+An edge marked as zero
+
+158
+00:06:53.629 --> 00:06:56.400
+represents the transition
+to the next lanelet.
+
+159
+00:06:56.400 --> 00:06:59.810
+A one indicates a connection
+to the left lanelet.
+
+160
+00:06:59.810 --> 00:07:01.895
+An edge labeled two represents
+
+161
+00:07:01.895 --> 00:07:04.100
+a connection to
+the right lanelet,
+
+162
+00:07:04.100 --> 00:07:06.925
+and a three represents
+previously lanelets.
+
+163
+00:07:06.925 --> 00:07:08.840
+The lanelet element, which is
+
+164
+00:07:08.840 --> 00:07:11.090
+represented by the number
+one in this picture,
+
+165
+00:07:11.090 --> 00:07:14.230
+has in fact two
+possible next elements.
+
+166
+00:07:14.230 --> 00:07:17.630
+Lanelet element five and
+lanelet element two are
+
+167
+00:07:17.630 --> 00:07:19.820
+two possible next
+lanelets that can be
+
+168
+00:07:19.820 --> 00:07:22.370
+driven on after
+leaving lanelet one,
+
+169
+00:07:22.370 --> 00:07:25.435
+as they are two ways
+through this intersection.
+
+170
+00:07:25.435 --> 00:07:28.310
+Similarly, lanelet
+element four is
+
+171
+00:07:28.310 --> 00:07:31.625
+connected to lanelet
+one with a one edge,
+
+172
+00:07:31.625 --> 00:07:35.015
+as lanelet four is to
+the left of lanelet one.
+
+173
+00:07:35.015 --> 00:07:37.730
+The intersection
+elements simply holds
+
+174
+00:07:37.730 --> 00:07:40.525
+a pointer to
+all regulatory elements,
+
+175
+00:07:40.525 --> 00:07:43.280
+which make up the
+intersection of interest.
+
+176
+00:07:43.280 --> 00:07:45.560
+All lanelet elements
+which are part of
+
+177
+00:07:45.560 --> 00:07:49.085
+an intersection also point to
+this intersection element.
+
+178
+00:07:49.085 --> 00:07:52.280
+This structure acts much
+like a container and
+
+179
+00:07:52.280 --> 00:07:53.940
+simplifies look-ups throughout
+
+180
+00:07:53.940 --> 00:07:57.110
+the lanelet structure
+when assigning behaviors.
+
+181
+00:07:57.110 --> 00:07:59.060
+A big advantage of
+
+182
+00:07:59.060 --> 00:08:01.550
+the lanelet data structure
+is that it makes parts of
+
+183
+00:08:01.550 --> 00:08:03.200
+the motion planning process
+
+184
+00:08:03.200 --> 00:08:05.930
+simpler and more
+computationally efficient.
+
+185
+00:08:05.930 --> 00:08:08.330
+The process of
+path planning through
+
+186
+00:08:08.330 --> 00:08:10.804
+complex multi-lane road networks,
+
+187
+00:08:10.804 --> 00:08:12.770
+which require
+multiple link changes
+
+188
+00:08:12.770 --> 00:08:14.645
+well in advance of turning,
+
+189
+00:08:14.645 --> 00:08:17.510
+are made possible with
+this data structure as
+
+190
+00:08:17.510 --> 00:08:21.620
+each lanelet is treated
+as a separate vertex.
+
+191
+00:08:21.620 --> 00:08:24.080
+Localizing dynamic objects to
+
+192
+00:08:24.080 --> 00:08:26.405
+a known map improves
+path predictions,
+
+193
+00:08:26.405 --> 00:08:28.670
+as we shall see in module four.
+
+194
+00:08:28.670 --> 00:08:31.640
+This type of localization
+ability also improves
+
+195
+00:08:31.640 --> 00:08:34.460
+interactions with
+dynamic objects by
+
+196
+00:08:34.460 --> 00:08:36.530
+providing an easy method to plan
+
+197
+00:08:36.530 --> 00:08:38.540
+the behavior of an autonomous car
+
+198
+00:08:38.540 --> 00:08:39.935
+through a busy intersection,
+
+199
+00:08:39.935 --> 00:08:42.200
+as we'll see in module five.
+
+200
+00:08:42.200 --> 00:08:47.750
+The creation of such a map can
+be done in three ways: The
+
+201
+00:08:47.750 --> 00:08:50.630
+first is creating the map
+offline by driving
+
+202
+00:08:50.630 --> 00:08:51.740
+the road network several
+
+203
+00:08:51.740 --> 00:08:53.855
+times and collecting information,
+
+204
+00:08:53.855 --> 00:08:56.690
+and then fusing both
+segmentation as well as
+
+205
+00:08:56.690 --> 00:08:59.030
+localization
+information to improve
+
+206
+00:08:59.030 --> 00:09:00.500
+the accuracy of the map.
+
+207
+00:09:00.500 --> 00:09:03.230
+In this method,
+hand corrections are also
+
+208
+00:09:03.230 --> 00:09:06.500
+possible if any mistakes are
+noted from the algorithms.
+
+209
+00:09:06.500 --> 00:09:09.620
+The second method is to
+create a lanelet map
+
+210
+00:09:09.620 --> 00:09:12.965
+online while driving a road
+network for the first time.
+
+211
+00:09:12.965 --> 00:09:15.710
+With the use of
+existing traditional maps and
+
+212
+00:09:15.710 --> 00:09:19.055
+heavily relying on segmentation
+and object detection,
+
+213
+00:09:19.055 --> 00:09:21.245
+it is possible to
+create the map as
+
+214
+00:09:21.245 --> 00:09:22.730
+the autonomous vehicle drives
+
+215
+00:09:22.730 --> 00:09:25.025
+through the road network
+for the first time.
+
+216
+00:09:25.025 --> 00:09:27.650
+This method is highly
+computationally
+
+217
+00:09:27.650 --> 00:09:30.830
+expensive both in terms of
+the motion planning task,
+
+218
+00:09:30.830 --> 00:09:32.885
+as well as the perception tasks.
+
+219
+00:09:32.885 --> 00:09:34.280
+Not to mention highly
+
+220
+00:09:34.280 --> 00:09:37.005
+error-prone and thus
+is rarely deployed.
+
+221
+00:09:37.005 --> 00:09:40.920
+The third approach for
+creating HD maps is to create
+
+222
+00:09:40.920 --> 00:09:42.515
+the maps offline and then
+
+223
+00:09:42.515 --> 00:09:45.335
+update them online if
+changes are detected.
+
+224
+00:09:45.335 --> 00:09:46.940
+One such change might be
+
+225
+00:09:46.940 --> 00:09:48.140
+a new construction zone
+
+226
+00:09:48.140 --> 00:09:50.490
+resulting in a new
+regulatory element,
+
+227
+00:09:50.490 --> 00:09:51.980
+and this is something
+that could not have
+
+228
+00:09:51.980 --> 00:09:54.595
+been predicted
+during map creation.
+
+229
+00:09:54.595 --> 00:09:57.230
+In fact, all of these methods use
+
+230
+00:09:57.230 --> 00:09:59.390
+the same underlying
+calculations to
+
+231
+00:09:59.390 --> 00:10:02.870
+identify lanelet elements,
+attributes, and intersections.
+
+232
+00:10:02.870 --> 00:10:05.720
+In practice, offline
+map construction with
+
+233
+00:10:05.720 --> 00:10:07.535
+live confirmation and updating
+
+234
+00:10:07.535 --> 00:10:09.600
+captures the best of both worlds,
+
+235
+00:10:09.600 --> 00:10:11.480
+ensuring high precision on
+
+236
+00:10:11.480 --> 00:10:14.180
+static elements that do
+not change frequently,
+
+237
+00:10:14.180 --> 00:10:16.400
+and yet still capturing
+the novelty in
+
+238
+00:10:16.400 --> 00:10:20.520
+the environment and allowing
+the vehicle to adapt to it.
+
+239
+00:10:20.870 --> 00:10:23.590
+There is much more
+detail that can be
+
+240
+00:10:23.590 --> 00:10:26.305
+included in this discussion
+about HD mapping.
+
+241
+00:10:26.305 --> 00:10:27.940
+So we've added some links to
+
+242
+00:10:27.940 --> 00:10:29.590
+the supplemental materials if
+
+243
+00:10:29.590 --> 00:10:31.555
+you'd like to dive in deeper.
+
+244
+00:10:31.555 --> 00:10:33.640
+Congratulations, you've made it
+
+245
+00:10:33.640 --> 00:10:35.155
+to the end of this module.
+
+246
+00:10:35.155 --> 00:10:37.510
+In this module, you've
+learned all about
+
+247
+00:10:37.510 --> 00:10:40.330
+the creation of two types
+of environment maps,
+
+248
+00:10:40.330 --> 00:10:42.550
+which are required
+for motion planning.
+
+249
+00:10:42.550 --> 00:10:44.995
+We started by looking
+at the construction of
+
+250
+00:10:44.995 --> 00:10:46.390
+occupancy grid maps from
+
+251
+00:10:46.390 --> 00:10:48.760
+rider data for self-driving cars.
+
+252
+00:10:48.760 --> 00:10:51.670
+It's Bayesian log-odds
+update steps,
+
+253
+00:10:51.670 --> 00:10:54.310
+and all the required
+filtering needed to
+
+254
+00:10:54.310 --> 00:10:57.940
+create meaningful maps or
+static objects to be avoided.
+
+255
+00:10:57.940 --> 00:10:59.500
+We also looked at
+
+256
+00:10:59.500 --> 00:11:02.585
+High Definition Road Maps
+using the lanelet model.
+
+257
+00:11:02.585 --> 00:11:05.390
+We discussed the various
+components which make up
+
+258
+00:11:05.390 --> 00:11:07.280
+these maps and how they can be
+
+259
+00:11:07.280 --> 00:11:10.310
+used for fundamental motion
+planning operations.
+
+260
+00:11:10.310 --> 00:11:11.970
+In the next module,
+
+261
+00:11:11.970 --> 00:11:14.520
+we will look into
+the mission planning problem,
+
+262
+00:11:14.520 --> 00:11:17.660
+the first step in
+the task of developing
+
+263
+00:11:17.660 --> 00:11:19.670
+safe and effective trajectories
+
+264
+00:11:19.670 --> 00:11:23.100
+for self-driving cars.
+See you then.

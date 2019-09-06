@@ -1,0 +1,1376 @@
+WEBVTT
+
+1
+00:00:14.120 --> 00:00:17.445
+Hi everyone. In this lesson,
+
+2
+00:00:17.445 --> 00:00:19.050
+we will discuss how to
+
+3
+00:00:19.050 --> 00:00:22.170
+incorporate some of the
+objectives and constraints we
+
+4
+00:00:22.170 --> 00:00:24.240
+discussed in module one with
+
+5
+00:00:24.240 --> 00:00:26.550
+the cubic spirals in
+boundary conditions we
+
+6
+00:00:26.550 --> 00:00:28.620
+introduced in the last lesson to
+
+7
+00:00:28.620 --> 00:00:31.755
+create a path planning
+optimization problem.
+
+8
+00:00:31.755 --> 00:00:33.375
+By solving this problem,
+
+9
+00:00:33.375 --> 00:00:35.185
+we'll be able to generate smooth,
+
+10
+00:00:35.185 --> 00:00:38.915
+feasible paths that satisfy
+all of our constraints.
+
+11
+00:00:38.915 --> 00:00:40.460
+By the end of this video,
+
+12
+00:00:40.460 --> 00:00:41.950
+you should be able to:
+
+13
+00:00:41.950 --> 00:00:44.270
+Identify the boundary
+conditions and
+
+14
+00:00:44.270 --> 00:00:45.770
+constraints required for
+
+15
+00:00:45.770 --> 00:00:49.010
+smooth path planning
+using polynomial spirals,
+
+16
+00:00:49.010 --> 00:00:52.010
+approximate some of
+the required constraints to
+
+17
+00:00:52.010 --> 00:00:55.100
+improve the tractability of
+the optimization problem,
+
+18
+00:00:55.100 --> 00:00:59.000
+and know how to map the required
+parameters in such a way
+
+19
+00:00:59.000 --> 00:01:00.440
+that the optimization problem
+
+20
+00:01:00.440 --> 00:01:03.125
+converges quickly to
+a feasible solution.
+
+21
+00:01:03.125 --> 00:01:05.690
+Let's get started. If you
+
+22
+00:01:05.690 --> 00:01:07.430
+recall from the previous lesson,
+
+23
+00:01:07.430 --> 00:01:09.170
+our boundary conditions described
+
+24
+00:01:09.170 --> 00:01:11.420
+the absolute minimum
+requirements for
+
+25
+00:01:11.420 --> 00:01:14.320
+a path being planned
+between two points.
+
+26
+00:01:14.320 --> 00:01:16.630
+Essentially, they
+require that for
+
+27
+00:01:16.630 --> 00:01:19.389
+a given starting position
+heading and curvature,
+
+28
+00:01:19.389 --> 00:01:21.310
+our planned path ends at
+
+29
+00:01:21.310 --> 00:01:24.520
+a specific position heading
+and curvature as well.
+
+30
+00:01:24.520 --> 00:01:27.280
+This will give us our first set
+of constraints on
+
+31
+00:01:27.280 --> 00:01:29.170
+our optimization problem known as
+
+32
+00:01:29.170 --> 00:01:32.215
+boundary conditions
+which we can see here.
+
+33
+00:01:32.215 --> 00:01:34.690
+Unfortunately, as we discussed in
+
+34
+00:01:34.690 --> 00:01:36.940
+the last lesson that cubic spiral
+
+35
+00:01:36.940 --> 00:01:39.279
+does not have
+a closed form solution
+
+36
+00:01:39.279 --> 00:01:41.540
+for the position at
+the end of the spiral.
+
+37
+00:01:41.540 --> 00:01:43.450
+To write our constraints in terms
+
+38
+00:01:43.450 --> 00:01:45.220
+of the parameters of the spiral,
+
+39
+00:01:45.220 --> 00:01:48.685
+we will need to use a numerical
+integration technique.
+
+40
+00:01:48.685 --> 00:01:50.680
+Many exist, but we'll apply
+
+41
+00:01:50.680 --> 00:01:52.120
+Simpson's rule which we
+
+42
+00:01:52.120 --> 00:01:54.190
+briefly mentioned in
+the previous lesson.
+
+43
+00:01:54.190 --> 00:01:57.295
+Let's look a bit more
+closely at Simpson's rule.
+
+44
+00:01:57.295 --> 00:01:59.060
+Simpson's rule is
+
+45
+00:01:59.060 --> 00:02:01.910
+a commonly used numerical
+integration technique
+
+46
+00:02:01.910 --> 00:02:03.845
+that is generally
+more precise than
+
+47
+00:02:03.845 --> 00:02:06.005
+other simpler numerical methods.
+
+48
+00:02:06.005 --> 00:02:08.780
+This is because it
+evaluates the integral of
+
+49
+00:02:08.780 --> 00:02:11.675
+the quadratic interpolation
+of the given function
+
+50
+00:02:11.675 --> 00:02:13.220
+rather than the integral of
+
+51
+00:02:13.220 --> 00:02:14.810
+the linear interpolation as in
+
+52
+00:02:14.810 --> 00:02:18.590
+some methods such as
+midpoint and trapezoidal rules.
+
+53
+00:02:18.590 --> 00:02:21.965
+Simpson's rule proceeds
+by defining a number of
+
+54
+00:02:21.965 --> 00:02:23.600
+equally spaced divisions of
+
+55
+00:02:23.600 --> 00:02:26.365
+the integration domain
+defined by n,
+
+56
+00:02:26.365 --> 00:02:28.295
+and then summing terms at
+
+57
+00:02:28.295 --> 00:02:30.260
+each division and boundary point.
+
+58
+00:02:30.260 --> 00:02:33.415
+For example, if we
+choose n equal to four,
+
+59
+00:02:33.415 --> 00:02:35.615
+then we are splitting
+the integration domain
+
+60
+00:02:35.615 --> 00:02:37.955
+into four equally sized segments,
+
+61
+00:02:37.955 --> 00:02:41.600
+and we therefore have five
+points to include in our sum.
+
+62
+00:02:41.600 --> 00:02:45.230
+Each term in the sum is
+the function evaluated at
+
+63
+00:02:45.230 --> 00:02:46.970
+the division point multiplied
+
+64
+00:02:46.970 --> 00:02:48.755
+by the appropriate coefficient.
+
+65
+00:02:48.755 --> 00:02:51.530
+In the interior of
+the Simpson's rule equation,
+
+66
+00:02:51.530 --> 00:02:52.745
+we can see that we have
+
+67
+00:02:52.745 --> 00:02:55.550
+alternating coefficients
+of four and two for
+
+68
+00:02:55.550 --> 00:02:57.320
+each term except for
+
+69
+00:02:57.320 --> 00:02:59.975
+the endpoint terms which
+have a coefficient of one.
+
+70
+00:02:59.975 --> 00:03:01.535
+As one would expect,
+
+71
+00:03:01.535 --> 00:03:03.440
+as n increases, we get
+
+72
+00:03:03.440 --> 00:03:06.365
+a more accurate approximation
+to our integral.
+
+73
+00:03:06.365 --> 00:03:09.710
+Let's apply this to
+our specific planning problem.
+
+74
+00:03:09.710 --> 00:03:11.645
+If we take n equals eight
+
+75
+00:03:11.645 --> 00:03:13.400
+in the Simpson's rule
+approximation,
+
+76
+00:03:13.400 --> 00:03:14.930
+our approximation will be
+
+77
+00:03:14.930 --> 00:03:16.730
+accurate enough for
+the optimizations
+
+78
+00:03:16.730 --> 00:03:18.350
+we'll be performing without
+
+79
+00:03:18.350 --> 00:03:20.755
+being too computationally
+expensive.
+
+80
+00:03:20.755 --> 00:03:23.240
+Since the heading
+Theta is just the
+
+81
+00:03:23.240 --> 00:03:25.520
+integral of the cubic
+spiral function,
+
+82
+00:03:25.520 --> 00:03:28.790
+we can explicitly define
+a closed form solution
+
+83
+00:03:28.790 --> 00:03:29.960
+for it which is
+
+84
+00:03:29.960 --> 00:03:32.975
+a fourth order polynomial
+which is shown here.
+
+85
+00:03:32.975 --> 00:03:35.420
+We can then use the values of
+
+86
+00:03:35.420 --> 00:03:37.820
+Theta at each division point in
+
+87
+00:03:37.820 --> 00:03:40.040
+a Simpson's rule approximation to
+
+88
+00:03:40.040 --> 00:03:43.615
+compute the x and y positions
+of the cubic spiral.
+
+89
+00:03:43.615 --> 00:03:47.210
+The integrands to be
+integrated for x and y are
+
+90
+00:03:47.210 --> 00:03:51.725
+cosine of Theta of s and sine
+of theta of s respectively,
+
+91
+00:03:51.725 --> 00:03:53.930
+which are substituted in for f in
+
+92
+00:03:53.930 --> 00:03:57.385
+the Simpson's rule to form
+the following expressions.
+
+93
+00:03:57.385 --> 00:04:00.020
+We now have a useful
+approximation to
+
+94
+00:04:00.020 --> 00:04:01.670
+the X and Y position of
+
+95
+00:04:01.670 --> 00:04:05.090
+the spiral at any given arc
+length point defined by
+
+96
+00:04:05.090 --> 00:04:07.790
+our arc length
+parameter s. We will
+
+97
+00:04:07.790 --> 00:04:10.640
+denote the approximations
+to x and y as
+
+98
+00:04:10.640 --> 00:04:13.830
+computed using Simpson's
+rule as x sub s and
+
+99
+00:04:13.830 --> 00:04:17.410
+y sub s. Returning to
+our boundary conditions,
+
+100
+00:04:17.410 --> 00:04:21.140
+we now have an approximation
+for the path ending location
+
+101
+00:04:21.140 --> 00:04:23.120
+and we can write out
+the boundary conditions in
+
+102
+00:04:23.120 --> 00:04:25.670
+terms of the known
+parameters of the spiral.
+
+103
+00:04:25.670 --> 00:04:27.920
+We can now generate a spiral from
+
+104
+00:04:27.920 --> 00:04:30.230
+one point to another
+that satisfies
+
+105
+00:04:30.230 --> 00:04:33.469
+the given boundary conditions
+by iteratively optimizing
+
+106
+00:04:33.469 --> 00:04:35.540
+the parameters of the spiral as
+
+107
+00:04:35.540 --> 00:04:38.290
+well as its total arc length Sf.
+
+108
+00:04:38.290 --> 00:04:40.165
+Before we do that, however,
+
+109
+00:04:40.165 --> 00:04:42.050
+let's go over
+the kinematic constraints
+
+110
+00:04:42.050 --> 00:04:43.595
+we would like to enforce.
+
+111
+00:04:43.595 --> 00:04:46.970
+Specifically for autonomous
+driving path planning,
+
+112
+00:04:46.970 --> 00:04:50.390
+we're going to be focusing
+on curvature constraints.
+
+113
+00:04:50.390 --> 00:04:53.000
+Cars have an absolute
+minimum turning radius
+
+114
+00:04:53.000 --> 00:04:54.485
+and need to stay within
+
+115
+00:04:54.485 --> 00:04:56.510
+lateral acceleration limits to
+
+116
+00:04:56.510 --> 00:04:59.420
+maintain wheel traction and
+ride comfort in the vehicle.
+
+117
+00:04:59.420 --> 00:05:01.550
+We'll discuss these constraints
+
+118
+00:05:01.550 --> 00:05:03.740
+in more detail in future lessons.
+
+119
+00:05:03.740 --> 00:05:06.110
+For now, let's assume
+that our car can
+
+120
+00:05:06.110 --> 00:05:08.975
+achieve a minimum turning
+radius of two meters.
+
+121
+00:05:08.975 --> 00:05:11.885
+This corresponds to
+a maximum curvature
+
+122
+00:05:11.885 --> 00:05:14.680
+of 0.5 arc meters.
+
+123
+00:05:14.680 --> 00:05:17.120
+Now, it's quite
+difficult to write out
+
+124
+00:05:17.120 --> 00:05:18.650
+this curvature constraint at
+
+125
+00:05:18.650 --> 00:05:20.825
+every single point
+along the spiral.
+
+126
+00:05:20.825 --> 00:05:24.110
+However, because of the
+polynomial nature of the spiral,
+
+127
+00:05:24.110 --> 00:05:27.505
+we only have to constrain
+a few evenly spaced points.
+
+128
+00:05:27.505 --> 00:05:29.570
+Because the polynomial
+function of
+
+129
+00:05:29.570 --> 00:05:32.105
+curvature is continuous
+and well-behaved,
+
+130
+00:05:32.105 --> 00:05:34.970
+we're likely to generate
+a spiral that satisfies
+
+131
+00:05:34.970 --> 00:05:36.290
+our curvature requirements when
+
+132
+00:05:36.290 --> 00:05:38.420
+performing the optimization.
+
+133
+00:05:38.420 --> 00:05:41.930
+For simplicity, let's
+constrain the curvature
+
+134
+00:05:41.930 --> 00:05:45.395
+at the one-third and two-third
+points of the curve.
+
+135
+00:05:45.395 --> 00:05:47.750
+The start and end
+point curvatures were
+
+136
+00:05:47.750 --> 00:05:50.545
+already constrained in
+the boundary conditions.
+
+137
+00:05:50.545 --> 00:05:53.015
+Once we've done this, we now have
+
+138
+00:05:53.015 --> 00:05:54.500
+our curvature constraints as
+
+139
+00:05:54.500 --> 00:05:57.170
+a function of the
+parameters of the spiral,
+
+140
+00:05:57.170 --> 00:05:58.640
+and we have all of
+
+141
+00:05:58.640 --> 00:06:00.080
+our required constraints to
+
+142
+00:06:00.080 --> 00:06:02.545
+solve the optimization problem.
+
+143
+00:06:02.545 --> 00:06:04.850
+The final piece of the puzzle is
+
+144
+00:06:04.850 --> 00:06:08.060
+the actual objective function
+we wish to minimize.
+
+145
+00:06:08.060 --> 00:06:10.070
+We want to encourage smoothness
+
+146
+00:06:10.070 --> 00:06:11.990
+and comfort along
+our planned path.
+
+147
+00:06:11.990 --> 00:06:14.660
+One way to do so is to distribute
+
+148
+00:06:14.660 --> 00:06:17.900
+the absolute curvature
+evenly along the path.
+
+149
+00:06:17.900 --> 00:06:20.090
+This can be done by minimizing
+
+150
+00:06:20.090 --> 00:06:23.420
+the bending energy of
+our planned parametric curve.
+
+151
+00:06:23.420 --> 00:06:26.540
+The bending energy of
+a curve is the integral of
+
+152
+00:06:26.540 --> 00:06:28.730
+its squared curvature along
+
+153
+00:06:28.730 --> 00:06:31.370
+the entire arc length
+of the path.
+
+154
+00:06:31.370 --> 00:06:33.650
+Since we have
+a polynomial function of
+
+155
+00:06:33.650 --> 00:06:36.154
+curvature describing
+our cubic spiral,
+
+156
+00:06:36.154 --> 00:06:37.970
+the bending energy integral has
+
+157
+00:06:37.970 --> 00:06:39.680
+a closed form solution in
+
+158
+00:06:39.680 --> 00:06:41.885
+terms of the spiral's parameters.
+
+159
+00:06:41.885 --> 00:06:44.045
+In addition, its gradient
+
+160
+00:06:44.045 --> 00:06:46.130
+also has a closed form solution.
+
+161
+00:06:46.130 --> 00:06:49.370
+Both of these expressions
+have many terms however so
+
+162
+00:06:49.370 --> 00:06:52.985
+it's best left to a symbolic
+solver to create them.
+
+163
+00:06:52.985 --> 00:06:55.370
+The fact that
+the objective function and
+
+164
+00:06:55.370 --> 00:06:58.400
+its gradient have closed
+form solutions make it an
+
+165
+00:06:58.400 --> 00:07:00.590
+objective function that
+is highly conducive to
+
+166
+00:07:00.590 --> 00:07:02.450
+nonlinear programming which we
+
+167
+00:07:02.450 --> 00:07:04.520
+will discuss in our next lesson.
+
+168
+00:07:04.520 --> 00:07:06.800
+Now that we have
+our objective function,
+
+169
+00:07:06.800 --> 00:07:09.050
+we can put everything
+together into our path
+
+170
+00:07:09.050 --> 00:07:11.765
+planning optimization
+problems shown here.
+
+171
+00:07:11.765 --> 00:07:13.760
+For our purposes, we're going to
+
+172
+00:07:13.760 --> 00:07:16.535
+assume the initial boundary
+conditions are zero,
+
+173
+00:07:16.535 --> 00:07:18.395
+which means that we are defining
+
+174
+00:07:18.395 --> 00:07:20.000
+our local planning problem in
+
+175
+00:07:20.000 --> 00:07:22.160
+the vehicle frame and results in
+
+176
+00:07:22.160 --> 00:07:24.845
+the simplified expressions
+for the heading and
+
+177
+00:07:24.845 --> 00:07:26.720
+x and y approximations using
+
+178
+00:07:26.720 --> 00:07:29.285
+Simpson's rule we've
+defined in this video.
+
+179
+00:07:29.285 --> 00:07:30.980
+This means that the initial
+
+180
+00:07:30.980 --> 00:07:32.660
+boundary value constraints can be
+
+181
+00:07:32.660 --> 00:07:34.400
+removed since they are already
+
+182
+00:07:34.400 --> 00:07:37.490
+accounted for in
+our integral calculations.
+
+183
+00:07:37.490 --> 00:07:40.160
+Now we could very well
+stop here and use
+
+184
+00:07:40.160 --> 00:07:42.980
+this as our path generating
+optimization problem.
+
+185
+00:07:42.980 --> 00:07:45.620
+However, there is
+a practical issue with how
+
+186
+00:07:45.620 --> 00:07:48.470
+this optimization problem
+is set up that may slow it
+
+187
+00:07:48.470 --> 00:07:51.140
+down or cause it not to
+converge at all when
+
+188
+00:07:51.140 --> 00:07:54.305
+solved using canonical
+non-linear programming solvers.
+
+189
+00:07:54.305 --> 00:07:56.480
+Let's try to address this now.
+
+190
+00:07:56.480 --> 00:07:59.690
+The main issue we can
+see here has to do with
+
+191
+00:07:59.690 --> 00:08:01.220
+the equality constraints of
+
+192
+00:08:01.220 --> 00:08:03.275
+the final position and heading.
+
+193
+00:08:03.275 --> 00:08:07.075
+Because equality constraints
+must be satisfied exactly,
+
+194
+00:08:07.075 --> 00:08:09.590
+it is quite hard for
+a numerical optimizer
+
+195
+00:08:09.590 --> 00:08:12.050
+to generate a feasible
+solution from
+
+196
+00:08:12.050 --> 00:08:14.780
+an infeasible starting point
+which is often what is given
+
+197
+00:08:14.780 --> 00:08:18.085
+to the optimizer for
+an arbitrary problem instance.
+
+198
+00:08:18.085 --> 00:08:20.185
+To alleviate this issue,
+
+199
+00:08:20.185 --> 00:08:22.040
+it is common in optimization to
+
+200
+00:08:22.040 --> 00:08:23.720
+soft inequality constraints
+
+201
+00:08:23.720 --> 00:08:25.820
+to improve optimizer performance.
+
+202
+00:08:25.820 --> 00:08:29.000
+Soft constraints convert
+a strict constraint
+
+203
+00:08:29.000 --> 00:08:32.630
+into a heavily penalized term
+in the objective function.
+
+204
+00:08:32.630 --> 00:08:34.760
+By heavily penalized,
+we mean that
+
+205
+00:08:34.760 --> 00:08:37.340
+the constraint penalty
+term coefficient
+
+206
+00:08:37.340 --> 00:08:39.500
+should be at least an
+order of magnitude
+
+207
+00:08:39.500 --> 00:08:42.830
+larger than the general
+optimization objective.
+
+208
+00:08:42.830 --> 00:08:45.140
+Although this allows
+the optimizer to
+
+209
+00:08:45.140 --> 00:08:48.140
+violate the boundary condition
+equality constraints,
+
+210
+00:08:48.140 --> 00:08:49.910
+the optimizer will be strongly
+
+211
+00:08:49.910 --> 00:08:52.640
+encouraged to converge
+to a solution that is as
+
+212
+00:08:52.640 --> 00:08:55.720
+close as possible to
+the boundary conditions before
+
+213
+00:08:55.720 --> 00:08:57.590
+the bending energy
+penalty term will be
+
+214
+00:08:57.590 --> 00:09:00.290
+large enough to
+influence the optimizer.
+
+215
+00:09:00.290 --> 00:09:02.030
+We will also assume that
+
+216
+00:09:02.030 --> 00:09:04.550
+our initial curvature is
+known and is usually set to
+
+217
+00:09:04.550 --> 00:09:08.240
+zero which corresponds to
+a naught equal to zero.
+
+218
+00:09:08.240 --> 00:09:11.510
+This reduces the number of
+optimization variables by one.
+
+219
+00:09:11.510 --> 00:09:13.430
+After softening
+these constraints,
+
+220
+00:09:13.430 --> 00:09:16.610
+our new optimization problem
+is as follows.
+
+221
+00:09:16.610 --> 00:09:19.880
+We have one further issue
+we need to address before
+
+222
+00:09:19.880 --> 00:09:21.590
+defining the final version of
+
+223
+00:09:21.590 --> 00:09:23.825
+our optimization
+to be implemented.
+
+224
+00:09:23.825 --> 00:09:26.240
+The final issue we
+can address has to
+
+225
+00:09:26.240 --> 00:09:28.775
+do with the optimization
+parameters.
+
+226
+00:09:28.775 --> 00:09:31.460
+While there is
+more intuition to using
+
+227
+00:09:31.460 --> 00:09:34.790
+the cubic spiral coefficients
+in our objective function,
+
+228
+00:09:34.790 --> 00:09:37.160
+we can actually reduce
+the number of parameters
+
+229
+00:09:37.160 --> 00:09:39.590
+we are searching over
+by taking the final
+
+230
+00:09:39.590 --> 00:09:42.790
+curvature boundary constraint
+into consideration.
+
+231
+00:09:42.790 --> 00:09:45.230
+Let's redefine our cubic spiral
+
+232
+00:09:45.230 --> 00:09:46.955
+using a different set
+of parameters
+
+233
+00:09:46.955 --> 00:09:51.015
+denoted by the vector p
+where p has five elements.
+
+234
+00:09:51.015 --> 00:09:53.765
+First, we have p
+naught through p3,
+
+235
+00:09:53.765 --> 00:09:56.200
+which denote the curvature
+at the start,
+
+236
+00:09:56.200 --> 00:10:00.060
+one-third point and two-thirds
+point and the endpoint.
+
+237
+00:10:00.060 --> 00:10:04.715
+The final term p4 is the
+final arc length of the path.
+
+238
+00:10:04.715 --> 00:10:07.910
+Conveniently, we have
+a closed form mapping between
+
+239
+00:10:07.910 --> 00:10:09.320
+the curvature parameter and
+
+240
+00:10:09.320 --> 00:10:12.305
+the spiral parameters
+as shown here.
+
+241
+00:10:12.305 --> 00:10:14.780
+We can therefore
+easily compute all
+
+242
+00:10:14.780 --> 00:10:17.000
+of our constraints and
+objective terms as
+
+243
+00:10:17.000 --> 00:10:19.265
+a function of
+these new p variables
+
+244
+00:10:19.265 --> 00:10:21.830
+instead of the coefficients
+of the spiral.
+
+245
+00:10:21.830 --> 00:10:24.170
+Once the optimization is solved,
+
+246
+00:10:24.170 --> 00:10:26.420
+we can use the
+equations here to map
+
+247
+00:10:26.420 --> 00:10:29.285
+the results back to
+the spiral coefficients.
+
+248
+00:10:29.285 --> 00:10:32.780
+Since we already know
+the initial and final curvature,
+
+249
+00:10:32.780 --> 00:10:34.820
+we can eliminate two
+of the variables,
+
+250
+00:10:34.820 --> 00:10:36.590
+p naught and p3.
+
+251
+00:10:36.590 --> 00:10:39.050
+This leaves us with
+only three variables in
+
+252
+00:10:39.050 --> 00:10:42.815
+our optimization
+problem p1, p2, and p4.
+
+253
+00:10:42.815 --> 00:10:44.900
+By using the boundary conditions,
+
+254
+00:10:44.900 --> 00:10:46.850
+we've reduced
+the dimensionality of
+
+255
+00:10:46.850 --> 00:10:49.160
+the optimization
+problem which will
+
+256
+00:10:49.160 --> 00:10:52.775
+result in a significant
+computational speedup.
+
+257
+00:10:52.775 --> 00:10:57.170
+The resulting final optimization
+problem is as follows.
+
+258
+00:10:57.170 --> 00:11:00.440
+We've replaced the function
+of the spiral parameters by
+
+259
+00:11:00.440 --> 00:11:02.120
+the equivalent functions after
+
+260
+00:11:02.120 --> 00:11:04.700
+remapping to our p parameters.
+
+261
+00:11:04.700 --> 00:11:08.240
+Note that the initial and
+final path curvature p naught
+
+262
+00:11:08.240 --> 00:11:10.160
+and p3 are constants.
+
+263
+00:11:10.160 --> 00:11:12.365
+So the optimization
+variables are now
+
+264
+00:11:12.365 --> 00:11:15.290
+only p1, p2, and p4.
+
+265
+00:11:15.290 --> 00:11:17.480
+This simplification was possible
+
+266
+00:11:17.480 --> 00:11:18.740
+due to the boundary conditions
+
+267
+00:11:18.740 --> 00:11:20.150
+of the curvature being known at
+
+268
+00:11:20.150 --> 00:11:22.370
+the start and
+the end of the path.
+
+269
+00:11:22.370 --> 00:11:24.605
+Now that we've made
+these modifications,
+
+270
+00:11:24.605 --> 00:11:27.770
+we can solve the path planning
+problem efficiently and
+
+271
+00:11:27.770 --> 00:11:29.300
+with greatly reduced chance of
+
+272
+00:11:29.300 --> 00:11:31.835
+getting stuck in
+poor local minima.
+
+273
+00:11:31.835 --> 00:11:35.030
+Let's summarize what we've
+learned in this video.
+
+274
+00:11:35.030 --> 00:11:38.420
+First, we reviewed
+the required boundary conditions
+
+275
+00:11:38.420 --> 00:11:40.430
+and constraints for this problem.
+
+276
+00:11:40.430 --> 00:11:43.280
+We then discussed how
+to numerically compute
+
+277
+00:11:43.280 --> 00:11:46.565
+the n positions of a spiral
+using Simpson's rule.
+
+278
+00:11:46.565 --> 00:11:48.440
+We then introduced the bending
+
+279
+00:11:48.440 --> 00:11:50.060
+energy objective to encourage
+
+280
+00:11:50.060 --> 00:11:51.800
+smoothness and formed
+
+281
+00:11:51.800 --> 00:11:54.490
+a generic spiral
+optimization problem.
+
+282
+00:11:54.490 --> 00:11:57.050
+Finally, we re-map
+the parameters of
+
+283
+00:11:57.050 --> 00:11:59.030
+the optimization
+function to ensure
+
+284
+00:11:59.030 --> 00:12:02.140
+fast convergence to
+a feasible solution.
+
+285
+00:12:02.140 --> 00:12:05.000
+Well, that was a lot of
+new information to take in.
+
+286
+00:12:05.000 --> 00:12:06.740
+We hope that this lesson
+has given you
+
+287
+00:12:06.740 --> 00:12:10.235
+an in-depth look at how to
+perform smooth path planning.
+
+288
+00:12:10.235 --> 00:12:12.620
+This lesson has tied
+together many of
+
+289
+00:12:12.620 --> 00:12:15.490
+the topics that we discussed
+in modules one and four.
+
+290
+00:12:15.490 --> 00:12:16.940
+So if you felt like some of
+
+291
+00:12:16.940 --> 00:12:18.530
+this material was challenging,
+
+292
+00:12:18.530 --> 00:12:19.730
+feel free to review
+
+293
+00:12:19.730 --> 00:12:22.325
+those modules before working
+through this lesson again.
+
+294
+00:12:22.325 --> 00:12:23.510
+In our next lesson,
+
+295
+00:12:23.510 --> 00:12:25.370
+we will be discussing
+how to perform
+
+296
+00:12:25.370 --> 00:12:27.560
+optimization in Python in
+
+297
+00:12:27.560 --> 00:12:29.285
+order to prepare you to implement
+
+298
+00:12:29.285 --> 00:12:32.650
+a full path planner.
+See you next time.

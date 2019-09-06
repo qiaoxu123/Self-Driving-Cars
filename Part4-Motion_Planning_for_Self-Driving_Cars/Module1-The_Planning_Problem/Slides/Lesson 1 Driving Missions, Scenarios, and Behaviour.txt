@@ -1,0 +1,215 @@
+Hello everyone. Welcome to the first module of our
+motion planning course. In this module, you
+will learn about the motion planning problem
+in autonomous driving. The motion planning
+problem is the task of navigating the ego vehicle to its destination in
+a safe and comfortable manner while following
+the rules of the road. As discussed in the first course
+of this specialization, this task can be decomposed into a hierarchy of
+optimization problems. Each of which will have different constraints
+and objectives. By the end of this module, you should have
+an understanding of the types of subproblems
+that need to be solved when performing motion planning for
+autonomous driving. In this video, we will discuss the autonomous
+driving mission. Some of the most prevalent
+on-road driving scenarios, the required behaviors
+to handle each scenario, and some of the important
+edge cases that highlight the challenges of motion planning for
+autonomous driving. Specifically by
+the end of this video, you will understand
+what the goal of autonomous driving motion
+planning missions is, identify some important
+on-road driving scenarios, and identify some useful
+driving behaviors to handle these scenarios. First, let's discuss
+the autonomous driving mission. At a high level,
+the autonomous driving mission is to get from
+point A to point B. The autonomous
+driving mission views this from a navigation
+perspective, where we need to navigate from one point on a map
+or current position, to another point corresponding
+to our final destination. In doing so, it should
+take the connection of different streets and their associated traffic
+into consideration. In order to find
+the most efficient path in the road network in terms
+of travel time or distance. Planning for an autonomous
+driving mission abstracts many of the important lower-level
+variables away from the problem in order to simplify the mission
+planning process. However,these lower
+level variables such as roads structures, obstacles, and other agents on the road, are crucial to the autonomous driving motion planning problem. These lower level variables defined different
+driving scenarios. We have discussed some of the driving scenarios
+already in Course 1. So this will serve as
+a refresher and will help put these scenarios into
+emotion planning context. First, let's introduce
+some common scenarios related to the road structure. By road structure, we mean
+the lane boundaries and the regulatory elements that
+are relevant to the driver. The simplest scenario when
+driving is simply driving in a lane and this is often
+called lane maintenance. In the nominal case, this is when the car follows the central line of
+it's current lane. In this scenario,
+our goal is to minimize our deviation from the center
+line of the path as well as reaching our reference
+speed which is often the speed limit to ensure efficient travel
+to our destination. A more complex scenario
+would be when the car has to perform a lane
+change maneuver. Even when there are
+no dynamic obstacles present in either lane, we will need to
+optimize the shape of the lane change trajectory within the constraints of lateral and
+longitudinal acceleration. The speed limit of the road, and the time horizon for
+execution of the maneuver. Clearly, all of these parameters will affect the shape
+of the trajectory, resulting in either slow
+passive lane changes, or more aggressive less
+comfortable lane changes. The third common scenario, is when the car needs to
+perform a left or right turn. This is often required when the autonomous car has
+to handle intersections. As with the lane change, the shape and
+aggressiveness of the turn will vary depending
+on the situation. In addition, the feasibility of actions and autonomous vehicle can take is affected by the state of
+the surrounding environment. For example, the autonomous
+vehicle cannot perform a left turn at a red light even if the
+intersection is clear. As a final example, we have a U-turn. Which is important for
+navigating certain scenarios where the car needs to change
+direction efficiently. As with a lane change and both the right turn
+and left turns, that you U-turn will
+have parameters that affect the shape
+of the trajectory. The U-turn is also
+highly dependent on the state of
+the surrounding environment, as it is not always legal
+to perform a U-turn at an intersection depending on
+your home countries laws. Now, road structure is not the only factor in
+on-road scenarios. Static and dynamic obstacles will dramatically change
+both the structure of the scenario as well
+as the difficulty in determining the required
+behavior for a scenario. In the language of
+autonomous driving, dynamic obstacles are
+defined as moving agents in the planning workspace
+of the ego vehicle. In contrast, static obstacles
+or obstacles that are not moving such as parked cars,
+medians, and curves. Static obstacles
+restrict which locations the autonomous car can occupy as it plans paths
+to its destination. This is because the car occupies space as it travels
+along its path. If this overlaps
+with an obstacle, our plan will obviously
+results in a collision. On the other hand,
+dynamic obstacles have a larger impact on our velocity profile
+and driving behavior. A common example in driving is when there
+is a lead vehicle in front of our car while we are performing lane maintenance. Clearly, this vehicle will have an impact on our decision-making. Let's say this car is
+going 10 kilometers per hour slower than
+our reference speed. If we maintain
+our current reference speed, we will eventually hit
+the leading vehicle. Ideally, we would
+like to maintain a time gap between ourselves
+and the lead vehicle which is defined as the amount
+of time until we reach the lead vehicles
+current position while maintaining
+our current speed. So now we have
+two competing interests. We want to stay as close to our reference
+speed as possible, while maintaining
+a time gap between our car and the lead
+vehicle for safety. Dynamic obstacles
+will also affect our turn and lane
+change scenarios. Depending on their
+location and speed, there may only be certain time
+windows of opportunity for the ego vehicle to execute
+each of these maneuvers. These windows will be estimates
+as they will be based on predictions of all other agents
+in the environment. An example of this, is when we are waiting
+for an intersection to be clear before
+performing a left turn. The behaviors that are
+autonomous vehicle decides to execute will depend heavily on the behavior of
+oncoming traffic. If there are
+nearby oncoming vehicles that are moving
+quickly towards us, then the only safe behavior
+would be to yield to them. However, if there is
+a longer distance between the autonomous vehicles
+and oncoming traffic, the autonomous vehicle
+will have a window of opportunity to perform its turn. Now, not all dynamic obstacles
+are cars as there are other types such as cyclists, trucks,
+and pedestrians. Each of them will have
+their own behaviors and have their own rules
+to follow on the road. As you've seen throughout this specialization
+even though we've only defined the most likely core components of
+the driving task, there's clearly
+a rich and diverse set of potential scenarios
+that need to be handled. Despite this complexity,
+the majority of behaviors for
+these scenarios can be thought of as
+a simple composition of high-level actions
+or maneuvers. An example set of these high-level maneuvers
+would be speed tracking, deceleration to stop,
+staying stopped, yielding, and emergency stopping. Let's dig into what each of these high-level actions
+really mean. Speed tracking is
+the nominal driving behavior. We have a reference speed
+or speed limit and we maintain that speed while
+moving forward in our lane. Decelerating to stop is
+pretty self-explanatory. If we have a stop sign ahead, we need to smoothly slow down to a stop to maintain comfort. Staying stopped is required for certain regulatory elements. If we were at a red light, then we need to remain stopped until the light turns green. Yielding is also required for
+some regulatory elements. Most notably, if
+we're at a yield sign and there's traffic that has
+higher precedence than us, we need to slow down and wait until it is clear
+for us to proceed. Finally, emergency stops occur when an issue is detected by the autonomous car
+and the vehicle needs to stop immediately
+and pull over. These high-level
+behaviors can also be augmented by
+navigational behaviors, such as performing
+lane changes and turns. By bringing all of this together, we can now cover the most
+basic driving scenarios. While this set of maneuvers
+has good coverage, it is important to
+note that this list of behaviors is in
+no way exhaustive and that there are
+many ways to increase behavioral complexity to handle evermore interesting scenarios. In terms of the set
+of driving scenarios, we've really only begun
+to scratch the surface. There are many unusual
+instances that make the autonomous driving problem and extremely challenging task. For example, suppose that you have a jaywalking pedestrian, we would then have an agent
+violating their rules of the road which makes
+their behavior unpredictable from a motion
+planning perspective. Another example, is when a motorcyclist performs
+lane splitting, which may or may not be legal depending on
+your home country. This behavior can be confusing
+for an autonomous car, which often uses the
+lane boundaries to inform the predictions of
+other agents on the road. As you can see, solving the motion planning
+problem is a complex task. To solve for the optimal
+motion plan without any forms of selective
+abstraction and simplification, would simply be intractable. To remedy this, we
+instead break the task up into a hierarchy of
+optimization problems. By doing this, we can tailor
+the inputs and outputs of each optimization problem
+to the correct level of abstraction which will allow us to perform motion
+planning in real-time. In this hierarchy, higher
+in the hierarchy means that the optimization problem is at a higher level of abstraction. At the top of this hierarchy
+is mission planning, which focuses on solving the autonomous driving mission of navigating to our destination at the map level which
+we discussed earlier. Next, we have the behavior
+planning problem. Which decides which behaviors the autonomous vehicles should take depending on
+its current driving scenario. Based on that maneuver, we then use the local
+planner to calculate a collision-free path and velocity profile to
+the required goal state. In our case, we will
+decouple this process into path planning and velocity
+profile generation to improve performance. Finally, our computed motion
+plan will be given to the controllers to track which we've designed
+in the first course. Each of these optimization
+problems will have different objectives and
+constraints used to solve it. Which we will be discussing
+in the coming lessons. Now that we've gone through our introduction to
+these motion planning problems, let's summarize what we've
+discussed in this video. We've identified
+the autonomous driving motion planning mission
+as the problem of navigating from
+the ego vehicles current position to
+a required destination. We've also looked at some common on-road
+driving scenarios and how the road structure as
+well as the obstacles present dictate the nature
+of the scenario. We then discussed some useful
+driving behaviors to navigate the scenarios
+we've identified. Finally, we've
+described a hierarchy of motion planning
+optimization problems. Which we will discuss in detail throughout the remainder
+of this course. Hopefully this lesson
+has given you some insight into the different
+scenarios that you as an autonomy engineer
+will encounter when designing a motion planner
+for an autonomous vehicle. The key takeaway here is that while we've
+enumerated many of the basic scenarios and behaviors required for
+autonomous driving, there are still many open
+questions about how to plan safe and robust behaviors across all potential
+driving scenarios. In our next lesson, we'll explore some common
+constraints that you will encounter when solving
+the motion planning, optimization subproblems in
+our hierarchy. See you then.

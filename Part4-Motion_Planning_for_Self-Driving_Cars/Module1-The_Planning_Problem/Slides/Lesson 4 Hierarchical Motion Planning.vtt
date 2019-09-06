@@ -1,0 +1,1907 @@
+WEBVTT
+
+1
+00:00:14.210 --> 00:00:17.450
+Hi everyone? So far
+in this module,
+
+2
+00:00:17.450 --> 00:00:20.095
+we've described the planning
+problem in general,
+
+3
+00:00:20.095 --> 00:00:21.790
+we've described a hierarchy for
+
+4
+00:00:21.790 --> 00:00:23.860
+solving the complex
+planning problem,
+
+5
+00:00:23.860 --> 00:00:25.780
+and we described
+the constraints and
+
+6
+00:00:25.780 --> 00:00:28.135
+objectives that make
+planning so hard.
+
+7
+00:00:28.135 --> 00:00:30.040
+In this lesson, we'll discuss
+
+8
+00:00:30.040 --> 00:00:31.660
+the hierarchy for decomposing,
+
+9
+00:00:31.660 --> 00:00:33.265
+the overall planning problem
+
+10
+00:00:33.265 --> 00:00:36.250
+into smaller sub-problems
+in more detail.
+
+11
+00:00:36.250 --> 00:00:38.290
+By the end of this video,
+
+12
+00:00:38.290 --> 00:00:41.245
+you will understand the scope
+of mission planning,
+
+13
+00:00:41.245 --> 00:00:44.995
+behavioral planning, and
+local planning sub-problems.
+
+14
+00:00:44.995 --> 00:00:46.775
+You'll be able to list
+
+15
+00:00:46.775 --> 00:00:49.730
+some methods for solving
+each of the problems,
+
+16
+00:00:49.730 --> 00:00:51.890
+you'll also understand why
+
+17
+00:00:51.890 --> 00:00:54.350
+this hierarchy is used
+in many self-driving car
+
+18
+00:00:54.350 --> 00:00:57.020
+systems progressively
+refining the plans
+
+19
+00:00:57.020 --> 00:00:59.285
+for motion through
+the environment.
+
+20
+00:00:59.285 --> 00:01:03.005
+Let's begin by reviewing
+our planning hierarchy.
+
+21
+00:01:03.005 --> 00:01:05.810
+If you recall from lesson
+one of this module,
+
+22
+00:01:05.810 --> 00:01:08.150
+we introduced the
+hierarchical structure we
+
+23
+00:01:08.150 --> 00:01:11.135
+will use for motion planning
+and it's autonomous driving.
+
+24
+00:01:11.135 --> 00:01:14.405
+We described each level of
+the hierarchical planner
+
+25
+00:01:14.405 --> 00:01:17.300
+as defining its own
+optimization problem,
+
+26
+00:01:17.300 --> 00:01:18.710
+with each level of the hierarchy
+
+27
+00:01:18.710 --> 00:01:20.330
+having a specific degree of
+
+28
+00:01:20.330 --> 00:01:22.220
+abstraction with respect to
+
+29
+00:01:22.220 --> 00:01:25.130
+the relevant objective function
+and constraints.
+
+30
+00:01:25.130 --> 00:01:26.690
+The mission planner is
+
+31
+00:01:26.690 --> 00:01:29.480
+the highest level
+optimization problem where
+
+32
+00:01:29.480 --> 00:01:31.730
+we focus on map level navigation
+
+33
+00:01:31.730 --> 00:01:33.500
+from the vehicles
+current position,
+
+34
+00:01:33.500 --> 00:01:35.405
+to a given destination.
+
+35
+00:01:35.405 --> 00:01:37.940
+Behavioral planning on
+the other hand will
+
+36
+00:01:37.940 --> 00:01:40.220
+focus on the current
+driving scenario,
+
+37
+00:01:40.220 --> 00:01:42.170
+and will decide which maneuver to
+
+38
+00:01:42.170 --> 00:01:45.165
+execute based on other agents
+in the workspace,
+
+39
+00:01:45.165 --> 00:01:46.755
+and the rules of the road.
+
+40
+00:01:46.755 --> 00:01:49.045
+Finally, we have
+the local planner,
+
+41
+00:01:49.045 --> 00:01:52.145
+which will focus on generating
+kinematically feasible,
+
+42
+00:01:52.145 --> 00:01:54.590
+collision-free paths, as well as
+
+43
+00:01:54.590 --> 00:01:58.280
+comfortable velocity profiles
+in a decoupled manner.
+
+44
+00:01:58.280 --> 00:02:00.380
+This will then be output to
+
+45
+00:02:00.380 --> 00:02:03.695
+our vehicle controller that
+we discussed in course one.
+
+46
+00:02:03.695 --> 00:02:07.100
+By breaking the planning problem
+into sub-problems,
+
+47
+00:02:07.100 --> 00:02:10.190
+we constrain how much knowledge
+and computation is
+
+48
+00:02:10.190 --> 00:02:13.780
+required at each part of
+the motion planning process.
+
+49
+00:02:13.780 --> 00:02:17.075
+Which allows for
+more efficient computation.
+
+50
+00:02:17.075 --> 00:02:19.625
+This comes with a
+trade-off however,
+
+51
+00:02:19.625 --> 00:02:21.560
+as when we decompose the problem,
+
+52
+00:02:21.560 --> 00:02:25.990
+each sub-problem loses
+some domain information.
+
+53
+00:02:25.990 --> 00:02:29.435
+We end up with
+a sub-optimal motion plan
+
+54
+00:02:29.435 --> 00:02:31.220
+as compared to emotion plan
+
+55
+00:02:31.220 --> 00:02:32.600
+that takes all aspects of
+
+56
+00:02:32.600 --> 00:02:36.175
+the planning process into
+consideration at the same time.
+
+57
+00:02:36.175 --> 00:02:37.970
+For autonomous driving,
+
+58
+00:02:37.970 --> 00:02:40.090
+the ability to run
+our motion planner in
+
+59
+00:02:40.090 --> 00:02:42.070
+real-time is crucial, so
+
+60
+00:02:42.070 --> 00:02:44.650
+this trade-off is
+almost always worth it.
+
+61
+00:02:44.650 --> 00:02:47.410
+Some motion planning
+methods integrate
+
+62
+00:02:47.410 --> 00:02:50.315
+the differing sub-problems
+in varying degrees.
+
+63
+00:02:50.315 --> 00:02:52.480
+But in this lesson,
+we're going to focus on
+
+64
+00:02:52.480 --> 00:02:55.790
+this particular
+hierarchical decomposition.
+
+65
+00:02:55.980 --> 00:03:00.370
+Next, let's go over each
+of these steps in detail.
+
+66
+00:03:00.370 --> 00:03:03.310
+As mentioned, the first
+and highest level step in
+
+67
+00:03:03.310 --> 00:03:06.655
+our hierarchical motion planner
+is the mission planner.
+
+68
+00:03:06.655 --> 00:03:08.470
+The mission planner focuses on
+
+69
+00:03:08.470 --> 00:03:10.000
+map level navigation from
+
+70
+00:03:10.000 --> 00:03:12.040
+the ego-vehicles
+current position,
+
+71
+00:03:12.040 --> 00:03:14.050
+through a required destination.
+
+72
+00:03:14.050 --> 00:03:16.405
+Because the scale
+of mission planning
+
+73
+00:03:16.405 --> 00:03:18.820
+is often on the
+order of kilometers,
+
+74
+00:03:18.820 --> 00:03:20.630
+we require a high level of
+
+75
+00:03:20.630 --> 00:03:22.940
+abstraction to make
+the problem tractable.
+
+76
+00:03:22.940 --> 00:03:25.580
+In this sense we often
+ignore aspects of
+
+77
+00:03:25.580 --> 00:03:27.125
+the motion planning
+problems such as
+
+78
+00:03:27.125 --> 00:03:29.500
+obstacles and
+regulatory elements,
+
+79
+00:03:29.500 --> 00:03:32.030
+and instead focus on
+the macro aspects of
+
+80
+00:03:32.030 --> 00:03:35.465
+the problem such as traffic
+and road connections.
+
+81
+00:03:35.465 --> 00:03:38.510
+By doing this, we can
+simplify the problem to
+
+82
+00:03:38.510 --> 00:03:40.050
+the point where we can plan out
+
+83
+00:03:40.050 --> 00:03:41.690
+a required driving mission,
+
+84
+00:03:41.690 --> 00:03:43.775
+over a large spatial scale.
+
+85
+00:03:43.775 --> 00:03:46.760
+An example is shown here
+where we are planning
+
+86
+00:03:46.760 --> 00:03:49.894
+between two points on a map
+of Berkeley, California,
+
+87
+00:03:49.894 --> 00:03:52.790
+taking into consideration
+the various intersections
+
+88
+00:03:52.790 --> 00:03:54.770
+and road connections on the map,
+
+89
+00:03:54.770 --> 00:03:57.475
+as well as the
+directionality of each road.
+
+90
+00:03:57.475 --> 00:03:59.300
+Doing so, we then compute
+
+91
+00:03:59.300 --> 00:04:03.155
+the shortest path in our road
+network to our destination.
+
+92
+00:04:03.155 --> 00:04:05.885
+This can be done in
+a variety of ways.
+
+93
+00:04:05.885 --> 00:04:07.820
+If we focus on the spatial length
+
+94
+00:04:07.820 --> 00:04:09.650
+of the roads in the road network,
+
+95
+00:04:09.650 --> 00:04:11.360
+we can construct a graph from
+
+96
+00:04:11.360 --> 00:04:13.160
+the road network and then use
+
+97
+00:04:13.160 --> 00:04:15.440
+Dijkstra's algorithm or A* search
+
+98
+00:04:15.440 --> 00:04:17.255
+to find the shortest path.
+
+99
+00:04:17.255 --> 00:04:19.580
+If instead we focus on time to
+
+100
+00:04:19.580 --> 00:04:22.210
+destination as
+our objective to minimize,
+
+101
+00:04:22.210 --> 00:04:24.560
+the problem becomes
+more complex but can
+
+102
+00:04:24.560 --> 00:04:27.200
+still be solved using
+the same algorithms.
+
+103
+00:04:27.200 --> 00:04:28.940
+We will discuss these methods in
+
+104
+00:04:28.940 --> 00:04:31.405
+much more detail in module three.
+
+105
+00:04:31.405 --> 00:04:33.170
+The next step in
+
+106
+00:04:33.170 --> 00:04:35.900
+our hierarchical planner
+is the behavior planner.
+
+107
+00:04:35.900 --> 00:04:37.850
+What is the behavior planner?
+
+108
+00:04:37.850 --> 00:04:39.650
+The behavior planner is
+
+109
+00:04:39.650 --> 00:04:42.290
+a portion of the motion
+planner that focuses on
+
+110
+00:04:42.290 --> 00:04:43.880
+high level decision making
+
+111
+00:04:43.880 --> 00:04:46.700
+required to follow the
+rules of the road,
+
+112
+00:04:46.700 --> 00:04:48.620
+and recognize which maneuvers are
+
+113
+00:04:48.620 --> 00:04:51.110
+safe to make in
+a given driving scenario.
+
+114
+00:04:51.110 --> 00:04:52.550
+We discussed many of
+
+115
+00:04:52.550 --> 00:04:55.400
+these scenarios in
+our first lessons together.
+
+116
+00:04:55.400 --> 00:04:58.700
+For example, recall that
+one of the scenarios we
+
+117
+00:04:58.700 --> 00:05:02.060
+discussed was performing
+a turn at an intersection.
+
+118
+00:05:02.060 --> 00:05:04.460
+Let's say for
+the sake of example,
+
+119
+00:05:04.460 --> 00:05:06.800
+the ego-vehicle has
+entered an intersection to
+
+120
+00:05:06.800 --> 00:05:10.400
+perform a left turn and
+the light is turning green.
+
+121
+00:05:10.400 --> 00:05:12.950
+The behavior planner
+should make it clear to
+
+122
+00:05:12.950 --> 00:05:15.590
+the path planner and
+velocity generator,
+
+123
+00:05:15.590 --> 00:05:18.200
+that is only safe to
+proceed when there is
+
+124
+00:05:18.200 --> 00:05:21.740
+sufficient time gap between
+the ego-vehicles position,
+
+125
+00:05:21.740 --> 00:05:23.300
+and the oncoming traffic and
+
+126
+00:05:23.300 --> 00:05:25.280
+pedestrians in the intersection.
+
+127
+00:05:25.280 --> 00:05:27.110
+Following the taxonomy of
+
+128
+00:05:27.110 --> 00:05:29.750
+maneuvers we discussed
+in our first lesson,
+
+129
+00:05:29.750 --> 00:05:31.505
+the behavior planner
+should output
+
+130
+00:05:31.505 --> 00:05:32.540
+a yield maneuver to
+
+131
+00:05:32.540 --> 00:05:34.790
+the remaining portion
+of the motion planner,
+
+132
+00:05:34.790 --> 00:05:36.440
+which will ensure that they only
+
+133
+00:05:36.440 --> 00:05:39.095
+proceed once it is
+cleared to do so.
+
+134
+00:05:39.095 --> 00:05:43.030
+Of course, our taxonomy
+is in no way universal,
+
+135
+00:05:43.030 --> 00:05:45.770
+there are many possibilities
+when deciding what types of
+
+136
+00:05:45.770 --> 00:05:47.540
+maneuvers and what scope of
+
+137
+00:05:47.540 --> 00:05:50.590
+behaviors your autonomous car
+should exhibit.
+
+138
+00:05:50.590 --> 00:05:52.820
+Now you may be wondering how is
+
+139
+00:05:52.820 --> 00:05:55.340
+the behavior planner are
+supposed to take in all of
+
+140
+00:05:55.340 --> 00:05:56.360
+the information about
+
+141
+00:05:56.360 --> 00:05:58.580
+the autonomous vehicles
+surroundings and
+
+142
+00:05:58.580 --> 00:06:00.260
+calculate what maneuver it should
+
+143
+00:06:00.260 --> 00:06:02.735
+execute in an efficient manner.
+
+144
+00:06:02.735 --> 00:06:05.990
+This is an area of active
+research and there
+
+145
+00:06:05.990 --> 00:06:08.855
+is no settled best method
+to achieve this.
+
+146
+00:06:08.855 --> 00:06:10.370
+In general, there appear to be
+
+147
+00:06:10.370 --> 00:06:13.040
+three different
+prevailing architectures
+
+148
+00:06:13.040 --> 00:06:16.055
+to solve the behavioral
+planning problem.
+
+149
+00:06:16.055 --> 00:06:18.710
+The first group are methods that
+
+150
+00:06:18.710 --> 00:06:20.765
+use finite state machines.
+
+151
+00:06:20.765 --> 00:06:22.340
+The key concept behind
+
+152
+00:06:22.340 --> 00:06:25.085
+finite state machines is
+that they are composed
+
+153
+00:06:25.085 --> 00:06:27.980
+of: states which represent
+
+154
+00:06:27.980 --> 00:06:30.520
+the ego-vehicles
+required maneuvers,
+
+155
+00:06:30.520 --> 00:06:32.930
+and transitions which dictate how
+
+156
+00:06:32.930 --> 00:06:35.915
+the state should evolve
+depending on the inputs.
+
+157
+00:06:35.915 --> 00:06:38.795
+These may be things
+like: vehicle locations,
+
+158
+00:06:38.795 --> 00:06:40.700
+traffic light transitions, or
+
+159
+00:06:40.700 --> 00:06:41.750
+any other element of
+
+160
+00:06:41.750 --> 00:06:44.260
+interest in our current
+driving scenario.
+
+161
+00:06:44.260 --> 00:06:46.370
+As an example, one could imagine
+
+162
+00:06:46.370 --> 00:06:48.230
+a state machine that handles stop
+
+163
+00:06:48.230 --> 00:06:52.130
+signs to have a state such
+as decelerate to stop,
+
+164
+00:06:52.130 --> 00:06:54.530
+stop and track speed.
+
+165
+00:06:54.530 --> 00:06:56.780
+When a car encounters
+a stop sign,
+
+166
+00:06:56.780 --> 00:07:00.110
+it would first enter
+the decelerate to stop state,
+
+167
+00:07:00.110 --> 00:07:01.550
+where the behavioral
+planner would then
+
+168
+00:07:01.550 --> 00:07:03.905
+signal that it is
+time to decelerate.
+
+169
+00:07:03.905 --> 00:07:06.830
+Once it has stopped
+at the stop location,
+
+170
+00:07:06.830 --> 00:07:08.750
+the behavior planner
+will remain in
+
+171
+00:07:08.750 --> 00:07:12.050
+the stop state for
+a set amount of time.
+
+172
+00:07:12.050 --> 00:07:14.270
+Once the time has been exceeded
+
+173
+00:07:14.270 --> 00:07:15.890
+and the intersection is clear,
+
+174
+00:07:15.890 --> 00:07:18.500
+the behavior planner will
+then enter the track speeds
+
+175
+00:07:18.500 --> 00:07:21.725
+state which means it is
+safe to continue driving.
+
+176
+00:07:21.725 --> 00:07:23.420
+We go through this example in
+
+177
+00:07:23.420 --> 00:07:26.330
+more detail in a later module
+in this course.
+
+178
+00:07:26.330 --> 00:07:27.620
+It is important to note that
+
+179
+00:07:27.620 --> 00:07:29.090
+when deciding which transition
+
+180
+00:07:29.090 --> 00:07:32.005
+to take at each step of
+the finite state machine,
+
+181
+00:07:32.005 --> 00:07:35.240
+we focus entirely on
+the current state,
+
+182
+00:07:35.240 --> 00:07:37.595
+and the inputs to
+the finite state machine.
+
+183
+00:07:37.595 --> 00:07:39.350
+Essentially, this means that
+
+184
+00:07:39.350 --> 00:07:41.990
+the finite state
+machine is memoryless.
+
+185
+00:07:41.990 --> 00:07:44.150
+Its past states do not
+
+186
+00:07:44.150 --> 00:07:47.150
+impact the current
+transition or output.
+
+187
+00:07:47.150 --> 00:07:49.700
+This is a helpful
+property that makes
+
+188
+00:07:49.700 --> 00:07:52.535
+finite state machines
+straightforward to implement,
+
+189
+00:07:52.535 --> 00:07:55.190
+but can lead to many states
+that are similar
+
+190
+00:07:55.190 --> 00:07:58.610
+for systems where sequences
+of actions do matter.
+
+191
+00:07:58.610 --> 00:08:00.620
+The next common type of
+
+192
+00:08:00.620 --> 00:08:03.425
+behavioral planners are
+rule-based systems.
+
+193
+00:08:03.425 --> 00:08:05.690
+Essentially,
+these type of systems
+
+194
+00:08:05.690 --> 00:08:08.030
+consist of a hierarchy of rules,
+
+195
+00:08:08.030 --> 00:08:09.650
+where the hierarchy represents
+
+196
+00:08:09.650 --> 00:08:12.245
+the relative importance
+of each rule.
+
+197
+00:08:12.245 --> 00:08:14.660
+Each rule may
+correspond to a rule of
+
+198
+00:08:14.660 --> 00:08:17.300
+the road such as
+stopping at a red light,
+
+199
+00:08:17.300 --> 00:08:18.410
+or may correspond to
+
+200
+00:08:18.410 --> 00:08:20.390
+a driving best practice such as
+
+201
+00:08:20.390 --> 00:08:22.520
+maintaining a two second gap,
+
+202
+00:08:22.520 --> 00:08:25.510
+between the ego-vehicle
+and a leading vehicle.
+
+203
+00:08:25.510 --> 00:08:27.920
+The state of the ego-vehicle and
+
+204
+00:08:27.920 --> 00:08:29.855
+its surroundings
+would then be fed
+
+205
+00:08:29.855 --> 00:08:31.750
+into the rule-based system in
+
+206
+00:08:31.750 --> 00:08:34.295
+the form of logical predicates.
+
+207
+00:08:34.295 --> 00:08:37.010
+These predicates would
+then be evaluated against
+
+208
+00:08:37.010 --> 00:08:40.100
+every rule and based
+on the rule priority,
+
+209
+00:08:40.100 --> 00:08:41.840
+the maneuver corresponding to
+
+210
+00:08:41.840 --> 00:08:43.760
+the highest priority rule would
+
+211
+00:08:43.760 --> 00:08:46.790
+be output to the rest
+of the motion planner.
+
+212
+00:08:46.790 --> 00:08:51.275
+For example, suppose we have
+the following two rules.
+
+213
+00:08:51.275 --> 00:08:54.650
+The first rule checks if
+there is a green light ahead
+
+214
+00:08:54.650 --> 00:08:57.950
+and issues a decision for
+the car to continue driving.
+
+215
+00:08:57.950 --> 00:09:01.160
+While the second rule checks
+if there are pedestrians in
+
+216
+00:09:01.160 --> 00:09:03.275
+the cars lanes and issues
+
+217
+00:09:03.275 --> 00:09:06.755
+a decision to perform
+the emergency stop maneuver.
+
+218
+00:09:06.755 --> 00:09:10.100
+In our system, stopping
+for a pedestrian in
+
+219
+00:09:10.100 --> 00:09:12.020
+front of us is higher priority
+
+220
+00:09:12.020 --> 00:09:14.150
+than driving through green light.
+
+221
+00:09:14.150 --> 00:09:15.950
+Now suppose we were driving
+
+222
+00:09:15.950 --> 00:09:17.810
+along and observe
+a green light at
+
+223
+00:09:17.810 --> 00:09:19.850
+the upcoming
+intersection as well as
+
+224
+00:09:19.850 --> 00:09:21.680
+a pedestrian crossing illegally
+
+225
+00:09:21.680 --> 00:09:23.345
+in front of the intersection.
+
+226
+00:09:23.345 --> 00:09:25.970
+Both rules would trigger
+in this case but
+
+227
+00:09:25.970 --> 00:09:28.414
+since the emergency stop
+is higher priority,
+
+228
+00:09:28.414 --> 00:09:29.690
+that is the maneuver that
+
+229
+00:09:29.690 --> 00:09:31.655
+the rule-based system
+will output.
+
+230
+00:09:31.655 --> 00:09:33.680
+As you can imagine, it is both
+
+231
+00:09:33.680 --> 00:09:35.570
+important and challenging to
+
+232
+00:09:35.570 --> 00:09:39.320
+make sure rule-based systems
+are logically consistent.
+
+233
+00:09:39.320 --> 00:09:42.920
+Otherwise, they can
+exhibit erratic behavior.
+
+234
+00:09:42.920 --> 00:09:44.930
+The final group of
+
+235
+00:09:44.930 --> 00:09:46.580
+behavior planning approaches are
+
+236
+00:09:46.580 --> 00:09:48.620
+machine learning-based methods.
+
+237
+00:09:48.620 --> 00:09:50.990
+In particular,
+an interesting example of
+
+238
+00:09:50.990 --> 00:09:53.810
+this method is using
+reinforcement learning.
+
+239
+00:09:53.810 --> 00:09:56.750
+Reinforcement learning is
+the process of determining
+
+240
+00:09:56.750 --> 00:09:59.165
+an optimal decision-making policy
+
+241
+00:09:59.165 --> 00:10:02.240
+that maximizes
+some reward function R.
+
+242
+00:10:02.240 --> 00:10:04.130
+This reward function values
+
+243
+00:10:04.130 --> 00:10:06.650
+the quality of a given chain
+of actions for
+
+244
+00:10:06.650 --> 00:10:08.840
+all time steps discounting
+
+245
+00:10:08.840 --> 00:10:11.555
+future states more
+heavily than the present.
+
+246
+00:10:11.555 --> 00:10:13.850
+The process of
+reinforcement learning
+
+247
+00:10:13.850 --> 00:10:15.440
+requires the agent to
+
+248
+00:10:15.440 --> 00:10:17.570
+perform actions in an environment
+
+249
+00:10:17.570 --> 00:10:19.865
+often given by simulation.
+
+250
+00:10:19.865 --> 00:10:21.845
+This agent is then rewarded
+
+251
+00:10:21.845 --> 00:10:24.410
+according to its interaction
+with the environment.
+
+252
+00:10:24.410 --> 00:10:26.510
+Which then allows
+it to converge to
+
+253
+00:10:26.510 --> 00:10:30.215
+an optimal policy through
+successive interactions.
+
+254
+00:10:30.215 --> 00:10:33.650
+This group of behavior planning
+approaches is rapidly
+
+255
+00:10:33.650 --> 00:10:36.695
+expanding area of research
+and unfortunately,
+
+256
+00:10:36.695 --> 00:10:40.265
+a deep dive is beyond
+the scope of this course.
+
+257
+00:10:40.265 --> 00:10:42.890
+The next and final module in
+
+258
+00:10:42.890 --> 00:10:45.875
+our hierarchical planner
+is the local planner.
+
+259
+00:10:45.875 --> 00:10:48.020
+As mentioned earlier, the goal
+
+260
+00:10:48.020 --> 00:10:49.895
+of the local planner
+is to generate
+
+261
+00:10:49.895 --> 00:10:53.285
+kinematically feasible
+and collision-free paths
+
+262
+00:10:53.285 --> 00:10:54.605
+as well as comfortable,
+
+263
+00:10:54.605 --> 00:10:57.635
+and safe velocity profiles
+for the ego vehicle.
+
+264
+00:10:57.635 --> 00:11:00.095
+We decompose the local
+planning problem
+
+265
+00:11:00.095 --> 00:11:01.520
+into two sub-problems;
+
+266
+00:11:01.520 --> 00:11:05.150
+path planning and velocity
+profile generation.
+
+267
+00:11:05.150 --> 00:11:07.745
+The key ingenuity
+behind developing
+
+268
+00:11:07.745 --> 00:11:09.890
+a good path planning algorithm is
+
+269
+00:11:09.890 --> 00:11:12.665
+reducing the search
+space for optimization.
+
+270
+00:11:12.665 --> 00:11:16.040
+There are three main categories
+of path planners;
+
+271
+00:11:16.040 --> 00:11:17.795
+sampling-based planners,
+
+272
+00:11:17.795 --> 00:11:21.185
+variational planners
+and lattice planners.
+
+273
+00:11:21.185 --> 00:11:24.200
+Sampling-based planners
+randomly sample
+
+274
+00:11:24.200 --> 00:11:26.945
+the control inputs of
+the car uniformly,
+
+275
+00:11:26.945 --> 00:11:28.190
+in order to generate
+
+276
+00:11:28.190 --> 00:11:30.995
+potential paths for
+the car to traverse.
+
+277
+00:11:30.995 --> 00:11:34.220
+One of the most iconic
+sampling-based algorithms is
+
+278
+00:11:34.220 --> 00:11:36.680
+the Rapidly Exploring Random Tree
+
+279
+00:11:36.680 --> 00:11:39.065
+or RRT and its variance.
+
+280
+00:11:39.065 --> 00:11:42.500
+These algorithms
+construct the branches
+
+281
+00:11:42.500 --> 00:11:43.940
+of the tree of paths by
+
+282
+00:11:43.940 --> 00:11:47.060
+generating points in
+randomly sampled locations
+
+283
+00:11:47.060 --> 00:11:49.025
+and planning a path to the point,
+
+284
+00:11:49.025 --> 00:11:52.020
+from the nearest point
+in the tree.
+
+285
+00:11:52.330 --> 00:11:54.860
+If the path is free from
+
+286
+00:11:54.860 --> 00:11:57.185
+collisions with
+any static obstacles,
+
+287
+00:11:57.185 --> 00:11:59.510
+that path is added to the tree.
+
+288
+00:11:59.510 --> 00:12:02.600
+This tree quickly explores
+the workspace with
+
+289
+00:12:02.600 --> 00:12:06.290
+many potential paths and when
+a goal region is reached,
+
+290
+00:12:06.290 --> 00:12:09.605
+the path that terminates in
+that region is returned.
+
+291
+00:12:09.605 --> 00:12:11.915
+Sampling-based
+algorithms are often
+
+292
+00:12:11.915 --> 00:12:14.090
+extremely fast but at the cost of
+
+293
+00:12:14.090 --> 00:12:17.060
+potentially generating
+poorer quality erratic paths
+
+294
+00:12:17.060 --> 00:12:19.760
+when run in a short
+number of cycles.
+
+295
+00:12:19.760 --> 00:12:22.940
+Variational planners
+rely on the calculus of
+
+296
+00:12:22.940 --> 00:12:26.510
+variations to optimize
+a trajectory function which
+
+297
+00:12:26.510 --> 00:12:28.100
+maps points in time to
+
+298
+00:12:28.100 --> 00:12:30.830
+positions in the workspace
+according to some
+
+299
+00:12:30.830 --> 00:12:33.515
+cost-functional that
+takes obstacles
+
+300
+00:12:33.515 --> 00:12:36.185
+and robot dynamics
+into consideration.
+
+301
+00:12:36.185 --> 00:12:39.920
+Variational planners are
+usually trajectory planners,
+
+302
+00:12:39.920 --> 00:12:42.515
+which means they combine
+both path planning
+
+303
+00:12:42.515 --> 00:12:45.620
+and velocity planning
+into a single-step.
+
+304
+00:12:45.620 --> 00:12:47.930
+So they do not have
+to decouple the path
+
+305
+00:12:47.930 --> 00:12:51.080
+planning and velocity
+planning problems.
+
+306
+00:12:51.080 --> 00:12:54.080
+As an example, suppose
+we start off with
+
+307
+00:12:54.080 --> 00:12:57.530
+a given discrete sampling
+of a path in space.
+
+308
+00:12:57.530 --> 00:12:59.030
+At first, it is in
+
+309
+00:12:59.030 --> 00:13:01.580
+collision with an obstacle
+shown as well.
+
+310
+00:13:01.580 --> 00:13:04.580
+A variational planner
+will iteratively move
+
+311
+00:13:04.580 --> 00:13:06.650
+the discrete points
+such that they are
+
+312
+00:13:06.650 --> 00:13:09.845
+smooth with respect to
+the robot's dynamics,
+
+313
+00:13:09.845 --> 00:13:12.620
+as well as keeping
+them collision-free.
+
+314
+00:13:12.620 --> 00:13:15.020
+By the end, the
+trajectory will be both
+
+315
+00:13:15.020 --> 00:13:17.330
+collision-free and smoother with
+
+316
+00:13:17.330 --> 00:13:19.610
+respect to the dynamics
+of the robot.
+
+317
+00:13:19.610 --> 00:13:22.985
+However, variational methods
+are often slower,
+
+318
+00:13:22.985 --> 00:13:25.700
+more complex and
+their convergence to
+
+319
+00:13:25.700 --> 00:13:29.075
+a feasible path is sensitive
+to the initial conditions.
+
+320
+00:13:29.075 --> 00:13:31.415
+An example of
+a variational method
+
+321
+00:13:31.415 --> 00:13:33.080
+is the chomp algorithm.
+
+322
+00:13:33.080 --> 00:13:36.170
+Variational planners go beyond
+the scope of this course,
+
+323
+00:13:36.170 --> 00:13:37.670
+but for those interested,
+
+324
+00:13:37.670 --> 00:13:40.610
+the chomp algorithm provides
+an excellent example for
+
+325
+00:13:40.610 --> 00:13:42.845
+further exploration
+and is included
+
+326
+00:13:42.845 --> 00:13:45.860
+in a link in the
+supplemental materials.
+
+327
+00:13:45.860 --> 00:13:49.880
+The final group of path
+planners are lattice planners.
+
+328
+00:13:49.880 --> 00:13:53.630
+Lattice planners constrain
+the search space by limiting
+
+329
+00:13:53.630 --> 00:13:55.460
+the actions that
+the ego vehicle can
+
+330
+00:13:55.460 --> 00:13:58.100
+take at any point
+in the workspace.
+
+331
+00:13:58.100 --> 00:14:00.170
+This set of actions is known as
+
+332
+00:14:00.170 --> 00:14:02.645
+the control set of
+the lattice planner.
+
+333
+00:14:02.645 --> 00:14:04.760
+This control set, when paired
+
+334
+00:14:04.760 --> 00:14:06.920
+with a discretization
+of the workspace,
+
+335
+00:14:06.920 --> 00:14:09.570
+implicitly defines a graph.
+
+336
+00:14:09.570 --> 00:14:12.400
+This graph can then
+be searched using
+
+337
+00:14:12.400 --> 00:14:15.880
+a graph search algorithm
+such as Dijkstra's or A*,
+
+338
+00:14:15.880 --> 00:14:19.110
+which results in
+fast computation of paths.
+
+339
+00:14:19.110 --> 00:14:23.045
+Obstacles can set edges that
+cross them to infinite cost.
+
+340
+00:14:23.045 --> 00:14:24.890
+So the graph search allows us to
+
+341
+00:14:24.890 --> 00:14:27.245
+perform collision
+checking as well.
+
+342
+00:14:27.245 --> 00:14:30.455
+While the lattice planner
+is often quite fast,
+
+343
+00:14:30.455 --> 00:14:31.940
+the quality of paths are
+
+344
+00:14:31.940 --> 00:14:35.045
+sensitive to the
+selected control set.
+
+345
+00:14:35.045 --> 00:14:37.820
+A common variance on
+the lattice planner is
+
+346
+00:14:37.820 --> 00:14:40.010
+known as the conformal
+lattice planner.
+
+347
+00:14:40.010 --> 00:14:41.480
+Where a goal points are
+
+348
+00:14:41.480 --> 00:14:44.255
+selected some distance
+ahead of the car,
+
+349
+00:14:44.255 --> 00:14:45.800
+laterally offset from one
+
+350
+00:14:45.800 --> 00:14:47.780
+another with respect
+to the direction of
+
+351
+00:14:47.780 --> 00:14:52.295
+the road and a path is optimized
+to each of these points.
+
+352
+00:14:52.295 --> 00:14:56.030
+The path that best satisfies
+some objective while also
+
+353
+00:14:56.030 --> 00:14:57.950
+remaining collision free is
+
+354
+00:14:57.950 --> 00:15:00.710
+then chosen as the
+path to execute.
+
+355
+00:15:00.710 --> 00:15:02.465
+In our previous video,
+
+356
+00:15:02.465 --> 00:15:05.150
+we outlined some objectives
+that we can choose
+
+357
+00:15:05.150 --> 00:15:08.105
+to influence the path
+planning process such as,
+
+358
+00:15:08.105 --> 00:15:10.415
+arc length and bending energy.
+
+359
+00:15:10.415 --> 00:15:11.990
+The second part of
+
+360
+00:15:11.990 --> 00:15:15.425
+our local Plan is
+the velocity profile generation.
+
+361
+00:15:15.425 --> 00:15:18.050
+Velocity profile
+generation is usually
+
+362
+00:15:18.050 --> 00:15:21.050
+set up as a constrained
+optimization problem.
+
+363
+00:15:21.050 --> 00:15:23.600
+Generally, we would
+combine many of
+
+364
+00:15:23.600 --> 00:15:25.310
+the velocity profile objectives
+
+365
+00:15:25.310 --> 00:15:27.710
+described in
+the previous video such
+
+366
+00:15:27.710 --> 00:15:30.260
+as the goals of minimizing
+
+367
+00:15:30.260 --> 00:15:34.865
+jerk or minimizing deviation
+from a desired reference.
+
+368
+00:15:34.865 --> 00:15:36.965
+We also discussed
+
+369
+00:15:36.965 --> 00:15:39.350
+some important constraints
+in lesson two.
+
+370
+00:15:39.350 --> 00:15:41.285
+One of which was the rectangle
+
+371
+00:15:41.285 --> 00:15:43.340
+of comfortable accelerations.
+
+372
+00:15:43.340 --> 00:15:45.650
+This is in no way
+an exhaustive list
+
+373
+00:15:45.650 --> 00:15:47.300
+of objectives or constraints.
+
+374
+00:15:47.300 --> 00:15:48.995
+You will encounter many more
+
+375
+00:15:48.995 --> 00:15:51.290
+in your time as
+an autonomy engineer.
+
+376
+00:15:51.290 --> 00:15:54.590
+Once the objectives and
+constraints are formalized,
+
+377
+00:15:54.590 --> 00:15:57.830
+it becomes a matter of solving
+the problem efficiently.
+
+378
+00:15:57.830 --> 00:16:00.230
+One way to do this
+is to calculate
+
+379
+00:16:00.230 --> 00:16:02.000
+convex approximations to
+
+380
+00:16:02.000 --> 00:16:04.114
+the optimization domain
+and objectives,
+
+381
+00:16:04.114 --> 00:16:05.450
+which helps ensure that
+
+382
+00:16:05.450 --> 00:16:08.630
+our optimizer doesn't get
+stuck in local minima.
+
+383
+00:16:08.630 --> 00:16:11.210
+Now that we've
+discussed each level
+
+384
+00:16:11.210 --> 00:16:12.665
+in our hierarchical planner,
+
+385
+00:16:12.665 --> 00:16:15.605
+let's summarize what we've
+covered in this lesson.
+
+386
+00:16:15.605 --> 00:16:19.340
+We first went over mission
+planning and how our planner
+
+387
+00:16:19.340 --> 00:16:23.075
+navigates through a map to
+get to our destination.
+
+388
+00:16:23.075 --> 00:16:26.045
+Next, we discussed
+behavior planning.
+
+389
+00:16:26.045 --> 00:16:28.190
+Where we need to select driving
+
+390
+00:16:28.190 --> 00:16:31.340
+behaviors based on
+the situation at hand.
+
+391
+00:16:31.340 --> 00:16:34.640
+Finally, we discussed
+the local planner,
+
+392
+00:16:34.640 --> 00:16:36.260
+which we split into path
+
+393
+00:16:36.260 --> 00:16:39.140
+planning and velocity
+profile generation.
+
+394
+00:16:39.140 --> 00:16:41.600
+We gave a few examples
+of the types of
+
+395
+00:16:41.600 --> 00:16:43.940
+path planning algorithms and we
+
+396
+00:16:43.940 --> 00:16:45.380
+discussed how to optimize
+
+397
+00:16:45.380 --> 00:16:46.940
+the velocity profile for
+
+398
+00:16:46.940 --> 00:16:49.535
+a given plan path
+and reference speed.
+
+399
+00:16:49.535 --> 00:16:51.275
+Congratulations,
+
+400
+00:16:51.275 --> 00:16:53.270
+you've reached the end
+of the first module in
+
+401
+00:16:53.270 --> 00:16:56.810
+the fourth course of our
+self-driving car specialization.
+
+402
+00:16:56.810 --> 00:16:59.600
+Hopefully, you now have
+a good idea of what
+
+403
+00:16:59.600 --> 00:17:01.310
+the different approaches are when
+
+404
+00:17:01.310 --> 00:17:04.010
+designing a hierarchical
+motion planner.
+
+405
+00:17:04.010 --> 00:17:06.095
+Throughout the rest
+of this course,
+
+406
+00:17:06.095 --> 00:17:08.150
+we'll introduce
+the tools you need to
+
+407
+00:17:08.150 --> 00:17:10.790
+solve each level of
+the motion planning problem.
+
+408
+00:17:10.790 --> 00:17:12.200
+But before we do that,
+
+409
+00:17:12.200 --> 00:17:13.400
+we're going to look at how to
+
+410
+00:17:13.400 --> 00:17:15.350
+build occupancy grid maps for
+
+411
+00:17:15.350 --> 00:17:17.540
+effective collision
+avoidance detection
+
+412
+00:17:17.540 --> 00:17:20.670
+in the next module.
+See you there.

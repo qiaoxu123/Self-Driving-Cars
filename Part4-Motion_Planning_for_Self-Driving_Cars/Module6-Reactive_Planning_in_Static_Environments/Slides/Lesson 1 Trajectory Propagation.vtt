@@ -1,0 +1,785 @@
+WEBVTT
+
+1
+00:00:19.580 --> 00:00:22.245
+Welcome to the sixth module
+
+2
+00:00:22.245 --> 00:00:24.105
+of our Motion Planning course.
+
+3
+00:00:24.105 --> 00:00:26.340
+In this module, we'll
+introduce you to
+
+4
+00:00:26.340 --> 00:00:28.320
+some of the concepts
+required for you
+
+5
+00:00:28.320 --> 00:00:30.585
+to take a kinematic bicycle model
+
+6
+00:00:30.585 --> 00:00:33.560
+and build a reactive
+motion planner from it.
+
+7
+00:00:33.560 --> 00:00:35.840
+A reactive motion
+planner is one that
+
+8
+00:00:35.840 --> 00:00:37.760
+takes in local information from
+
+9
+00:00:37.760 --> 00:00:39.530
+the robot's surroundings in order
+
+10
+00:00:39.530 --> 00:00:41.420
+to generate a trajectory that
+
+11
+00:00:41.420 --> 00:00:43.010
+is collision-free and makes
+
+12
+00:00:43.010 --> 00:00:45.470
+progress towards
+some goal location.
+
+13
+00:00:45.470 --> 00:00:47.600
+We'll stick to static
+environments in
+
+14
+00:00:47.600 --> 00:00:49.460
+this module as a first step
+
+15
+00:00:49.460 --> 00:00:51.230
+on our way to planning behaviors
+
+16
+00:00:51.230 --> 00:00:53.575
+and paths for self-driving cars.
+
+17
+00:00:53.575 --> 00:00:55.790
+We'll also introduce
+the concepts of
+
+18
+00:00:55.790 --> 00:00:59.345
+path prediction and collision
+checking as we go along.
+
+19
+00:00:59.345 --> 00:01:01.670
+In this video,
+we'll be discussing
+
+20
+00:01:01.670 --> 00:01:03.440
+how to generate trajectories in
+
+21
+00:01:03.440 --> 00:01:05.660
+a discrete setting for a sequence
+
+22
+00:01:05.660 --> 00:01:08.345
+of control inputs
+to our robot model.
+
+23
+00:01:08.345 --> 00:01:10.190
+By the end of this video,
+
+24
+00:01:10.190 --> 00:01:12.634
+you should understand
+the difference between
+
+25
+00:01:12.634 --> 00:01:15.890
+a kinematic and dynamic motion
+model and you should have
+
+26
+00:01:15.890 --> 00:01:17.030
+a firm grasp of
+
+27
+00:01:17.030 --> 00:01:19.940
+the bicycle model that we
+introduced in course one.
+
+28
+00:01:19.940 --> 00:01:21.740
+In addition, you should be able
+
+29
+00:01:21.740 --> 00:01:23.390
+to generate trajectories from
+
+30
+00:01:23.390 --> 00:01:27.845
+control inputs for our bicycle
+model. Let's get started.
+
+31
+00:01:27.845 --> 00:01:29.660
+First, we want to do
+
+32
+00:01:29.660 --> 00:01:32.420
+a brief review of what
+a kinematic model is.
+
+33
+00:01:32.420 --> 00:01:35.540
+A kinematic model gives the
+equations of motion for
+
+34
+00:01:35.540 --> 00:01:37.339
+our robot while disregarding
+
+35
+00:01:37.339 --> 00:01:40.520
+the impacts of mass and
+inertia on its motion.
+
+36
+00:01:40.520 --> 00:01:42.440
+We can contrast this with
+
+37
+00:01:42.440 --> 00:01:44.510
+a dynamic model
+which instead takes
+
+38
+00:01:44.510 --> 00:01:45.680
+mass and inertia into
+
+39
+00:01:45.680 --> 00:01:49.320
+consideration at the cost
+of being more complex.
+
+40
+00:01:49.320 --> 00:01:52.070
+Kinematic models focus on linear
+
+41
+00:01:52.070 --> 00:01:54.409
+and angular velocities
+and occasionally,
+
+42
+00:01:54.409 --> 00:01:56.435
+their derivatives as inputs,
+
+43
+00:01:56.435 --> 00:01:58.310
+whereas dynamic models focus on
+
+44
+00:01:58.310 --> 00:02:00.650
+forces and torques as inputs.
+
+45
+00:02:00.650 --> 00:02:03.740
+To illustrate this, we have
+a kinematic particle model
+
+46
+00:02:03.740 --> 00:02:06.020
+contrasted with
+the dynamic particle model
+
+47
+00:02:06.020 --> 00:02:07.850
+with friction shown here.
+
+48
+00:02:07.850 --> 00:02:11.030
+For path planning and
+trajectory optimization,
+
+49
+00:02:11.030 --> 00:02:13.430
+we often focus on
+kinematic models to
+
+50
+00:02:13.430 --> 00:02:16.100
+make the motion planning problem
+more computationally
+
+51
+00:02:16.100 --> 00:02:18.830
+tractable and leave
+the issues raised
+
+52
+00:02:18.830 --> 00:02:22.310
+by the simplification of
+the dynamics to the controller.
+
+53
+00:02:22.310 --> 00:02:24.470
+To give a concrete example,
+
+54
+00:02:24.470 --> 00:02:27.560
+here we have the equations of
+motion for a bicycle model
+
+55
+00:02:27.560 --> 00:02:31.565
+of our robot which you should
+recall from course one.
+
+56
+00:02:31.565 --> 00:02:34.150
+What do these equations mean?
+
+57
+00:02:34.150 --> 00:02:37.640
+Essentially, we define
+the base link of the robot as
+
+58
+00:02:37.640 --> 00:02:41.405
+being in the position xy in
+a fixed coordinate frame.
+
+59
+00:02:41.405 --> 00:02:44.090
+We also take the heading
+of the robot
+
+60
+00:02:44.090 --> 00:02:46.700
+to be Theta relative
+to the x-axis.
+
+61
+00:02:46.700 --> 00:02:50.150
+Taking these together, the
+xy position along with
+
+62
+00:02:50.150 --> 00:02:51.500
+the heading Theta gives us
+
+63
+00:02:51.500 --> 00:02:54.125
+the state of the robot
+at any point.
+
+64
+00:02:54.125 --> 00:02:55.760
+For the bicycle model,
+
+65
+00:02:55.760 --> 00:02:57.740
+the inputs given at each point in
+
+66
+00:02:57.740 --> 00:03:00.740
+time are the velocity
+and the steering angle.
+
+67
+00:03:00.740 --> 00:03:03.275
+These inputs along
+with the current state
+
+68
+00:03:03.275 --> 00:03:05.270
+are what allow us
+to calculate how
+
+69
+00:03:05.270 --> 00:03:07.475
+a trajectory will
+evolve with time
+
+70
+00:03:07.475 --> 00:03:11.520
+according to the bicycle model
+kinematic equations.
+
+71
+00:03:12.040 --> 00:03:15.710
+One thing to take away
+from this is that we often
+
+72
+00:03:15.710 --> 00:03:18.680
+do not have direct access
+to the state of the robot.
+
+73
+00:03:18.680 --> 00:03:21.380
+We cannot tell the robot
+directly to go
+
+74
+00:03:21.380 --> 00:03:24.185
+to a specific position
+in x and y.
+
+75
+00:03:24.185 --> 00:03:28.190
+We can however, devise
+a sequence of control inputs,
+
+76
+00:03:28.190 --> 00:03:31.340
+u sub n that will
+allow us to reach said
+
+77
+00:03:31.340 --> 00:03:34.895
+xy position according to
+the kinematic equations.
+
+78
+00:03:34.895 --> 00:03:37.370
+The sequence of
+control inputs will
+
+79
+00:03:37.370 --> 00:03:41.255
+correspond to a trajectory
+that the robot will follow.
+
+80
+00:03:41.255 --> 00:03:43.250
+Now that we've seen an example of
+
+81
+00:03:43.250 --> 00:03:45.320
+some kinematic equations,
+you might be asking,
+
+82
+00:03:45.320 --> 00:03:46.880
+"How do we actually calculate
+
+83
+00:03:46.880 --> 00:03:49.825
+a trajectory for
+a given sequence of inputs?"
+
+84
+00:03:49.825 --> 00:03:51.800
+The kinematic
+equations we've given
+
+85
+00:03:51.800 --> 00:03:53.480
+you essentially amount to
+
+86
+00:03:53.480 --> 00:03:57.425
+a system of continuous time
+differential equations.
+
+87
+00:03:57.425 --> 00:04:00.139
+For trajectory
+generation purposes,
+
+88
+00:04:00.139 --> 00:04:02.630
+we'll be focusing on
+the discrete analog of
+
+89
+00:04:02.630 --> 00:04:05.700
+these equations as
+discussed in course one.
+
+90
+00:04:05.700 --> 00:04:07.710
+By focusing on
+the discrete model,
+
+91
+00:04:07.710 --> 00:04:10.490
+it allows us to easily
+and efficiently propagate
+
+92
+00:04:10.490 --> 00:04:13.865
+trajectories for a given
+sequence of control inputs.
+
+93
+00:04:13.865 --> 00:04:16.130
+Many methods exist
+for discretizing
+
+94
+00:04:16.130 --> 00:04:19.220
+continuous time differential
+equations and we use
+
+95
+00:04:19.220 --> 00:04:22.715
+a simple zero-order hold
+here and have provided you
+
+96
+00:04:22.715 --> 00:04:24.080
+with additional resources in
+
+97
+00:04:24.080 --> 00:04:27.420
+the supplemental materials
+if you'd like to see more.
+
+98
+00:04:27.880 --> 00:04:30.680
+A consequence of
+the discretization
+
+99
+00:04:30.680 --> 00:04:32.465
+of these equations is that we can
+
+100
+00:04:32.465 --> 00:04:34.280
+implement the sum over all of
+
+101
+00:04:34.280 --> 00:04:37.235
+the updates in
+the sequence recursively,
+
+102
+00:04:37.235 --> 00:04:38.840
+which allows us to build up
+
+103
+00:04:38.840 --> 00:04:40.640
+the full trajectory iteratively
+
+104
+00:04:40.640 --> 00:04:42.845
+for a given sequence of inputs.
+
+105
+00:04:42.845 --> 00:04:45.260
+This saves in
+computational effort
+
+106
+00:04:45.260 --> 00:04:47.075
+because rather than recomputing
+
+107
+00:04:47.075 --> 00:04:49.340
+a sum over all previous updates
+
+108
+00:04:49.340 --> 00:04:51.395
+for each point in the trajectory,
+
+109
+00:04:51.395 --> 00:04:54.110
+we can incrementally
+compute the next point of
+
+110
+00:04:54.110 --> 00:04:57.920
+the trajectory using only the
+previously computed point.
+
+111
+00:04:57.920 --> 00:05:00.740
+This is shown as
+the final right-hand side
+
+112
+00:05:00.740 --> 00:05:03.275
+for each of the state
+variable equations.
+
+113
+00:05:03.275 --> 00:05:05.780
+We will be using
+this recursive solution
+
+114
+00:05:05.780 --> 00:05:07.565
+throughout this module.
+
+115
+00:05:07.565 --> 00:05:10.490
+If we now apply
+this discretization and
+
+116
+00:05:10.490 --> 00:05:13.670
+step through an entire
+control input sequence,
+
+117
+00:05:13.670 --> 00:05:15.755
+we will get an
+accurate approximation
+
+118
+00:05:15.755 --> 00:05:18.230
+of the trajectory that
+the robot will follow.
+
+119
+00:05:18.230 --> 00:05:20.750
+While this is useful for
+trajectory planning,
+
+120
+00:05:20.750 --> 00:05:23.360
+it is also useful for
+motion prediction,
+
+121
+00:05:23.360 --> 00:05:25.070
+where we know
+a kinematic model of
+
+122
+00:05:25.070 --> 00:05:27.080
+a different agent in
+the driving scenario
+
+123
+00:05:27.080 --> 00:05:29.195
+and we have an educated guess
+
+124
+00:05:29.195 --> 00:05:31.325
+on the control inputs
+they will take.
+
+125
+00:05:31.325 --> 00:05:33.320
+From this, we can estimate
+
+126
+00:05:33.320 --> 00:05:35.690
+their future trajectory
+which can help us
+
+127
+00:05:35.690 --> 00:05:38.990
+plan our motion to
+avoid collisions.
+
+128
+00:05:38.990 --> 00:05:41.690
+As an example, suppose we take
+
+129
+00:05:41.690 --> 00:05:43.820
+a constant velocity
+input as well as
+
+130
+00:05:43.820 --> 00:05:46.825
+a constant steering angle
+to our bicycle model.
+
+131
+00:05:46.825 --> 00:05:49.480
+As shown here in the animation,
+
+132
+00:05:49.480 --> 00:05:52.490
+this results in the robot
+traversing the arc with
+
+133
+00:05:52.490 --> 00:05:54.590
+constant speed while it's heading
+
+134
+00:05:54.590 --> 00:05:57.440
+slowly changes with
+each time step.
+
+135
+00:05:57.440 --> 00:06:00.485
+If we instead vary
+the steering angle
+
+136
+00:06:00.485 --> 00:06:03.530
+along the path according
+to some steering function,
+
+137
+00:06:03.530 --> 00:06:05.914
+we can perform
+more complex maneuvers,
+
+138
+00:06:05.914 --> 00:06:10.025
+which are critical for such
+tasks as obstacle avoidance.
+
+139
+00:06:10.025 --> 00:06:12.020
+This is essentially the crux
+
+140
+00:06:12.020 --> 00:06:13.535
+of the local planning problem,
+
+141
+00:06:13.535 --> 00:06:16.340
+calculating the
+required control inputs
+
+142
+00:06:16.340 --> 00:06:19.715
+to safely navigate to
+a given goal point.
+
+143
+00:06:19.715 --> 00:06:22.640
+In the animation, we can
+see that driving with
+
+144
+00:06:22.640 --> 00:06:24.470
+a constant steering
+angle as we did
+
+145
+00:06:24.470 --> 00:06:26.975
+before would result
+in a collision.
+
+146
+00:06:26.975 --> 00:06:30.500
+To remedy this, we have given
+the robot a sequence of
+
+147
+00:06:30.500 --> 00:06:32.300
+different steering angle inputs
+
+148
+00:06:32.300 --> 00:06:34.460
+in order to avoid the obstacle.
+
+149
+00:06:34.460 --> 00:06:36.740
+We're now ready to
+start planning paths
+
+150
+00:06:36.740 --> 00:06:39.580
+through environments
+with obstacles.
+
+151
+00:06:39.580 --> 00:06:43.310
+In this video, we reviewed
+the difference between
+
+152
+00:06:43.310 --> 00:06:45.770
+kinematic and dynamic models as
+
+153
+00:06:45.770 --> 00:06:47.060
+well as the bicycle model
+
+154
+00:06:47.060 --> 00:06:49.120
+that we introduced in course one.
+
+155
+00:06:49.120 --> 00:06:51.470
+From there, we discussed how to
+
+156
+00:06:51.470 --> 00:06:53.870
+compute trajectories
+for a given model
+
+157
+00:06:53.870 --> 00:06:56.105
+and set of control inputs using
+
+158
+00:06:56.105 --> 00:06:58.775
+our trajectory
+propagation algorithm.
+
+159
+00:06:58.775 --> 00:07:01.490
+This algorithm will come
+in handy when we develop
+
+160
+00:07:01.490 --> 00:07:04.405
+the rest of our motion planner
+in this module.
+
+161
+00:07:04.405 --> 00:07:06.380
+Hopefully, this video
+has given you
+
+162
+00:07:06.380 --> 00:07:08.015
+some insight on how to take
+
+163
+00:07:08.015 --> 00:07:10.520
+a robot's kinematic
+model and generate
+
+164
+00:07:10.520 --> 00:07:13.130
+a trajectory for it
+given arbitrary inputs.
+
+165
+00:07:13.130 --> 00:07:14.210
+In our next video,
+
+166
+00:07:14.210 --> 00:07:16.580
+we will discuss some
+efficient collision checking
+
+167
+00:07:16.580 --> 00:07:18.230
+methods that we can use
+
+168
+00:07:18.230 --> 00:07:20.585
+when evaluating
+different plan paths
+
+169
+00:07:20.585 --> 00:07:23.430
+for safety. See you there.

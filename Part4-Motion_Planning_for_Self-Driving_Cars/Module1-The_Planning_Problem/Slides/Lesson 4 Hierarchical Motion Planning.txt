@@ -1,0 +1,259 @@
+Hi everyone? So far
+in this module, we've described the planning
+problem in general, we've described a hierarchy for solving the complex
+planning problem, and we described
+the constraints and objectives that make
+planning so hard. In this lesson, we'll discuss the hierarchy for decomposing, the overall planning problem into smaller sub-problems
+in more detail. By the end of this video, you will understand the scope
+of mission planning, behavioral planning, and
+local planning sub-problems. You'll be able to list some methods for solving
+each of the problems, you'll also understand why this hierarchy is used
+in many self-driving car systems progressively
+refining the plans for motion through
+the environment. Let's begin by reviewing
+our planning hierarchy. If you recall from lesson
+one of this module, we introduced the
+hierarchical structure we will use for motion planning
+and it's autonomous driving. We described each level of
+the hierarchical planner as defining its own
+optimization problem, with each level of the hierarchy having a specific degree of abstraction with respect to the relevant objective function
+and constraints. The mission planner is the highest level
+optimization problem where we focus on map level navigation from the vehicles
+current position, to a given destination. Behavioral planning on
+the other hand will focus on the current
+driving scenario, and will decide which maneuver to execute based on other agents
+in the workspace, and the rules of the road. Finally, we have
+the local planner, which will focus on generating
+kinematically feasible, collision-free paths, as well as comfortable velocity profiles
+in a decoupled manner. This will then be output to our vehicle controller that
+we discussed in course one. By breaking the planning problem
+into sub-problems, we constrain how much knowledge
+and computation is required at each part of
+the motion planning process. Which allows for
+more efficient computation. This comes with a
+trade-off however, as when we decompose the problem, each sub-problem loses
+some domain information. We end up with
+a sub-optimal motion plan as compared to emotion plan that takes all aspects of the planning process into
+consideration at the same time. For autonomous driving, the ability to run
+our motion planner in real-time is crucial, so this trade-off is
+almost always worth it. Some motion planning
+methods integrate the differing sub-problems
+in varying degrees. But in this lesson,
+we're going to focus on this particular
+hierarchical decomposition. Next, let's go over each
+of these steps in detail. As mentioned, the first
+and highest level step in our hierarchical motion planner
+is the mission planner. The mission planner focuses on map level navigation from the ego-vehicles
+current position, through a required destination. Because the scale
+of mission planning is often on the
+order of kilometers, we require a high level of abstraction to make
+the problem tractable. In this sense we often
+ignore aspects of the motion planning
+problems such as obstacles and
+regulatory elements, and instead focus on
+the macro aspects of the problem such as traffic
+and road connections. By doing this, we can
+simplify the problem to the point where we can plan out a required driving mission, over a large spatial scale. An example is shown here
+where we are planning between two points on a map
+of Berkeley, California, taking into consideration
+the various intersections and road connections on the map, as well as the
+directionality of each road. Doing so, we then compute the shortest path in our road
+network to our destination. This can be done in
+a variety of ways. If we focus on the spatial length of the roads in the road network, we can construct a graph from the road network and then use Dijkstra's algorithm or A* search to find the shortest path. If instead we focus on time to destination as
+our objective to minimize, the problem becomes
+more complex but can still be solved using
+the same algorithms. We will discuss these methods in much more detail in module three. The next step in our hierarchical planner
+is the behavior planner. What is the behavior planner? The behavior planner is a portion of the motion
+planner that focuses on high level decision making required to follow the
+rules of the road, and recognize which maneuvers are safe to make in
+a given driving scenario. We discussed many of these scenarios in
+our first lessons together. For example, recall that
+one of the scenarios we discussed was performing
+a turn at an intersection. Let's say for
+the sake of example, the ego-vehicle has
+entered an intersection to perform a left turn and
+the light is turning green. The behavior planner
+should make it clear to the path planner and
+velocity generator, that is only safe to
+proceed when there is sufficient time gap between
+the ego-vehicles position, and the oncoming traffic and pedestrians in the intersection. Following the taxonomy of maneuvers we discussed
+in our first lesson, the behavior planner
+should output a yield maneuver to the remaining portion
+of the motion planner, which will ensure that they only proceed once it is
+cleared to do so. Of course, our taxonomy
+is in no way universal, there are many possibilities
+when deciding what types of maneuvers and what scope of behaviors your autonomous car
+should exhibit. Now you may be wondering how is the behavior planner are
+supposed to take in all of the information about the autonomous vehicles
+surroundings and calculate what maneuver it should execute in an efficient manner. This is an area of active
+research and there is no settled best method
+to achieve this. In general, there appear to be three different
+prevailing architectures to solve the behavioral
+planning problem. The first group are methods that use finite state machines. The key concept behind finite state machines is
+that they are composed of: states which represent the ego-vehicles
+required maneuvers, and transitions which dictate how the state should evolve
+depending on the inputs. These may be things
+like: vehicle locations, traffic light transitions, or any other element of interest in our current
+driving scenario. As an example, one could imagine a state machine that handles stop signs to have a state such
+as decelerate to stop, stop and track speed. When a car encounters
+a stop sign, it would first enter
+the decelerate to stop state, where the behavioral
+planner would then signal that it is
+time to decelerate. Once it has stopped
+at the stop location, the behavior planner
+will remain in the stop state for
+a set amount of time. Once the time has been exceeded and the intersection is clear, the behavior planner will
+then enter the track speeds state which means it is
+safe to continue driving. We go through this example in more detail in a later module
+in this course. It is important to note that when deciding which transition to take at each step of
+the finite state machine, we focus entirely on
+the current state, and the inputs to
+the finite state machine. Essentially, this means that the finite state
+machine is memoryless. Its past states do not impact the current
+transition or output. This is a helpful
+property that makes finite state machines
+straightforward to implement, but can lead to many states
+that are similar for systems where sequences
+of actions do matter. The next common type of behavioral planners are
+rule-based systems. Essentially,
+these type of systems consist of a hierarchy of rules, where the hierarchy represents the relative importance
+of each rule. Each rule may
+correspond to a rule of the road such as
+stopping at a red light, or may correspond to a driving best practice such as maintaining a two second gap, between the ego-vehicle
+and a leading vehicle. The state of the ego-vehicle and its surroundings
+would then be fed into the rule-based system in the form of logical predicates. These predicates would
+then be evaluated against every rule and based
+on the rule priority, the maneuver corresponding to the highest priority rule would be output to the rest
+of the motion planner. For example, suppose we have
+the following two rules. The first rule checks if
+there is a green light ahead and issues a decision for
+the car to continue driving. While the second rule checks
+if there are pedestrians in the cars lanes and issues a decision to perform
+the emergency stop maneuver. In our system, stopping
+for a pedestrian in front of us is higher priority than driving through green light. Now suppose we were driving along and observe
+a green light at the upcoming
+intersection as well as a pedestrian crossing illegally in front of the intersection. Both rules would trigger
+in this case but since the emergency stop
+is higher priority, that is the maneuver that the rule-based system
+will output. As you can imagine, it is both important and challenging to make sure rule-based systems
+are logically consistent. Otherwise, they can
+exhibit erratic behavior. The final group of behavior planning approaches are machine learning-based methods. In particular,
+an interesting example of this method is using
+reinforcement learning. Reinforcement learning is
+the process of determining an optimal decision-making policy that maximizes
+some reward function R. This reward function values the quality of a given chain
+of actions for all time steps discounting future states more
+heavily than the present. The process of
+reinforcement learning requires the agent to perform actions in an environment often given by simulation. This agent is then rewarded according to its interaction
+with the environment. Which then allows
+it to converge to an optimal policy through
+successive interactions. This group of behavior planning
+approaches is rapidly expanding area of research
+and unfortunately, a deep dive is beyond
+the scope of this course. The next and final module in our hierarchical planner
+is the local planner. As mentioned earlier, the goal of the local planner
+is to generate kinematically feasible
+and collision-free paths as well as comfortable, and safe velocity profiles
+for the ego vehicle. We decompose the local
+planning problem into two sub-problems; path planning and velocity
+profile generation. The key ingenuity
+behind developing a good path planning algorithm is reducing the search
+space for optimization. There are three main categories
+of path planners; sampling-based planners, variational planners
+and lattice planners. Sampling-based planners
+randomly sample the control inputs of
+the car uniformly, in order to generate potential paths for
+the car to traverse. One of the most iconic
+sampling-based algorithms is the Rapidly Exploring Random Tree or RRT and its variance. These algorithms
+construct the branches of the tree of paths by generating points in
+randomly sampled locations and planning a path to the point, from the nearest point
+in the tree. If the path is free from collisions with
+any static obstacles, that path is added to the tree. This tree quickly explores
+the workspace with many potential paths and when
+a goal region is reached, the path that terminates in
+that region is returned. Sampling-based
+algorithms are often extremely fast but at the cost of potentially generating
+poorer quality erratic paths when run in a short
+number of cycles. Variational planners
+rely on the calculus of variations to optimize
+a trajectory function which maps points in time to positions in the workspace
+according to some cost-functional that
+takes obstacles and robot dynamics
+into consideration. Variational planners are
+usually trajectory planners, which means they combine
+both path planning and velocity planning
+into a single-step. So they do not have
+to decouple the path planning and velocity
+planning problems. As an example, suppose
+we start off with a given discrete sampling
+of a path in space. At first, it is in collision with an obstacle
+shown as well. A variational planner
+will iteratively move the discrete points
+such that they are smooth with respect to
+the robot's dynamics, as well as keeping
+them collision-free. By the end, the
+trajectory will be both collision-free and smoother with respect to the dynamics
+of the robot. However, variational methods
+are often slower, more complex and
+their convergence to a feasible path is sensitive
+to the initial conditions. An example of
+a variational method is the chomp algorithm. Variational planners go beyond
+the scope of this course, but for those interested, the chomp algorithm provides
+an excellent example for further exploration
+and is included in a link in the
+supplemental materials. The final group of path
+planners are lattice planners. Lattice planners constrain
+the search space by limiting the actions that
+the ego vehicle can take at any point
+in the workspace. This set of actions is known as the control set of
+the lattice planner. This control set, when paired with a discretization
+of the workspace, implicitly defines a graph. This graph can then
+be searched using a graph search algorithm
+such as Dijkstra's or A*, which results in
+fast computation of paths. Obstacles can set edges that
+cross them to infinite cost. So the graph search allows us to perform collision
+checking as well. While the lattice planner
+is often quite fast, the quality of paths are sensitive to the
+selected control set. A common variance on
+the lattice planner is known as the conformal
+lattice planner. Where a goal points are selected some distance
+ahead of the car, laterally offset from one another with respect
+to the direction of the road and a path is optimized
+to each of these points. The path that best satisfies
+some objective while also remaining collision free is then chosen as the
+path to execute. In our previous video, we outlined some objectives
+that we can choose to influence the path
+planning process such as, arc length and bending energy. The second part of our local Plan is
+the velocity profile generation. Velocity profile
+generation is usually set up as a constrained
+optimization problem. Generally, we would
+combine many of the velocity profile objectives described in
+the previous video such as the goals of minimizing jerk or minimizing deviation
+from a desired reference. We also discussed some important constraints
+in lesson two. One of which was the rectangle of comfortable accelerations. This is in no way
+an exhaustive list of objectives or constraints. You will encounter many more in your time as
+an autonomy engineer. Once the objectives and
+constraints are formalized, it becomes a matter of solving
+the problem efficiently. One way to do this
+is to calculate convex approximations to the optimization domain
+and objectives, which helps ensure that our optimizer doesn't get
+stuck in local minima. Now that we've
+discussed each level in our hierarchical planner, let's summarize what we've
+covered in this lesson. We first went over mission
+planning and how our planner navigates through a map to
+get to our destination. Next, we discussed
+behavior planning. Where we need to select driving behaviors based on
+the situation at hand. Finally, we discussed
+the local planner, which we split into path planning and velocity
+profile generation. We gave a few examples
+of the types of path planning algorithms and we discussed how to optimize the velocity profile for a given plan path
+and reference speed. Congratulations, you've reached the end
+of the first module in the fourth course of our
+self-driving car specialization. Hopefully, you now have
+a good idea of what the different approaches are when designing a hierarchical
+motion planner. Throughout the rest
+of this course, we'll introduce
+the tools you need to solve each level of
+the motion planning problem. But before we do that, we're going to look at how to build occupancy grid maps for effective collision
+avoidance detection in the next module.
+See you there.

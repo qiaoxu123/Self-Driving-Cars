@@ -1,0 +1,146 @@
+Welcome to the second lesson in the mission planning module. In this lesson we'll modify
+our unweighted graph, from the previous lesson
+to contain edge weights. To give a more applicable
+representation for our mission planning problem. We'll then discuss how it
+impacts our algorithm, and how we can overcome this challenge while still
+planning efficiently. In particular by the
+end of this video, you should be able to understand the difference between
+weighted and unweighted graphs, and why weighted graphs are more useful for mission planning. You should have a firm grasp
+of the Dijkstra's algorithm. A graph search algorithm
+that is useful for weighted graphs.
+Let's get started. As a refresher, recall that for our mission planning problem, the goal is to find
+the optimal path in our road network from the ego
+vehicles current position, to the required
+final destination. In the last video
+we presented the breadth-first search algorithm
+to solve this problem. However, in the process
+we assume that all road segments
+have equal length, which is an overly
+simplistic assumption. Depending on factors such as road lengths, traffic,
+speed limits, and weather, different
+road segments can vary wildly in
+their traversal costs. For simplicity, we
+will initially focus purely on distance
+in our search graph. To reflect this, we will add edge weights to
+each edge in the graph, that correspond to the length of the corresponding
+road segment. This is shown here, after updating
+our unweighted graph with appropriate edge weights. The units of the weights
+are arbitrary, as long as they are
+common to all edges. For this instance, suppose the edge weights
+are the number of kilometers it takes to travel
+across that road segment. As before, the goal is to find the optimal path
+from the vertex of the ego vehicles
+current position S to the final destination
+vertex T. Unfortunately, our BFS algorithm doesn't take edge weights
+into consideration. So it isn't guaranteed to find the optimal path
+in this situation. We instead need to use a different more
+powerful algorithm. This is where Dijkstra's
+algorithm comes in. Edsger Dijkstra, a Dutch
+computer scientist, first conceived of
+this algorithm in 1956. In an interview in 2001, he explains that he was shopping with
+his fiance at the time, and got tired and they
+sat down for a coffee. He had been puzzling
+with the shortest path problem in his head, and within 20 minutes
+he worked out his algorithm without
+pen or paper. It took him three more years to write a paper on this topic, but he credits the simplicity
+and elegance of the idea with being forced to work through the solution
+entirely in his head. The overall flow of
+Dijkstra's algorithm is quite similar to BFS. The main difference is in the order we process
+the vertices. We've highlighted
+the differences from the BFS algorithm in blue. As before, we keep track
+of the vertices we have already processed
+in the closed set, and the vertices
+we've discovered but not yet processed
+in the open set. The key difference
+is that instead of using a queue
+for the open set, we'll be using a min heap. A min heap is
+a data structure that stores keys and values, and sorts the keys in terms of their associated values
+from smallest to largest. In our case, the values of
+each key vertex in the graph will correspond to
+the distance it takes to reach that vertex, along the shortest path to that vertex we've found so far. In this sense, Dijkstra's
+algorithm processes vertices with a lower accumulated
+cost before other ones. Thus unlike BFS, a vertex
+that was added later in the search can be processed before when that
+was added earlier, so long as it's accumulated
+cost is lower. Other than that,
+Dijkstra's algorithm is largely the same as BFS. Progressing through the vertices, while adding and
+popping them off of the min heap until
+the goal vertex is processed. One interesting case however, is if we find a new path
+to a vertex that is already in the open heap but
+has not been processed yet. In this case, we have to
+check if the newly found path to this vertex is cheaper
+than the old path. If it is, we need to update its cost in the
+min-heap otherwise, no action is required. Once we process the goal vertex
+we must have necessarily processed all
+possible predecessor vertices of the goal node. Since a predecessor
+must have accumulated distance less than or
+equal to the goal vertex. Since all predecessor vertices
+have been processed, we will have found the shortest
+path to the goal vertex. Once the goal vertex
+has been processed, so the algorithm can terminate. To solidify our understanding, let's step through
+the application of Dijkstra's algorithm to
+our new weighted graph. For our graph as with BFS, the first vertex to process is S, which then adds A, B and C, to the min heap. By default, the accumulated
+cost of the origin S is zero. So the cost to reach A, B and C, is five, seven and
+two respectively. Since we are using a min-heap instead of a queue for
+Dijkstra's algorithm, the order of
+the open vertices is now CAB sorted from lowest cost
+to highest cost in the heap. We store each of these
+vertices predecessors as S, and then add S to the closed set. Next, we pop C from the heap. Since it is the lowest
+cost vertex so far. C is only connected to E, which has not yet
+been discovered. So we add it to the min heap with a cost of two plus eight is ten, along with C as its predecessor. Our new heap ordering is A, B and E. We then add
+C to the closed set. The next vertex to pop
+off the heap is A, which connects to both D and B. D is not yet been explored, so we add it to the heap with a cost of five plus
+two for seven, and b however has
+been explored as it currently has an accumulated
+cost of seven. The edge AB has weight one, so the new cost of going through A is five plus one for six. Since this is lower than the current cost of
+B which was seven, we update the cost of
+B in the heap to six, and change its
+predecessor from S to A. To show that the cost
+of B was updated, we have marked the new edge
+to be as purple. We then close vertex A. Our vertex ordering in
+the min heap is now B, D and E. We now pop
+B off of the heap, which only connects to E. The cost so far to
+reach B is six, which gives us a cost
+of nine to reach E. E was already stored in the min heap
+with a cost of ten. So, we need to update
+the cost of E to nine, as well as change
+its predecessor from C to B. Finally, we close vertex B. Our new vertex ordering
+in the min-heap is D then E. Next, we pop D off of the heap
+which connects both E and T. E is already in
+the heap with cost nine, and the new path from D
+to E has a cost of 14. Since this is higher
+than E's current cost, we can ignore this new path. To show that we've ignored it, we mark the new edge to E
+as red instead of purple. We then add T to the heap of a cost of seven
+plus one is eight, setting D as its predecessor. Finally, we close vertex D.
+Our new heap ordering is T and then E. The final vertex
+that we pop off is T, which is our goal vertex. This completes
+the planning process, and we now have an optimal path
+formed by chaining together the predecessors of T all the way back to the origin, as highlighted on
+this graph here. Next, let's take a look at how this mission planning problem
+looks on a real map. Here we have a map of
+Berkeley, California. Where the vertices of
+the graph correspond to intersections, and
+the edges correspond to road segments as we
+discussed earlier. The two red dots, correspond to the start and end points of our required plan. We have to remember that
+certain roads are one-way roads. As such, the graph is directed. After running
+Dijkstra's algorithm, the shortest path between the two nodes is given
+by the red path. Dijkstra's algorithm
+is quite efficient, which allows it to
+scale really well to real-world problems such
+as the ones shown here. In fact, it even works with a much larger scale problems such as navigating over New York City. Whose road network graph
+is shown below. While Dijkstra's is
+an efficient algorithm, we can leverage
+certain heuristics to make it even faster in practice, which we'll discuss
+in our next lesson. Now that we've worked
+through a full example, let's review what we
+discussed in this video. We first introduced the concept
+of a weighted graph, and discussed that having
+the ability to make certain edges have
+higher weights than others, better reflects the
+autonomous driving mission. As different roads are
+longer than others. As a consequence of this, our breadth-first search
+algorithm no longer works. So we introduced
+Dijkstra's algorithm, to handle this added complexity. In our next lesson, we'll be discussing how
+to solve these problems more efficiently using
+search heuristics. We'll introduce
+the A-star algorithm.

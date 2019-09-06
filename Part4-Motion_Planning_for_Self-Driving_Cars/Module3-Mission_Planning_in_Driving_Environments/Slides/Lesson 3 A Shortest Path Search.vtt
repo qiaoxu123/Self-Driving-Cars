@@ -1,0 +1,1341 @@
+WEBVTT
+
+1
+00:00:14.000 --> 00:00:16.635
+Welcome. In this lesson,
+
+2
+00:00:16.635 --> 00:00:19.545
+we will build on Dijkstra's
+algorithm by introducing
+
+3
+00:00:19.545 --> 00:00:22.005
+a new potentially faster approach
+
+4
+00:00:22.005 --> 00:00:24.660
+that we can use for our
+mission planning problem.
+
+5
+00:00:24.660 --> 00:00:28.430
+To do this, we'll leverage
+heuristics in our search,
+
+6
+00:00:28.430 --> 00:00:29.780
+which will help us refine
+
+7
+00:00:29.780 --> 00:00:32.210
+the search process to
+make it more efficient.
+
+8
+00:00:32.210 --> 00:00:34.130
+By the end of this video,
+
+9
+00:00:34.130 --> 00:00:36.320
+you should understand the role of
+
+10
+00:00:36.320 --> 00:00:38.420
+heuristics in graph search and
+
+11
+00:00:38.420 --> 00:00:40.280
+identify which heuristics are
+
+12
+00:00:40.280 --> 00:00:44.030
+valid for our mission planning
+problem and which are not.
+
+13
+00:00:44.030 --> 00:00:46.715
+You should also be
+able to leverage
+
+14
+00:00:46.715 --> 00:00:48.940
+heuristics in
+our graph search problem,
+
+15
+00:00:48.940 --> 00:00:51.550
+by using the A* search algorithm,
+
+16
+00:00:51.550 --> 00:00:54.830
+and recognize how
+to apply A* search
+
+17
+00:00:54.830 --> 00:00:56.930
+to variance of the
+mission planning problem
+
+18
+00:00:56.930 --> 00:00:58.430
+we've discussed so far.
+
+19
+00:00:58.430 --> 00:01:00.410
+So let's get started.
+
+20
+00:01:00.410 --> 00:01:02.870
+If you recall from
+the last lesson we
+
+21
+00:01:02.870 --> 00:01:05.210
+introduced Dijkstra's
+algorithm to help
+
+22
+00:01:05.210 --> 00:01:07.205
+us tackle the
+mission planning problem
+
+23
+00:01:07.205 --> 00:01:09.860
+for the case of
+a weighted graph edges,
+
+24
+00:01:09.860 --> 00:01:11.570
+which was more realistic than
+
+25
+00:01:11.570 --> 00:01:14.390
+our previous unweighted
+graph instance because it
+
+26
+00:01:14.390 --> 00:01:15.575
+let us take into account
+
+27
+00:01:15.575 --> 00:01:19.385
+variable distances across
+different road segments.
+
+28
+00:01:19.385 --> 00:01:22.760
+However, Dijkstra's
+algorithm required us to
+
+29
+00:01:22.760 --> 00:01:26.000
+search almost all of the edges
+present in the graph,
+
+30
+00:01:26.000 --> 00:01:28.040
+even though only a
+few of them were
+
+31
+00:01:28.040 --> 00:01:31.450
+actually useful for
+constructing the optimal path.
+
+32
+00:01:31.450 --> 00:01:34.820
+Well, this wasn't a problem
+for our small example graph.
+
+33
+00:01:34.820 --> 00:01:36.950
+It will cause issues
+when we scale
+
+34
+00:01:36.950 --> 00:01:39.350
+our problem to
+more realistic proportions,
+
+35
+00:01:39.350 --> 00:01:42.280
+such as a full road
+network for a city.
+
+36
+00:01:42.280 --> 00:01:44.780
+To improve our
+efficiency in practice,
+
+37
+00:01:44.780 --> 00:01:48.110
+we can instead rely on
+a search heuristic by using
+
+38
+00:01:48.110 --> 00:01:50.150
+the A* algorithm to find
+
+39
+00:01:50.150 --> 00:01:52.895
+our destination rather
+than Dijkstra's.
+
+40
+00:01:52.895 --> 00:01:55.055
+What is a search heuristic?
+
+41
+00:01:55.055 --> 00:01:58.670
+In this context, a search
+heuristic is an estimate of
+
+42
+00:01:58.670 --> 00:02:00.710
+the remaining cost to reach
+
+43
+00:02:00.710 --> 00:02:02.270
+the destination vertex from
+
+44
+00:02:02.270 --> 00:02:04.460
+any given vertex in the graph.
+
+45
+00:02:04.460 --> 00:02:07.370
+Of course, any heuristic
+we use won't be
+
+46
+00:02:07.370 --> 00:02:09.350
+exact as that would require
+
+47
+00:02:09.350 --> 00:02:12.210
+knowing the answer to
+our search problem already.
+
+48
+00:02:12.210 --> 00:02:15.410
+Instead, we rely on
+the structure of
+
+49
+00:02:15.410 --> 00:02:17.525
+the problem instance to develop
+
+50
+00:02:17.525 --> 00:02:20.795
+a reasonable estimate
+that is fast to compute.
+
+51
+00:02:20.795 --> 00:02:22.760
+In our case, the vertices in
+
+52
+00:02:22.760 --> 00:02:25.625
+the graph correspond
+to points in space,
+
+53
+00:02:25.625 --> 00:02:27.380
+with the edges corresponding
+
+54
+00:02:27.380 --> 00:02:29.120
+to segments of a road which have
+
+55
+00:02:29.120 --> 00:02:30.950
+a weight corresponding to
+
+56
+00:02:30.950 --> 00:02:33.035
+the length of those
+road segments.
+
+57
+00:02:33.035 --> 00:02:37.280
+Therefore a useful estimate
+on the cost or length between
+
+58
+00:02:37.280 --> 00:02:39.050
+any two vertices is
+
+59
+00:02:39.050 --> 00:02:42.070
+the straight line or Euclidean
+distance between them,
+
+60
+00:02:42.070 --> 00:02:44.210
+as shown here by HOV,
+
+61
+00:02:44.210 --> 00:02:48.640
+for a given vertex v
+and goal t. Therefore,
+
+62
+00:02:48.640 --> 00:02:51.484
+for any vertex we
+encounter in our search,
+
+63
+00:02:51.484 --> 00:02:53.570
+our estimate for
+the remaining cost
+
+64
+00:02:53.570 --> 00:02:55.100
+to the goal vertex will
+
+65
+00:02:55.100 --> 00:02:56.840
+just be the Euclidean distance
+
+66
+00:02:56.840 --> 00:02:59.435
+between that vertex and the goal.
+
+67
+00:02:59.435 --> 00:03:01.880
+Note that this estimate is always
+
+68
+00:03:01.880 --> 00:03:05.660
+an underestimate of the true
+distance to reach the goal,
+
+69
+00:03:05.660 --> 00:03:07.505
+since the shortest path between
+
+70
+00:03:07.505 --> 00:03:09.640
+any two points is
+a straight line.
+
+71
+00:03:09.640 --> 00:03:13.100
+This is an important
+requirement for A* search,
+
+72
+00:03:13.100 --> 00:03:14.930
+and heuristics that satisfy
+
+73
+00:03:14.930 --> 00:03:18.545
+this requirement are called
+admissible heuristics.
+
+74
+00:03:18.545 --> 00:03:20.750
+As an example calculation,
+
+75
+00:03:20.750 --> 00:03:23.660
+suppose we have a start
+vertex a and a goal
+
+76
+00:03:23.660 --> 00:03:27.935
+vertex c. Vertex a
+corresponds to the 0.0,
+
+77
+00:03:27.935 --> 00:03:30.820
+and vertex b corresponds to 2.0.
+
+78
+00:03:30.820 --> 00:03:34.395
+Vertex c in this case
+corresponds to 2.2.
+
+79
+00:03:34.395 --> 00:03:36.860
+Therefore, the Euclidean distance
+
+80
+00:03:36.860 --> 00:03:40.350
+between a and c is 2.828,
+
+81
+00:03:40.350 --> 00:03:44.120
+which is our heuristic estimate
+of the cost to the goal.
+
+82
+00:03:44.120 --> 00:03:46.460
+Note that the edge cost between
+
+83
+00:03:46.460 --> 00:03:48.785
+any two adjacent vertices is not
+
+84
+00:03:48.785 --> 00:03:51.580
+equal to the distance
+between those vertices.
+
+85
+00:03:51.580 --> 00:03:53.315
+This is because road segments
+
+86
+00:03:53.315 --> 00:03:55.040
+are not straight line paths,
+
+87
+00:03:55.040 --> 00:03:57.530
+and in general
+the road segment length will
+
+88
+00:03:57.530 --> 00:04:00.310
+be influenced by
+the shape of the road.
+
+89
+00:04:00.310 --> 00:04:02.365
+Because of the graphs simplicity,
+
+90
+00:04:02.365 --> 00:04:04.250
+we can see that the actual cost
+
+91
+00:04:04.250 --> 00:04:07.010
+of the path from a to c is 4.6,
+
+92
+00:04:07.010 --> 00:04:10.690
+by summing up
+the ab and bc edge costs.
+
+93
+00:04:10.690 --> 00:04:12.934
+As expected, our heuristic
+
+94
+00:04:12.934 --> 00:04:15.890
+is an underestimate
+of the true cost.
+
+95
+00:04:15.890 --> 00:04:18.500
+Let's use this new heuristic
+
+96
+00:04:18.500 --> 00:04:20.945
+to better inform
+our graph search.
+
+97
+00:04:20.945 --> 00:04:24.160
+Here, we have the pseudocode
+for the A* algorithm.
+
+98
+00:04:24.160 --> 00:04:26.790
+It's largely the same as
+Dijkstra's algorithm,
+
+99
+00:04:26.790 --> 00:04:29.155
+but it has a few key differences,
+
+100
+00:04:29.155 --> 00:04:31.220
+which we've highlighted in blue.
+
+101
+00:04:31.220 --> 00:04:35.290
+Let's look more closely
+at the specific changes.
+
+102
+00:04:35.290 --> 00:04:37.885
+Recall that in
+Dijkstra's algorithm,
+
+103
+00:04:37.885 --> 00:04:40.130
+we push our open vertices onto
+
+104
+00:04:40.130 --> 00:04:41.840
+a min heap along with
+
+105
+00:04:41.840 --> 00:04:44.525
+their accumulated
+cost from the origin.
+
+106
+00:04:44.525 --> 00:04:46.550
+The main heap then sorts
+
+107
+00:04:46.550 --> 00:04:50.845
+the open vertices by their
+associated accumulated cost.
+
+108
+00:04:50.845 --> 00:04:54.135
+The min difference between
+Dijkstra's algorithm
+
+109
+00:04:54.135 --> 00:04:58.640
+and A* is that instead of
+using the accumulated cost,
+
+110
+00:04:58.640 --> 00:05:01.915
+we use the accumulated
+cost plus hv,
+
+111
+00:05:01.915 --> 00:05:04.970
+the heuristic estimated
+remaining cost to
+
+112
+00:05:04.970 --> 00:05:08.990
+the goal vertex as the value
+we push onto the min heap.
+
+113
+00:05:08.990 --> 00:05:11.780
+The min heap then
+essentially sorts
+
+114
+00:05:11.780 --> 00:05:13.430
+the open vertices by
+
+115
+00:05:13.430 --> 00:05:16.565
+the estimated total
+cost to the goal.
+
+116
+00:05:16.565 --> 00:05:19.280
+In this sense, A* biases
+
+117
+00:05:19.280 --> 00:05:21.080
+the search towards
+vertices that are
+
+118
+00:05:21.080 --> 00:05:22.370
+likely to be part of
+
+119
+00:05:22.370 --> 00:05:25.595
+the optimal path according
+to our search heuristic.
+
+120
+00:05:25.595 --> 00:05:28.040
+Since we are storing a heuristic
+
+121
+00:05:28.040 --> 00:05:30.475
+based total cost
+and the min-heap,
+
+122
+00:05:30.475 --> 00:05:32.450
+we also need to keep track of
+
+123
+00:05:32.450 --> 00:05:35.060
+the true cost of
+each vertex as well,
+
+124
+00:05:35.060 --> 00:05:38.015
+which we store in
+the cost structure.
+
+125
+00:05:38.015 --> 00:05:40.400
+An interesting thing to note
+
+126
+00:05:40.400 --> 00:05:42.470
+is that if we take
+our heuristic to be
+
+127
+00:05:42.470 --> 00:05:44.270
+zero for all vertices
+
+128
+00:05:44.270 --> 00:05:46.595
+which is still
+an admissible heuristic,
+
+129
+00:05:46.595 --> 00:05:49.400
+we then end up with
+Dijkstra's algorithm.
+
+130
+00:05:49.400 --> 00:05:52.100
+As before with
+Dijkstra's algorithm,
+
+131
+00:05:52.100 --> 00:05:54.395
+we will add the origin
+to the min heap,
+
+132
+00:05:54.395 --> 00:05:56.960
+then pop each vertex
+off of the heap and
+
+133
+00:05:56.960 --> 00:05:59.600
+add all adjacent
+vertices to the heap,
+
+134
+00:05:59.600 --> 00:06:02.060
+until we process the goal vertex.
+
+135
+00:06:02.060 --> 00:06:06.020
+Let's apply the A* algorithm
+to our example graph.
+
+136
+00:06:06.020 --> 00:06:08.450
+Here we have
+our road network graph
+
+137
+00:06:08.450 --> 00:06:09.890
+from the previous lessons,
+
+138
+00:06:09.890 --> 00:06:11.000
+except now we've added
+
+139
+00:06:11.000 --> 00:06:13.355
+the actual position
+of each vertex.
+
+140
+00:06:13.355 --> 00:06:15.620
+Note that the figure
+is not to scale
+
+141
+00:06:15.620 --> 00:06:17.705
+and the vertices
+are nicely spaced
+
+142
+00:06:17.705 --> 00:06:19.760
+to make the figure
+more legible instead
+
+143
+00:06:19.760 --> 00:06:22.430
+of being depicted
+in Euclidean space.
+
+144
+00:06:22.430 --> 00:06:25.430
+However, you can see that
+the edge length between
+
+145
+00:06:25.430 --> 00:06:27.800
+any two adjacent vertices are at
+
+146
+00:06:27.800 --> 00:06:30.820
+least as long as
+their Euclidean distance.
+
+147
+00:06:30.820 --> 00:06:33.320
+As always, the first vertex
+
+148
+00:06:33.320 --> 00:06:35.390
+we add to the min heap
+is the origin
+
+149
+00:06:35.390 --> 00:06:38.900
+s. There is zero accumulated cost
+
+150
+00:06:38.900 --> 00:06:42.055
+and the Euclidean
+distance between s and t,
+
+151
+00:06:42.055 --> 00:06:43.580
+which is a lower bound on
+
+152
+00:06:43.580 --> 00:06:48.020
+our shortest path
+distance is 4.472.
+
+153
+00:06:48.020 --> 00:06:52.390
+So we add vertex s
+with cost 4.472.
+
+154
+00:06:52.390 --> 00:06:55.840
+Next, we process the first node s
+
+155
+00:06:55.840 --> 00:06:58.220
+and add the adjacent vertices a,
+
+156
+00:06:58.220 --> 00:07:00.440
+b, and c to the min heap.
+
+157
+00:07:00.440 --> 00:07:03.860
+Remember that we need to
+add the accumulated cost to
+
+158
+00:07:03.860 --> 00:07:05.645
+the heuristic cost to the goal
+
+159
+00:07:05.645 --> 00:07:08.360
+when adding each vertex
+to the min heap.
+
+160
+00:07:08.360 --> 00:07:10.820
+Thus for vertex a,
+
+161
+00:07:10.820 --> 00:07:13.630
+we have a cost of 5 plus 3 is 8.
+
+162
+00:07:13.630 --> 00:07:17.385
+For vertex b, we have
+a cost of 7 plus 2 is nine,
+
+163
+00:07:17.385 --> 00:07:20.130
+and for vertex c we
+have a cost of 2 plus
+
+164
+00:07:20.130 --> 00:07:23.690
+the square root of
+9 plus 4 is 5.6.
+
+165
+00:07:23.690 --> 00:07:28.540
+The order of the vertices
+in the min heap is now cab.
+
+166
+00:07:28.540 --> 00:07:32.600
+We also add s as the predecessor
+to the vertices a,
+
+167
+00:07:32.600 --> 00:07:36.260
+b, and c and then add
+s to the closed set.
+
+168
+00:07:36.260 --> 00:07:39.200
+The next vertex to process is c,
+
+169
+00:07:39.200 --> 00:07:42.025
+which only connects to vertex e.
+
+170
+00:07:42.025 --> 00:07:45.720
+The cost of e works out to 11.4.
+
+171
+00:07:45.720 --> 00:07:49.580
+So we now have
+a vertex order abe.
+
+172
+00:07:49.580 --> 00:07:52.880
+We then assign e's predecessor to
+
+173
+00:07:52.880 --> 00:07:56.470
+be c and add c to the closed set.
+
+174
+00:07:56.470 --> 00:08:00.895
+Next, we pop a off of the min
+heap and we see that it has
+
+175
+00:08:00.895 --> 00:08:05.950
+outgoing edges to vertex b
+and d. The cost to b eight,
+
+176
+00:08:05.950 --> 00:08:09.590
+which is lower than the
+original estimated cost for b.
+
+177
+00:08:09.590 --> 00:08:11.800
+So we update its cost
+in a min heap and
+
+178
+00:08:11.800 --> 00:08:14.700
+change its predecessor
+from s to a.
+
+179
+00:08:14.700 --> 00:08:16.870
+To show we've updated its cost,
+
+180
+00:08:16.870 --> 00:08:19.045
+we've highlighted
+the edge in purple.
+
+181
+00:08:19.045 --> 00:08:23.995
+We also add vertex d to
+the min heap with cost of seven.
+
+182
+00:08:23.995 --> 00:08:27.625
+The new heap ordering
+is thus dbe.
+
+183
+00:08:27.625 --> 00:08:30.280
+We then assign a to
+be the predecessor of
+
+184
+00:08:30.280 --> 00:08:33.650
+d and add a to the closed set.
+
+185
+00:08:33.650 --> 00:08:36.075
+The process continues with d,
+
+186
+00:08:36.075 --> 00:08:38.400
+which has outgoing edges to e and
+
+187
+00:08:38.400 --> 00:08:42.095
+t. The estimated cost
+of e is 15.4.
+
+188
+00:08:42.095 --> 00:08:43.670
+Since this is higher than
+
+189
+00:08:43.670 --> 00:08:45.710
+e's current cost in the min heap,
+
+190
+00:08:45.710 --> 00:08:47.180
+we ignore this new path
+
+191
+00:08:47.180 --> 00:08:50.235
+to e and as such we
+mark this edge and red.
+
+192
+00:08:50.235 --> 00:08:52.785
+The estimated cost of t is seven.
+
+193
+00:08:52.785 --> 00:08:54.540
+Since it is the goal node it has
+
+194
+00:08:54.540 --> 00:08:57.015
+zero heuristic cost to goal.
+
+195
+00:08:57.015 --> 00:09:01.620
+After doing this,
+the new min heap ordering is t b
+
+196
+00:09:01.620 --> 00:09:04.100
+e. We set the predecessor of t to
+
+197
+00:09:04.100 --> 00:09:06.740
+be d and add a to the closed set.
+
+198
+00:09:06.740 --> 00:09:09.665
+Finally, we process the vertex t
+
+199
+00:09:09.665 --> 00:09:12.825
+which is the goal
+vertex. So we are done.
+
+200
+00:09:12.825 --> 00:09:15.060
+The final shortest path from s
+
+201
+00:09:15.060 --> 00:09:17.300
+to t is shown on this graph here,
+
+202
+00:09:17.300 --> 00:09:20.660
+and we are able to avoid
+processing both b and d,
+
+203
+00:09:20.660 --> 00:09:22.915
+thanks to the A* approach.
+
+204
+00:09:22.915 --> 00:09:25.910
+Unfortunately, this
+example graph is
+
+205
+00:09:25.910 --> 00:09:26.990
+quite small in order to
+
+206
+00:09:26.990 --> 00:09:28.700
+demonstrate how
+the algorithm works.
+
+207
+00:09:28.700 --> 00:09:30.320
+However, as we scale
+
+208
+00:09:30.320 --> 00:09:32.740
+the problem to
+much larger graph inputs,
+
+209
+00:09:32.740 --> 00:09:34.400
+we will see that the heuristic
+
+210
+00:09:34.400 --> 00:09:36.470
+used in the A* algorithm will
+
+211
+00:09:36.470 --> 00:09:37.520
+cause it to explore
+
+212
+00:09:37.520 --> 00:09:40.580
+far fewer vertices than
+the Dijkstra's algorithm.
+
+213
+00:09:40.580 --> 00:09:44.614
+Asymptotically, A* will never
+do worse than Dijkstra's,
+
+214
+00:09:44.614 --> 00:09:46.970
+and in practice A* will result
+
+215
+00:09:46.970 --> 00:09:50.185
+in a much faster
+mission planning process.
+
+216
+00:09:50.185 --> 00:09:52.440
+Now, in our examples,
+
+217
+00:09:52.440 --> 00:09:54.500
+we've simplified the
+mission planning problems
+
+218
+00:09:54.500 --> 00:09:55.940
+such that the edge weights or
+
+219
+00:09:55.940 --> 00:09:58.850
+the distance along
+road segments in the map.
+
+220
+00:09:58.850 --> 00:10:01.055
+However, if we were to include
+
+221
+00:10:01.055 --> 00:10:04.230
+other factors such as
+traffic, speed limits,
+
+222
+00:10:04.230 --> 00:10:06.435
+or weather into our
+mission planning problem,
+
+223
+00:10:06.435 --> 00:10:09.260
+the road distance along
+the path would be too
+
+224
+00:10:09.260 --> 00:10:12.425
+simplistic to capture
+the scope of the problem.
+
+225
+00:10:12.425 --> 00:10:14.780
+To remedy this, we
+can instead take
+
+226
+00:10:14.780 --> 00:10:16.850
+the estimated time to cross
+
+227
+00:10:16.850 --> 00:10:19.190
+the road segment as
+our edge weights,
+
+228
+00:10:19.190 --> 00:10:20.750
+and this takes all of
+
+229
+00:10:20.750 --> 00:10:23.195
+the mentioned factors
+into consideration.
+
+230
+00:10:23.195 --> 00:10:25.010
+However, this renders
+
+231
+00:10:25.010 --> 00:10:27.800
+our Euclidean distance
+metric useless,
+
+232
+00:10:27.800 --> 00:10:29.210
+as it no longer captures
+
+233
+00:10:29.210 --> 00:10:32.210
+the true cost to the goal
+in terms of time.
+
+234
+00:10:32.210 --> 00:10:34.265
+To remedy this, we can use
+
+235
+00:10:34.265 --> 00:10:37.745
+a lower bound estimate of
+the time to the goal point
+
+236
+00:10:37.745 --> 00:10:39.770
+as a Euclidean
+distance divided by
+
+237
+00:10:39.770 --> 00:10:43.655
+the maximum speed allowed
+across all road segments.
+
+238
+00:10:43.655 --> 00:10:46.280
+The car should not
+exceed the speed limit.
+
+239
+00:10:46.280 --> 00:10:49.280
+So even in ideal traffic
+and weather conditions,
+
+240
+00:10:49.280 --> 00:10:51.895
+as well as a straight
+line path to the goal,
+
+241
+00:10:51.895 --> 00:10:54.020
+this is the absolute
+shortest amount of
+
+242
+00:10:54.020 --> 00:10:56.810
+time the car can
+travel to that goal.
+
+243
+00:10:56.810 --> 00:10:59.090
+This means it is a lower bound on
+
+244
+00:10:59.090 --> 00:11:01.265
+the true cost to
+the goal at all times,
+
+245
+00:11:01.265 --> 00:11:04.940
+and as such it is
+an admissible heuristic.
+
+246
+00:11:04.940 --> 00:11:07.115
+For example, here we have set
+
+247
+00:11:07.115 --> 00:11:10.009
+our maximum speed to be
+a 100 kilometers per hour,
+
+248
+00:11:10.009 --> 00:11:12.230
+with the edge weights
+corresponding to the number
+
+249
+00:11:12.230 --> 00:11:14.795
+of seconds it takes
+to traverse a path.
+
+250
+00:11:14.795 --> 00:11:19.610
+After computing our heuristic
+value of a 101.8 seconds,
+
+251
+00:11:19.610 --> 00:11:21.590
+we can see that it
+is much lower than
+
+252
+00:11:21.590 --> 00:11:24.260
+the true path length from a to c,
+
+253
+00:11:24.260 --> 00:11:27.095
+which is a 165.6 seconds.
+
+254
+00:11:27.095 --> 00:11:28.999
+This is because in general,
+
+255
+00:11:28.999 --> 00:11:31.820
+this heuristic is a
+poor lower bound as
+
+256
+00:11:31.820 --> 00:11:35.120
+the segments will often take
+much longer to traverse,
+
+257
+00:11:35.120 --> 00:11:36.680
+than the computed minimum.
+
+258
+00:11:36.680 --> 00:11:38.150
+Poor lower bounds can
+
+259
+00:11:38.150 --> 00:11:40.550
+degrade the ability
+of our heuristic to
+
+260
+00:11:40.550 --> 00:11:44.435
+guide our search to the goal
+for more complex problems,
+
+261
+00:11:44.435 --> 00:11:47.210
+as compared to
+problem instances that
+
+262
+00:11:47.210 --> 00:11:50.645
+were strictly focused
+on minimizing distance.
+
+263
+00:11:50.645 --> 00:11:53.720
+More advanced methods
+are available which
+
+264
+00:11:53.720 --> 00:11:56.660
+pre-compute additional
+values and consider
+
+265
+00:11:56.660 --> 00:11:59.840
+modified heuristic definitions
+that allow large networks
+
+266
+00:11:59.840 --> 00:12:01.700
+with time-based travel estimates
+
+267
+00:12:01.700 --> 00:12:03.380
+to be searched efficiently.
+
+268
+00:12:03.380 --> 00:12:06.440
+We've included some links in
+the supplemental material,
+
+269
+00:12:06.440 --> 00:12:08.975
+if you're interested
+in learning more.
+
+270
+00:12:08.975 --> 00:12:12.080
+In this video, we
+introduced the concept of
+
+271
+00:12:12.080 --> 00:12:14.810
+the Euclidean heuristic
+and showed that it was
+
+272
+00:12:14.810 --> 00:12:18.095
+an admissible heuristic for
+our motion planning problem.
+
+273
+00:12:18.095 --> 00:12:20.690
+We then used it in
+our implementation of
+
+274
+00:12:20.690 --> 00:12:23.540
+A* search for
+a motion planning problem.
+
+275
+00:12:23.540 --> 00:12:26.090
+We also discussed how to modify
+
+276
+00:12:26.090 --> 00:12:29.030
+the mission planning problem
+we've discussed so far,
+
+277
+00:12:29.030 --> 00:12:32.290
+to include travel times
+instead of road lengths,
+
+278
+00:12:32.290 --> 00:12:34.190
+and also how to modify
+
+279
+00:12:34.190 --> 00:12:38.640
+our search heuristic to be
+admissible in this situation.
+
+280
+00:12:39.250 --> 00:12:41.510
+Congratulations.
+
+281
+00:12:41.510 --> 00:12:42.620
+You've reached the end of
+
+282
+00:12:42.620 --> 00:12:44.735
+this module on mission planning.
+
+283
+00:12:44.735 --> 00:12:47.460
+In this module, you
+learned to define
+
+284
+00:12:47.460 --> 00:12:48.980
+the mission planning problem as
+
+285
+00:12:48.980 --> 00:12:51.905
+a shortest path search
+over a directed graph,
+
+286
+00:12:51.905 --> 00:12:54.035
+and you applied Dijkstra's and
+
+287
+00:12:54.035 --> 00:12:57.530
+A* algorithms to find
+the shortest path efficiently.
+
+288
+00:12:57.530 --> 00:12:59.240
+In the next module,
+
+289
+00:12:59.240 --> 00:13:00.785
+you'll learn about dynamic
+
+290
+00:13:00.785 --> 00:13:02.840
+object interactions and how these
+
+291
+00:13:02.840 --> 00:13:04.655
+relate to the second stage
+
+292
+00:13:04.655 --> 00:13:06.620
+of our motion planning hierarchy,
+
+293
+00:13:06.620 --> 00:13:09.970
+the behavioral planner.
+See you there.
