@@ -316,11 +316,11 @@ Let's consider a second scenario where the training loss is now 1.9 around ten t
 
 ### 3. Reducing the Effect of Underfitting/Overfitting
 
-Let's see how we can try to go from the underfitting or overfitting regime to a good estimator. We begin with how to remedy underfitting. The first option to remedy underfitting is to train longer. If the architecture is suitable for the task at hand, training longer usually leads to a lower training loss. If the architecture is too small, training longer might not help. In that case, you would want to add more layers to your neural network or add more parameters per layer. If both of the above options don't help, your architecture might not be suitable for the task at hand and you would want to try a different architecture to reduce underfitting. 
+Let's see how we can try to go from the underfitting or overfitting regime to a good estimator. We begin with how to remedy underfitting. The first option to remedy underfitting is to train longer. If the architecture is suitable for the task at hand, training longer usually leads to a lower training loss. If the architecture is too small, training longer might not help. In that case, you would want to **add more layers** to your neural network or **add more parameters per layer.** If both of the above options don't help, your architecture might not be suitable for the task at hand and you would want to try a different architecture to reduce underfitting. 
 
 ![1567952387198](assets/1567952387198.png)
 
-Now, let's proceed to the most common approaches to reduce overfitting. In the case of overfitting, the easiest thing to do is to just collect more data. Unfortunately, for self-driving cars, collecting training data is very expensive as it requires engineering time for data collection and a tremendous amount of annotator time to properly define the true outputs. Another solution for overfitting is regularization. Regularization is any modification made to the learning algorithm with an intention to lower the generalization gap but not the training loss. If all else fails, the final solution is to revisit the architecture and check if it is suitable for the task at hand. 
+Now, let's proceed to the most common approaches to reduce overfitting. In the case of overfitting, the easiest thing to do is to just collect more data. Unfortunately, for self-driving cars, collecting training data is very expensive as it requires engineering time for data collection and a tremendous amount of annotator time to properly define the true outputs. Another solution for overfitting is **regularization**. Regularization is any modification made to the learning algorithm with an intention to lower the generalization gap but not the training loss. If all else fails, the final solution is to revisit the architecture and check if it is suitable for the task at hand. 
 
 ---
 
@@ -363,7 +363,7 @@ To resolve underfitting issues, we increase the network size by adding five addi
 
 ### 2. Parameter Norm Penalties
 
-Let's check out the first regularization method commonly used for neural networks. The most traditional form of regularization applicable to neural networks is the concept of parameter norm penalties. This approach limits the capacity of the model by adding the penalty omega of theta to the objective function. We add the norm penalty to our existing loss function using our weighting parameter alpha. Alpha is a new hyperparameter that weights the relative contribution of the norm penalty to the total value of loss function. Usually, omega of theta is a measure of how large the value of theta is. Most commonly this measure is an Lp Norm. When P is 1 we have an absolute sum, and when P is 2 we get the quadratic sum, etc. Furthermore, we usually only constrain the weights of the neural network. This is motivated by the fact that the number of weights is much larger than the number of biases in the neural network. So weight penalty have a much larger impact on the final network performance. 
+Let's check out the first regularization method commonly used for neural networks. The most traditional form of regularization applicable to neural networks is the concept of **parameter norm penalties.** This approach limits the capacity of the model by adding the penalty omega of theta to the objective function. We add the norm penalty to our existing loss function using our weighting parameter alpha. Alpha is a new hyperparameter that weights the relative contribution of the norm penalty to the total value of loss function. Usually, omega of theta is a measure of how large the value of theta is. Most commonly this measure is an Lp Norm. When P is 1 we have an absolute sum, and when P is 2 we get the quadratic sum, etc. Furthermore, we usually only constrain the weights of the neural network. This is motivated by the fact that the number of weights is much larger than the number of biases in the neural network. So weight penalty have a much larger impact on the final network performance. 
 
 ![1567953912809](assets/1567953912809.png)
 
@@ -371,7 +371,7 @@ Let's check out the first regularization method commonly used for neural network
 
 ### 3. L2-Norm Parameter Penalty
 
-The most common norm penalty used in neural networks is the L2-norm penalty. The L2-norm penalty tries to minimize the L2-norm of all the weights in each layer of the neural network. Let's take a look at the effect of the L2-norm penalty applied to our problem. Remember that our latest design resulted in overfitting on the training data set. Adding the L2-norm penalty the loss function results in a much better estimate of the space classification, due to a lower validation set loss over the unregularized network. However, this lower validation set loss is coupled with an increase in the training set loss from 0.1 to 0.176. In this case the decrease in the generalization gap is higher than the increase in training set loss. Do be careful not to regularize too much, however, to avoid falling into the underfitting regime once again. Adding a norm penalty is quite easy in most neural network packages. If you suspect over fitting, L2-norm penalties might be a very easy remedy that will prevent a lot of waste of time during the design process. 
+The most common norm penalty used in neural networks is the **L2-norm penalty**. The L2-norm penalty tries to minimize the L2-norm of all the weights in each layer of the neural network. Let's take a look at the effect of the L2-norm penalty applied to our problem. Remember that our latest design resulted in overfitting on the training data set. Adding the L2-norm penalty the loss function results in a much better estimate of the space classification, due to a lower validation set loss over the unregularized network. However, this lower validation set loss is coupled with an increase in the training set loss from 0.1 to 0.176. In this case the decrease in the generalization gap is higher than the increase in training set loss. Do be careful not to regularize too much, however, to avoid falling into the underfitting regime once again. Adding a norm penalty is quite easy in most neural network packages. If you suspect over fitting, L2-norm penalties might be a very easy remedy that will prevent a lot of waste of time during the design process. 
 
 ![1567954041518](assets/1567954041518.png)
 
@@ -379,21 +379,21 @@ The most common norm penalty used in neural networks is the L2-norm penalty. The
 
 ###  4. Dropout
 
-As we mentioned earlier in this video, researchers have developed regularization mechanisms that are specific to neural networks. One powerful mechanism used regularly is called dropout. Lets see how dropout gets applied during network training. The first step of dropout is to choose a probability which we'll call P sub keep. At every training iteration, this probability is used to choose a subset of the network nodes to keep in the network. These nodes can be either hidden units, output units, or input units. We then proceed to evaluate the output y after cutting all the connections coming out of this unit. Since we are removing units proportional to the keep probably, P sub keep, we multiply the final weights by P sub keep at the ending of training. This is essential to avoid incorrectly scaling the outputs when we switch to inference for the full network. 
+As we mentioned earlier in this video, researchers have developed regularization mechanisms that are specific to neural networks. One powerful mechanism used regularly is called **dropout**. Lets see how dropout gets applied during network training. The first step of dropout is to choose a probability which we'll call P sub keep. At every training iteration, this probability is used to choose a subset of the network nodes to keep in the network. These nodes can be either hidden units, output units, or input units. We then proceed to evaluate the output y after cutting all the connections coming out of this unit. Since we are removing units proportional to the keep probably, P sub keep, we multiply the final weights by P sub keep at the ending of training. This is essential to avoid incorrectly scaling the outputs when we switch to inference for the full network. 
 
 ![1567954274788](assets/1567954274788.png)
 
-Dropout can be intuitively explained as forcing the model to learn with missing input and hidden units. Or in other words, with different versions of itself. It provides a computationally inexpensive but powerful method of regularizing a broad family of neural network models during the training process, leading to significant reductions in over feeding and practice. Furthermore, dropout does not significantly limit the type or model of training procedure that can be used. It works well with nearly any model that uses a distributed over parameterized representation, and that can be trained with stochastic gradient descent. Finally, all neural network libraries have a dropout layer implemented and ready to be used. We recommend using drop out whenever you have dense feed forward neural network layers. 
+**Dropout can be intuitively explained as forcing the model to learn with missing input and hidden units.** Or in other words, with different versions of itself. It provides a computationally inexpensive but powerful method of regularizing a broad family of neural network models during the training process, leading to significant reductions in over feeding and practice. Furthermore, dropout does not significantly limit the type or model of training procedure that can be used. It works well with nearly any model that uses a distributed over parameterized representation, and that can be trained with stochastic gradient descent. Finally, all neural network libraries have a dropout layer implemented and ready to be used. We recommend using drop out whenever you have dense feed forward neural network layers. 
 
 ---
 
 ### 5. Early Stopping
 
-The final form of regularization you should know about is early stopping. To explain early stopping visually, we look at the evolution of the loss function of a neuro network evaluated on the training set. Given enough capacity, the training loss should be able to decrease to a value close to zero, as the neuro network memorizes the training data. However, if we have independent training and validation sets, the validation loss reaches a point where it starts to increase. This behaviour is typical during the overfitting regime, and can be resolved via a method known as early stopping. We discussed earlier that we can stop the optimization according to various stopping criteria. Early stopping ends training when the validation loss keeps increasing for a preset number of iterations or epochs. This is usually interpreted at the point just before the neural network enters the overfitting regime. 
+The final form of regularization you should know about is **early stopping**. To explain early stopping visually, we look at the evolution of the loss function of a neuro network evaluated on the training set. Given enough capacity, the training loss should be able to decrease to a value close to zero, as the neuro network memorizes the training data. However, if we have independent training and validation sets, the validation loss reaches a point where it starts to increase. This behavior is typical during the overfitting regime, and can be resolved via a method known as early stopping. We discussed earlier that we can stop the optimization according to various stopping criteria. Early stopping ends training when the validation loss keeps increasing for a preset number of iterations or epochs. This is usually interpreted at the point just before the neural network enters the overfitting regime. 
 
 ![1567954348138](assets/1567954348138.png)
 
-After stopping the training algorithm, the set of parameters with the lowest validation loss is returned. As a final note, early stopping should not be use as a first choice for regularization. As it also limits the training time, which may interfere with the overall network performance. Congratulations, you are now ready to start building your own neural networks. In this lesson, you learned how to improve the performance of the neural network in the key as it falls into an overfitting regime. There are many more interesting aspects to neural network design and training, and I urge you to keep exploring this fascinating field through the additional resources that we've included with this module. 
+After stopping the training algorithm, the set of parameters with the lowest validation loss is returned. As a final note, early stopping should not be use as a first choice for regularization. As it also limits the training time, which may interfere with the overall network performance. Congratulations, you are now ready to start building your own neural networks.  
 
 ---
 
@@ -405,7 +405,7 @@ After stopping the training algorithm, the set of parameters with the lowest val
 > [Reference Link](http://www.deeplearningbook.org/contents/regulariza
 > tion.html)
 
-In the next and final lesson in this module, we will talk about a neural network architecture of huge practical and historical importance for vision based perception, the convolutional neural network. See you then [MUSIC]
+In this lesson, you learned how to improve the performance of the neural network in the key as it falls into an overfitting regime. There are many more interesting aspects to neural network design and training, and I urge you to keep exploring this fascinating field through the additional resources that we've included with this module. In the next and final lesson in this module, we will talk about a neural network architecture of huge practical and historical importance for vision based perception, the convolutional neural network. See you then.
 
 ---
 
@@ -415,16 +415,16 @@ In the next and final lesson in this module, we will talk about a neural network
 
 ### Learning Objectives
 
-> - Learn how a neural network can use cross-correlation in its hidden layers instead of general matrix multiplication, to form ConvNets
-> - Learn the advantages of using ConvNets over traditional neural networks for processing images
+> - Learn how a neural network can use **cross-correlation** in its hidden layers instead of general matrix multiplication, to form ConvNets
+> - Learn the advantages of using `ConvNets` over traditional neural networks for processing images
 
-If you've been monitoring the latest news on self-driving cars, you would have heard the phrase convolutional neural networks or ConvNets for short at least a few times. In fact, we currently use ConvNets to perform a multitude of perception tasks on our own self-driving car the autonomoose. In this lesson, we will take a deeper look at these fascinating architectures to understand their importance for visual perception. Specifically, you will learn how convolutional layers use cross-correlation instead of general matrix multiplication to tailor neural networks for image input data. We'll also cover the advantages these models incur over standard feed-forward neural networks. 
+If you've been monitoring the latest news on self-driving cars, you would have heard the phrase convolutional neural networks or `ConvNets` for short at least a few times. In fact, we currently use  `ConvNets` to perform a multitude of perception tasks on our own self-driving car the autonomoose. In this lesson, we will take a deeper look at these fascinating architectures to understand their importance for visual perception. Specifically, you will learn how convolutional layers use cross-correlation instead of general matrix multiplication to tailor neural networks for image input data. We'll also cover the advantages these models incur over standard feed-forward neural networks. 
 
 ---
 
 ### 1. ConvNets
 
-Convolutional neural networks are a specialized kind of neural network for processing data that has a known grid-like topology. Examples of such data can be 1D time-series data sampled at regular intervals, 2D images or even 3D videos. ConvNets are mainly comprised of two types of layers; convolutional layers and pooling layers. A simple example of a convNet architecture is VGG 16. This network takes in the image and passes it through a set of convolutional layers, a pooling layer, and another couple of convolutional layers, and then more pooling layers and convolutional layers and so on. Don't worry too much about the specifics of the VGG 16 architecture design for now, we will discuss this architecture in detail in a later video when we learn about object detection. 
+Convolutional neural networks are a specialized kind of neural network for processing data that has a known **grid-like topology**. Examples of such data can be 1D time-series data sampled at regular intervals, 2D images or even 3D videos.  `ConvNets` are mainly comprised of two types of layers; **convolutional layers** and **pooling layers**. A simple example of a `convNet` architecture is `VGG` 16. This network takes in the image and passes it through a set of convolutional layers, a pooling layer, and another couple of convolutional layers, and then more pooling layers and convolutional layers and so on. Don't worry too much about the specifics of the `VGG` 16 architecture design for now, we will discuss this architecture in detail in a later video when we learn about object detection. 
 
 ![1567954906204](assets/1567954906204.png)
 
@@ -436,19 +436,17 @@ Let's see how these two types of layers work in practice. The neural network, hi
 
 ![1567955027233](assets/1567955027233.png)
 
-This is implemented in software through dense matrix multiplication. Although counter-intuitive, convolutional layers use cross-correlation not convolutions for their linear operator instead of general matrix multiplication. The logic behind using cross-correlation is that if the parameters are learned, it does not matter if we flip the output or not. Since we are learning the weights of the convolutional layer, the flipping does not affect our results at all. This results in what we call sparse connectivity. Each input element to the convolutional layer only affects a few output elements, thanks to the use of a limited size kernel for the convolutional operation. 
-
-
+This is implemented in software through dense matrix multiplication. Although counter-intuitive, **convolutional layers use cross-correlation not convolutions for their linear operator instead of general matrix multiplication**. The logic behind using cross-correlation is that if the parameters are learned, it does not matter if we flip the output or not. Since we are learning the weights of the convolutional layer, the flipping does not affect our results at all. This results in what we call **sparse connectivity**. Each input element to the convolutional layer only affects a few output elements, thanks to the use of a limited size kernel for the convolutional operation. 
 
 ---
 
 ### 3. Cross Correlation
 
-Let's begin by describing how convolutional layers work in practice. We'll assume that we want to apply a convolutional layer to an input image. We will refer to this image as our input volume, as we will see convolutional layers taking output of other layers as their inputs as well. The width of our input volume is its horizontal dimension, the height is its vertical dimension, and the depth is the number of channels. In our case, all three characteristics have a value of three. But why didn't we consider the gray pixels in our height or width computation? The gray pixels are added to the image through a process called padding. The number of pixels added on each side is called the padding size in this case one. Padding is essential for retaining the shape required to perform the convolutions. 
+Let's begin by describing how convolutional layers work in practice. We'll assume that we want to apply a convolutional layer to an input image. We will refer to this image as our input volume, as we will see convolutional layers taking output of other layers as their inputs as well. The width of our input volume is its horizontal dimension, the height is its vertical dimension, and the depth is the number of channels. In our case, all three characteristics have a value of three. But why didn't we consider the gray pixels in our height or width computation? The gray pixels are added to the image through a process called **padding**. The number of pixels added on each side is called the padding size in this case one. Padding is essential for retaining the shape required to perform the convolutions. 
 
 ![1567955113696](assets/1567955113696.png)
 
-We perform the convolution operations through a set of kernels or filters. Each Filter is comprised of a set of weights and a single bias. The number of channels of the kernel needs to correspond to the number of channels of the input volume. In this case, we have three weight channels per filter corresponding to red, green, and blue channels of the input image. 
+**We perform the convolution operations through a set of kernels or filters**. Each Filter is comprised of a set of weights and a single bias. The number of channels of the kernel needs to correspond to the number of channels of the input volume. In this case, we have three weight channels per filter corresponding to red, green, and blue channels of the input image. 
 
 ![1567955143528](assets/1567955143528.png)
 
@@ -464,7 +462,7 @@ Let's now see how to get the rest of the output volume. After we're done with th
 
 ### 4. Output Volume Shape
 
-Assuming that the filters are M by M, and we have K filters, a stride of S, a padding P, we can derive expressions for the width, height, and depth of our output volume. You would think this gets challenging to keep track of, but when designing ConvNets, it is very important to know what size output layers you'll end up with. As an example, you don't want to reduce the size of your output volume too much if you are trying to detect small traffic signs and traffic lights on road scenes. They only occupy a small number of pixels in the image, and their visibility might get lost if the output volume is too compact. 
+Assuming that the filters are M by M, and we have K filters, a stride of S, a padding P, we can derive expressions for the width, height, and depth of our output volume. You would think this gets challenging to keep track of, but when designing `ConvNets`, it is very important to know what size output layers you'll end up with. As an example, you don't want to reduce the size of your output volume too much if you are trying to detect small traffic signs and traffic lights on road scenes. They only occupy a small number of pixels in the image, and their visibility might get lost if the output volume is too compact. 
 
 ![1567955316244](assets/1567955316244.png)
 
@@ -474,7 +472,7 @@ Assuming that the filters are M by M, and we have K filters, a stride of S, a pa
 
 ![1567955342247](assets/1567955342247.png)
 
-Let us now continue to describe the second building block of ConvNets, pooling layers. A pooling layer uses pooling functions to replace the output of the previous layer with a summary statistic of the nearby outputs. Pooling helps make the representations become invariant to small translations of the input. If we translate the input a small amount, the output of the pooling layer will not change. This is important for object recognition for example, as if we shift a car a small amount in an image space, it should still be recognizable as a car. 
+Let us now continue to describe the second building block of  `ConvNets`, pooling layers. A pooling layer uses pooling functions to replace the output of the previous layer with a summary statistic of the nearby outputs. Pooling helps make the representations become invariant to small translations of the input. If we translate the input a small amount, the output of the pooling layer will not change. This is important for object recognition for example, as if we shift a car a small amount in an image space, it should still be recognizable as a car. 
 
 ![1567955488020](assets/1567955488020.png)
 
@@ -482,7 +480,7 @@ Let us take an example of the most commonly used pooling layer, Max pooling. Max
 
 ![1567955502635](assets/1567955502635.png)
 
-Let's see how this pooling layer can help us with translation invariance. As an example, let's shift the previous input volume by one pixel. The added pixels due to the shift are shown in blue, whereas the removed pixels are shown in red. We can go ahead and apply Max Pooling to this input volume, as we did in the previous slide. When comparing our new output to the original volume output, we find that only one element has changed. So far, we've discussed how ConvNets operate but still did not provide a reason for their usefulness in the context of self-driving cars. 
+Let's see how this pooling layer can help us with translation invariance. As an example, let's shift the previous input volume by one pixel. The added pixels due to the shift are shown in blue, whereas the removed pixels are shown in red. We can go ahead and apply Max Pooling to this input volume, as we did in the previous slide. When comparing our new output to the original volume output, we find that only one element has changed. So far, we've discussed how `ConvNets` operate but still did not provide a reason for their usefulness in the context of self-driving cars. 
 
 ---
 
