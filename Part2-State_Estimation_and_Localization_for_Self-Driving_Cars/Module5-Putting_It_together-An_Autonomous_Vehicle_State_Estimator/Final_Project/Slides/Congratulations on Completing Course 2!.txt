@@ -1,0 +1,46 @@
+Congratulations on submitting
+your course to final project. Hopefully, you were able to
+produce an accurate estimate of the vehicles trajectory using the measurements from
+the Carlo simulator. Now, you'll have a chance to compare your implementation to
+our project solution. Let's start by looking
+at the main loop inside the error state
+extended Kalman filter. In our solution, we're using the non-linear motion model that we defined in module five lesson two, which takes the specific force and rotational rates from our IMU as inputs and outputs a state which
+consists of pose and velocity. The inputs to the motion model
+are provided by the IMU measurements
+available at every time step. Together with the pose and velocity estimate at
+the previous time step, the model produces
+an initial estimate of the current state
+that is a prediction. Next, we need to produce
+an initial estimate of the covariance or uncertainty
+associated with this new state. Finally, we check whether they are GNSS or lidar measurements
+available at the current time step. If there are measurements available, we correct the pose
+and velocity estimates and the associated covariance
+or uncertainty matrix. In the measurement update function, we first determine the Kalman gain
+as defined in module two using the measurement model
+Jacobian as well as the state and
+measurement covariances. The updated Kalman gain is then
+used to calculate the error state, which corrects our current pose and velocity estimates and
+the filter covariance matrix. The resulting trajectory estimate can then be compared
+to the ground truth. Looking at the ground truth, we can see that the vehicle
+was following a curved path. Comparing the ground truth
+trajectory to our estimate, we note that our estimate
+remains close to ground truth in
+the x and y directions. Well, there are some significant
+errors in the z-direction. Looking at the state errors and the corresponding three sigma bonds, we see that the largest errors
+for all states appear within the same time frame that coincides with the large z-direction error
+we noticed earlier. The dashed red lines represent three standard deviations
+from the ground truth. This gives an indication
+as to how well our estimator model fits
+the actual dynamics of the vehicle, and how well the estimator
+is operating overall. The state error should remain within the three sigma bonds at all times. There are other estimators
+you could have implemented to solve this problem, like the vanilla UKF or the
+uncentered Kalman filter. You're welcome to compare
+these implementations to the ESEKF and let us
+know how they do. Again, congratulations on finishing
+your course to File Project. State estimation is a vital part of any self-driving car software stack. Aside from GNSS and
+lidar measurements, many other sensors and
+sources of information are often used to produce reliable
+estimates for self-driving cars. You'll learn more about
+a very important sensor in the next course of
+this specialization, the camera and how to use
+it for visual perception. Keep up the great work.

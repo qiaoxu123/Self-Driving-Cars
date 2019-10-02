@@ -2,7 +2,7 @@
 
 > Self-driving cars present an extremely rich and inter-disciplinary problem. This module introduces the language and structure of the problem definition, defining the most salient elements of the driving task and the driving environment.
 
-### 学习目标
+### Learning Objectives
 
 * Identify perception, prediction and planning requirements for driving
 * Define the environmental elements that influence driving
@@ -216,4 +216,3 @@ All right. Let's summarize this video. We discussed the planning problem and the
 ## Module Summary
 
 Let's quickly recap what we learned this week. In this module, we explored the basic autonomous driving terminology that's useful for later weeks of the specialization. We then discussed the levels of automation, and came up with a taxonomy to characterize self-driving capabilities. Then we define the driving task and the major components of driving: perception, planning, and execution. We then listed the elements and agents in the environment we need to identify and track for perception. We also discussed why perception is so hard. Then we discussed planning with its different horizons, and looked at some decision-making approaches. In the next module, we will define the main components of self-driving cars, including both the hardware and software elements that make up a complete system. See you then.
-

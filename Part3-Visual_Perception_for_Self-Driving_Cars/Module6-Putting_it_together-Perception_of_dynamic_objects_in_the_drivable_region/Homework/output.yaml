@@ -1,0 +1,7 @@
+# Replace the bellow cells with the correct output from frame 1 in the Jupyter Notebook.
+
+plane: [-0.0, 1.0, 0.02, -1.36] # Ground plane output
+
+lanes: [[1566.0, 960.0, 670.0, 484.0], [186.0, 960.0, 621.0, 484.0]] # Lane boundaries in [x1 y1 x2 y2] format
+
+min_distance: [7.01, 9.9] # minimum distance in meters

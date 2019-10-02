@@ -1,0 +1,322 @@
+WEBVTT
+
+1
+00:00:13.550 --> 00:00:18.375
+Congratulations on submitting
+your course to final project.
+
+2
+00:00:18.375 --> 00:00:21.740
+Hopefully, you were able to
+produce an accurate estimate of
+
+3
+00:00:21.740 --> 00:00:23.660
+the vehicles trajectory using
+
+4
+00:00:23.660 --> 00:00:25.735
+the measurements from
+the Carlo simulator.
+
+5
+00:00:25.735 --> 00:00:27.590
+Now, you'll have a chance to compare
+
+6
+00:00:27.590 --> 00:00:30.440
+your implementation to
+our project solution.
+
+7
+00:00:30.440 --> 00:00:32.825
+Let's start by looking
+at the main loop
+
+8
+00:00:32.825 --> 00:00:35.480
+inside the error state
+extended Kalman filter.
+
+9
+00:00:35.480 --> 00:00:37.190
+In our solution, we're using
+
+10
+00:00:37.190 --> 00:00:38.750
+the non-linear motion model that we
+
+11
+00:00:38.750 --> 00:00:41.600
+defined in module five lesson two,
+
+12
+00:00:41.600 --> 00:00:43.310
+which takes the specific force and
+
+13
+00:00:43.310 --> 00:00:45.350
+rotational rates from our IMU as
+
+14
+00:00:45.350 --> 00:00:50.315
+inputs and outputs a state which
+consists of pose and velocity.
+
+15
+00:00:50.315 --> 00:00:53.360
+The inputs to the motion model
+are provided by
+
+16
+00:00:53.360 --> 00:00:56.525
+the IMU measurements
+available at every time step.
+
+17
+00:00:56.525 --> 00:00:58.490
+Together with the pose and
+
+18
+00:00:58.490 --> 00:01:00.730
+velocity estimate at
+the previous time step,
+
+19
+00:01:00.730 --> 00:01:02.960
+the model produces
+an initial estimate of
+
+20
+00:01:02.960 --> 00:01:06.075
+the current state
+that is a prediction.
+
+21
+00:01:06.075 --> 00:01:09.170
+Next, we need to produce
+an initial estimate of
+
+22
+00:01:09.170 --> 00:01:13.695
+the covariance or uncertainty
+associated with this new state.
+
+23
+00:01:13.695 --> 00:01:16.310
+Finally, we check whether they are
+
+24
+00:01:16.310 --> 00:01:20.970
+GNSS or lidar measurements
+available at the current time step.
+
+25
+00:01:21.610 --> 00:01:24.350
+If there are measurements available,
+
+26
+00:01:24.350 --> 00:01:26.809
+we correct the pose
+and velocity estimates
+
+27
+00:01:26.809 --> 00:01:30.310
+and the associated covariance
+or uncertainty matrix.
+
+28
+00:01:30.310 --> 00:01:32.490
+In the measurement update function,
+
+29
+00:01:32.490 --> 00:01:36.710
+we first determine the Kalman gain
+as defined in module two using
+
+30
+00:01:36.710 --> 00:01:38.870
+the measurement model
+Jacobian as well as
+
+31
+00:01:38.870 --> 00:01:41.975
+the state and
+measurement covariances.
+
+32
+00:01:41.975 --> 00:01:46.655
+The updated Kalman gain is then
+used to calculate the error state,
+
+33
+00:01:46.655 --> 00:01:48.830
+which corrects our current pose and
+
+34
+00:01:48.830 --> 00:01:52.760
+velocity estimates and
+the filter covariance matrix.
+
+35
+00:01:52.760 --> 00:01:55.100
+The resulting trajectory estimate
+
+36
+00:01:55.100 --> 00:01:57.860
+can then be compared
+to the ground truth.
+
+37
+00:01:57.860 --> 00:02:00.005
+Looking at the ground truth,
+
+38
+00:02:00.005 --> 00:02:03.725
+we can see that the vehicle
+was following a curved path.
+
+39
+00:02:03.725 --> 00:02:07.495
+Comparing the ground truth
+trajectory to our estimate,
+
+40
+00:02:07.495 --> 00:02:09.770
+we note that our estimate
+remains close to
+
+41
+00:02:09.770 --> 00:02:12.185
+ground truth in
+the x and y directions.
+
+42
+00:02:12.185 --> 00:02:15.425
+Well, there are some significant
+errors in the z-direction.
+
+43
+00:02:15.425 --> 00:02:17.330
+Looking at the state errors and
+
+44
+00:02:17.330 --> 00:02:19.670
+the corresponding three sigma bonds,
+
+45
+00:02:19.670 --> 00:02:22.730
+we see that the largest errors
+for all states appear within
+
+46
+00:02:22.730 --> 00:02:25.040
+the same time frame that coincides
+
+47
+00:02:25.040 --> 00:02:27.875
+with the large z-direction error
+we noticed earlier.
+
+48
+00:02:27.875 --> 00:02:30.155
+The dashed red lines represent
+
+49
+00:02:30.155 --> 00:02:33.140
+three standard deviations
+from the ground truth.
+
+50
+00:02:33.140 --> 00:02:35.420
+This gives an indication
+as to how well
+
+51
+00:02:35.420 --> 00:02:38.840
+our estimator model fits
+the actual dynamics of the vehicle,
+
+52
+00:02:38.840 --> 00:02:42.110
+and how well the estimator
+is operating overall.
+
+53
+00:02:42.110 --> 00:02:44.240
+The state error should remain within
+
+54
+00:02:44.240 --> 00:02:47.240
+the three sigma bonds at all times.
+
+55
+00:02:47.240 --> 00:02:49.550
+There are other estimators
+you could have
+
+56
+00:02:49.550 --> 00:02:51.170
+implemented to solve this problem,
+
+57
+00:02:51.170 --> 00:02:54.545
+like the vanilla UKF or the
+uncentered Kalman filter.
+
+58
+00:02:54.545 --> 00:02:57.140
+You're welcome to compare
+these implementations to
+
+59
+00:02:57.140 --> 00:03:00.425
+the ESEKF and let us
+know how they do.
+
+60
+00:03:00.425 --> 00:03:04.450
+Again, congratulations on finishing
+your course to File Project.
+
+61
+00:03:04.450 --> 00:03:06.745
+State estimation is a vital part of
+
+62
+00:03:06.745 --> 00:03:09.070
+any self-driving car software stack.
+
+63
+00:03:09.070 --> 00:03:11.900
+Aside from GNSS and
+lidar measurements,
+
+64
+00:03:11.900 --> 00:03:14.740
+many other sensors and
+sources of information are
+
+65
+00:03:14.740 --> 00:03:18.385
+often used to produce reliable
+estimates for self-driving cars.
+
+66
+00:03:18.385 --> 00:03:20.650
+You'll learn more about
+a very important sensor
+
+67
+00:03:20.650 --> 00:03:22.870
+in the next course of
+this specialization,
+
+68
+00:03:22.870 --> 00:03:26.380
+the camera and how to use
+it for visual perception.
+
+69
+00:03:26.380 --> 00:03:28.630
+Keep up the great work.
