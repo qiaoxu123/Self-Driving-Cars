@@ -17,6 +17,12 @@ Class links:
 - [3. Visual Perception for Self-Driving Cars](https://www.coursera.org/learn/visual-perception-self-driving-cars)
 - [4. Motion Planning for Self-Driving Cars](https://www.coursera.org/learn/motion-planning-self-driving-cars)
 
+Video:
+
+[Part 1](https://www.bilibili.com/video/av70128937)
+[Part 2](https://www.bilibili.com/video/av70088379)
+[Part 3](https://www.bilibili.com/video/av70068347)
+[Part 4](https://www.bilibili.com/video/av69989087)
 ---
 
 # Introduction
@@ -41,4 +47,6 @@ It is recommended that you have some background in linear algebra, probability, 
 - Implement methods for static and dynamic object detection, localization and mapping, behaviour and maneuver planning, and vehicle control
 - Use realistic vehicle physics, complete sensor suite: camera, LIDAR, GPS/INS, wheel odometry, depth map, semantic segmentation, object bounding boxes
 - Demonstrate skills in CARLA and build programs with Python
+
+
 
