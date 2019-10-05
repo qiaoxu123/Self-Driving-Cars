@@ -1,0 +1,177 @@
+Welcome to module four of the course. In this module, we'll
+be talking about LIDAR, or light detection and ranging sensors. LIDAR has been an enabling technology
+for self-driving cars because it can see in all directions and is able to provide very accurate range information. In fact, with few exceptions, most self-driving cars
+on the road today are equipped with some type of LIDAR sensor. In this module, you'll learn about the operating principles
+of LIDAR sensors, basic sensor models used to work with
+LIDAR data and LIDAR point clouds, different kinds of transformation
+operations applied to point clouds, and how we can use LIDAR to localize a self-driving car using a technique
+called point cloud registration. In this video specifically, we'll explore how a LIDAR works and take a look at sensor models
+for 2D and 3D LIDARs. We'll also describe the sources of measurement noise and
+errors for these sensors. In future lessons, we'll discuss
+in more detail how we can use LIDAR data for state estimation
+of self-driving vehicles. If you've ever seen
+a self-driving car like the Waymo vehicle or an Uber car, you've probably noticed something
+spinning on the roof of the car. That something is a LIDAR, or light detection and ranging sensor, and its job is to provide detailed 3D scans of
+the environment around the vehicle. In fact, LIDAR is one of
+the most common sensors used on self-driving cars and
+many other kinds of mobile robots. LIDARs come in many
+different shapes and sizes, and can measure the
+distances to a single point, a 2D slice of the world, or perform a full 3D scan. Some of the most popular
+models used today are manufactured by firms such
+as Velodyne in California, Hokuyo in Japan, and SICK in Germany. In this video, we'll mainly focus on the Velodyne sensors as
+our example of choice, but the basic techniques applied
+to other types of LIDARs as well. Before we get into
+the nitty-gritty of LIDAR sensing, let's take a quick look at
+the history of this important sensor. LIDAR was first introduced in the 1960s, not long after the invention
+of the laser itself. The first group to use
+LIDAR were meteorologists at the US National Center
+for Atmospheric Research, who deployed LIDAR to measure
+the height of cloud ceilings. These ground-based
+celiometers are still in use today not only to
+measure water clouds, but also to detect volcanic ash
+and air pollution. Airborne LIDAR sensors are
+commonly used today to survey and map the earth's
+surface for agriculture, geology, military, and other uses. But the application that
+first brought LIDAR into the public
+consciousness was Apollo 15, the fourth manned mission
+to land on the moon, and the first to use a laser altimeter
+to map the surface of the moon. So, we've seen that LIDAR can be used to measure distances and create
+a certain type of map, but how did they actually work, and how can we use them
+onboard a self-driving car? To build a basic LIDAR in one dimension, you need three components; a laser, a photodetector, and a very precise stopwatch. The laser first emits
+a short pulse of light usually in the near infrared frequency band
+along some known ray direction. At the same time,
+the stopwatch begins counting. The laser pulse travels
+outwards from the sensor at the speed of light and
+hits a distant target. Maybe another vehicle in
+front of us on the road or a stationary object like
+a stop sign or a building. As long as the surface of the target
+isn't too polished or shiny, the laser pulse will scatter off
+the surface in all directions, and some of that reflected light will travel back along
+the original ray direction. The photodetector catches that return
+pulse and the stopwatch tells you how much time has passed between when the pulse first went out
+and when it came back. That time is called the round-trip time. Now, we know the speed of light, which is a bit less than 300
+million meters per second. So, we can multiply the speed of
+light by the round-trip time to determine the total round trip distance
+traveled by the laser pulse. Since light travels
+much faster than cars, it's a good approximation to think
+of the LIDAR and the target as being effectively stationary
+during the few nanoseconds that it takes for all of this to happen. That means that the distance from
+the LIDAR to the target is simply half of the round-trip distance
+we just calculated. This technique is called
+time-of-flight ranging. Although it's not the only way
+to build a LIDAR, it's a very common method
+that also gets used with other types of ranging sensors
+like radar and sonar. It's worth mentioning that the photodetector also
+tells you the intensity of the return pulse relative to the
+intensity of the pulse that was emitted. This intensity information is less
+commonly used for self-driving, but it provides some extra information
+about the geometry of the environment and the material
+the beam is reflecting off of. So, why is intensity data useful? Well in part, it turns out that it's
+possible to create 2D images from LIDAR intensity data that
+you can then use the same computer vision algorithms you'll
+learn about in the next course. Since LIDAR is its own light source, it actually provides a way for
+self-driving cars to see in the dark. So, now we know how to
+measure a single distance to a single point using
+a laser, a photodetector, a stopwatch, and
+the time-of-flight equation, but obviously it's not enough to stay laser focused on a single point ahead. So, how do we use
+this technique to measure a whole bunch of
+distances in 2D or in 3D? The trick is to build
+a rotating mirror into the LIDAR that directs the emitted pulses
+along different directions. As the mirror rotates, you can measure distances at points
+in a 2D slice around the sensor. If you then add an up
+and down nodding motion to the mirror along with the rotation, you can use the same principle
+to create a scan in 3D. For Velodyne type LIDARs, where the mirror rotates
+along the entire sensor body, it's much harder to use
+a knotting motion to make a 3D scan. Instead, these sensors
+will actually create multiple 2D scan lines from a series of individual lasers spaced at
+fixed angular intervals, which effectively lets you paint the world with horizontal
+stripes of laser light. Here's an example of
+a typical raw LIDAR stream from a Velodyne sensor
+attached to the roof of a car. The black hole in the middle is a blind spot where the sensor
+itself is located, and the concentric circles
+spreading outward from there are the individual scan lines produced
+by the rotating Velodyne sensor. Each point in the scan is colored by
+the intensity of the return signal. The entire collection of points in
+the 3D scan is called a point cloud, and we'll be talking about
+how to use point clouds for state estimation in the next few videos. But before we get to point clouds, we need to think about
+individual points in 3D. Now typically, LIDARs
+measure the position of points in 3D using
+spherical coordinates, range or radial distance from
+the center origin to the 3D point, elevation angle measured up
+from the sensors XY plane, and azimuth angle, measured
+counterclockwise from the sensors x-axis. This makes sense because
+the azimuth and elevation angles tell you the direction
+of the laser pulse, and the range tells you how far in that direction
+the target point is located. The azimuth and elevation angles
+are measured using encoders that tell you
+the orientation of the mirror, and the range is measured using the time
+of flight as we've seen before. For Velodyne type LIDARs, the elevation angle is fixed
+for a given scan line. Now, suppose we want to
+determine the cartesian XYZ coordinates of our scanned point
+in the sensor frame, which is something we often
+want to do when we're combining multiple
+LIDAR scans into a map. To convert from spherical
+to Cartesian coordinates, we use the same formulas you would've encountered in your mechanics classes. This gives us an inverse sensor model. We say this is the inverse model because our actual measurements are
+given in spherical coordinates, and we're trying to
+reconstruct the Cartesian coordinates at the points
+that gave rise to them. Note that we haven't said anything
+about measurement noise yet, we'll come back to that in just a moment. To go the other way from Cartesian
+coordinates to spherical coordinates, we can work out the inverse
+transformation given here. This is our forward sensor
+model for a 3D LIDAR, which given a set of Cartesian coordinates defines what
+the sensor would actually report. Now, most of the time the
+self-driving cars we're working with use 3D LIDAR sensors
+like the Velodyne, but sometimes you might want
+to use a 2D LIDAR on its own, whether for detecting obstacles
+or for state estimation in more structured environments
+such as parking garages. Some cars have multiple 2D LIDARs strategically placed to
+act as a single 3D LIDAR, covering different areas with a greater
+or lesser density of measurements. For 2D LIDARs, we use exactly the same
+forward and inverse sensor models. But the elevation angle
+enhance the z component of the 3D point in the sensor
+frame are both zero. In other words, all of
+our measurements are confined to the XY plane of the sensor, and our spherical
+coordinates collapsed to the familiar 2D polar coordinates. We've seen now how to convert between
+spherical coordinates measured by the sensor and the cartesian coordinates that we'll typically be
+interested in for state estimation, but what about measurement noise? For LIDAR sensors, there are several important sources
+of noise to consider. First, there is uncertainty in the exact time of arrival
+of the reflected signal, which comes from the fact that
+the stopwatch we use to compute the time of flight necessarily
+has a limited resolution. Similarly, there is uncertainty in the exact orientation
+of the mirror in 2D and 3D LIDARs since the encoder is used to measure
+this also have limited resolution. Another important factor
+is the interaction with the target surface which can
+degrade the return signal. For example, if the surface
+is completely black, it might absorb most of the laser pulse. Or if it's very shiny like a mirror, the laser pulse might be scattered completely away from
+the original pulse direction. In both of these cases, the LIDAR will typically
+report a maximum range error, which could mean there is empty space
+along the beam direction, or that the pulse encountered a highly absorptive or
+highly reflective surface. In other words, you simply can't
+tell if something is there or not, and this can be a problem for
+safety if your self-driving car is relying on LIDAR alone to
+detect and avoid obstacles. Finally, the speed of light actually varies depending on the material
+it's traveling through. The temperature and humidity
+of the air can also suddenly affect the speed of light in our
+time-of-flight calculations for example. These factors are
+commonly accounted for by assuming additive zero-mean
+Gaussian noise on the spherical coordinates with an empirically determined or
+manually tuned covariance. As we've seen before, the Gaussian noise model is
+particularly convenient for state estimation even if it's not
+perfectly accurate in most cases. Another very important source
+of error that can't be accounted for so easily
+is motion distortion, which arises because the vehicle
+the LIDAR is attached to is usually moving relative to
+the environment it's scanning. Now, although the car is unlikely to be moving at an appreciable fraction
+of the speed of light, it is often going to be moving at an appreciable fraction of
+the rotation speed of the sensor itself, which is typically around 5-20 hertz when scanning objects at distances
+of 10 to a 100 meters. This means that every single point
+in a LIDAR sweep is taken from a slightly different position and
+a slightly different orientation, and this can cause artifacts such as duplicate objects to
+appear in the LIDAR scans. This makes it much harder for a self-driving car to
+understand its environment, and correcting this motion
+distortion usually requires an accurate motion model for the vehicle provided by GPS and INS for example. To recap, LIDAR sensors
+measure distances by emitting pulse laser light and measuring
+the time of flight of the pulse. 2D or 3D LIDAR is extend
+this principle by using a mirror to sweep the laser across the environment and measure distances in many directions. In the next video, we'll look more closely at the point
+clouds created by 2D and 3D LIDARs, and how we can use them for state
+estimation on-board our self-driving car.

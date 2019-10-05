@@ -1,0 +1,188 @@
+[MUSIC] In the previous video, we saw how
+linearization error can cause the EKF to produce state estimates that are very
+different from the true value of the state and covariances that don't accurately
+capture the uncertainty in the state. This can be a big problem
+when we're relying on the EKF in safety critical applications
+like self-driving cars. In this lesson, you'll learn about the unscented common
+filter, which is an alternative approach to non-linear common filtering that
+relies on something called the unscented transform to pass probability
+distributions through nonlinear functions. As we'll see, the unscented transform
+gives us much higher accuracy than analytical EKF
+style linearization for a similar amount of computation, and
+without needing to compute any Jacobians. So by the end of this video you'll be
+able to use the unscented transform to pass a probability distribution through
+a nonlinear function, describe how the Unscented Kalman Filter or UKF uses
+the unscented transform in the prediction and correction steps, and explain
+the advantages of the UKF over the EKF as well as apply the UKF to a simple
+nonlinear tracking problem. The intuition behind the unscented
+transform is simple. It's typically much easier to
+approximate a probability distribution than it is to approximate
+an arbitrary nonlinear function. Let's think about a simple example
+where a 1D Gaussian distribution like the one on the left gets
+transformed through nonlinear function into a more complicated 1D distribution
+like the one on the right. We already know the mean and the standard
+deviation of the input Gaussian and we want to figure out the mean and
+standard deviation of the output distribution using this information and
+the nonlinear function. The unscented transform
+gives us a way to do this. The basic idea in the unscented
+transform has three steps. First, we choose a set of sample
+points from our input distribution. Now these aren't random samples,
+they're deterministic samples chosen to be a certain number of
+standard deviations away from the mean. For this reason,
+these samples are called sigma points, and the unscented transform is sometimes
+called the sigma point transform. Once we have our set of carefully
+chosen sigma points, the second and easiest step is to pass each sigma
+point through our nonlinear function, producing a new set of sigma points
+belonging to the output distribution. Finally, we can compute the sample mean
+and covariance of the output sigma points with some carefully chosen weights, and
+these will give us a good approximation of the mean and covariance of
+the true output distribution. Now that you've seen the basic
+idea of the unscented transform, let's look at each of
+these steps in detail. The first thing you might be wondering
+is how many sigma points do we need and which points are, in fact, sigma points? In general, for
+an n dimensional probability distribution, we need 2n+1 sigma points,
+one for the mean and the rest symmetrically
+distributed about the mean. The diagrams in the left show the sigma
+points for one dimensional and two dimensional examples. In 1D we need three sigma points and
+in 2D we need five. The first step in determining where the
+sigma point should be is taking something called the Cholesky decomposition
+of the covariance matrix associated with the input distribution. A Cholesky decomposition is basically
+a square root operation that operates on symmetric positive definite matrices,
+such as covariance matrices. In fact,
+if the input PDF is one dimensional the Cholesky decomposition really is
+just the square root of the variants, which is also known as
+the standard deviation. We won't go into the details of how to
+compute a Cholesky decomposition but you can use the chole function in MATLAB
+or the Cholesky function in NumPy. Once we've decomposed
+the covariance matrix, we can choose our first sigma point to
+be the mean of the distribution and the remainder to be the mean plus or
+minus some factor times each column of the matrix L that
+we got from the cholesky decomposition. The value of N here again
+is a number of dimensions of the probability distribution. The parameter capa is a tuning parameter
+that you're free to set yourself. For Gaussian distributions,
+which is what we'll be working with, setting N plus capa equal
+to 3 is a good choice. Okay, so
+now we have our set of sigma points. The next step is straightforward. Just pass each of the sigma points
+through our nonlinear function to get a new set of
+transformed sigma points. Now all that's left is to recombine
+the transformed sigma points to find our output mean and
+output covariance. We do this using the standard formulas for
+the sample means and covariance that you would have seen in
+your introductory statistics courses. The trick is that each of the points
+gets a specific weight in the mean and covariance calculations, and that weight
+depends on the parameter kappa and the dimension of the input distribution N. And that's really all there is to it. To see the unscented transform in action,
+lets come back to our example of the previous video where we nonlinearly
+transformed a uniform distribution in polar coordinates into Cartesian
+coordinates, and let's see how the unscented transform compares to
+the analytical linearization approach. So here, again, we have the true mean and covariance
+of the two distributions in green. Now let's apply the unscented transform. The dimension of our input
+distribution is two, so we need five sigma points which
+we've shown as orange stars. Passing these sigma points through our
+nonlinear function puts them here. And the mean and covariance we compute
+from the transformed sigma points look like this shown in orange. Note that our estimate for
+the mean using the unscented transform is almost exactly the same as the true
+nonlinear mean and our estimate for the covariance almost exactly
+matches the true covariance. Compare that to the analytically
+linearized transform mean and covariance in red, which are both very different
+from the true mean and true covariance. It's easy to see from this example that
+the unscented transform gives us a much better approximation of the output PDF
+without requiring much more work than the analytical linearization approach. Now that we've seen how the unscented
+transform works, we can easily use it in our Kalman Filtering
+framework to work with nonlinear models. This variant of the common filter is
+called the Unscented Kalman Filter or UKF. You may also hear it called
+the sigma point common filter. The main idea of the UKF is that instead
+of approximating the system equations by linearizing them like the EKF does, we use the unscented transform to
+approximate the PDFs directly. Let's look at the prediction
+step of the UKF. To propagate the state and covariance
+through the motion model from time k-1 to time k, we apply the unscented transform
+using the current best guess for the mean and covariance of the state. First, we decompose the estimated state
+covariance from time k- 1, then we calculate our sigma points centered around
+the estimated means state from time k- 1. Second, we propagate our sigma points
+through our nonlinear motion model to get a new set of sigma points for
+the predicted state at time k. And finally,
+we calculate the predicted mean and covariance for the state at time K. At this point it's
+important to account for the process noise by adding its covariance
+to the covariance of the transformed sigma points to get the final
+predicted covariance. This equation looks a bit different if
+the process noise is not additive, but most of the time you will be dealing
+with additive noise in your models unless there is a good reason not to. For the correction step,
+we're going to follow a similar procedure, this time with a non-linear
+measurement model. First, we will need to
+redraw our sigma points using the predicted covariance matrix. We need to do this a second time because
+we added process noise at the end of the last step, and this will modify
+the positions of some of the sigma points. Next, we're going to plug
+these new sigma points one by one into our nonlinear measurement model
+to get another set of sigma points for the predicted measurements, then we
+can estimate the mean and covariance of the predicted measurements using
+the sample mean and covariance formulas. Again, take note that we’re adding in
+the measurement noise covariance to get the final covariance of
+the predicted measurements, and also remember that this formula
+only applies to additive noise. To compute the common gain,
+we’re also going to need the cross covariance between the predicted state and
+the predicted measurements, which tells us how the measurements
+are correlated with the state. You can calculate this using the standard
+formula for the cross covariance and using the same weights as before. Then all that's left is to use the Kalman
+gain to optimally correct the mean and covariance of the predicted state. And that's it! The UKF follows the same prediction
+correction pattern as the EKF, but we've just replaced the analytical linearization
+step with the unscented transform. Let's try applying the UKF to
+the same example driving scenario we worked through with the EKF. We're again trying to track the position
+and velocity of a moving car that we're controlling by pressing
+on the gas pedal or the brake. The car has a sensor on board that
+measures the angle between a distant landmark and the horizon. The motion model is linear but
+the measurement model is nonlinear. Try using the data given here to estimate
+the position of the vehicle at time one, using the UKF. Here is the Cholesky decomposition
+of the initial covariance matrix and the five sigma points we'll use to
+represent the state and its covariance. And here is the result of the prediction
+step for the mean of the state. And finally, the predicted covariance. Notice that the predicted mean and
+covariance are identical to what we would've found with the linear common
+filter and the extended common filter. This is because the motion
+model actually is linear. For the correction step,
+these are the sigma points for the predicted measurements and the mean
+and covariance of that distribution. And finally, the cross covariance,
+common gain, and our final answer for
+the position of the vehicle at time k = 1. To summarize this video, we looked at the
+Unscented Kalman Filter or UKF, which uses the unscented transform to adapt
+the Kalman filter to nonlinear systems. As we saw, the unscented transform works
+by passing a small set of carefully chosen samples through a nonlinear system,
+and computing the mean and covariance of the outputs, and it often
+does a much better job of approximating the output distribution than the local
+analytical linearization technique used by the EKF for
+similar computational cost. Let's recap what we
+learned in this module. We started off by discussing
+the linear Kalman filter, which is a form of recursive
+least squares estimation that allows us to combine
+information from a motion model with information from sensor measurements
+to estimate the vehicle state. The Kalman filter follows
+a prediction correction architecture. The motion model is used to make
+predictions of the state, and the measurements are used to make
+corrections to those predictions. We also saw that the Kalman filter is the
+best linear unbiased estimator, or BLUE. That is, the Kalman filter is
+the best unbiased estimator that uses only a linear
+combination of measurements. But, of course, linear systems
+don't really exist in reality, so we needed to develop techniques for
+handling nonlinear systems. [SOUND] In this module,
+we looked at three different approaches to nonlinear Kalman filtering,
+the Extended Kalman Filter or EKF, the error state formulation of the EKF and
+the Unscented Kalman Filter or UKF. As we've discussed the main difference is
+that the EKF relies on local analytical linearization to propagate PDFs through
+nonlinear functions whether using the full state or
+the error state formulation. In contrast, the UKF relies on the unscented
+transform to handle nonlinear functions. For most systems that
+are only mildly nonlinear, the EKF will give accurate results,
+but the UKF will be more accurate in cases where linearization error
+is a problem for the EKF. The error state Kalman filter
+performs somewhere in-between. One of the biggest advantages of the UKF
+over any EKF formulation is that the UKF doesn't require you to compute any
+derivatives of your non-linear models, which can be prone to human error or
+numerical instability. Finally, in terms of speed,
+the EKF wins out by a small margin for typical estimation problems,
+but in general, the EKF and the UKF require very similar
+amounts of computation. Because of its accuracy and simplicity, we recommend using the UKF over the EKF
+whenever possible in your projects. If you must use the EKF, our advice is
+to use the error state formulation, be wary of linearization error, and take extra care to ensure your Jacobians
+are correct, a good mantra to repeat. Now that you've learned about the basic
+tools we need for state estimation, we can start thinking about the types of sensors
+we might find on a self-driving car and how we can use them to
+localize the vehicle. In the next module,
+we'll discuss one common pair of sensors, the inertial measurement unit or IMU and the global navigation satellite system,
+or GNSS. [MUSIC]

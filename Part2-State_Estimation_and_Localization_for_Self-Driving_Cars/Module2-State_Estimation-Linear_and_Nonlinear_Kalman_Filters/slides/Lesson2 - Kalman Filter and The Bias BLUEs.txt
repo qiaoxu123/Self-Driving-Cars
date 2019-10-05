@@ -1,0 +1,60 @@
+[MUSIC] Now, we've introduced the Kalman Filter, let's discuss little bit about what makes
+it such an appealing estimation method. By the end of this lesson, you'll be able to define a few terms
+that are important in state estimation. First, the concept of bias. And second, consistency. Finally, you'll use these definitions to
+show why the Kalman Filter is the best Linear Unbiased Estimator, or BLUE. Let's dive in. First, let's discuss bias. Let's consider our Kalman Filter
+from the previous lesson and use it to estimate the position
+of our autonomous car. If we have some way of knowing the true
+position of the vehicle, for example, an oracle tells us, we can then use this to record a position
+error of our filter at each time step k. Since we're dealing with random noise,
+doing this once is not enough. We'll need to repeat this same
+process over and over and record our position
+error at each time step. Once we've collected these errors, if they
+average to zero at a particular time step k, then we say the Kalman Filter
+estimate is unbiased at this time step. Graphically, this is what
+the situation may look like. Say the particular time step, we know
+that the true position is the following. We build a histogram of the positions that
+our filter reports over multiple trials, and then compute the difference between
+the average of these estimates and the true position. If this difference does not approach zero,
+then our estimate is biased. However, if this difference does approach
+zero as we repeat this experiment many more times, and
+if this happens for all time intervals, then we say that our filter is unbiased. Although we could potentially verify
+this lack of bias empirically, what we'd really like are some
+theoretical guarantees. Let's consider the error
+dynamics of our filter. Defining our predicted and corrected state
+errors, we can then use the common filter equations to write
+the following relations. For the Kalman Filter, we can show the expectation value of
+these errors is equal to zero exactly. For this to be true, we need to ensure
+that our initial state estimate is unbiased and that our noise is white,
+uncorrelated, and zero mean. While this is a great result for
+linear systems, remember that this doesn't guarantee that
+our estimates will be error free for a given trial, only that the expected
+value of the error is zero. Kalman Filters are also
+what is called consistent. By consistency we mean that for
+all time steps k, the filter co-variants P sub k matches the expected
+value of the square of our error. For scalar parameters,
+this means that the empirical variance of our estimate should match
+the variance reported by the filter. Practically, this means that our
+filter is neither overconfident, nor underconfident in
+the estimate it has produced. A filter that is overconfident,
+and hence inconsistent, will report a covariance
+that is optimistic. That is, the filter will essentially place
+too much emphasis on its own estimate and will be less sensitive to
+future measurement updates, which may provide critical information. It's easy to see how an overconfident
+filter might have a negative or dangerous effect on the performance
+of self-driving car. Showing the consistency property formally
+is outside of the scope of the course. You can take my word that it is
+indeed true for a common filter. So long as our initial
+estimate is consistent, and we have white zero mean noise,
+then all estimates will be consistent. Putting everything together,
+we've shown that given white uncorrelated zero mean noise, the Kalman
+Filter is unbiased and consistent. Because of these two facts, we say that the Kalman Filter is the BLUE,
+the best linear unbiased estimator. It produces unbiased estimates with
+the minimum possible variance. To summarize, in this lesson
+we've defined the terms bias and consistency, and
+showed that the Kalman Filter is unbiased, consistent, and the Best Linear
+Unbiased Estimator, or BLUE. Remember that best here refers to
+the fact that the Kalman Filter minimizes the state variance. Although this is a fantastic result,
+most real systems are not linear. For self-driving cars, we'll
+generally need to estimate non-linear quantities like vehicle poses,
+position, and orientation in 2D and 3D. To do this, we'll need to extend the linear
+Kalman Filter into the non-linear domain. We'll do this in the next lesson. [MUSIC]
