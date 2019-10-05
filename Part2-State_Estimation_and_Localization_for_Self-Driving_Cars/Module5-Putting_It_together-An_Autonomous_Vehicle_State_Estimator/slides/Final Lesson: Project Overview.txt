@@ -1,0 +1,38 @@
+[MUSIC] All right, now that you've learned
+about least squares, linear and non-linear common filters, GPNS and INS
+sensing for posed estimation and LiDARs. It's time to put everything together for
+the final project in this course. By this point, you should have a solid
+grasp of the methods commonly used for vehicle state estimation, and be ready to test your knowledge
+in a more realistic scenario. For this project, you will have an
+opportunity to apply much of what you've learned throughout this course,
+as well as observe the inner workings and interactions of various components found
+in a full state estimation pipeline. For the project,
+you'll be provided with a data set gathered during a test drive
+in the carless simulator. The data set contains measurements from a
+sensor array on a moving self-driving car. The sensor array consists of an IMU,
+a GNSS receiver, and a LiDAR, all of which provide measurements of varying
+reliability and at different rates. While driving, the vehicle is
+subject to various dynamic effects caused by the environment,
+the drive train, and the suspension. These effects are difficult
+to accurately model. Therefore, in a self-driving scenario, the vehicle controller will rely on
+measurements acquired by the sensors. Your goal is to implement a state
+estimator that fuses the available sensor measurements to provide a reasonable
+estimate of the vehicle's pose and velocity. Specifically, you will be implementing
+the error state extended common filter as described in module two. Since it provides a high
+degree of robustness, and is a staple in state estimation. We provide you with a skeleton for
+the estimated pipeline, which you will fill out using your own
+implementation at each individual step. In the main filter loop,
+you will first update the state and the uncertainty using IMU readings. Whenever a GNSS or LiDAR measurement
+becomes available, you will execute the appropriate common gain computation,
+error state, and covariance updates. You will have access to the actual pose
+and velocity values from Carla for a large section of the trajectory. So you will be able to compare
+your trajectory estimates to the ground truth data. The project will be graded based on
+the accuracy of the trajectory estimate on a section of the trajectory for which
+you do not have access to ground truth. By the end of this project,
+you should have a good understanding of the main components that make up
+a standard state estimation pipeline for an autonomous vehicle. If you have any questions that
+I didn't answer in this video, there are further instructions in
+the programming assignment itself. And you can always ask for more information in
+the discussion forums as well. I hope you have fun
+with the final project, and I'll see you again
+once it's completed. Good luck. [MUSIC]

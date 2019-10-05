@@ -1,0 +1,41 @@
+[MUSIC] What do you think are the challenging
+questions that we need to answer, in terms of defining safety for
+an autonomous car? Is it a solved problem, do we know how to
+assess safety in self-driving vehicles? Or are there just too many things or too
+many variables to actually properly handle a concrete definition of whether or
+not a car is safe? >> So safety can be defined
+easily in terms of language. You can basically say, well, it's a absence of unreasonable risk,
+in this case, risk of a crash. However, when you dig down into
+the definition, it becomes very complex, because essentially,
+the question is what is unreasonable risk? And then how do you show that that
+unreasonable risk is not there, right, that basically you only
+have acceptable risk? >> Right. >> And with any complex system, you have to essentially identify
+the hazards that are there. >> Yeah. >> And essentially,
+these hazards can exist in the design, in the implementation, but
+also in the operation of a system, right? So essentially, we have three steps. We have to identify these hazards,
+we have to identify the mechanisms or the ways in which the hazards can occur,
+and then we have to address them. Right, we have to address them in design,
+implementation, and operation. And so for self-driving vehicles, there's
+many of these hazards that can occur. >> For sure, and so it seems like the challenge is a bit
+about how much testing has to be done. There's a Rand report that came
+out that expressed the numbers. It's just absolutely astronomical to
+guarantee that we understand whether or not we're achieving
+human-level performance, something on the order of 400 years
+of testing, 24 hours, 7 days a week. Do you see that as a fundamental stopper? Is this whole pursuit of
+autonomous driving just impossible because of the requirements for
+testing, or is there some way around this
+astronomical number of miles? >> So I don't think there's a way
+around having enough of these miles. Before it was called validation testing,
+so essentially understanding
+the requirements, right? >> Right. >> And even though these are sort
+of astronomical numbers, once you have a large enough fleet, we will
+eventually collect these miles, right? >> So we have to release the technology
+before we know whether or not it's reliable? >> Of course, we have to do
+this in an incremental fashion. That's why we do the testing, initially. It's a feedback loop. We learn about what works in practice,
+what are the risks, and we address those risks as we roll out. So there's a very important distinction
+between the validation testing and verification testing, where,
+let's say if you change your system, or let's say you improve your software, you
+don't have to redo all these kilometers. The kilometers are there,
+defined in the requirements, but then they are maybe in simulation. And you know which parts you will
+have to retest on the road, or which parts you will have to test
+on closed-circuit, yeah, yeah. >> Fascinating. [MUSIC]

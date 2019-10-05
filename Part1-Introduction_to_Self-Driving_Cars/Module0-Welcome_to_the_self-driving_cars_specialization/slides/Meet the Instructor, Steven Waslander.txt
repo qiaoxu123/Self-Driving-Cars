@@ -1,0 +1,74 @@
+[MUSIC] I was a generalist as a kid. I loved all kinds of stuff. I thought I could be a scientist,
+I thought maybe a physicist, maybe a chemist, no idea really. I really was clueless as I grew up. I was a heavy athlete, I loved doing
+cross country skiing and mountain biking, these were the things I spent my time on. I didn't worry about the future. I had an idyllic childhood. And then you turn 16, or 17,
+or 18, and you start to think, I gotta do something fun with my life. And that's where I started
+picking up these challenges and realizing what it was
+that kept driving me. I loved solving math problems,
+I loved doing chemistry, or doing calculus challenges
+with my friends after school. This is the kind of stuff I did,
+just on the side, with no real focus. So it wasn't until I really started to try
+to pick something to do that I found these specific applications with the things I
+like doing, actually come up all the time. So as I graduated from university,
+I actually took a job at Pratt & Whitney Canada, which is one of our small
+jet engine manufacturing companies. While I worked at Pratt & Whitney,
+it was fascinating, we got to do things like test
+out jet engine controls. And so I had all this fun exposure to
+aeronautics, but the challenging part about aeronautics is that there's
+an extremely strong safety requirement. And so everything you do has
+to be buttoned down, and has to work precisely
+every time you do it. And so the development in that area really
+is dictated by 30 year old technology that's been vetted over,
+and over, and over. And so that was really frustrating for me, as a young engineer trying to get things
+moving and trying to change the world. So I took those wonderful experiences
+from the aerospace industry, and that focus on safety, and
+I turned it into a graduate career, where I entered the aeronautics and
+astronautics, and started building drones. Yeah, it's problem solving,
+it’s algorithm development. It's taking a robot task, something like
+landing a drone on a moving car, or trying to get a self driving car to park itself
+or navigate through an obstacle field. All of these problems are really
+practical, really applied, and you can really see the results
+of them as you're building, you can see how well it's working. If the drone misses the car,
+it crashes and fails, there is sort of an exciting
+aspect to that that's really fun, right? So to make a self-driving car, you have
+to first start by turning a regular automobile into a drive-by-wire vehicle. This means that you can plug a computer
+into the car and send commands to the gas, steering, and brakes, and the car will
+actually execute those maneuvers. Once you've got that capability, you can literally start to program
+it to do whatever you want. From there, you have to add
+a whole suite of sensors, and the computation in the trunk, and with all these pieces you can start to
+built up your own self-driving vehicle. So my research lab is built around
+the idea that if we have a real test bed, and we put it in a real situations, we'll learn a lot more quickly what
+the limitations are in current methods. What we're looking at, really, is finding
+research problems that are particularly suited to the academic community. So we're looking at those problems like
+dealing with adverse weather conditions, or dealing with some of these edge cases,
+or trying to theoretically demonstrate that the methods we're using have
+a safety aspect that we can quantify. So there's really lots of specific
+problems that we can work on in academia, we can try a bunch of crazy ideas. We can explore this space of possible
+solutions a little bit faster than, or maybe a little less guided,
+than you might do in industry. Definitely going to see increased
+performance from these vehicles. We're going to see things like the Tesla
+autopilot just getting better and better every year. And we're going to see fleets of
+vehicles that really are autonomous, working in restricted domains where
+they know they're safe to operate. But I still think that we have a lot
+of work to do to get that final full autonomy anywhere you
+want to drive it level. This is just because there's so many
+different ways that the cars can fail. There's so many different situations
+that they have to understand. So many strange conditions that you
+just can't predict ahead of time. So, if you're new to self driving, and
+you think this is a wonderful area, and you want to try it, I think the first
+thing you want to do, obviously, is follow this Coursera specialization. But from there, there's hundreds of ways
+that you can enrich your knowledge, and get a better sense of how
+to get into this area. This whole field depends on the
+fundamentals of robotics, the fundamentals of computer vision, the fundamentals
+of neural networks and deep learning. And these are areas that
+you can study extensively. And what's really fun about those is
+they also apply to other wonderful applications. So think robot manipulators,
+think cell phone camera systems, and improved features for taking videos,
+drone flights, and tracking of objects. There's tons of things you
+can do with this stuff. And for
+those of you thinking about whether or not self driving is a direction to go
+in and is a good avenue to explore, it's absolutely clear that this
+market is just going to keep growing. There's just an insatiable demand for the students that are coming
+out of our programs. It's pretty amazing, yeah. It's been a long time since I played with
+random math problems after school, right? And so to think that I'm now
+working on self driving cars, and I've been playing with drones for
+years, I'm just a lucky guy. [MUSIC]

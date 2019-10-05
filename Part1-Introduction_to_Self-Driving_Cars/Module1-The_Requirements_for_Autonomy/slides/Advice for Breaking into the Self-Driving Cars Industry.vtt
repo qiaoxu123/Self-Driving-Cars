@@ -1,0 +1,633 @@
+WEBVTT
+
+1
+00:00:13.640 --> 00:00:17.130
+Some advice for junior people
+
+2
+00:00:17.130 --> 00:00:20.160
+trying to break into
+the autonomous industry,
+
+3
+00:00:20.160 --> 00:00:23.340
+getting a degree in
+engineering definitely helped
+
+4
+00:00:23.340 --> 00:00:25.380
+me especially from
+the University of Waterloo
+
+5
+00:00:25.380 --> 00:00:27.150
+where I got to do
+a lot of internships,
+
+6
+00:00:27.150 --> 00:00:29.040
+a lot of interactive projects,
+
+7
+00:00:29.040 --> 00:00:33.150
+and I also during that time helped
+mentor FIRST Robotics team.
+
+8
+00:00:33.150 --> 00:00:35.730
+So, all of that helped
+to boost up my resume.
+
+9
+00:00:35.730 --> 00:00:37.714
+So, if you wanted to get into
+
+10
+00:00:37.714 --> 00:00:40.565
+the autonomous space into
+firmware engineering,
+
+11
+00:00:40.565 --> 00:00:42.515
+some of the schooling
+that you might want
+
+12
+00:00:42.515 --> 00:00:44.795
+is an engineering degree.
+
+13
+00:00:44.795 --> 00:00:47.120
+You can also do it
+through a CS degree,
+
+14
+00:00:47.120 --> 00:00:53.665
+but getting some real experience
+with hardware definitely helps.
+
+15
+00:00:53.665 --> 00:00:56.220
+In my final of university,
+
+16
+00:00:56.220 --> 00:01:00.800
+I took embedded classes to get
+more familiar with more of
+
+17
+00:01:00.800 --> 00:01:03.110
+the low level software or
+
+18
+00:01:03.110 --> 00:01:04.880
+the low level aspects of
+
+19
+00:01:04.880 --> 00:01:08.350
+software that I would need
+in a more day-to-day life.
+
+20
+00:01:08.350 --> 00:01:12.200
+Being very familiar with
+the hardware definitely helps in
+
+21
+00:01:12.200 --> 00:01:16.120
+my day-to-day job because
+I'm actuating pieces.
+
+22
+00:01:16.120 --> 00:01:18.890
+We've definitely have seen people in
+
+23
+00:01:18.890 --> 00:01:20.030
+this industry who have more of
+
+24
+00:01:20.030 --> 00:01:22.505
+a mechanical background
+and that also helps,
+
+25
+00:01:22.505 --> 00:01:26.750
+but just knowing how to code
+also definitely helps with
+
+26
+00:01:26.750 --> 00:01:28.730
+that and knowing all of
+
+27
+00:01:28.730 --> 00:01:30.880
+the pieces around you,
+robotics in general,
+
+28
+00:01:30.880 --> 00:01:32.705
+I think that mechatronics
+engineering was
+
+29
+00:01:32.705 --> 00:01:35.750
+definitely a help for that
+for me because it was so
+
+30
+00:01:35.750 --> 00:01:37.385
+well-rounded and I got to do
+
+31
+00:01:37.385 --> 00:01:40.295
+everything and there
+were so many projects
+
+32
+00:01:40.295 --> 00:01:42.320
+that definitely helped me
+
+33
+00:01:42.320 --> 00:01:45.380
+to figure out how
+everything went together.
+
+34
+00:01:45.380 --> 00:01:47.630
+So, I think in the
+industry right now,
+
+35
+00:01:47.630 --> 00:01:50.165
+because it's growing so
+fast and so rapidly,
+
+36
+00:01:50.165 --> 00:01:55.515
+pretty much every role is
+needed including firmware or
+
+37
+00:01:55.515 --> 00:01:58.580
+even perception or any part
+
+38
+00:01:58.580 --> 00:02:01.370
+of the autonomous stack
+just needs people.
+
+39
+00:02:01.370 --> 00:02:03.665
+I get contacted specifically a lot
+
+40
+00:02:03.665 --> 00:02:07.065
+about firmware jobs because
+of my background in firmware,
+
+41
+00:02:07.065 --> 00:02:09.050
+but I think that in general,
+
+42
+00:02:09.050 --> 00:02:11.210
+there are just so many jobs out there
+
+43
+00:02:11.210 --> 00:02:13.595
+right now that everyone's
+just trying to
+
+44
+00:02:13.595 --> 00:02:18.875
+get the best people to work on
+their autonomous challenge.
+
+45
+00:02:18.875 --> 00:02:22.955
+It's a very aggressively
+hiring industry,
+
+46
+00:02:22.955 --> 00:02:25.970
+so I constantly get recruited by
+
+47
+00:02:25.970 --> 00:02:29.555
+other companies looking
+to just get people and
+
+48
+00:02:29.555 --> 00:02:33.005
+I'm obviously trying to find
+as many people as possible
+
+49
+00:02:33.005 --> 00:02:37.460
+for ZOOX so that we can
+continue working and growing.
+
+50
+00:02:37.460 --> 00:02:41.120
+It seems like we're doing pretty
+good considering our numbers,
+
+51
+00:02:41.120 --> 00:02:45.440
+but as always there's always more
+people needed and everybody's
+
+52
+00:02:45.440 --> 00:02:47.480
+trying to solve this problem
+and everyone's trying to
+
+53
+00:02:47.480 --> 00:02:50.120
+get all the best people
+to work on it.
+
+54
+00:02:50.120 --> 00:02:52.850
+Now that I've had the chance
+to work in industry,
+
+55
+00:02:52.850 --> 00:02:55.550
+I think the ideal candidate
+would be people who
+
+56
+00:02:55.550 --> 00:02:59.280
+are interested and
+excited about the field.
+
+57
+00:02:59.280 --> 00:03:01.455
+In terms of technical skills,
+
+58
+00:03:01.455 --> 00:03:03.905
+are fluent in C++ and Python.
+
+59
+00:03:03.905 --> 00:03:07.820
+We need research engineers who
+are able to solve problems from
+
+60
+00:03:07.820 --> 00:03:09.380
+first principles and we also
+
+61
+00:03:09.380 --> 00:03:11.750
+need people with
+machine learning experience.
+
+62
+00:03:11.750 --> 00:03:14.810
+One of the biggest pieces
+of advice I can give to
+
+63
+00:03:14.810 --> 00:03:16.820
+people at the undergraduate
+or graduate level
+
+64
+00:03:16.820 --> 00:03:18.355
+is to join student teams.
+
+65
+00:03:18.355 --> 00:03:20.179
+Student teams gives
+you the opportunity
+
+66
+00:03:20.179 --> 00:03:21.650
+to work collaboratively with
+
+67
+00:03:21.650 --> 00:03:25.070
+your peers and develop your
+communication leadership skills.
+
+68
+00:03:25.070 --> 00:03:27.950
+Although, the projects you work
+on might not be cutting edge,
+
+69
+00:03:27.950 --> 00:03:29.750
+at the same time they
+really help you gain
+
+70
+00:03:29.750 --> 00:03:32.465
+experience working in
+a semi-professional setting.
+
+71
+00:03:32.465 --> 00:03:36.110
+Communication skills are
+important for people out in
+
+72
+00:03:36.110 --> 00:03:40.430
+the workplace as well because
+especially in autonomous driving,
+
+73
+00:03:40.430 --> 00:03:43.580
+we have all of these unique problems
+that we need to solve
+
+74
+00:03:43.580 --> 00:03:45.650
+and being able to
+
+75
+00:03:45.650 --> 00:03:48.500
+communicate your ideas
+clearly is vitally important.
+
+76
+00:03:48.500 --> 00:03:50.360
+Being there when things fail
+
+77
+00:03:50.360 --> 00:03:53.095
+is a very valuable
+learning experience.
+
+78
+00:03:53.095 --> 00:03:55.340
+A lot of the skills carry over.
+
+79
+00:03:55.340 --> 00:03:58.160
+For example, troubleshooting,
+working with others,
+
+80
+00:03:58.160 --> 00:03:59.870
+being able to solve problems,
+
+81
+00:03:59.870 --> 00:04:01.340
+I found that experience very
+
+82
+00:04:01.340 --> 00:04:03.610
+helpful once I started
+working in the industry.
+
+83
+00:04:03.610 --> 00:04:06.440
+My advice for junior engineers
+looking to break into
+
+84
+00:04:06.440 --> 00:04:09.950
+the industry is really to
+be hands-on and practical,
+
+85
+00:04:09.950 --> 00:04:12.785
+to try taking on projects yourself.
+
+86
+00:04:12.785 --> 00:04:14.375
+That could take the form of
+
+87
+00:04:14.375 --> 00:04:17.735
+either a laptop on wheels where
+you program your own stack into
+
+88
+00:04:17.735 --> 00:04:20.315
+end or using the simulator to
+
+89
+00:04:20.315 --> 00:04:21.740
+predict what the environment would be
+
+90
+00:04:21.740 --> 00:04:23.495
+like once we do hit the ground.
+
+91
+00:04:23.495 --> 00:04:27.125
+I think solving
+these practical problems
+
+92
+00:04:27.125 --> 00:04:28.960
+through practical means
+with teach you
+
+93
+00:04:28.960 --> 00:04:31.460
+a lot and I personally
+have drawn a lot
+
+94
+00:04:31.460 --> 00:04:34.840
+from previous projects in
+my day-to-day job nowadays.
+
+95
+00:04:34.840 --> 00:04:36.500
+What advice would I
+gave if you wanted to
+
+96
+00:04:36.500 --> 00:04:39.050
+come and work in an NAV company?
+
+97
+00:04:39.050 --> 00:04:43.380
+Well, first of all, be open
+to all areas of engineering.
+
+98
+00:04:43.380 --> 00:04:46.130
+Don't become just a computer
+vision specialist if you can.
+
+99
+00:04:46.130 --> 00:04:50.000
+Try and understand that this is
+fundamentally a robotics question,
+
+100
+00:04:50.000 --> 00:04:53.030
+because we have software
+using multiple sensors,
+
+101
+00:04:53.030 --> 00:04:56.120
+trying to ask some very difficult
+questions in the presence of
+
+102
+00:04:56.120 --> 00:04:59.630
+a very devious world that's
+got strange lighting,
+
+103
+00:04:59.630 --> 00:05:02.585
+strange weather, people
+behaving in strange ways.
+
+104
+00:05:02.585 --> 00:05:04.280
+You have to know a bit
+about control or
+
+105
+00:05:04.280 --> 00:05:06.599
+interfacing to people
+who know about control,
+
+106
+00:05:06.599 --> 00:05:08.640
+who know about planning,
+who know about vision,
+
+107
+00:05:08.640 --> 00:05:10.795
+who know about lasers, who
+know about communications,
+
+108
+00:05:10.795 --> 00:05:12.440
+who know about systems engineering.
+
+109
+00:05:12.440 --> 00:05:13.970
+You're going to want
+to be interacting
+
+110
+00:05:13.970 --> 00:05:15.260
+with those individuals
+the whole time.
+
+111
+00:05:15.260 --> 00:05:17.450
+So, I would say, understand this as
+
+112
+00:05:17.450 --> 00:05:20.355
+a big engineering science problem.
+
+113
+00:05:20.355 --> 00:05:22.110
+Obviously code.
+
+114
+00:05:22.110 --> 00:05:24.480
+Like code all the time.
+
+115
+00:05:24.480 --> 00:05:29.205
+Practice, practice, practice
+and code well. Be proud.
+
+116
+00:05:29.205 --> 00:05:32.000
+If you have a circuit
+as an undergraduate
+
+117
+00:05:32.000 --> 00:05:34.870
+and you building a circuit
+and if it looks shocking,
+
+118
+00:05:34.870 --> 00:05:36.795
+it probably is shocking.
+
+119
+00:05:36.795 --> 00:05:38.840
+That's a good joke with electricity,
+
+120
+00:05:38.840 --> 00:05:40.790
+but the same is true for software.
+
+121
+00:05:40.790 --> 00:05:43.280
+So, be a proud software
+engineer about
+
+122
+00:05:43.280 --> 00:05:47.375
+the quality of the code that you're
+writing and you will do well.
+
+123
+00:05:47.375 --> 00:05:50.815
+Love getting into
+the mess of it, right?
+
+124
+00:05:50.815 --> 00:05:53.100
+Please don't work
+with cameras indoors,
+
+125
+00:05:53.100 --> 00:05:55.470
+go out into a rainstorm,
+go into the snow,
+
+126
+00:05:55.470 --> 00:05:58.290
+go into the blinding sun and
+go with cameras out there,
+
+127
+00:05:58.290 --> 00:05:59.780
+and don't worry if it doesn't work,
+
+128
+00:05:59.780 --> 00:06:01.650
+because that's the best
+lesson you could get.
+
+129
+00:06:01.650 --> 00:06:04.490
+So, boldly go out
+into places that are
+
+130
+00:06:04.490 --> 00:06:08.345
+tricky for these systems to
+work in and learn from that.
+
+131
+00:06:08.345 --> 00:06:12.320
+Be a proud roboticist and be
+a systems engineer as well,
+
+132
+00:06:12.320 --> 00:06:14.075
+because it's a full-stack
+problem, right?
+
+133
+00:06:14.075 --> 00:06:17.480
+It's not just I want to
+process a camera really well,
+
+134
+00:06:17.480 --> 00:06:18.830
+I want two spot cars,
+
+135
+00:06:18.830 --> 00:06:23.130
+it's all of it and it all
+has to interact in the end.

@@ -1,0 +1,69 @@
+I see that the long-term benefits for autonomous driving
+is first off safety. I hear of people who've been driving late at night
+and find that they've seen crashes or you drive
+home and everything's congested because someone maybe
+fell asleep at the wheel, or they just bumped
+the person in front of them and if we can get to a point a society with autonomous vehicles as
+every vehicle out there, we shouldn't have anymore crashes. We should be able to
+drive from point A to point B and be very safe about it, and on top of that, hopefully congestion goes down. You should have less people
+on the road because you have these cars that
+they'll talk to each other and everyone's
+driving the same speed, because there's no switching lanes constantly to get the faster lane, which is what causes congestion a lot on top of construction
+and everything else. On top of that, it also adds mobility for people who maybe
+can't drive themselves. Maybe they aren't able to get
+a license or in our city, it's just not practical to own a car. It makes way more sense
+to take the bus or an autonomous vehicle
+at some point, where you can get to point A to
+point B without having to go the random route which a bus
+would have to take you. So even before our code gets
+deployed onto the vehicle, we go through multiple stages
+of checking and making sure that it's functioning
+in the way that we expect. So for example, we
+rerun it in simulation, we run it against education
+set we've seen before, and finally when we deploy
+it on the vehicles, we run it on our private test tracks before we take it
+out into the public. To ensure the safety of the vehicles
+that we have on the road, we have multiple stages of
+testing that we go through before we actually deploy these software
+features on the vehicle. So, we test our code rigorously, the first in simulation and then against edge cases that
+we might have seen before. Then once we actually deploy
+the code onto the vehicles, we test these vehicles on our private test tracks before we
+take them out onto public roads. One of the main advantages of
+having an autonomous vehicles is that there is safety, right. So, the statistic that
+gets thrown around quite a bit is that 94 percent of crashes are caused by human error and that's a huge margin for improvement that
+autonomous vehicles offers us. Guaranteeing safety across all of the different scenarios open to us on the road is definitely
+one of the major challenges. But fortunately, we have ways of
+figuring that out whether it's through simulation or
+miles accumulation through real-world testing
+and computer testing. This topic often comes up in that, obviously there's
+different feasibility between daytime and nighttime. Fortunately, we have a variety of sensor modality modes that
+really well augment each other. For example, radar and lidar can
+see perfectly well at night. So, we have through the use of multiple different
+sensor technologies, being able to create a safe comprehensive perception of our world around
+us even at nighttime. We definitely take testing
+and safety very seriously. A live testing start cell in
+computer simulation for example, to make sure that everything is up to par and the live real-world
+testing starts out with human drivers at the wheel
+who are able to take over at any time to guarantee the safety
+if anything were to go wrong. Going forward, we do this and more and more as we accumulate
+more miles more experience, we learn more and more
+from the datasets that we collect to further
+refine our systems. Many of us would have
+known family members or people who've had an accident
+whilst driving a car. That's a bad thing but
+after that accident, your neighbor doesn't
+necessarily get a better driver. Doesn't become a better driver. But with driverless cars
+in 20 years time, I'll be able to get into driverless
+cars that have the benefit of all the miles the other
+driverless cars have ever driven, and we exactly don't
+have that with humans. So, it's a really
+compelling argument for these machines to share
+their data as well and to share their experience of driving in every way that as humans
+we don't do it as a lonely experience
+that we have all of our 18-year-old repeat and
+starting is no great drivers. So that's insane. So, there's
+so many reasons why we want to fix transports in cities
+and when you're in a plane and you look
+down out of a window, look how much of the infrastructure
+that we have built on our nations is because
+we want to move stuff.

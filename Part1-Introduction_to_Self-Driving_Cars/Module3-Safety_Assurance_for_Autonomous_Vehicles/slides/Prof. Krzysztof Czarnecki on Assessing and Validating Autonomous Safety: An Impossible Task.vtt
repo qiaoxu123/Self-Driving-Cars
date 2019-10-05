@@ -1,0 +1,265 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:15.016 --> 00:00:18.712
+What do you think are the challenging
+questions that we need to answer,
+
+3
+00:00:18.712 --> 00:00:21.720
+in terms of defining safety for
+an autonomous car?
+
+4
+00:00:21.720 --> 00:00:25.780
+Is it a solved problem, do we know how to
+assess safety in self-driving vehicles?
+
+5
+00:00:25.780 --> 00:00:31.090
+Or are there just too many things or too
+many variables to actually properly handle
+
+6
+00:00:31.090 --> 00:00:34.220
+a concrete definition of whether or
+not a car is safe?
+
+7
+00:00:35.400 --> 00:00:41.700
+>> So safety can be defined
+easily in terms of language.
+
+8
+00:00:41.700 --> 00:00:42.800
+You can basically say,
+
+9
+00:00:42.800 --> 00:00:48.060
+well, it's a absence of unreasonable risk,
+in this case, risk of a crash.
+
+10
+00:00:48.060 --> 00:00:51.800
+However, when you dig down into
+the definition, it becomes very complex,
+
+11
+00:00:51.800 --> 00:00:55.700
+because essentially,
+the question is what is unreasonable risk?
+
+12
+00:00:55.700 --> 00:00:59.510
+And then how do you show that that
+unreasonable risk is not there, right,
+
+13
+00:00:59.510 --> 00:01:01.405
+that basically you only
+have acceptable risk?
+
+14
+00:01:01.405 --> 00:01:02.328
+>> Right.
+
+15
+00:01:02.328 --> 00:01:04.815
+>> And with any complex system,
+
+16
+00:01:04.815 --> 00:01:09.996
+you have to essentially identify
+the hazards that are there.
+
+17
+00:01:09.996 --> 00:01:10.853
+>> Yeah.
+
+18
+00:01:10.853 --> 00:01:15.041
+>> And essentially,
+these hazards can exist in the design,
+
+19
+00:01:15.041 --> 00:01:20.190
+in the implementation, but
+also in the operation of a system, right?
+
+20
+00:01:20.190 --> 00:01:22.570
+So essentially, we have three steps.
+
+21
+00:01:22.570 --> 00:01:27.000
+We have to identify these hazards,
+we have to identify the mechanisms or
+
+22
+00:01:27.000 --> 00:01:31.030
+the ways in which the hazards can occur,
+and then we have to address them.
+
+23
+00:01:31.030 --> 00:01:35.083
+Right, we have to address them in design,
+implementation, and operation.
+
+24
+00:01:35.083 --> 00:01:40.130
+And so for self-driving vehicles, there's
+many of these hazards that can occur.
+
+25
+00:01:40.130 --> 00:01:41.050
+>> For sure, and so
+
+26
+00:01:41.050 --> 00:01:46.200
+it seems like the challenge is a bit
+about how much testing has to be done.
+
+27
+00:01:46.200 --> 00:01:49.513
+There's a Rand report that came
+out that expressed the numbers.
+
+28
+00:01:49.513 --> 00:01:53.269
+It's just absolutely astronomical to
+guarantee that we understand whether or
+
+29
+00:01:53.269 --> 00:01:55.680
+not we're achieving
+human-level performance,
+
+30
+00:01:55.680 --> 00:01:59.450
+something on the order of 400 years
+of testing, 24 hours, 7 days a week.
+
+31
+00:02:00.630 --> 00:02:03.450
+Do you see that as a fundamental stopper?
+
+32
+00:02:03.450 --> 00:02:07.050
+Is this whole pursuit of
+autonomous driving just
+
+33
+00:02:07.050 --> 00:02:09.480
+impossible because of the requirements for
+testing, or
+
+34
+00:02:09.480 --> 00:02:13.600
+is there some way around this
+astronomical number of miles?
+
+35
+00:02:13.600 --> 00:02:20.878
+>> So I don't think there's a way
+around having enough of these miles.
+
+36
+00:02:20.878 --> 00:02:22.969
+Before it was called validation testing,
+so
+
+37
+00:02:22.969 --> 00:02:25.631
+essentially understanding
+the requirements, right?
+
+38
+00:02:25.631 --> 00:02:26.280
+>> Right.
+
+39
+00:02:26.280 --> 00:02:29.855
+>> And even though these are sort
+of astronomical numbers, once
+
+40
+00:02:29.855 --> 00:02:34.860
+you have a large enough fleet, we will
+eventually collect these miles, right?
+
+41
+00:02:34.860 --> 00:02:37.910
+>> So we have to release the technology
+before we know whether or
+
+42
+00:02:37.910 --> 00:02:39.420
+not it's reliable?
+
+43
+00:02:39.420 --> 00:02:42.220
+>> Of course, we have to do
+this in an incremental fashion.
+
+44
+00:02:42.220 --> 00:02:45.750
+That's why we do the testing, initially.
+
+45
+00:02:45.750 --> 00:02:46.820
+It's a feedback loop.
+
+46
+00:02:46.820 --> 00:02:50.810
+We learn about what works in practice,
+what are the risks, and
+
+47
+00:02:50.810 --> 00:02:53.900
+we address those risks as we roll out.
+
+48
+00:02:53.900 --> 00:02:58.634
+So there's a very important distinction
+between the validation testing and
+
+49
+00:02:58.634 --> 00:03:03.146
+verification testing, where,
+let's say if you change your system, or
+
+50
+00:03:03.146 --> 00:03:08.424
+let's say you improve your software, you
+don't have to redo all these kilometers.
+
+51
+00:03:08.424 --> 00:03:11.478
+The kilometers are there,
+defined in the requirements, but
+
+52
+00:03:11.478 --> 00:03:13.595
+then they are maybe in simulation.
+
+53
+00:03:13.595 --> 00:03:17.622
+And you know which parts you will
+have to retest on the road, or
+
+54
+00:03:17.622 --> 00:03:22.128
+which parts you will have to test
+on closed-circuit, yeah, yeah.
+
+55
+00:03:22.128 --> 00:03:22.664
+>> Fascinating.
+
+56
+00:03:22.664 --> 00:03:32.664
+[MUSIC]

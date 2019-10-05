@@ -1,0 +1,583 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.704 --> 00:00:15.928
+Welcome back.
+
+3
+00:00:15.928 --> 00:00:20.866
+In the last video, we saw how to build
+a feedback controller for the longitudinal
+
+4
+00:00:20.866 --> 00:00:25.805
+speed tracking problem that used PID
+control to generate acceleration commands
+
+5
+00:00:25.805 --> 00:00:31.085
+together, with a low level controller
+to define throttle and brake inputs.
+
+6
+00:00:31.085 --> 00:00:33.650
+In this final video of the module,
+
+7
+00:00:33.650 --> 00:00:38.900
+we will modify our control architecture
+to incorporate feedforward commands,
+
+8
+00:00:38.900 --> 00:00:43.540
+which will improve tracking performance,
+particularly in dynamic maneuvers.
+
+9
+00:00:43.540 --> 00:00:48.010
+Specifically, we will see how to
+integrate both feedforward and
+
+10
+00:00:48.010 --> 00:00:51.302
+feedback control into a combined
+control architecture.
+
+11
+00:00:52.370 --> 00:00:56.870
+And we will apply this architecture
+to longitudinal vehicle control.
+
+12
+00:00:56.870 --> 00:00:57.740
+Let's get started.
+
+13
+00:00:58.970 --> 00:01:04.470
+First of all, let's compare the feedback
+versus feedforward block diagrams.
+
+14
+00:01:04.470 --> 00:01:08.950
+The feedback block diagram shows
+the typical closed loop structure,
+
+15
+00:01:08.950 --> 00:01:12.640
+where the current output is
+compared to a reference signal.
+
+16
+00:01:12.640 --> 00:01:16.470
+And the error between the two is
+fed into the feedback controller,
+
+17
+00:01:16.470 --> 00:01:18.470
+which generates the input to the plants.
+
+18
+00:01:19.490 --> 00:01:23.051
+The feedforward block diagram
+shows an open loop structure,
+
+19
+00:01:23.051 --> 00:01:27.571
+where the reference signal is directly
+fed into the feedforward controller,
+
+20
+00:01:27.571 --> 00:01:30.459
+which again,
+generates the inputs to the plant.
+
+21
+00:01:30.459 --> 00:01:35.396
+Feedforward controllers create their plant
+inputs by modeling the plant process,
+
+22
+00:01:35.396 --> 00:01:38.385
+as we have done in module
+three of these course, and
+
+23
+00:01:38.385 --> 00:01:41.950
+applying the appropriate inputs directly.
+
+24
+00:01:41.950 --> 00:01:44.330
+In many applications, feedforward and
+
+25
+00:01:44.330 --> 00:01:48.610
+feedback loops are combined to
+improve controller performance.
+
+26
+00:01:48.610 --> 00:01:51.595
+This block diagram shows
+how a typical feedback,
+
+27
+00:01:51.595 --> 00:01:54.480
+feedforward control structure works.
+
+28
+00:01:54.480 --> 00:01:59.420
+You can think of feedforward control as
+providing the necessary inputs expected
+
+29
+00:01:59.420 --> 00:02:03.660
+to keep the plant tracking its reference
+signal, and the feedback controller
+
+30
+00:02:03.660 --> 00:02:07.670
+correcting for errors that result
+from either disturbances or
+
+31
+00:02:07.670 --> 00:02:12.140
+inaccuracies in the plant model
+used by the feedforward controller.
+
+32
+00:02:12.140 --> 00:02:16.150
+The input to the plant is simply
+the addition of the feedforward and
+
+33
+00:02:16.150 --> 00:02:17.300
+the feedback inputs.
+
+34
+00:02:18.520 --> 00:02:23.280
+To summarize this concept, the main
+reason that both feedback and feedforward
+
+35
+00:02:23.280 --> 00:02:28.510
+controllers are used to control a system
+are feedforward controllers provide
+
+36
+00:02:28.510 --> 00:02:33.520
+a predictive response as they produce
+a reference output to achieve a particular
+
+37
+00:02:33.520 --> 00:02:37.195
+tracking response, particularly when
+the required inputs are non-zero.
+
+38
+00:02:38.420 --> 00:02:42.040
+Feedback controllers provide
+a reactive response,
+
+39
+00:02:42.040 --> 00:02:45.930
+which eliminates control errors due
+to the disturbances as they occur.
+
+40
+00:02:47.160 --> 00:02:48.925
+The combination of feedback and
+
+41
+00:02:48.925 --> 00:02:53.760
+feedforward control is widely used because
+of this complementary relationship.
+
+42
+00:02:53.760 --> 00:02:57.820
+Because autonomous vehicles require
+non-zero steering commands to maintain
+
+43
+00:02:57.820 --> 00:03:02.480
+a constant radius turn and a constant
+throttle or brake command to maintain
+
+44
+00:03:02.480 --> 00:03:06.450
+constant speed or deceleration rates,
+feedforward commands
+
+45
+00:03:06.450 --> 00:03:10.750
+are extremely beneficial in improving
+tracking performance in automated driving.
+
+46
+00:03:11.940 --> 00:03:15.780
+Now let's take a look at the combined
+feedback and feedforward controllers to
+
+47
+00:03:15.780 --> 00:03:19.520
+generate vehicle actuation for
+longitudinal speed control.
+
+48
+00:03:21.280 --> 00:03:26.020
+The reference speed or drive cycle is
+defined by a higher level planner.
+
+49
+00:03:26.020 --> 00:03:31.070
+And it is desirable that the vehicle
+follows the reference velocity precisely.
+
+50
+00:03:31.070 --> 00:03:35.080
+The reference velocity is the input
+to the feedforward block, and
+
+51
+00:03:35.080 --> 00:03:40.120
+the velocity error is the input to
+the feedback or PID control block.
+
+52
+00:03:40.120 --> 00:03:44.150
+Both controllers produce two vehicle
+actuation signals, the throttle and
+
+53
+00:03:44.150 --> 00:03:45.910
+the brake commands.
+
+54
+00:03:45.910 --> 00:03:50.550
+Note that there is no low-level controller
+included in this block diagram,
+
+55
+00:03:50.550 --> 00:03:55.095
+as we had in the pure PID feedback
+control from the previous video.
+
+56
+00:03:55.095 --> 00:03:59.450
+The role of the low-level controller
+achieving the desired acceleration through
+
+57
+00:03:59.450 --> 00:04:03.570
+the use of a mapping from
+accelerations to engine commands
+
+58
+00:04:03.570 --> 00:04:06.120
+is now going to be handled
+by the feedforward block.
+
+59
+00:04:07.540 --> 00:04:11.040
+The feedforward block gets only
+the reference signal as input, and
+
+60
+00:04:11.040 --> 00:04:15.570
+its primary objective is to accurately
+set the inputs of the plan.
+
+61
+00:04:15.570 --> 00:04:19.440
+To do this we can convert the entire
+longitudinal dynamics model
+
+62
+00:04:19.440 --> 00:04:24.470
+into a fixed lookup table or reference
+map, that maps the reference velocity
+
+63
+00:04:24.470 --> 00:04:29.182
+to the corresponding actuators signals
+assuming the vehicle is at steady state.
+
+64
+00:04:29.182 --> 00:04:34.020
+This feedforward approach works
+well at steady state, but
+
+65
+00:04:34.020 --> 00:04:37.540
+ignores the internal dynamics
+of the vehicle powertrain.
+
+66
+00:04:37.540 --> 00:04:40.760
+And must also rely on the current
+vehicle state estimate
+
+67
+00:04:40.760 --> 00:04:44.350
+to resolve some of the forces and
+dynamic models used.
+
+68
+00:04:46.090 --> 00:04:48.920
+Let's look at the steps needed
+to develop the actuator
+
+69
+00:04:48.920 --> 00:04:51.950
+commands from a feedforward lookup table.
+
+70
+00:04:51.950 --> 00:04:53.120
+In our example,
+
+71
+00:04:53.120 --> 00:04:57.200
+we are interested in following
+the reference velocity at each time step.
+
+72
+00:04:57.200 --> 00:05:00.920
+Based on the kinematic relationship
+between the vehicle's speed and
+
+73
+00:05:00.920 --> 00:05:05.210
+the wheel angular speed, we can calculate
+the wheel angular speed needed.
+
+74
+00:05:06.640 --> 00:05:10.050
+The wheel angular speed is related
+to the engine angular speed, or
+
+75
+00:05:10.050 --> 00:05:13.960
+engine RPM, through the gear
+ratios from the transmission,
+
+76
+00:05:13.960 --> 00:05:16.740
+differential and final drive.
+
+77
+00:05:16.740 --> 00:05:19.400
+So we can now compute the engine RPM
+
+78
+00:05:19.400 --> 00:05:22.630
+corresponding to the required
+wheel angular speed
+
+79
+00:05:22.630 --> 00:05:26.120
+all through the kinematic relationships
+defined in the modeling module.
+
+80
+00:05:27.430 --> 00:05:32.270
+Then assuming steady state operation,
+the dynamics of the powertrain says that
+
+81
+00:05:32.270 --> 00:05:37.820
+the engine torque must be equal to the
+total load torque acting on the vehicle.
+
+82
+00:05:37.820 --> 00:05:41.200
+The source of the load torque
+is aerodynamic resistance,
+
+83
+00:05:41.200 --> 00:05:45.190
+rolling resistance and
+vehicle gravitational resistance.
+
+84
+00:05:45.190 --> 00:05:49.810
+We can compute the combined load torque
+using the current state of the vehicle,
+
+85
+00:05:49.810 --> 00:05:52.410
+including its current speed,
+and the road slope.
+
+86
+00:05:54.080 --> 00:05:57.090
+We now have a required engine torque and
+
+87
+00:05:57.090 --> 00:06:01.530
+can combine that with the current
+engine operating speed in RPM
+
+88
+00:06:01.530 --> 00:06:05.330
+to define the throttle position needed
+to generate the required torque.
+
+89
+00:06:06.360 --> 00:06:08.610
+Once again, the engine map is defined for
+
+90
+00:06:08.610 --> 00:06:12.760
+discrete steady state values
+of engine torque and RPM.
+
+91
+00:06:12.760 --> 00:06:16.971
+And is interpolated as needed, based
+on the current vehicle operating point.
+
+92
+00:06:18.955 --> 00:06:21.613
+Let's have a look at
+the comparison between PID
+
+93
+00:06:21.613 --> 00:06:24.470
+control method described
+in the previous video and
+
+94
+00:06:24.470 --> 00:06:29.480
+the combined feedforward, feedback
+method we've discussed in this video.
+
+95
+00:06:29.480 --> 00:06:33.370
+We've used the same simulation
+parameters as in the previous video,
+
+96
+00:06:33.370 --> 00:06:36.580
+including the engine map and
+dynamic model elements.
+
+97
+00:06:37.678 --> 00:06:40.800
+The key difference between
+the two responses is visible
+
+98
+00:06:40.800 --> 00:06:43.030
+as the reference speed changes.
+
+99
+00:06:43.030 --> 00:06:48.060
+Because the PID controller needs errors
+to exist before it can correct them,
+
+100
+00:06:48.060 --> 00:06:51.290
+its response lags
+the feedforward approach,
+
+101
+00:06:51.290 --> 00:06:54.210
+which immediately applies
+the relevant input reference values.
+
+102
+00:06:55.370 --> 00:06:59.730
+The feedforward tracking is still not
+perfect, however, as the vehicle response
+
+103
+00:06:59.730 --> 00:07:04.100
+is ultimately governed by its inertia, and
+the feedforward approach we've presented
+
+104
+00:07:04.100 --> 00:07:07.260
+relies on steady state
+modeling of the car.
+
+105
+00:07:07.260 --> 00:07:09.860
+As the feedforward model
+becomes more precise,
+
+106
+00:07:09.860 --> 00:07:14.220
+the feedback components can focus
+purely on disturbance rejection, and
+
+107
+00:07:14.220 --> 00:07:17.370
+speed profile tracking can be
+done with consistent precision.
+
+108
+00:07:19.500 --> 00:07:23.480
+In this video, we've covered the concept
+of feedforward controllers and
+
+109
+00:07:23.480 --> 00:07:27.840
+the integrated feedback in feedforward
+controller to enhance the performance of
+
+110
+00:07:27.840 --> 00:07:28.630
+reference tracking.
+
+111
+00:07:29.680 --> 00:07:32.660
+We also applied the feedback and
+feedforward loops for
+
+112
+00:07:32.660 --> 00:07:34.440
+autonomous vehicle speed control.
+
+113
+00:07:35.720 --> 00:07:38.540
+Congratulations, you've
+now reached the end of
+
+114
+00:07:38.540 --> 00:07:42.380
+this module on longitudinal control for
+self driving cars.
+
+115
+00:07:42.380 --> 00:07:48.210
+You've reviewed the concepts of classical
+control and defined the PID controller.
+
+116
+00:07:48.210 --> 00:07:53.000
+You've built a PID controller for
+longitudinal control of a car and
+
+117
+00:07:53.000 --> 00:07:56.789
+you've applied feedforwad control to
+improve reference speed tracking.
+
+118
+00:07:58.200 --> 00:08:02.371
+In the next module, we'll dive into
+lateral vehicle control design to
+
+119
+00:08:02.371 --> 00:08:04.881
+guide our vehicle along a reference path.
+
+120
+00:08:04.881 --> 00:08:06.253
+See you there.
+
+121
+00:08:06.253 --> 00:08:16.253
+[MUSIC]

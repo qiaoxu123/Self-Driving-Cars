@@ -1,0 +1,221 @@
+WEBVTT
+
+1
+00:00:13.640 --> 00:00:15.960
+My name is Winston Yu.
+
+2
+00:00:15.960 --> 00:00:21.305
+I'm currently a software engineer and localization and mapping at Zoox.
+
+3
+00:00:21.305 --> 00:00:24.240
+So, how I got started in autonomous vehicles
+
+4
+00:00:24.240 --> 00:00:27.255
+is when I was in my final year of university.
+
+5
+00:00:27.255 --> 00:00:31.290
+General Motors and the Society of Automotive Engineers or SAE,
+
+6
+00:00:31.290 --> 00:00:35.555
+they got together and they created the student competition called auto drive.
+
+7
+00:00:35.555 --> 00:00:41.170
+This was basically a three-year competition and at the end of each year,
+
+8
+00:00:41.170 --> 00:00:42.675
+there would be a contest.
+
+9
+00:00:42.675 --> 00:00:47.240
+The goal was at the end of all three years,
+
+10
+00:00:47.240 --> 00:00:50.980
+for the student teams to be able to create a level four vehicle,
+
+11
+00:00:50.980 --> 00:00:55.175
+level four on the SAE autonomy scale.
+
+12
+00:00:55.175 --> 00:01:01.220
+I was leading the trajectory planning team and I designed
+
+13
+00:01:01.220 --> 00:01:03.770
+the trajectory planning and lane
+
+14
+00:01:03.770 --> 00:01:08.250
+changing algorithms that we used in the contest in first year.
+
+15
+00:01:08.290 --> 00:01:11.970
+So, what end up happens we ended up winning.
+
+16
+00:01:11.970 --> 00:01:16.510
+We won first place and we've submitted
+
+17
+00:01:16.510 --> 00:01:21.595
+a paper detailing our design and that's in progress right now.
+
+18
+00:01:21.595 --> 00:01:24.860
+So, the moment I realized I was interested in
+
+19
+00:01:24.860 --> 00:01:29.005
+self-driving cars and this is a bit of a story, is way back.
+
+20
+00:01:29.005 --> 00:01:31.235
+At the beginning of my university career,
+
+21
+00:01:31.235 --> 00:01:33.770
+I was on the UAV student team,
+
+22
+00:01:33.770 --> 00:01:36.020
+that's Unmanned Aerial Vehicles.
+
+23
+00:01:36.020 --> 00:01:40.910
+So, we were building these fixed-wing drones that were semi-autonomous,
+
+24
+00:01:40.910 --> 00:01:42.589
+they were remote controlled,
+
+25
+00:01:42.589 --> 00:01:45.720
+and they had industrial cameras,
+
+26
+00:01:45.720 --> 00:01:47.550
+and they had computer onboard.
+
+27
+00:01:47.550 --> 00:01:51.040
+I led the computer vision side of things for that,
+
+28
+00:01:51.040 --> 00:01:55.850
+so I was responsible for detecting these letters painted onto wind signs.
+
+29
+00:01:55.850 --> 00:02:01.525
+These wind signs would be on the ground and our plane would be up 200 feet in the air.
+
+30
+00:02:01.525 --> 00:02:05.060
+Then, as I was driving down the street one day I thought, "Well, hey,
+
+31
+00:02:05.060 --> 00:02:08.450
+can I apply these same computer vision tools that I'm using
+
+32
+00:02:08.450 --> 00:02:13.495
+to detect the signs to detect road signs?"
+
+33
+00:02:13.495 --> 00:02:16.875
+I had this idea I was going put webcams on
+
+34
+00:02:16.875 --> 00:02:21.890
+my parent's car and drive it around the neighborhood and detect all of the street signs.
+
+35
+00:02:21.890 --> 00:02:25.040
+Well, my parents weren't too thrilled with that.
+
+36
+00:02:25.040 --> 00:02:27.555
+So, that project didn't end up going anywhere,
+
+37
+00:02:27.555 --> 00:02:31.945
+but then when the auto drive team at my school started recruiting,
+
+38
+00:02:31.945 --> 00:02:35.020
+I thought, "Well, hey, this is cool."
+
+39
+00:02:35.020 --> 00:02:37.420
+Then, once I actually started working on the project,
+
+40
+00:02:37.420 --> 00:02:40.080
+I realized this is something that I want to do,
+
+41
+00:02:40.080 --> 00:02:41.625
+and now I'm here.
+
+42
+00:02:41.625 --> 00:02:44.565
+So, at Zoox, I'm on the CLAMS team,
+
+43
+00:02:44.565 --> 00:02:46.260
+clams like the shellfish,
+
+44
+00:02:46.260 --> 00:02:48.210
+and that stands for Calibration,
+
+45
+00:02:48.210 --> 00:02:51.190
+Localization, and Mapping, simultaneously.
+
+46
+00:02:51.190 --> 00:02:57.760
+I'm mostly working on the mapping side of things which mostly entails generating 3D maps.
+
+47
+00:02:57.760 --> 00:03:00.310
+I can't get into too much more detail than that,
+
+48
+00:03:00.310 --> 00:03:02.890
+but suffice it to say that right now,
+
+49
+00:03:02.890 --> 00:03:05.570
+I know more about San Francisco geography
+
+50
+00:03:05.570 --> 00:03:07.960
+from building our maps than from actually being there.
+
+51
+00:03:07.960 --> 00:03:10.310
+What really gets me pumped up to go to work in
+
+52
+00:03:10.310 --> 00:03:13.730
+the mornings is the fact that I'm working on these really,
+
+53
+00:03:13.730 --> 00:03:16.490
+really cool problems that are cutting edge.
+
+54
+00:03:16.490 --> 00:03:20.705
+This is things that people or companies really haven't
+
+55
+00:03:20.705 --> 00:03:26.550
+tackled before because it's still a very active area of development.

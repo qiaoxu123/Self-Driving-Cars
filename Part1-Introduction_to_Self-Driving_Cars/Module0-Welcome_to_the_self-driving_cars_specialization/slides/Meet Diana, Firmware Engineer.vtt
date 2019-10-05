@@ -1,0 +1,182 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.525 --> 00:00:16.238
+I am Diana Burgess, and
+
+3
+00:00:16.238 --> 00:00:21.790
+I currently work at Zoox on the firmware
+team as a firmware engineer.
+
+4
+00:00:21.790 --> 00:00:23.860
+A brief background about me.
+
+5
+00:00:23.860 --> 00:00:28.300
+I have a bachelor's of mechatronics
+engineering from the University of
+
+6
+00:00:28.300 --> 00:00:32.550
+Waterloo, where I've gone
+through a lot of internships and
+
+7
+00:00:32.550 --> 00:00:35.070
+worked in a lot of different jobs.
+
+8
+00:00:36.320 --> 00:00:40.410
+Most recently,
+I've worked at, before Zoox,
+
+9
+00:00:40.410 --> 00:00:44.850
+I worked at Peloton Technology,
+which does semi-autonomous trucks.
+
+10
+00:00:44.850 --> 00:00:49.540
+I actually got that job because I
+had done a internship with Bendix,
+
+11
+00:00:49.540 --> 00:00:51.650
+which does brakes for trucks.
+
+12
+00:00:51.650 --> 00:00:55.451
+So I got into autonomous through a bit
+of a roundabout way going through
+
+13
+00:00:55.451 --> 00:00:58.940
+the trucking industry before
+going to full autonomy with Zoox.
+
+14
+00:00:58.940 --> 00:01:06.320
+I got interested in robotics from
+an early age in high school.
+
+15
+00:01:06.320 --> 00:01:09.600
+So I'd always been interested
+in engineering in general and
+
+16
+00:01:09.600 --> 00:01:13.350
+had thought I would do mechanical
+engineering in university.
+
+17
+00:01:13.350 --> 00:01:17.350
+But in high school,
+I took some computer courses and
+
+18
+00:01:17.350 --> 00:01:21.660
+learned I liked programming as well, so
+I thought mechatronics was a good idea.
+
+19
+00:01:21.660 --> 00:01:26.500
+I'd also joined a robotics team,
+our first robotics team.
+
+20
+00:01:26.500 --> 00:01:31.120
+On that you get to build
+a complex robot to
+
+21
+00:01:31.120 --> 00:01:33.710
+compete in a game that changes every year.
+
+22
+00:01:33.710 --> 00:01:37.100
+So you have to build a whole new robot
+to compete in the next year's game.
+
+23
+00:01:37.100 --> 00:01:42.990
+And each game has both an autonomous
+component and a driver-operated component,
+
+24
+00:01:42.990 --> 00:01:47.420
+so you have a lot more complex
+things to do for that.
+
+25
+00:01:47.420 --> 00:01:52.190
+So I got really interested in robotics
+through those experiences and
+
+26
+00:01:52.190 --> 00:01:55.530
+it just kind of solidified
+through university.
+
+27
+00:01:55.530 --> 00:01:58.630
+I currently work on the firmware team.
+
+28
+00:01:59.770 --> 00:02:05.490
+A lot of my job entails working on
+one of the main motion control units,
+
+29
+00:02:05.490 --> 00:02:07.850
+which, in the vehicle,
+
+30
+00:02:07.850 --> 00:02:12.520
+helps to work with each other part of
+the vehicle to control it to, say,
+
+31
+00:02:12.520 --> 00:02:18.930
+move the brakes, or move the robot in
+general in any direction, steer it.
+
+32
+00:02:18.930 --> 00:02:23.340
+And so a lot of my job is making sure
+that we can actually have drivers so
+
+33
+00:02:23.340 --> 00:02:27.155
+that you can communicate safely
+with those other systems.
+
+34
+00:02:27.155 --> 00:02:30.104
+I also get to, through that,
+do a lot of testing and
+
+35
+00:02:30.104 --> 00:02:34.908
+work with our setup called LapBot,
+which is basically a hardware-in-the-loop
+
+36
+00:02:34.908 --> 00:02:39.298
+tester where you actually get to test
+your code on the real hardware before it
+
+37
+00:02:39.298 --> 00:02:42.616
+goes on to a vehicle that would
+drive in any kind of track.
+
+38
+00:02:42.616 --> 00:02:52.616
+[MUSIC]

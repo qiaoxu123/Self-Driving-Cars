@@ -1,0 +1,93 @@
+Some advice for junior people trying to break into
+the autonomous industry, getting a degree in
+engineering definitely helped me especially from
+the University of Waterloo where I got to do
+a lot of internships, a lot of interactive projects, and I also during that time helped
+mentor FIRST Robotics team. So, all of that helped
+to boost up my resume. So, if you wanted to get into the autonomous space into
+firmware engineering, some of the schooling
+that you might want is an engineering degree. You can also do it
+through a CS degree, but getting some real experience
+with hardware definitely helps. In my final of university, I took embedded classes to get
+more familiar with more of the low level software or the low level aspects of software that I would need
+in a more day-to-day life. Being very familiar with
+the hardware definitely helps in my day-to-day job because
+I'm actuating pieces. We've definitely have seen people in this industry who have more of a mechanical background
+and that also helps, but just knowing how to code
+also definitely helps with that and knowing all of the pieces around you,
+robotics in general, I think that mechatronics
+engineering was definitely a help for that
+for me because it was so well-rounded and I got to do everything and there
+were so many projects that definitely helped me to figure out how
+everything went together. So, I think in the
+industry right now, because it's growing so
+fast and so rapidly, pretty much every role is
+needed including firmware or even perception or any part of the autonomous stack
+just needs people. I get contacted specifically a lot about firmware jobs because
+of my background in firmware, but I think that in general, there are just so many jobs out there right now that everyone's
+just trying to get the best people to work on
+their autonomous challenge. It's a very aggressively
+hiring industry, so I constantly get recruited by other companies looking
+to just get people and I'm obviously trying to find
+as many people as possible for ZOOX so that we can
+continue working and growing. It seems like we're doing pretty
+good considering our numbers, but as always there's always more
+people needed and everybody's trying to solve this problem
+and everyone's trying to get all the best people
+to work on it. Now that I've had the chance
+to work in industry, I think the ideal candidate
+would be people who are interested and
+excited about the field. In terms of technical skills, are fluent in C++ and Python. We need research engineers who
+are able to solve problems from first principles and we also need people with
+machine learning experience. One of the biggest pieces
+of advice I can give to people at the undergraduate
+or graduate level is to join student teams. Student teams gives
+you the opportunity to work collaboratively with your peers and develop your
+communication leadership skills. Although, the projects you work
+on might not be cutting edge, at the same time they
+really help you gain experience working in
+a semi-professional setting. Communication skills are
+important for people out in the workplace as well because
+especially in autonomous driving, we have all of these unique problems
+that we need to solve and being able to communicate your ideas
+clearly is vitally important. Being there when things fail is a very valuable
+learning experience. A lot of the skills carry over. For example, troubleshooting,
+working with others, being able to solve problems, I found that experience very helpful once I started
+working in the industry. My advice for junior engineers
+looking to break into the industry is really to
+be hands-on and practical, to try taking on projects yourself. That could take the form of either a laptop on wheels where
+you program your own stack into end or using the simulator to predict what the environment would be like once we do hit the ground. I think solving
+these practical problems through practical means
+with teach you a lot and I personally
+have drawn a lot from previous projects in
+my day-to-day job nowadays. What advice would I
+gave if you wanted to come and work in an NAV company? Well, first of all, be open
+to all areas of engineering. Don't become just a computer
+vision specialist if you can. Try and understand that this is
+fundamentally a robotics question, because we have software
+using multiple sensors, trying to ask some very difficult
+questions in the presence of a very devious world that's
+got strange lighting, strange weather, people
+behaving in strange ways. You have to know a bit
+about control or interfacing to people
+who know about control, who know about planning,
+who know about vision, who know about lasers, who
+know about communications, who know about systems engineering. You're going to want
+to be interacting with those individuals
+the whole time. So, I would say, understand this as a big engineering science problem. Obviously code. Like code all the time. Practice, practice, practice
+and code well. Be proud. If you have a circuit
+as an undergraduate and you building a circuit
+and if it looks shocking, it probably is shocking. That's a good joke with electricity, but the same is true for software. So, be a proud software
+engineer about the quality of the code that you're
+writing and you will do well. Love getting into
+the mess of it, right? Please don't work
+with cameras indoors, go out into a rainstorm,
+go into the snow, go into the blinding sun and
+go with cameras out there, and don't worry if it doesn't work, because that's the best
+lesson you could get. So, boldly go out
+into places that are tricky for these systems to
+work in and learn from that. Be a proud roboticist and be
+a systems engineer as well, because it's a full-stack
+problem, right? It's not just I want to
+process a camera really well, I want two spot cars, it's all of it and it all
+has to interact in the end.

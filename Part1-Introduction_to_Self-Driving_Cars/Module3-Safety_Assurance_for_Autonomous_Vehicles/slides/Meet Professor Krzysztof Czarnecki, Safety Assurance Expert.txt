@@ -1,0 +1,15 @@
+Hi everyone, and welcome to the self-driving car garage at
+the University of Waterloo. I'm here with my good friend and
+colleague, Krzysztof Czarnecki. We're going to talk today about safety aspects of autonomous driving. Why don't we start a little bit with all the great things you've done in terms of safety designed
+for autonomous vehicles? I've worked for DIMER Research. That's been 16 years ago
+and 12 years ago, I had a chance to ride in
+a autonomous vehicle, a prototype. One of the early ones. Oh, yeah, it was pretty exciting. When I arrived in Waterloo, I've worked on automotive
+software and safety has been always an important topic
+in automotive software, mostly in terms of potential bugs. Essentially, you don't
+want to get the debts of the screen of death. Essentially, in
+a vehicle while you are driving at 100 kilometers an hour, the auto burn, and for
+about two years now, I've been working on autonomous
+vehicles and particularly, the safety aspect of it. So, focusing on architecture,
+the design methodologies, dealing with safety
+of machine learning and the behavior of
+the vehicle in traffic.

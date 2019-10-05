@@ -1,0 +1,386 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.711 --> 00:00:16.174
+Hi, I'm Paul Newman.
+
+3
+00:00:16.174 --> 00:00:17.911
+I'm CTO and founder of Oxbotica, and
+
+4
+00:00:17.911 --> 00:00:21.550
+Professor of Information Engineering
+at the University of Oxford.
+
+5
+00:00:21.550 --> 00:00:27.530
+So I can remember the day that I got
+interested in self-driving vehicles and
+
+6
+00:00:27.530 --> 00:00:29.830
+autonomy, and it was actually in Sydney.
+
+7
+00:00:29.830 --> 00:00:32.860
+And I was talking to a PhD student,
+I'd just started my PhD,
+
+8
+00:00:32.860 --> 00:00:36.740
+and he introduced this problem
+called the SLAM problem.
+
+9
+00:00:36.740 --> 00:00:41.030
+So can a vehicle figure out where it is in
+the world without having been given a map,
+
+10
+00:00:41.030 --> 00:00:43.340
+and can it build a map itself?
+
+11
+00:00:43.340 --> 00:00:47.710
+And I knew then that was the mother
+of all problems I wanted to work on.
+
+12
+00:00:47.710 --> 00:00:51.416
+So I can remember, and
+it was the 19th of March 1996,
+
+13
+00:00:51.416 --> 00:00:54.840
+I really discovered that
+there was a big problem here.
+
+14
+00:00:54.840 --> 00:00:56.710
+And since then, it's never got old.
+
+15
+00:00:56.710 --> 00:01:00.323
+We know how to solve those problems now,
+but
+
+16
+00:01:00.323 --> 00:01:04.335
+I was always an engineer
+trying to build things.
+
+17
+00:01:04.335 --> 00:01:07.985
+And then I discovered that the most
+exciting way to build things was
+
+18
+00:01:07.985 --> 00:01:10.984
+a combination of software and
+mechanical things, and
+
+19
+00:01:10.984 --> 00:01:14.460
+that's almost by definition robotics,
+then I was in heaven.
+
+20
+00:01:14.460 --> 00:01:19.020
+So I've never really lost that from
+probably about nine, when I started
+
+21
+00:01:19.020 --> 00:01:23.700
+trying to program very basic computers
+through to what I do everyday now.
+
+22
+00:01:23.700 --> 00:01:25.540
+It's a thrill that's never left me.
+
+23
+00:01:25.540 --> 00:01:27.240
+Okay, so what do we do here at Oxbotica?
+
+24
+00:01:27.240 --> 00:01:33.380
+Well, we build the software that
+makes autonomous vehicles autonomous.
+
+25
+00:01:33.380 --> 00:01:37.870
+We go from the lowest level sensors
+all the way up, through the stack,
+
+26
+00:01:37.870 --> 00:01:41.220
+through planning,
+through localization, through control,
+
+27
+00:01:41.220 --> 00:01:43.810
+through perception up to
+fleet management systems.
+
+28
+00:01:43.810 --> 00:01:49.320
+So the whole software environment that
+makes fleets of vehicles autonomous
+
+29
+00:01:49.320 --> 00:01:51.950
+is what we build and we develop.
+
+30
+00:01:51.950 --> 00:01:55.532
+Now, down at the university I'm the
+Director of the Autorobotics Institute,
+
+31
+00:01:55.532 --> 00:01:56.979
+I've got great life there too.
+
+32
+00:01:56.979 --> 00:02:01.294
+So there I work on what are the hard,
+hard problems of autonomy and
+
+33
+00:02:01.294 --> 00:02:04.980
+robotics that are perhaps
+ten years down the line?
+
+34
+00:02:04.980 --> 00:02:09.710
+What are those really sort of nascent
+research questions of machines and
+
+35
+00:02:09.710 --> 00:02:10.830
+intelligence and
+
+36
+00:02:10.830 --> 00:02:15.480
+machine learning that we would want in our
+vehicles in the five to ten-year period?
+
+37
+00:02:15.480 --> 00:02:17.300
+So I've got a very privileged life.
+
+38
+00:02:18.310 --> 00:02:21.380
+So why do I care about
+self-driving cars so much?
+
+39
+00:02:21.380 --> 00:02:24.719
+Because transport's dumb,
+it's broken at the moment.
+
+40
+00:02:24.719 --> 00:02:28.750
+80% of all accidents in the road
+are caused by inattention.
+
+41
+00:02:28.750 --> 00:02:31.520
+The one thing that machines
+won't do is get bored.
+
+42
+00:02:31.520 --> 00:02:34.461
+So we don't deal with that in any way.
+
+43
+00:02:34.461 --> 00:02:38.515
+The way in which we drive is inefficient.
+
+44
+00:02:38.515 --> 00:02:41.237
+As we get older, as we get more infirm,
+
+45
+00:02:41.237 --> 00:02:45.376
+the one thing we need is to stay
+in contact with our species.
+
+46
+00:02:45.376 --> 00:02:49.130
+And if we say, yes, I'm sorry,
+you're eyesight's fading, can't drive.
+
+47
+00:02:49.130 --> 00:02:50.730
+If you had an epileptic fit,
+you can't drive.
+
+48
+00:02:50.730 --> 00:02:55.210
+So the whole edifice of how we
+drive ourselves and move our atoms,
+
+49
+00:02:55.210 --> 00:02:59.220
+be they human atoms or
+goods atoms, is just nuts.
+
+50
+00:02:59.220 --> 00:03:01.700
+It's derived from horses and carts.
+
+51
+00:03:01.700 --> 00:03:05.320
+We wouldn't do that if we had our
+technology now, so that's nuts.
+
+52
+00:03:05.320 --> 00:03:10.082
+And software and
+algorithms are going to change that.
+
+53
+00:03:10.082 --> 00:03:14.996
+I'm absolutely sure that we'll
+have more atoms move better and
+
+54
+00:03:14.996 --> 00:03:17.734
+safer, because of AV technology.
+
+55
+00:03:17.734 --> 00:03:22.838
+So there's a question about
+should the vehicles themselves be
+
+56
+00:03:22.838 --> 00:03:28.528
+independently smart or
+should they leverage smart infrastructure?
+
+57
+00:03:28.528 --> 00:03:30.173
+So what's smart infrastructure?
+
+58
+00:03:30.173 --> 00:03:34.390
+A traffic light that says, I'm about
+to turn red, and this is my location.
+
+59
+00:03:34.390 --> 00:03:37.152
+Or a roundabout, a rotary, that says,
+
+60
+00:03:37.152 --> 00:03:41.068
+this is where the vehicles are,
+your slot's coming up.
+
+61
+00:03:41.068 --> 00:03:45.590
+There's any number of ways we could
+think about instrumenting our cities.
+
+62
+00:03:45.590 --> 00:03:50.881
+So my view is that the vehicles
+themselves need to be smart
+
+63
+00:03:50.881 --> 00:03:56.187
+enough to deal without
+a dependency on infrastructure.
+
+64
+00:03:56.187 --> 00:03:58.754
+And if smart infrastructure is provided,
+
+65
+00:03:58.754 --> 00:04:01.614
+then sure, you can use it,
+if you can trust it.
+
+66
+00:04:01.614 --> 00:04:05.856
+And there's questions about cybersecurity,
+and that's throughout the whole stack,
+
+67
+00:04:05.856 --> 00:04:07.789
+really, the cybersecurity question.
+
+68
+00:04:07.789 --> 00:04:12.250
+So my view is the vehicle itself
+must be smart enough to deal,
+
+69
+00:04:12.250 --> 00:04:14.444
+just like you are as a driver.
+
+70
+00:04:14.444 --> 00:04:19.021
+You can look at traffic lights and you can
+look at lane boundaries, and you don't
+
+71
+00:04:19.021 --> 00:04:23.420
+need to be told by the car in front that
+there's a car in front, you can see it.
+
+72
+00:04:24.640 --> 00:04:27.780
+Because if that
+infrastructure is taken away,
+
+73
+00:04:27.780 --> 00:04:29.890
+you still want to be able to
+have an autonomous vehicle.
+
+74
+00:04:29.890 --> 00:04:32.328
+It could be augmented by infrastructure,
+but
+
+75
+00:04:32.328 --> 00:04:34.709
+I believe you shouldn't
+be dependent on it.
+
+76
+00:04:34.709 --> 00:04:36.559
+because if you solve that problem,
+
+77
+00:04:36.559 --> 00:04:40.550
+then you really do have all of
+transport in any place in grasp.
+
+78
+00:04:40.550 --> 00:04:42.870
+Might take some time, but
+you're in that trajectory.
+
+79
+00:04:42.870 --> 00:04:47.260
+And you're not dependent on
+expensive bespoken infrastructure.
+
+80
+00:04:47.260 --> 00:04:51.585
+And my view of expensive,
+bespoke infrastructure for
+
+81
+00:04:51.585 --> 00:04:54.506
+self-driving cars is called city.
+
+82
+00:04:54.506 --> 00:05:02.270
+[MUSIC]

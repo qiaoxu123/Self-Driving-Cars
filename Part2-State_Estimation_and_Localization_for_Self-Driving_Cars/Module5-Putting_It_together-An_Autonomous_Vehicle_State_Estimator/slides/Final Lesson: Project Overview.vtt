@@ -1,0 +1,238 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:10.000
+[MUSIC]
+
+2
+00:00:14.392 --> 00:00:18.863
+All right, now that you've learned
+about least squares, linear and
+
+3
+00:00:18.863 --> 00:00:24.760
+non-linear common filters, GPNS and INS
+sensing for posed estimation and LiDARs.
+
+4
+00:00:24.760 --> 00:00:29.000
+It's time to put everything together for
+the final project in this course.
+
+5
+00:00:29.000 --> 00:00:32.580
+By this point, you should have a solid
+grasp of the methods commonly used for
+
+6
+00:00:32.580 --> 00:00:34.460
+vehicle state estimation, and
+
+7
+00:00:34.460 --> 00:00:37.040
+be ready to test your knowledge
+in a more realistic scenario.
+
+8
+00:00:38.050 --> 00:00:41.410
+For this project, you will have an
+opportunity to apply much of what you've
+
+9
+00:00:41.410 --> 00:00:45.170
+learned throughout this course,
+as well as observe the inner workings and
+
+10
+00:00:45.170 --> 00:00:49.800
+interactions of various components found
+in a full state estimation pipeline.
+
+11
+00:00:49.800 --> 00:00:52.620
+For the project,
+you'll be provided with a data set
+
+12
+00:00:52.620 --> 00:00:54.979
+gathered during a test drive
+in the carless simulator.
+
+13
+00:00:56.060 --> 00:01:00.400
+The data set contains measurements from a
+sensor array on a moving self-driving car.
+
+14
+00:01:01.820 --> 00:01:06.625
+The sensor array consists of an IMU,
+a GNSS receiver, and a LiDAR, all of
+
+15
+00:01:06.625 --> 00:01:11.682
+which provide measurements of varying
+reliability and at different rates.
+
+16
+00:01:12.995 --> 00:01:16.691
+While driving, the vehicle is
+subject to various dynamic effects
+
+17
+00:01:16.691 --> 00:01:20.460
+caused by the environment,
+the drive train, and the suspension.
+
+18
+00:01:21.460 --> 00:01:23.600
+These effects are difficult
+to accurately model.
+
+19
+00:01:25.400 --> 00:01:27.730
+Therefore, in a self-driving scenario,
+
+20
+00:01:27.730 --> 00:01:31.019
+the vehicle controller will rely on
+measurements acquired by the sensors.
+
+21
+00:01:32.990 --> 00:01:37.170
+Your goal is to implement a state
+estimator that fuses the available sensor
+
+22
+00:01:37.170 --> 00:01:41.220
+measurements to provide a reasonable
+estimate of the vehicle's pose and
+
+23
+00:01:41.220 --> 00:01:42.550
+velocity.
+
+24
+00:01:42.550 --> 00:01:47.120
+Specifically, you will be implementing
+the error state extended common filter
+
+25
+00:01:47.120 --> 00:01:49.210
+as described in module two.
+
+26
+00:01:49.210 --> 00:01:51.670
+Since it provides a high
+degree of robustness, and
+
+27
+00:01:51.670 --> 00:01:53.180
+is a staple in state estimation.
+
+28
+00:01:55.330 --> 00:01:58.440
+We provide you with a skeleton for
+the estimated pipeline,
+
+29
+00:01:58.440 --> 00:02:01.490
+which you will fill out using your own
+implementation at each individual step.
+
+30
+00:02:03.450 --> 00:02:06.230
+In the main filter loop,
+you will first update the state and
+
+31
+00:02:06.230 --> 00:02:08.319
+the uncertainty using IMU readings.
+
+32
+00:02:09.720 --> 00:02:13.823
+Whenever a GNSS or LiDAR measurement
+becomes available, you will execute
+
+33
+00:02:13.823 --> 00:02:18.460
+the appropriate common gain computation,
+error state, and covariance updates.
+
+34
+00:02:20.070 --> 00:02:24.370
+You will have access to the actual pose
+and velocity values from Carla for
+
+35
+00:02:24.370 --> 00:02:26.450
+a large section of the trajectory.
+
+36
+00:02:26.450 --> 00:02:29.250
+So you will be able to compare
+your trajectory estimates
+
+37
+00:02:29.250 --> 00:02:30.360
+to the ground truth data.
+
+38
+00:02:32.010 --> 00:02:36.200
+The project will be graded based on
+the accuracy of the trajectory estimate
+
+39
+00:02:36.200 --> 00:02:40.970
+on a section of the trajectory for which
+you do not have access to ground truth.
+
+40
+00:02:40.970 --> 00:02:43.850
+By the end of this project,
+you should have a good understanding of
+
+41
+00:02:43.850 --> 00:02:48.340
+the main components that make up
+a standard state estimation pipeline for
+
+42
+00:02:48.340 --> 00:02:50.030
+an autonomous vehicle.
+
+43
+00:02:50.030 --> 00:02:52.370
+If you have any questions that
+I didn't answer in this video,
+
+44
+00:02:52.370 --> 00:02:55.550
+there are further instructions in
+the programming assignment itself.
+
+45
+00:02:55.550 --> 00:02:57.020
+And you can always ask for
+
+46
+00:02:57.020 --> 00:02:59.940
+more information in
+the discussion forums as well.
+
+47
+00:02:59.940 --> 00:03:01.390
+I hope you have fun
+with the final project,
+
+48
+00:03:01.390 --> 00:03:03.188
+and I'll see you again
+once it's completed.
+
+49
+00:03:03.188 --> 00:03:06.355
+Good luck.
+
+50
+00:03:06.355 --> 00:03:16.355
+[MUSIC]

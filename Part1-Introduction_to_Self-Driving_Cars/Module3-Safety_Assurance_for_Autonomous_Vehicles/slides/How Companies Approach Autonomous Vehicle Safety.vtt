@@ -1,0 +1,469 @@
+WEBVTT
+
+1
+00:00:13.640 --> 00:00:16.410
+I see that the long-term benefits for
+
+2
+00:00:16.410 --> 00:00:19.290
+autonomous driving
+is first off safety.
+
+3
+00:00:19.290 --> 00:00:21.270
+I hear of people who've been
+
+4
+00:00:21.270 --> 00:00:24.330
+driving late at night
+and find that they've
+
+5
+00:00:24.330 --> 00:00:28.140
+seen crashes or you drive
+home and everything's
+
+6
+00:00:28.140 --> 00:00:31.810
+congested because someone maybe
+fell asleep at the wheel,
+
+7
+00:00:31.810 --> 00:00:33.410
+or they just bumped
+the person in front of
+
+8
+00:00:33.410 --> 00:00:36.085
+them and if we can get to
+
+9
+00:00:36.085 --> 00:00:38.285
+a point a society
+
+10
+00:00:38.285 --> 00:00:42.065
+with autonomous vehicles as
+every vehicle out there,
+
+11
+00:00:42.065 --> 00:00:44.040
+we shouldn't have anymore crashes.
+
+12
+00:00:44.040 --> 00:00:46.340
+We should be able to
+drive from point A
+
+13
+00:00:46.340 --> 00:00:49.310
+to point B and be very safe about it,
+
+14
+00:00:49.310 --> 00:00:51.680
+and on top of that,
+
+15
+00:00:51.680 --> 00:00:53.330
+hopefully congestion goes down.
+
+16
+00:00:53.330 --> 00:00:56.825
+You should have less people
+on the road because you
+
+17
+00:00:56.825 --> 00:00:58.940
+have these cars that
+they'll talk to each
+
+18
+00:00:58.940 --> 00:01:01.459
+other and everyone's
+driving the same speed,
+
+19
+00:01:01.459 --> 00:01:03.980
+because there's no switching lanes
+
+20
+00:01:03.980 --> 00:01:07.040
+constantly to get the faster lane,
+
+21
+00:01:07.040 --> 00:01:09.320
+which is what causes congestion a
+
+22
+00:01:09.320 --> 00:01:12.350
+lot on top of construction
+and everything else.
+
+23
+00:01:12.350 --> 00:01:15.350
+On top of that, it also adds mobility
+
+24
+00:01:15.350 --> 00:01:18.560
+for people who maybe
+can't drive themselves.
+
+25
+00:01:18.560 --> 00:01:22.260
+Maybe they aren't able to get
+a license or in our city,
+
+26
+00:01:22.260 --> 00:01:24.485
+it's just not practical to own a car.
+
+27
+00:01:24.485 --> 00:01:26.225
+It makes way more sense
+to take the bus
+
+28
+00:01:26.225 --> 00:01:28.880
+or an autonomous vehicle
+at some point,
+
+29
+00:01:28.880 --> 00:01:31.310
+where you can get to point A to
+point B without having to go
+
+30
+00:01:31.310 --> 00:01:34.130
+the random route which a bus
+would have to take you.
+
+31
+00:01:34.130 --> 00:01:37.385
+So even before our code gets
+deployed onto the vehicle,
+
+32
+00:01:37.385 --> 00:01:40.580
+we go through multiple stages
+of checking and making
+
+33
+00:01:40.580 --> 00:01:44.030
+sure that it's functioning
+in the way that we expect.
+
+34
+00:01:44.030 --> 00:01:46.640
+So for example, we
+rerun it in simulation,
+
+35
+00:01:46.640 --> 00:01:51.955
+we run it against education
+set we've seen before,
+
+36
+00:01:51.955 --> 00:01:54.500
+and finally when we deploy
+it on the vehicles,
+
+37
+00:01:54.500 --> 00:01:56.060
+we run it on our private test tracks
+
+38
+00:01:56.060 --> 00:01:58.225
+before we take it
+out into the public.
+
+39
+00:01:58.225 --> 00:02:01.430
+To ensure the safety of the vehicles
+that we have on the road,
+
+40
+00:02:01.430 --> 00:02:05.490
+we have multiple stages of
+testing that we go through before
+
+41
+00:02:05.490 --> 00:02:10.490
+we actually deploy these software
+features on the vehicle.
+
+42
+00:02:10.490 --> 00:02:14.560
+So, we test our code rigorously,
+
+43
+00:02:14.560 --> 00:02:16.850
+the first in simulation and
+
+44
+00:02:16.850 --> 00:02:20.480
+then against edge cases that
+we might have seen before.
+
+45
+00:02:20.480 --> 00:02:23.420
+Then once we actually deploy
+the code onto the vehicles,
+
+46
+00:02:23.420 --> 00:02:25.040
+we test these vehicles on
+
+47
+00:02:25.040 --> 00:02:29.150
+our private test tracks before we
+take them out onto public roads.
+
+48
+00:02:29.150 --> 00:02:32.510
+One of the main advantages of
+having an autonomous vehicles is
+
+49
+00:02:32.510 --> 00:02:35.990
+that there is safety, right.
+
+50
+00:02:35.990 --> 00:02:38.420
+So, the statistic that
+gets thrown around quite
+
+51
+00:02:38.420 --> 00:02:40.760
+a bit is that 94 percent of crashes
+
+52
+00:02:40.760 --> 00:02:43.040
+are caused by human error and that's
+
+53
+00:02:43.040 --> 00:02:47.635
+a huge margin for improvement that
+autonomous vehicles offers us.
+
+54
+00:02:47.635 --> 00:02:49.490
+Guaranteeing safety across all of
+
+55
+00:02:49.490 --> 00:02:52.460
+the different scenarios open to
+
+56
+00:02:52.460 --> 00:02:55.805
+us on the road is definitely
+one of the major challenges.
+
+57
+00:02:55.805 --> 00:02:59.510
+But fortunately, we have ways of
+figuring that out whether it's
+
+58
+00:02:59.510 --> 00:03:02.390
+through simulation or
+miles accumulation
+
+59
+00:03:02.390 --> 00:03:04.895
+through real-world testing
+and computer testing.
+
+60
+00:03:04.895 --> 00:03:07.270
+This topic often comes up in that,
+
+61
+00:03:07.270 --> 00:03:10.100
+obviously there's
+different feasibility
+
+62
+00:03:10.100 --> 00:03:12.105
+between daytime and nighttime.
+
+63
+00:03:12.105 --> 00:03:14.000
+Fortunately, we have a variety of
+
+64
+00:03:14.000 --> 00:03:17.570
+sensor modality modes that
+really well augment each other.
+
+65
+00:03:17.570 --> 00:03:21.050
+For example, radar and lidar can
+see perfectly well at night.
+
+66
+00:03:21.050 --> 00:03:23.000
+So, we have through the use of
+
+67
+00:03:23.000 --> 00:03:24.980
+multiple different
+sensor technologies,
+
+68
+00:03:24.980 --> 00:03:26.120
+being able to create
+
+69
+00:03:26.120 --> 00:03:30.290
+a safe comprehensive perception
+
+70
+00:03:30.290 --> 00:03:32.690
+of our world around
+us even at nighttime.
+
+71
+00:03:32.690 --> 00:03:36.630
+We definitely take testing
+and safety very seriously.
+
+72
+00:03:36.630 --> 00:03:40.790
+A live testing start cell in
+computer simulation for example,
+
+73
+00:03:40.790 --> 00:03:44.120
+to make sure that everything is up to
+
+74
+00:03:44.120 --> 00:03:47.450
+par and the live real-world
+testing starts out with
+
+75
+00:03:47.450 --> 00:03:50.600
+human drivers at the wheel
+who are able to take over at
+
+76
+00:03:50.600 --> 00:03:54.415
+any time to guarantee the safety
+if anything were to go wrong.
+
+77
+00:03:54.415 --> 00:03:56.810
+Going forward, we do this and
+
+78
+00:03:56.810 --> 00:04:00.170
+more and more as we accumulate
+more miles more experience,
+
+79
+00:04:00.170 --> 00:04:02.870
+we learn more and more
+from the datasets
+
+80
+00:04:02.870 --> 00:04:05.540
+that we collect to further
+refine our systems.
+
+81
+00:04:05.540 --> 00:04:08.570
+Many of us would have
+known family members or
+
+82
+00:04:08.570 --> 00:04:12.660
+people who've had an accident
+whilst driving a car.
+
+83
+00:04:12.700 --> 00:04:16.189
+That's a bad thing but
+after that accident,
+
+84
+00:04:16.189 --> 00:04:18.800
+your neighbor doesn't
+necessarily get a better driver.
+
+85
+00:04:18.800 --> 00:04:20.560
+Doesn't become a better driver.
+
+86
+00:04:20.560 --> 00:04:22.950
+But with driverless cars
+in 20 years time,
+
+87
+00:04:22.950 --> 00:04:25.955
+I'll be able to get into driverless
+cars that have the benefit of
+
+88
+00:04:25.955 --> 00:04:29.280
+all the miles the other
+driverless cars have ever driven,
+
+89
+00:04:29.280 --> 00:04:30.930
+and we exactly don't
+have that with humans.
+
+90
+00:04:30.930 --> 00:04:32.990
+So, it's a really
+compelling argument for
+
+91
+00:04:32.990 --> 00:04:35.990
+these machines to share
+their data as well and to share
+
+92
+00:04:35.990 --> 00:04:37.730
+their experience of driving in
+
+93
+00:04:37.730 --> 00:04:40.520
+every way that as humans
+we don't do it as
+
+94
+00:04:40.520 --> 00:04:42.770
+a lonely experience
+that we have all of
+
+95
+00:04:42.770 --> 00:04:46.340
+our 18-year-old repeat and
+starting is no great drivers.
+
+96
+00:04:46.340 --> 00:04:50.150
+So that's insane. So, there's
+so many reasons why we want to fix
+
+97
+00:04:50.150 --> 00:04:52.100
+transports in cities
+and when you're in
+
+98
+00:04:52.100 --> 00:04:54.500
+a plane and you look
+down out of a window,
+
+99
+00:04:54.500 --> 00:04:57.140
+look how much of the infrastructure
+that we have built on
+
+100
+00:04:57.140 --> 00:05:00.870
+our nations is because
+we want to move stuff.

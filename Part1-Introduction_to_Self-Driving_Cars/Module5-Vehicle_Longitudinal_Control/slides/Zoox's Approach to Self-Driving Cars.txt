@@ -1,0 +1,33 @@
+The challenges that I've observed
+in the industry so far is it's quite difficult driving
+in San Francisco. There's lots of crowds, there's lots of heavy fog, rain for example, and lots
+of rolling hills as well. So, at Zoox, currently we're
+able to tackle most of these difficult situations
+in San Francisco, and we're able to drive on very busy intersections and
+take unprotected left turns which are probably one of the most challenging situations that an autonomous vehicle will
+encounter on a day-to-day basis. Zoox started with two co-founders, Tim Kentley-Klay and Jesse Levinson. They decided that they
+wanted to think of the autonomous problem or challenge in a different way
+than everyone else was doing. Everyone else wants to
+put sensors on a car, and they wanted to build
+the car from the ground up. Our vehicle is bidirectional, that means they won't have to do
+U-turns or a three-point turns. Our vehicles won't
+have steering wheel, you'll have social seeding, that means that riders will
+sit facing each other. In addition, one of the cool things that we can do
+is we have all wheels steering. So, all four of the wheels can steer, and what that means in dense urban environments like
+San Francisco is that if we have a rider on
+the side of the road and a very narrow spot between cars, we can get in there. Whereas more conventional cars might not be able to
+in that situation. Because the industry is so new, we at so many different challenges, we have to find
+so many different ways of solving problems that we've
+never had to solve before. So, it's great and challenging
+in trying to figure out those innovative solutions to this such a hard
+problem that we have. Zoox has done a really great job
+so far in solving that challenge, and I'm glad I'm part of that. Zoox is well position
+to compete against the large OEMs that are
+currently in the field, because Zoox was born to solve
+the problem of autonomous mobility. We're designing a vehicle from
+the ground up that will tackle the challenges of delivering a
+autonomous ride-sharing experience. The large OEMs have a lot
+of existing infrastructure, they're encumbered by
+the current model of car ownership. Whereas we as
+a small and agile start-up are able to really execute
+on our core vision.

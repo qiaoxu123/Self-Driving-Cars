@@ -1,0 +1,123 @@
+WEBVTT
+
+1
+00:00:14.360 --> 00:00:16.650
+Hi everyone, and welcome to
+
+2
+00:00:16.650 --> 00:00:19.575
+the self-driving car garage at
+the University of Waterloo.
+
+3
+00:00:19.575 --> 00:00:23.130
+I'm here with my good friend and
+colleague, Krzysztof Czarnecki.
+
+4
+00:00:23.130 --> 00:00:24.720
+We're going to talk today about
+
+5
+00:00:24.720 --> 00:00:26.845
+safety aspects of autonomous driving.
+
+6
+00:00:26.845 --> 00:00:28.535
+Why don't we start a little bit with
+
+7
+00:00:28.535 --> 00:00:29.750
+all the great things you've done
+
+8
+00:00:29.750 --> 00:00:32.645
+in terms of safety designed
+for autonomous vehicles?
+
+9
+00:00:32.645 --> 00:00:35.540
+I've worked for DIMER Research.
+
+10
+00:00:35.540 --> 00:00:39.755
+That's been 16 years ago
+and 12 years ago,
+
+11
+00:00:39.755 --> 00:00:44.850
+I had a chance to ride in
+a autonomous vehicle, a prototype.
+
+12
+00:00:44.850 --> 00:00:45.600
+One of the early ones.
+
+13
+00:00:45.600 --> 00:00:47.360
+Oh, yeah, it was pretty exciting.
+
+14
+00:00:47.360 --> 00:00:48.950
+When I arrived in Waterloo,
+
+15
+00:00:48.950 --> 00:00:51.260
+I've worked on automotive
+software and safety has
+
+16
+00:00:51.260 --> 00:00:53.720
+been always an important topic
+in automotive software,
+
+17
+00:00:53.720 --> 00:00:56.425
+mostly in terms of potential bugs.
+
+18
+00:00:56.425 --> 00:00:57.990
+Essentially, you don't
+want to get the debts
+
+19
+00:00:57.990 --> 00:01:00.540
+of the screen of death.
+
+20
+00:01:00.540 --> 00:01:02.570
+Essentially, in
+a vehicle while you are
+
+21
+00:01:02.570 --> 00:01:04.985
+driving at 100 kilometers an hour,
+
+22
+00:01:04.985 --> 00:01:08.540
+the auto burn, and for
+about two years now,
+
+23
+00:01:08.540 --> 00:01:11.660
+I've been working on autonomous
+vehicles and particularly,
+
+24
+00:01:11.660 --> 00:01:13.140
+the safety aspect of it.
+
+25
+00:01:13.140 --> 00:01:18.325
+So, focusing on architecture,
+the design methodologies,
+
+26
+00:01:18.325 --> 00:01:20.885
+dealing with safety
+of machine learning
+
+27
+00:01:20.885 --> 00:01:25.060
+and the behavior of
+the vehicle in traffic.

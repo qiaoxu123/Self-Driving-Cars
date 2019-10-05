@@ -1,0 +1,83 @@
+How do I see the world of
+autonomous vehicles evolving? Well, it's not I think an industry
+where suddenly you nailed it. It's like an analog computers. We haven't finished computers. No one says when will
+we have computers? It's not done. It's something that gets better over time just like
+computing and software. This is a big endeavor and it starts now, and it's
+never going to stop. So, every year they're
+going to be getting better, they're going to get smarter. I think it's an interesting play
+because this time it's software, not the arrangement of
+steel atoms that makes the play. That makes the difference. There's
+something extraordinary about the way that software is so non-linear, and
+the impact they can have. It doesn't cost much to copy
+software but it does cost a final amount to make another imprint of a car
+that costs something. So, something quite extraordinary
+there that's coming through. So, it's a great space to
+be working in because you can write software that
+doesn't require a steel plant, and you can have
+an impact on transport. I think that's absolutely
+remarkable haven't really seen that before. You had to own an oil and gas field, or a car factory, and all the rest of it to
+make an impact in transport before and now it's because
+you can write text files, and that's something
+quite extraordinary. The industry is very new but
+the future is very bright. As for how will Zoox compete with the automotive OEMs that are already out
+there working on this. I think that Zoox is
+unique in its approach, and I think that solving the self-driving vehicle challenge isn't just an automotive challenge. By removing the human, you have to build in
+so much extra redundancy and you have to have so much extra software
+to make that work that you have to both look at the automotive engineering as
+well as looking at Aerospace, and computer science, and
+software engineering. So, Zoox is really set up for that
+because it was born to do that. It was born to build
+the vehicle from the ground up, and it had that mission
+the entire time. It's very focused on that mission, and so it's less encumbered by
+what some of the larger OEMs would have especially since
+they've starting mostly with just
+automotive engineering. I see the self-driving industry
+really taking off because there's this convergence of two things,
+Autonomy and ride-sharing. So right now cars are utilized
+maybe five percent of the time so that means that 95 percent of the time they're
+sitting in your driveway, they're sitting in
+a parking lot at work. The beauty of self-driving
+is that we're able to take these
+autonomous vehicles, and have them out on the road
+for the majority of the day, and to be able to move
+more riders with less vehicles. I could see the industry going two ways in terms of
+personal ownership, or transportation as a service. I see arguments for both and perhaps the reality is in the future
+we'll see a combination of both. I could see people always
+wanting to own their own vehicle for luxury or privacy reasons, and also accessible transportation would benefit greatly from
+autonomous technology. So, it's very likely that
+we'll see both on the horizon. A question that often
+comes up around AVs is when will I be able to buy one? It's a very reasonable question. I think we will first experience
+them by not buying one, but by getting a ride in one in
+certain areas in certain cities. So, that's the Geofencing argument. The vehicles will first appear working in an area of
+a city that they're well rehearsed and
+well-practiced and you know a lot about how that city changes, and it's lighting conditions, and when it gets busy, and where the really
+hard turnings are, and they'll be like fancy buses, our transport service in a city. But the question that actually
+people want me to answer is, when will I be able
+to walk into vocal of a car sales room and say I'll have the one with
+no steering wheel, and no windows? Which is basically what
+our full L5 system would be like. No human is needed ever and the
+vehicle can go wherever, whenever, whatever the weather, anywhere, and you never have to worry
+about not getting there. So, it has the same functionality
+that your car does now, and it's a consumer piece of tech. That's a long way off. Because the complexity
+of driving many of the difficult situations
+have got nothing to do with your driving test at all. You solve this random problem. That's because you're a human, you go, I know what to do there. It might be the only time ever
+driving that problem ever arises, and you solve it in that way. You actually reverse
+around it and go, it's a plastic bag and
+it's going to drive over that coupled boxes. I think it really is
+just car boredom, or there's some cows on
+the road and I'm going to wait for them to pass because
+they're going to pass it. Any number of things. Those are really hard problems or dealing with the twos
+and blues coming up behind, and pulling off up onto
+the sidewalk because you know that the person has also clocked that there's
+a siren coming behind. So, they're not going to
+be alarmed that you're driving at them on the sidewalk, and there's some social contract
+between the two of you. I could go on with
+all the interesting corner cases that we as humans solve, but to have a vehicle that it's a five sigma takes
+you from wherever you are, to wherever you want to go, anytime a day,
+any weather, any country, anywhere, and you have
+the same confidence you do in the vehicle you buy
+now, then you can do that. That's a long way away,
+and that's great. That's like saying when do we
+have the best computers ever? Well, it just gets better every day. You can't answer that question. But that doesn't mean that we don't transform transport before that. Yeah. So, cars didn't
+go everywhere to start with, but they've
+got better and better.

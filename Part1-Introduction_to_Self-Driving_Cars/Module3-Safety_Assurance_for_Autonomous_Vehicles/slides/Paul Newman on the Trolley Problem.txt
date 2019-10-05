@@ -1,0 +1,49 @@
+But what about this trolley problem? How do you decide, if you had to in a vehicle, what to do with an accident? There are any number of lose-lose
+no win situations that are setup as canonical examples of tough things for programmers
+to try and solve. So I have to think about this a lot because this is a societal question not just necessarily an
+engineering question. I really believe it's a question that society has to engage in
+and lawmakers have to decide about how they wish a vehicle to behave in a no win situation,
+and we should be clear. Some of these problems are
+set up as a no win situation. So I don't have a view on what the right thing to do is
+because that would be not okay. It's not up to me to
+decide how that works. I really, really
+don't have that view. I do think though that
+engineering can offer many possibilities on how we may
+choose to solve the problem. So, some say that so much in a situation
+where two people walked out behind two different vans
+that were completely obscure, and suddenly they're in
+the way of the vehicle. Newtonian physics says
+unfortunately this is an awful situation but there's going to be
+a collision of some sorts. You might say, and I'm not saying
+this is what we should do, heads or tails. You can't choose. You might say, well actually, statistics say that
+people who were above a certain height tend to
+do better in accidents. It's horrible whatever. You might decide that that's
+the right thing to do. I'm not saying what
+the right thing to do is, but you could look
+at those statistics, or you could say maybe it's
+just random that we do that, and sometimes you try to hit the person who does or you
+try to do the least damage. You might say I just want to
+slow down as fast as possible. That's what I'm going to do
+is just going to translate, which is what you
+might say humans do, you might decide to copy
+what humans do and say, well, this in these situations humans tend to do these things and you
+want the machine to be as better. But what if you could say actually
+I can do better than humans? That actually a machine can
+behave different than a human. That's one of the reasons we wanted
+to do this in the first place. So, these are very difficult
+thorny ethical issues that the engineers need to
+engage in with society, with lawmakers, with
+scholars of the humanities. But I would say one thing, I've never ever come
+across anyone ever, who said, I had this time I
+was driving down the road, two people walked in front of me, and I decided
+that person on the left, I hit them for the following reason. I've never ever a number of talks I've given ever had that
+reflected back on me. That does not mean I don't think
+it's an important question. I'm not saying that, but I am saying we
+need to make sure that the same time we're
+engaging with that and also the 80 percent of
+all accidents caused by inattention could be removed. So, it's a hard problem. It's an important problem, has a place in the narrative, and it's one that's not just
+a pure engineering problem to solve. It involves insurance,
+involves the law, and it's an engineering endeavor and it won't be
+perfect to start with. We need to be sure we understand
+how we are going to cradle that in our society if we
+want to in the first place. There's a big question here.

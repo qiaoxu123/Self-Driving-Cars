@@ -1,0 +1,353 @@
+WEBVTT
+
+1
+00:00:14.000 --> 00:00:16.680
+But what about this trolley problem?
+
+2
+00:00:16.680 --> 00:00:18.885
+How do you decide,
+
+3
+00:00:18.885 --> 00:00:21.615
+if you had to in a vehicle,
+
+4
+00:00:21.615 --> 00:00:23.640
+what to do with an accident?
+
+5
+00:00:23.640 --> 00:00:29.090
+There are any number of lose-lose
+no win situations that are
+
+6
+00:00:29.090 --> 00:00:31.610
+setup as canonical examples of
+
+7
+00:00:31.610 --> 00:00:34.370
+tough things for programmers
+to try and solve.
+
+8
+00:00:34.370 --> 00:00:38.195
+So I have to think about this a lot
+
+9
+00:00:38.195 --> 00:00:42.620
+because this is a societal question
+
+10
+00:00:42.620 --> 00:00:44.900
+not just necessarily an
+engineering question.
+
+11
+00:00:44.900 --> 00:00:47.000
+I really believe it's a question that
+
+12
+00:00:47.000 --> 00:00:50.660
+society has to engage in
+and lawmakers have to
+
+13
+00:00:50.660 --> 00:00:53.870
+decide about how they wish a vehicle
+
+14
+00:00:53.870 --> 00:00:57.260
+to behave in a no win situation,
+and we should be clear.
+
+15
+00:00:57.260 --> 00:00:59.900
+Some of these problems are
+set up as a no win situation.
+
+16
+00:00:59.900 --> 00:01:03.020
+So I don't have a view on what
+
+17
+00:01:03.020 --> 00:01:06.480
+the right thing to do is
+because that would be not okay.
+
+18
+00:01:06.480 --> 00:01:08.670
+It's not up to me to
+decide how that works.
+
+19
+00:01:08.670 --> 00:01:10.955
+I really, really
+don't have that view.
+
+20
+00:01:10.955 --> 00:01:13.895
+I do think though that
+engineering can offer
+
+21
+00:01:13.895 --> 00:01:18.150
+many possibilities on how we may
+choose to solve the problem.
+
+22
+00:01:18.150 --> 00:01:20.525
+So, some say that
+
+23
+00:01:20.525 --> 00:01:23.120
+so much in a situation
+where two people walked out
+
+24
+00:01:23.120 --> 00:01:29.390
+behind two different vans
+that were completely obscure,
+
+25
+00:01:29.390 --> 00:01:31.520
+and suddenly they're in
+the way of the vehicle.
+
+26
+00:01:31.520 --> 00:01:35.060
+Newtonian physics says
+unfortunately this is
+
+27
+00:01:35.060 --> 00:01:37.925
+an awful situation but
+
+28
+00:01:37.925 --> 00:01:40.175
+there's going to be
+a collision of some sorts.
+
+29
+00:01:40.175 --> 00:01:42.440
+You might say, and I'm not saying
+this is what we should do,
+
+30
+00:01:42.440 --> 00:01:45.185
+heads or tails. You can't choose.
+
+31
+00:01:45.185 --> 00:01:47.840
+You might say, well actually,
+
+32
+00:01:47.840 --> 00:01:50.630
+statistics say that
+people who were above
+
+33
+00:01:50.630 --> 00:01:55.395
+a certain height tend to
+do better in accidents.
+
+34
+00:01:55.395 --> 00:01:56.595
+It's horrible whatever.
+
+35
+00:01:56.595 --> 00:01:58.985
+You might decide that that's
+the right thing to do.
+
+36
+00:01:58.985 --> 00:02:01.355
+I'm not saying what
+the right thing to do is,
+
+37
+00:02:01.355 --> 00:02:02.720
+but you could look
+at those statistics,
+
+38
+00:02:02.720 --> 00:02:05.270
+or you could say maybe it's
+just random that we do that,
+
+39
+00:02:05.270 --> 00:02:07.205
+and sometimes you try to hit
+
+40
+00:02:07.205 --> 00:02:10.250
+the person who does or you
+try to do the least damage.
+
+41
+00:02:10.250 --> 00:02:13.450
+You might say I just want to
+slow down as fast as possible.
+
+42
+00:02:13.450 --> 00:02:15.240
+That's what I'm going to do
+is just going to translate,
+
+43
+00:02:15.240 --> 00:02:16.610
+which is what you
+might say humans do,
+
+44
+00:02:16.610 --> 00:02:20.060
+you might decide to copy
+what humans do and say,
+
+45
+00:02:20.060 --> 00:02:22.130
+well, this in these situations humans
+
+46
+00:02:22.130 --> 00:02:24.290
+tend to do these things and you
+want the machine to be as better.
+
+47
+00:02:24.290 --> 00:02:27.005
+But what if you could say actually
+I can do better than humans?
+
+48
+00:02:27.005 --> 00:02:29.480
+That actually a machine can
+behave different than a human.
+
+49
+00:02:29.480 --> 00:02:31.955
+That's one of the reasons we wanted
+to do this in the first place.
+
+50
+00:02:31.955 --> 00:02:37.910
+So, these are very difficult
+thorny ethical issues
+
+51
+00:02:37.910 --> 00:02:41.480
+that the engineers need to
+engage in with society,
+
+52
+00:02:41.480 --> 00:02:46.055
+with lawmakers, with
+scholars of the humanities.
+
+53
+00:02:46.055 --> 00:02:49.340
+But I would say one thing,
+
+54
+00:02:49.340 --> 00:02:54.575
+I've never ever come
+across anyone ever,
+
+55
+00:02:54.575 --> 00:02:59.240
+who said, I had this time I
+was driving down the road,
+
+56
+00:02:59.240 --> 00:03:00.410
+two people walked in front of me,
+
+57
+00:03:00.410 --> 00:03:03.890
+and I decided
+that person on the left,
+
+58
+00:03:03.890 --> 00:03:05.840
+I hit them for the following reason.
+
+59
+00:03:05.840 --> 00:03:07.970
+I've never ever a number of talks
+
+60
+00:03:07.970 --> 00:03:09.965
+I've given ever had that
+reflected back on me.
+
+61
+00:03:09.965 --> 00:03:12.440
+That does not mean I don't think
+it's an important question.
+
+62
+00:03:12.440 --> 00:03:13.730
+I'm not saying that,
+
+63
+00:03:13.730 --> 00:03:15.260
+but I am saying we
+need to make sure that
+
+64
+00:03:15.260 --> 00:03:17.000
+the same time we're
+engaging with that and also
+
+65
+00:03:17.000 --> 00:03:18.665
+the 80 percent of
+all accidents caused
+
+66
+00:03:18.665 --> 00:03:20.690
+by inattention could be removed.
+
+67
+00:03:20.690 --> 00:03:22.505
+So, it's a hard problem.
+
+68
+00:03:22.505 --> 00:03:23.810
+It's an important problem,
+
+69
+00:03:23.810 --> 00:03:25.730
+has a place in the narrative,
+
+70
+00:03:25.730 --> 00:03:29.645
+and it's one that's not just
+a pure engineering problem to solve.
+
+71
+00:03:29.645 --> 00:03:32.420
+It involves insurance,
+involves the law,
+
+72
+00:03:32.420 --> 00:03:38.235
+and it's an engineering endeavor
+
+73
+00:03:38.235 --> 00:03:40.140
+and it won't be
+perfect to start with.
+
+74
+00:03:40.140 --> 00:03:42.680
+We need to be sure we understand
+how we are going to cradle
+
+75
+00:03:42.680 --> 00:03:45.680
+that in our society if we
+want to in the first place.
+
+76
+00:03:45.680 --> 00:03:48.090
+There's a big question here.

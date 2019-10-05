@@ -1,0 +1,58 @@
+[MUSIC] Hi, I'm Paul Newman. I'm CTO and founder of Oxbotica, and Professor of Information Engineering
+at the University of Oxford. So I can remember the day that I got
+interested in self-driving vehicles and autonomy, and it was actually in Sydney. And I was talking to a PhD student,
+I'd just started my PhD, and he introduced this problem
+called the SLAM problem. So can a vehicle figure out where it is in
+the world without having been given a map, and can it build a map itself? And I knew then that was the mother
+of all problems I wanted to work on. So I can remember, and
+it was the 19th of March 1996, I really discovered that
+there was a big problem here. And since then, it's never got old. We know how to solve those problems now,
+but I was always an engineer
+trying to build things. And then I discovered that the most
+exciting way to build things was a combination of software and
+mechanical things, and that's almost by definition robotics,
+then I was in heaven. So I've never really lost that from
+probably about nine, when I started trying to program very basic computers
+through to what I do everyday now. It's a thrill that's never left me. Okay, so what do we do here at Oxbotica? Well, we build the software that
+makes autonomous vehicles autonomous. We go from the lowest level sensors
+all the way up, through the stack, through planning,
+through localization, through control, through perception up to
+fleet management systems. So the whole software environment that
+makes fleets of vehicles autonomous is what we build and we develop. Now, down at the university I'm the
+Director of the Autorobotics Institute, I've got great life there too. So there I work on what are the hard,
+hard problems of autonomy and robotics that are perhaps
+ten years down the line? What are those really sort of nascent
+research questions of machines and intelligence and machine learning that we would want in our
+vehicles in the five to ten-year period? So I've got a very privileged life. So why do I care about
+self-driving cars so much? Because transport's dumb,
+it's broken at the moment. 80% of all accidents in the road
+are caused by inattention. The one thing that machines
+won't do is get bored. So we don't deal with that in any way. The way in which we drive is inefficient. As we get older, as we get more infirm, the one thing we need is to stay
+in contact with our species. And if we say, yes, I'm sorry,
+you're eyesight's fading, can't drive. If you had an epileptic fit,
+you can't drive. So the whole edifice of how we
+drive ourselves and move our atoms, be they human atoms or
+goods atoms, is just nuts. It's derived from horses and carts. We wouldn't do that if we had our
+technology now, so that's nuts. And software and
+algorithms are going to change that. I'm absolutely sure that we'll
+have more atoms move better and safer, because of AV technology. So there's a question about
+should the vehicles themselves be independently smart or
+should they leverage smart infrastructure? So what's smart infrastructure? A traffic light that says, I'm about
+to turn red, and this is my location. Or a roundabout, a rotary, that says, this is where the vehicles are,
+your slot's coming up. There's any number of ways we could
+think about instrumenting our cities. So my view is that the vehicles
+themselves need to be smart enough to deal without
+a dependency on infrastructure. And if smart infrastructure is provided, then sure, you can use it,
+if you can trust it. And there's questions about cybersecurity,
+and that's throughout the whole stack, really, the cybersecurity question. So my view is the vehicle itself
+must be smart enough to deal, just like you are as a driver. You can look at traffic lights and you can
+look at lane boundaries, and you don't need to be told by the car in front that
+there's a car in front, you can see it. Because if that
+infrastructure is taken away, you still want to be able to
+have an autonomous vehicle. It could be augmented by infrastructure,
+but I believe you shouldn't
+be dependent on it. because if you solve that problem, then you really do have all of
+transport in any place in grasp. Might take some time, but
+you're in that trajectory. And you're not dependent on
+expensive bespoken infrastructure. And my view of expensive,
+bespoke infrastructure for self-driving cars is called city. [MUSIC]
