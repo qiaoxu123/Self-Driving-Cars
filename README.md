@@ -19,10 +19,10 @@ Class links:
 
 Video:
 
-[Part 1](https://www.bilibili.com/video/av70128937)
-[Part 2](https://www.bilibili.com/video/av70088379)
-[Part 3](https://www.bilibili.com/video/av70068347)
-[Part 4](https://www.bilibili.com/video/av69989087)
+- [Part 1](https://www.bilibili.com/video/av70128937)
+- [Part 2](https://www.bilibili.com/video/av70088379)
+- [Part 3](https://www.bilibili.com/video/av70068347)
+- [Part 4](https://www.bilibili.com/video/av69989087)
 ---
 
 # Introduction
