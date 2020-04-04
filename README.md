@@ -1,3 +1,15 @@
+<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/qiaoxu123/Self-Driving-Cars">
+<a href="https://github.com/qiaoxu123/Self-Driving-Cars/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/qiaoxu123/Self-Driving-Cars"></a>
+<a href="https://github.com/qiaoxu123/Self-Driving-Cars/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/qiaoxu123/Self-Driving-Cars"></a>
+<a href="https://github.com/qiaoxu123/Self-Driving-Cars/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/qiaoxu123/Self-Driving-Cars"></a>
+
+
+# Notes
+
+for China, downloading is so slow, so i transfer this repo to Coding.net. So i suggest you turn to this link and git clone, maybe helps a lot.
+
+[link](https://qiaoxu.coding.net/p/Self-Driving-Cars)
+
 # Thanks
 
 > [**Coursera  Self-Driving Cars**](https://www.coursera.org/specializations/self-driving-cars) 
@@ -41,4 +53,3 @@ It is recommended that you have some background in linear algebra, probability, 
 - Implement methods for static and dynamic object detection, localization and mapping, behaviour and maneuver planning, and vehicle control
 - Use realistic vehicle physics, complete sensor suite: camera, LIDAR, GPS/INS, wheel odometry, depth map, semantic segmentation, object bounding boxes
 - Demonstrate skills in CARLA and build programs with Python
-
